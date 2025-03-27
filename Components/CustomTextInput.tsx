@@ -18,7 +18,7 @@ export default function Input({title,color,css,isPass,name,onchange}:InputProps)
     }
     const [Visible,setVisible]=useState(isPass)
     return(
-     <View>
+     <View style={{width:'100%'}}>
            <TextInput placeholder={title}placeholderTextColor={color} style={css} secureTextEntry={Visible} value={name} onChangeText={onchange}/>
            {icon && ( 
         <TouchableOpacity  style={styles.icon} onPress={handlesvisible}>

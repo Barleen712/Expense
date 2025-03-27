@@ -23,6 +23,8 @@ import Language from "../Screens/DrawerScreens/Profile/Language";
 import Notification from "../Screens/DrawerScreens/Profile/Notification";
 import Header from "../Components/Header";
 import CreateBudget from "../Screens/DrawerScreens/Budget/CreateBudget";
+import Expense from "../Screens/DrawerScreens/Home/Expense";
+import Income from "../Screens/DrawerScreens/Home/Income";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
@@ -50,6 +52,8 @@ export default function Screens() {
       <Stack.Screen name="Language" component={Language}/>
       <Stack.Screen name="Notification" component={Notification}/>
       <Stack.Screen name="CreateBudget" component={CreateBudget}/>
+      <Stack.Screen name="Expense" component={Expense}/>
+      <Stack.Screen name="Income" component={Income}/>
     </Stack.Navigator>
   );
 }

@@ -23,5 +23,7 @@ type StackParamList = {
     Notification:undefined,
     Header:undefined,
     CreateBudget:undefined,
+    Expense:undefined,
+    Income:undefined
   };
   export default StackParamList

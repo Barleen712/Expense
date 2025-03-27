@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   letsgo: { flex: 0.65, height: "100%", alignItems: "center" },
   heading: {
     fontFamily: "Inter",
-    fontWeight: Platform.OS === "ios" ? 500 : 600,
+    fontWeight: "bold",
     fontSize: Platform.OS === "ios" ? 33 : 35,
     color: "black",
   },
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textinput: {
-    width: 343,
+    width: "90%",
     height: 56,
     color: "black",
     borderRadius: 16,
@@ -577,14 +577,17 @@ const styles = StyleSheet.create({
   },
   homeHeadView:
   {
-    width:'100%',
-    flexDirection:"row",justifyContent:"space-between",padding:10
+    width:'88%',
+    flexDirection:"row",justifyContent:"space-between",
+    height:'35%'
   },headButton:
   {
     flexDirection:"row",
     alignItems:'center',
     padding:10,
-    borderRadius:28
+    borderRadius:25,
+    width:'45%'
+  
   },
   homeTitle:
   {
@@ -598,7 +601,7 @@ const styles = StyleSheet.create({
     borderWidth:0.3,
     borderColor:'grey',
     padding:5,
-    marginTop:10,
+    marginTop:5,
     flexDirection:'row',
     width:'25%'
   },homeArrow:
@@ -611,6 +614,19 @@ const styles = StyleSheet.create({
   {
     fontFamily: "Inter",
     fontSize: Platform.OS === "ios" ? 18: 20,
+  },
+  linechart:
+  {
+    flex:0.3
+  },
+  attachment:
+  {
+    width:'90%',
+    borderWidth:0.8,
+    height:56,
+    borderColor:'grey',
+    borderStyle:"dashed",
+    borderRadius:16,
   }
 });
 export default styles;

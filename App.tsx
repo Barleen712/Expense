@@ -15,10 +15,12 @@ import DropDown from './Components/DropDown';
 import CustomSlider from './Components/Slider';
 import AddNewAccount from './Screens/Onboarding/AddNewAccount';
 import Months from './Components/Month';
+import Expense from './Screens/DrawerScreens/Home/Expense';
+import Income from './Screens/DrawerScreens/Home/Income';
 export default function App() {
   return (
     <NavigationContainer>
-      <Screens/>
+<Screens/>
     </NavigationContainer>
   );
 }

@@ -9,13 +9,13 @@ import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
 import CustomSlider from "../../../Components/Slider";
 import Input from "../../../Components/CustomTextInput";
-type ExpenseProp = StackNavigationProp<StackParamList, 'Expense'>;
+type IncomeProp = StackNavigationProp<StackParamList, 'Income'>;
 
 interface Props {
-  navigation: ExpenseProp;
+  navigation: IncomeProp;
 }
 const category=["Shopping","Food","Entertainment","Savings","Transportation","Bills","Miscellaneous"]
-export default function Expense({navigation}:Props)
+export default function Income({navigation}:Props)
 {
     const [Expense,setExpense]=useState(false)
      const [isOpen,setOpen]=useState(false)
@@ -23,8 +23,9 @@ export default function Expense({navigation}:Props)
     return(
         <SafeAreaProvider>
         <SafeAreaView style={styles.container}>
-             <Header title="Expense" press={()=>navigation.goBack()} bgcolor="rgba(253, 60, 74, 1)" color="white"/>
-          <View style={[styles.add,{backgroundColor:"rgba(253, 60, 74, 1)"}]}>
+             <Header title="Income"
+              press={()=>navigation.goBack()} bgcolor="rgba(0, 168, 107, 1)" color="white"/>
+          <View style={[styles.add,{backgroundColor:"rgba(0, 168, 107, 1))"}]}>
             <View style={styles.balanceView}>
               <Text style={styles.balance}>How much ?</Text>
               <Text style={styles.amount}>$0</Text>
@@ -45,7 +46,7 @@ export default function Expense({navigation}:Props)
               <View style={[styles.textinput,{borderStyle:'dashed',alignItems:'center'}]}>
                 <Text>Add attachment</Text>
                 </View>
-                <CustomButton title="Continue" bg="rgba(234, 225, 220, 0.6)" color="red" press={()=>navigation.goBack()}/>
+                <CustomButton title="Continue" bg="rgba(173, 210, 189, 0.6)" color="rgb(42, 124, 118)" press={()=>navigation.goBack()}/>
             </View>)}
      
             </View>
