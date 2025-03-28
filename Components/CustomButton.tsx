@@ -1,11 +1,11 @@
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-interface Gradient{
-  title:string,
-  handles?:()=>void
+interface Gradient {
+  title: string;
+  handles?: () => void;
 }
-export default function GradientButton({ title ,handles}:Gradient) {
+export default function GradientButton({ title, handles }: Gradient) {
   return (
     <LinearGradient colors={["#69AEA9", "#3F8782"]} style={styles.gradient}>
       <TouchableOpacity onPress={handles}>
@@ -14,13 +14,13 @@ export default function GradientButton({ title ,handles}:Gradient) {
     </LinearGradient>
   );
 }
-interface CustomButton{
-  title:string,
-  bg:string,
-  color:string,
-  press?:()=>void
+interface CustomButton {
+  title: string;
+  bg: string;
+  color: string;
+  press?: () => void;
 }
-export function CustomButton({ title, bg, color ,press}:CustomButton) {
+export function CustomButton({ title, bg, color, press }: CustomButton) {
   return (
     <TouchableOpacity
       style={{
@@ -28,8 +28,8 @@ export function CustomButton({ title, bg, color ,press}:CustomButton) {
         height: 56,
         borderRadius: 16,
         alignItems: "center",
-        justifyContent:'center',
-        marginTop: 20,
+        justifyContent: "center",
+        marginTop: 10,
         backgroundColor: bg,
       }}
       onPress={press}
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     height: 56,
     borderRadius: 16,
     alignItems: "center",
-    justifyContent:'center',
+    justifyContent: "center",
     marginTop: 10,
   },
   text: {

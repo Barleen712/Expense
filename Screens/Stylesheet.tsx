@@ -97,8 +97,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderColor: "rgba(133, 126, 126, 0.89)",
     borderWidth: 1,
-    margin: 20,
+    margin: 10,
     padding: 15,
+    justifyContent: "center",
   },
   ForgotTitle: {
     flex: 3,
@@ -157,8 +158,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    paddingBottom: 40,
+    padding: 5,
     paddingTop: 15,
+    paddingBottom: 10,
   },
   selectinput: {
     width: "100%",
@@ -414,7 +416,6 @@ const styles = StyleSheet.create({
   notiView: {
     flexDirection: "row",
     width: "100%",
-
     padding: 10,
   },
   noti: {
@@ -484,149 +485,159 @@ const styles = StyleSheet.create({
     fontSize: Platform.OS === "ios" ? 24 : 28,
     color: "white",
   },
-  dropdownView:
-  {
-    width:"90%",
-    borderRadius:15,
-    borderWidth:0.5,
-    borderColor:'grey',
-    height:56,
-    justifyContent:'center',
-    padding:10,
-    marginBottom:10
+  dropdownView: {
+    width: "90%",
+    borderRadius: 15,
+    borderWidth: 0.5,
+    borderColor: "grey",
+    height: 56,
+    justifyContent: "center",
+    padding: 10,
+    marginBottom: 10,
   },
-  dropdownItems:
-  {
-     justifyContent:'center',
-     padding:10,
-     height:56
+  dropdownItems: {
+    justifyContent: "center",
+    height: 56,
   },
-  itemView:
-  {
-    height:200,
-    width:"90%",
-  
+  itemView: {
+    height: 200,
+    width: "90%",
   },
-  dropdown:
-  {
-    width:"100%",alignItems:'center'
+  dropdown: {
+    width: "100%",
+    justifyContent: "center",
   },
-  arrowDown:
-  {
-    position:'absolute',
-    right:'5%'
+  arrowDown: {
+    position: "absolute",
+    right: "5%",
   },
-  categoryText:
-  {
+  categoryText: {
     fontFamily: "Inter",
     fontSize: Platform.OS === "ios" ? 14 : 16,
-    
   },
   container1: {
     padding: 5,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
-    width:'90%'
+    width: "90%",
   },
   sliderWrapper: {
-    position: 'relative',
-    width: '100%',
+    position: "relative",
+    width: "100%",
     height: 40,
-    justifyContent: 'center',
-  },trackBackground: {
-    position: 'absolute',
+    justifyContent: "center",
+  },
+  trackBackground: {
+    position: "absolute",
     height: 15,
-    backgroundColor: '#E0E0E0',
-    width: '100%',
+    backgroundColor: "#E0E0E0",
+    width: "100%",
     borderRadius: 10,
   },
   trackFill: {
-    position: 'absolute',
-    height: 15 ,
-    backgroundColor: 'rgb(42, 124, 118)',
+    position: "absolute",
+    height: 15,
+    backgroundColor: "rgb(42, 124, 118)",
     borderRadius: 10,
   },
   slider: {
-    width: '100%',
+    width: "100%",
     height: 40,
   },
   customThumb: {
-    position: 'absolute',
+    position: "absolute",
     width: 50,
     height: 30,
     borderRadius: 15,
-    backgroundColor: 'rgb(42, 124, 118)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgb(42, 124, 118)",
+    justifyContent: "center",
+    alignItems: "center",
     elevation: 4, // Shadow for Android
-    shadowColor: '#000', // Shadow for iOS
+    shadowColor: "#000", // Shadow for iOS
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
-    borderWidth:1.5,
-    borderColor:'white'
+    borderWidth: 1.5,
+    borderColor: "white",
   },
   thumbText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 12,
   },
-  homeHeadgradient:
-  {
-    flex:0.3,borderBottomLeftRadius:15,borderBottomRightRadius:15,alignItems:'center'
+  homeHeadgradient: {
+    flex: 0.3,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    alignItems: "center",
   },
-  homeHeadView:
-  {
-    width:'88%',
-    flexDirection:"row",justifyContent:"space-between",
-    height:'35%'
-  },headButton:
-  {
-    flexDirection:"row",
-    alignItems:'center',
-    padding:10,
-    borderRadius:25,
-    width:'45%'
-  
+  homeHeadView: {
+    width: "88%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    height: "35%",
   },
-  homeTitle:
-  {
+  headButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 25,
+    width: "45%",
+  },
+  homeTitle: {
     fontFamily: "Inter",
     fontSize: Platform.OS === "ios" ? 14 : 16,
     color: "white",
   },
-  homeMonth:
-  {
-    borderRadius:20,
-    borderWidth:0.3,
-    borderColor:'grey',
-    padding:5,
-    marginTop:5,
-    flexDirection:'row',
-    width:'25%'
-  },homeArrow:
-  {
-    width:20,
-    height:20,
-    resizeMode:'contain'
+  homeMonth: {
+    borderRadius: 20,
+    borderWidth: 0.3,
+    borderColor: "grey",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 2,
+    marginTop: 5,
+    width: "28%",
   },
-  homeamount:
-  {
+  homeArrow: {
+    width: 20,
+    height: 20,
+    resizeMode: "contain",
+    position: "absolute",
+    right: "2%",
+  },
+  homeamount: {
     fontFamily: "Inter",
-    fontSize: Platform.OS === "ios" ? 18: 20,
+    fontSize: Platform.OS === "ios" ? 18 : 20,
   },
-  linechart:
-  {
-    flex:0.3
+  linechart: {
+    flex: 0.3,
   },
-  attachment:
-  {
-    width:'90%',
-    borderWidth:0.8,
-    height:56,
-    borderColor:'grey',
-    borderStyle:"dashed",
-    borderRadius:16,
-  }
+  attachment: {
+    width: "90%",
+    borderWidth: 0.8,
+    height: 56,
+    borderColor: "grey",
+    borderStyle: "dashed",
+    borderRadius: 16,
+  },
+  flat: {
+    flex: 0.08,
+    alignItems: "center",
+  },
+  flatView: {
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 10,
+    borderRadius: 20,
+    marginLeft: 5,
+    marginRight: 5,
+    paddingLeft: 20,
+    paddingRight: 15,
+  },
+  itemText: {
+    paddingLeft: 5,
+    paddingRight: 5,
+  },
 });
 export default styles;

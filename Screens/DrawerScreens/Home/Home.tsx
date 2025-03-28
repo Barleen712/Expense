@@ -1,94 +1,147 @@
-import React ,{useState}from "react";
-import {View,Text, TouchableOpacity,Image, Platform,Dimensions} from "react-native"
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, Image, Platform, Dimensions, FlatList } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import styles from "../../Stylesheet";
 import Months from "../../../Components/Month";
-import { LineChart } from "react-native-chart-kit";
-import { StackNavigationProp } from '@react-navigation/stack';
+import { LineChart } from "react-native-gifted-charts";
+import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
-type Homeprop = StackNavigationProp<StackParamList, 'MainScreen'>;
+import CustomD from "../../../Components/Practice";
+
+type Homeprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
   navigation: Homeprop;
 }
+const Flat = ["Today", "Week", "Month", "Year"];
+const Month = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+const date = new Date();
+const MonthIndex = date.getMonth();
+const lineData = [
+  { value: 20 },
+  { value: 45 },
+  { value: 28 },
+  { value: 80 },
+  { value: 99 },
+  { value: 43 },
+  { value: 65 },
+  { value: 98 },
+  { value: 98 },
+  { value: 34 },
+  { value: 78 },
+  { value: 78 },
+  { value: 178 },
+  { value: 0 },
+];
+export default function Home({ navigation }: Props) {
+  const [month, showmonth] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
 
-const data = {
-    labels: ["January", "February", "March", "April", "May", "June"],
-    datasets: [
-    {
-    data: [20, 45, 28, 80, 99, 43,45,79,90.89,40,40,40,46,66,34,5,43,76,20,20,20,20],
-    color: () => `rgba(90, 9, 252, 0.93)`, // optional
-    strokeWidth: 4// optional
-    }
-    ],
-    }
-export default function Home({navigation}:Props)
-{
-    const [month,showmonth]=useState(false)
-    return(
-        <SafeAreaProvider>
-            <SafeAreaView style={styles.container}>
-            <LinearGradient colors={["rgba(255, 246, 229, 1)", "rgba(230, 220, 200, 0.09)"]} style={styles.homeHeadgradient}>
-                <TouchableOpacity style={styles.homeMonth} onPress={()=>showmonth(!month)} >
-                    <Image style={styles.homeArrow} source={(require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrowDown.png"))}/>
-                    <Text>October</Text>
-                </TouchableOpacity>
-              <View style={{padding:10}}>
-              <Text style={styles.username}>Account Balance</Text>
-              <Text style={styles.heading}>$94500</Text>
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <LinearGradient colors={["rgb(229, 255, 243)", "rgba(205, 230, 200, 0.09)"]} style={styles.homeHeadgradient}>
+          <CustomD
+            name={Month[MonthIndex]}
+            data={Month}
+            styleButton={styles.homeMonth}
+            styleItem={styles.dropdownItems}
+            styleArrow={styles.homeArrow}
+          />
+          <View style={{ padding: 10 }}>
+            <Text style={styles.username}>Account Balance</Text>
+            <Text style={styles.heading}>$94500</Text>
+          </View>
+          <View style={styles.homeHeadView}>
+            <TouchableOpacity
+              style={[styles.headButton, { backgroundColor: "rgba(0, 168, 107, 1)" }]}
+              onPress={() => navigation.navigate("Income")}
+            >
+              <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Income.png")} />
+              <View style={{ padding: 5 }}>
+                <Text style={styles.homeTitle}>Income</Text>
+                <Text style={styles.budgetMonthtext}>$0.00</Text>
               </View>
-            <View style={styles.homeHeadView}>
-                <TouchableOpacity style={[styles.headButton,{backgroundColor:'rgba(0, 168, 107, 1)'}]} onPress={()=>navigation.navigate("Income")}>
-                    <Image source={(require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Income.png"))}/>
-                   <View style={{padding:5}}>
-                   <Text style={styles.homeTitle}>Income</Text>
-                   <Text style={styles.budgetMonthtext}>$0.00</Text>
-                   </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}
+              onPress={() => navigation.navigate("Expense")}
+            >
+              <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Expense.png")} />
+              <View style={{ padding: 5 }}>
+                <Text style={styles.homeTitle}>Expense</Text>
+                <Text style={styles.budgetMonthtext}>$0.00</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+        {month && (
+          <View style={{ position: "absolute", top: Platform.OS === "ios" ? "10.5%" : "9.5%", width: "100%" }}>
+            <Months />
+          </View>
+        )}
+        <View style={styles.linechart}>
+          <Text style={[styles.notiTitle, { margin: 15 }]}>Spend Frequency</Text>
+          <LineChart
+            data={lineData}
+            width={Dimensions.get("window").width}
+            adjustToWidth={true}
+            disableScroll
+            yAxisLabelWidth={0}
+            height={Dimensions.get("window").height * 0.2}
+            startFillColor="rgb(78, 144, 114)" // Start gradient color
+            endFillColor="white"
+            initialSpacing={0}
+            endSpacing={0}
+            color="rgb(42, 124, 118)"
+            thickness={8}
+            hideDataPoints
+            hideRules
+            showVerticalLines={false}
+            areaChart
+            hideYAxisText
+            hideAxesAndRules
+            focusEnabled={false}
+            curved
+          />
+        </View>
+        <View style={styles.flat}>
+          <FlatList
+            data={Flat}
+            horizontal
+            scrollEnabled={false}
+            renderItem={({ item, index }) => {
+              const isSelected = selectedIndex === index;
+              return (
+                <TouchableOpacity
+                  style={[styles.flatView, { backgroundColor: isSelected ? "rgba(220, 234, 233, 0.6)" : "white" }]}
+                  onPress={() => setSelectedIndex(index)}
+                >
+                  <Text
+                    style={[styles.itemText, { color: isSelected ? "rgb(42, 124, 118)" : "rgba(145, 145, 159, 1)" }]}
+                  >
+                    {item}
+                  </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.headButton,{backgroundColor:'rgba(253, 60, 74, 1)'}]}  onPress={()=>navigation.navigate("Expense")}>
-                <Image source={(require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Expense.png"))}/>
-                 <View style={{padding:5}}>
-                 <Text style={styles.homeTitle}>Expense</Text>
-                 <Text style={styles.budgetMonthtext}>$0.00</Text>
-                 </View>
-                </TouchableOpacity>
-            </View>
-            </LinearGradient>
-            {month&&(
-                <View style={{position:'absolute',top:Platform.OS==="ios"?"10.5%":'9.5%',width:'100%'}}>
-                    <Months/>
-                </View>
-            )}
-            <View style={styles.linechart}>
-                <Text>Spend Frequency</Text>
-                <LineChart data={data}
-width={Dimensions.get("window").width} // Dynamic width
-height={220}
-withDots={false}
-withInnerLines={false}
-withOuterLines={false}
-withVerticalLabels={false}
-withHorizontalLabels={false}
-fromZero={true}
-yAxisInterval={1}
-chartConfig={{
-backgroundGradientFrom: "white",
-backgroundGradientFromOpacity: 0,
-backgroundGradientTo: "white",
-backgroundGradientToOpacity: 0.5,
-color: (opacity = 1) => `rgba(153, 102, 255, ${opacity})`,
-useShadowColorFromDataset: false // optional
-}}
-bezier
-style={{
-borderRadius: 16,
-marginLeft:0,
-marginRight:0,
-paddingLeft:0,paddingRight:0
-}}/>
-            </View>
-            </SafeAreaView>
-        </SafeAreaProvider>
-    )
+              );
+            }}
+          ></FlatList>
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
 }
