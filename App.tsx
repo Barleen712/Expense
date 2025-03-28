@@ -18,7 +18,7 @@ import Months from "./Components/Month";
 import Expense from "./Screens/DrawerScreens/Home/Expense";
 import Income from "./Screens/DrawerScreens/Home/Income";
 import SelectAttachment from "./Screens/DrawerScreens/Home/Attachment";
-import CustomD from "./Components/Practice";
+import Transfer from "./Screens/DrawerScreens/Home/Transfer";
 export default function App() {
   return (
     <NavigationContainer>
