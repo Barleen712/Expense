@@ -19,6 +19,8 @@ import Expense from "./Screens/DrawerScreens/Home/Expense";
 import Income from "./Screens/DrawerScreens/Home/Income";
 import SelectAttachment from "./Screens/DrawerScreens/Home/Attachment";
 import Transfer from "./Screens/DrawerScreens/Home/Transfer";
+import { FinancialReportQuote } from "./Screens/DrawerScreens/Transaction/FinancialReport/Report";
+import { FinancialReportBudget } from "./Screens/DrawerScreens/Transaction/FinancialReport/Report";
 export default function App() {
   return (
     <NavigationContainer>

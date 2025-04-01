@@ -25,35 +25,44 @@ import Header from "../Components/Header";
 import CreateBudget from "../Screens/DrawerScreens/Budget/CreateBudget";
 import Expense from "../Screens/DrawerScreens/Home/Expense";
 import Income from "../Screens/DrawerScreens/Home/Income";
+import FinancialReportExpense, {
+  FinancialReportBudget,
+  FinancialReportIncome,
+  FinancialReportQuote,
+} from "../Screens/DrawerScreens/Transaction/FinancialReport/Report";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
   return (
-    <Stack.Navigator initialRouteName="Home" screenOptions={{headerShown:false}}>
+    <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={Onboarding}></Stack.Screen>
       <Stack.Screen name="Login" component={Login}></Stack.Screen>
       <Stack.Screen name="ForgotPassword" component={ForgotPass}></Stack.Screen>
       <Stack.Screen name="EmailSent" component={EmailSent}></Stack.Screen>
       <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
       <Stack.Screen name="GetStarted" component={Getstarted}></Stack.Screen>
-      <Stack.Screen name="Setpin" component={Setpin} ></Stack.Screen>
+      <Stack.Screen name="Setpin" component={Setpin}></Stack.Screen>
       <Stack.Screen name="Setpin1" component={Setpin02}></Stack.Screen>
       <Stack.Screen name="SetupAccount" component={SetupAccount}></Stack.Screen>
       <Stack.Screen name="AddNewAccount" component={AddNewAccount}></Stack.Screen>
       <Stack.Screen name="AllSet" component={Success}></Stack.Screen>
       <Stack.Screen name="MainScreen" component={Tabscreens}></Stack.Screen>
-      <Stack.Screen name="Settings" component={Settings}/>
-      <Stack.Screen name="Account" component={Account}/>
-      <Stack.Screen name="Export" component={Export}/>
+      <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="Account" component={Account} />
+      <Stack.Screen name="Export" component={Export} />
       <Stack.Screen name="Export1" component={Export1}></Stack.Screen>
-      <Stack.Screen name="Currency" component={Currency}/>
-      <Stack.Screen name="Theme" component={Theme}/>
-      <Stack.Screen name="Security" component={Security}/>
-      <Stack.Screen name="Language" component={Language}/>
-      <Stack.Screen name="Notification" component={Notification}/>
-      <Stack.Screen name="CreateBudget" component={CreateBudget}/>
-      <Stack.Screen name="Expense" component={Expense}/>
-      <Stack.Screen name="Income" component={Income}/>
+      <Stack.Screen name="Currency" component={Currency} />
+      <Stack.Screen name="Theme" component={Theme} />
+      <Stack.Screen name="Security" component={Security} />
+      <Stack.Screen name="Language" component={Language} />
+      <Stack.Screen name="Notification" component={Notification} />
+      <Stack.Screen name="CreateBudget" component={CreateBudget} />
+      <Stack.Screen name="Expense" component={Expense} />
+      <Stack.Screen name="Income" component={Income} />
+      <Stack.Screen name="FinancialReportExpense" component={FinancialReportExpense} />
+      <Stack.Screen name="FinancialReportIncome" component={FinancialReportIncome} />
+      <Stack.Screen name="FinancialReportBudget" component={FinancialReportBudget} />
+      <Stack.Screen name="FinancialReportQuote" component={FinancialReportQuote} />
     </Stack.Navigator>
   );
 }

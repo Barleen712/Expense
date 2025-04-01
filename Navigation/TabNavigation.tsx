@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../Screens/DrawerScreens/Home/Home";
-import Transaction from "../Screens/DrawerScreens/Transaction";
+import Transaction from "../Screens/DrawerScreens/Transaction/Transaction";
 import Budget from "../Screens/DrawerScreens/Budget/Budget";
 import Profile from "../Screens/DrawerScreens/Profile/Profile";
 import { Ionicons } from "@expo/vector-icons";
