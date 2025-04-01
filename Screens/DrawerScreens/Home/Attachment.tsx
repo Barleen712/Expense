@@ -2,17 +2,13 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Image, StyleSheet, Alert } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 
-const SelectImageWithDocumentPicker = () => {
-  const [image, setImage] = useState(null);
-
-  // Pick Image using Document Picker
+const SelectImageWithDocumentPicker = ({ toggle, setAttach, image, setImage, setclose }) => {
   const pickImageFromGallery = async () => {
     try {
-      // Open document picker with image type filter
       const result = await DocumentPicker.getDocumentAsync({
-        type: "image/*", // Allow only image files
-        multiple: false, // To allow single file selection
-        copyToCacheDirectory: true, // Copy file to cache for faster access
+        type: "image/*",
+        multiple: false,
+        copyToCacheDirectory: true,
       });
 
       if (!result.canceled) {
@@ -21,25 +17,34 @@ const SelectImageWithDocumentPicker = () => {
       } else {
         console.log("User cancelled image selection.");
       }
+
+      setAttach();
+      setclose();
+      toggle();
     } catch (err) {
       console.error("Error while picking image:", err);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={pickImageFromGallery}>
-        <Text style={styles.buttonText}>Select Image from Gallery</Text>
+    <TouchableOpacity
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-evenly",
+        width: "100%",
+      }}
+    >
+      <TouchableOpacity>
+        <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Camera.png")}></Image>
       </TouchableOpacity>
-
-      {/* Show Selected Image */}
-      {image && (
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: image }} style={styles.image} />
-          <Text style={styles.imageText}>✅ Image Selected</Text>
-        </View>
-      )}
-    </View>
+      <TouchableOpacity onPress={pickImageFromGallery}>
+        <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Image.png")}></Image>
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Document.png")}></Image>
+      </TouchableOpacity>
+    </TouchableOpacity>
   );
 };
 
