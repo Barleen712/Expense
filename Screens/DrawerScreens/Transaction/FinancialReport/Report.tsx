@@ -113,7 +113,7 @@ export function FinancialReportQuote({ navigation }: Props) {
         title="See the full detail"
         bg="rgba(165, 168, 130, 0.5)"
         color="black"
-        press={() => navigation.goBack()}
+        press={() => navigation.replace("FinancialReport")}
       />
     </View>
   );

@@ -67,26 +67,20 @@ export default function Home({ navigation }: Props) {
             <Text style={styles.heading}>$94500</Text>
           </View>
           <View style={styles.homeHeadView}>
-            <TouchableOpacity
-              style={[styles.headButton, { backgroundColor: "rgba(0, 168, 107, 1)" }]}
-              onPress={() => navigation.navigate("Income")}
-            >
+            <View style={[styles.headButton, { backgroundColor: "rgba(0, 168, 107, 1)" }]}>
               <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Income.png")} />
               <View style={{ padding: 5 }}>
                 <Text style={styles.homeTitle}>Income</Text>
                 <Text style={styles.budgetMonthtext}>$0.00</Text>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}
-              onPress={() => navigation.navigate("Expense")}
-            >
+            </View>
+            <View style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}>
               <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Expense.png")} />
               <View style={{ padding: 5 }}>
                 <Text style={styles.homeTitle}>Expense</Text>
                 <Text style={styles.budgetMonthtext}>$0.00</Text>
               </View>
-            </TouchableOpacity>
+            </View>
           </View>
         </LinearGradient>
         {month && (

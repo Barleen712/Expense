@@ -25,11 +25,13 @@ import Header from "../Components/Header";
 import CreateBudget from "../Screens/DrawerScreens/Budget/CreateBudget";
 import Expense from "../Screens/DrawerScreens/Home/Expense";
 import Income from "../Screens/DrawerScreens/Home/Income";
+import Transfer from "../Screens/DrawerScreens/Home/Transfer";
 import FinancialReportExpense, {
   FinancialReportBudget,
   FinancialReportIncome,
   FinancialReportQuote,
 } from "../Screens/DrawerScreens/Transaction/FinancialReport/Report";
+import FinancialReport from "../Screens/DrawerScreens/Transaction/FinancialReport/FinancialReport";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
@@ -59,10 +61,12 @@ export default function Screens() {
       <Stack.Screen name="CreateBudget" component={CreateBudget} />
       <Stack.Screen name="Expense" component={Expense} />
       <Stack.Screen name="Income" component={Income} />
+      <Stack.Screen name="Transfer" component={Transfer} />
       <Stack.Screen name="FinancialReportExpense" component={FinancialReportExpense} />
       <Stack.Screen name="FinancialReportIncome" component={FinancialReportIncome} />
       <Stack.Screen name="FinancialReportBudget" component={FinancialReportBudget} />
       <Stack.Screen name="FinancialReportQuote" component={FinancialReportQuote} />
+      <Stack.Screen name="FinancialReport" component={FinancialReport} />
     </Stack.Navigator>
   );
 }

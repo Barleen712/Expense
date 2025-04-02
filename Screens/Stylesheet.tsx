@@ -641,9 +641,10 @@ const styles = StyleSheet.create({
     paddingRight: 5,
   },
   transactionHead: {
-    flex: 0.05,
+    flex: 0.08,
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     margin: 10,
   },
   sortImage: {
@@ -740,6 +741,44 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
+  },
+  reportGraph: {
+    flexDirection: "row",
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "black",
+    height: "80%",
+    width: "24%",
+  },
+  lineGraph: {
+    flex: 0.5,
+    width: "100%",
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ExpenseIncomeSelect: {
+    flex: 0.1,
+    marginTop: 50,
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  SelectOptions: {
+    borderRadius: 35,
+
+    flexDirection: "row",
+    height: "100%",
+    width: "90%",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(220, 234, 233, 0.6)",
+  },
+  ExpenseSelect: {
+    width: "50%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 export default styles;
