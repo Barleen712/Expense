@@ -5,8 +5,6 @@ import Setpin from "../Screens/Onboarding/SetupPin01";
 import SignUp from "../Screens/Onboarding/Signup";
 import ForgotPass from "../Screens/Onboarding/ForgotPassword";
 import EmailSent from "../Screens/Onboarding/EmailSent";
-import SetupAccount from "../Screens/Onboarding/SetupAccount";
-import AddNewAccount from "../Screens/Onboarding/AddNewAccount";
 import Success from "../Screens/Onboarding/SignUp_success";
 import Setpin02 from "../Screens/Onboarding/SetupPin02";
 import Getstarted from "../Screens/Onboarding/GetStarted";
@@ -45,8 +43,6 @@ export default function Screens() {
       <Stack.Screen name="GetStarted" component={Getstarted}></Stack.Screen>
       <Stack.Screen name="Setpin" component={Setpin}></Stack.Screen>
       <Stack.Screen name="Setpin1" component={Setpin02}></Stack.Screen>
-      <Stack.Screen name="SetupAccount" component={SetupAccount}></Stack.Screen>
-      <Stack.Screen name="AddNewAccount" component={AddNewAccount}></Stack.Screen>
       <Stack.Screen name="AllSet" component={Success}></Stack.Screen>
       <Stack.Screen name="MainScreen" component={Tabscreens}></Stack.Screen>
       <Stack.Screen name="Settings" component={Settings} />

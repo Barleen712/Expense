@@ -1,5 +1,6 @@
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, Dimensions } from "react-native";
 import Budget from "./DrawerScreens/Budget/Budget";
+const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   setup: {
     flex: 0.2,
@@ -464,7 +465,7 @@ const styles = StyleSheet.create({
   },
   budgetButton: {
     position: "absolute",
-    bottom: "5%",
+    bottom: "20%",
     width: "100%",
     alignItems: "center",
   },
@@ -768,8 +769,8 @@ const styles = StyleSheet.create({
     borderRadius: 35,
 
     flexDirection: "row",
-    height: "100%",
-    width: "90%",
+    height: "80%",
+    width: "80%",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(220, 234, 233, 0.6)",
@@ -779,6 +780,76 @@ const styles = StyleSheet.create({
     height: "100%",
     alignItems: "center",
     justifyContent: "center",
+  },
+  progressBarContainer: {
+    height: 5,
+    width: "100%",
+    backgroundColor: "red",
+    position: "absolute",
+    top: 40,
+    left: 0,
+    margin: 40,
+  },
+  progressBar: {
+    height: "100%",
+    backgroundColor: "#fff",
+  },
+  filter: {
+    flex: 0.1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "90%",
+    marginTop: 20,
+  },
+  reset: {
+    backgroundColor: "rgba(220, 234, 233, 0.6)",
+    width: "18%",
+    height: "70%",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "grey",
+    borderRadius: 30,
+  },
+  FilterOptions: {
+    flex: 0.2,
+    width: "90%",
+  },
+  flatListContainer: {
+    justifyContent: "center",
+    height: "90%",
+  },
+  filterButton: {
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#D1D1D1",
+    height: "100%",
+    alignItems: "center",
+    padding: 10,
+    marginRight: 10,
+  },
+  filterButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#555",
+    width: Platform.OS === "ios" ? 70 : 78,
+    textAlign: "center",
+  },
+  FilterCategory: {
+    flex: 0.35,
+    width: "90%",
+    marginBottom: 20,
+  },
+  Apply: {
+    width: "100%",
+    alignItems: "center",
+  },
+  DetailHead: {
+    flex: 0.3,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    alignItems: "center",
   },
 });
 export default styles;

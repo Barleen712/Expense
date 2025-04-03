@@ -4,17 +4,16 @@ import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import styles from "../Stylesheet";
 import Keypad from "../../Components/Keypad";
 import Pin from "../../Components/Pin";
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
-type PinProp = StackNavigationProp<StackParamList, 'Setpin1'>;
+type PinProp = StackNavigationProp<StackParamList, "Setpin1">;
 
 interface Props {
-  navigation:PinProp;
+  navigation: PinProp;
 }
-export default function Setpin02({navigation}:Props) {
-  function handlenext()
-  {
-   navigation.navigate("SetupAccount")
+export default function Setpin02({ navigation }: Props) {
+  function handlenext() {
+    navigation.navigate("AllSet");
   }
   return (
     <SafeAreaProvider>
@@ -22,9 +21,9 @@ export default function Setpin02({navigation}:Props) {
         <View style={styles.setup}>
           <Text style={styles.setuptext}>Ok. Re type your PIN again.</Text>
         </View>
-        <Pin/>
+        <Pin />
         <View style={styles.keypad}>
-         <Keypad change={handlenext}/>
+          <Keypad change={handlenext} />
         </View>
       </SafeAreaView>
     </SafeAreaProvider>

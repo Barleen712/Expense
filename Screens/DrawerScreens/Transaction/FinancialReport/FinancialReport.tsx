@@ -55,7 +55,7 @@ export default function FinancialReport({ navigation }: Props) {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <Header title="Financial Report" press={() => navigation.goBack()} />
-        <View style={[styles.transactionHead, { margin: 20 }]}>
+        <View style={[styles.transactionHead]}>
           <CustomD
             name="Month"
             data={Month}
@@ -85,8 +85,8 @@ export default function FinancialReport({ navigation }: Props) {
           </TouchableOpacity>
         </View>
         {line && (
-          <View style={styles.linechart}>
-            <Text style={[styles.typeText, { margin: 10, color: "black" }]}>$332</Text>
+          <View style={[styles.linechart]}>
+            <Text style={[styles.typeText, { margin: 5, paddingLeft: 10, color: "black" }]}>$332</Text>
             <LineChart
               data={lineData}
               width={Dimensions.get("window").width}
@@ -125,7 +125,7 @@ export default function FinancialReport({ navigation }: Props) {
               }}
               style={[
                 styles.ExpenseSelect,
-                { backgroundColor: Expense ? "rgba(42, 124, 118, 1)" : "", borderRadius: 35 },
+                { backgroundColor: Expense ? "rgba(42, 124, 118, 1)" : "rgba(220, 234, 233, 0.6)", borderRadius: 35 },
               ]}
             >
               <Text style={[styles.setuptext, { color: Expense ? "white" : "rgba(42, 124, 118, 1)" }]}>Expense</Text>
@@ -137,7 +137,7 @@ export default function FinancialReport({ navigation }: Props) {
               }}
               style={[
                 styles.ExpenseSelect,
-                { backgroundColor: Income ? "rgba(42, 124, 118, 1)" : "", borderRadius: 35 },
+                { backgroundColor: Income ? "rgba(42, 124, 118, 1)" : "rgba(220, 234, 233, 0.6)", borderRadius: 35 },
               ]}
             >
               <Text style={[styles.setuptext, { color: Income ? "white" : "rgba(42, 124, 118, 1)" }]}>Income</Text>

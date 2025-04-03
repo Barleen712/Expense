@@ -13,10 +13,6 @@ type BottomTabprop = StackNavigationProp<StackParamList, "MainScreen">;
 interface Props {
   navigation: BottomTabprop;
 }
-interface TabBarProps {
-  routeName: string;
-  selectedTab: string;
-}
 export default function Tabscreens({ navigation }: Props) {
   const _renderIcon = (routeName: string, selectedTab: string): JSX.Element => {
     let icon = "";
@@ -40,8 +36,12 @@ export default function Tabscreens({ navigation }: Props) {
 
     return <Ionicons name={icon} size={25} color={routeName === selectedTab ? "rgb(42, 124, 118)" : "gray"} />;
   };
-
-  const renderTabBar = ({ routeName, selectedTab, navigate }) => (
+  interface renderCircle {
+    routeName: string;
+    selectedTab: string;
+    navigate: any;
+  }
+  const renderTabBar = ({ routeName, selectedTab, navigate }: renderCircle) => (
     <TouchableOpacity onPress={() => navigate(routeName)} style={styles.tabbarItem}>
       {_renderIcon(routeName, selectedTab)}
       <Text style={[styles.tabText, { color: routeName === selectedTab ? "rgb(42, 124, 118)" : "gray" }]}>

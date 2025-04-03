@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { View, Text, Dimensions } from "react-native";
 import styles from "../../../Stylesheet";
-import FaceCard from "./Structure";
+import FaceCard from "./StructureReport";
 import { CustomButton } from "../../../../Components/CustomButton";
 import { ProgressBar, MD3Colors } from "react-native-paper";
 const width = Dimensions.get("window").width;

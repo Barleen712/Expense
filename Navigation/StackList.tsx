@@ -8,8 +8,6 @@ type StackParamList = {
   GetStarted: undefined;
   Setpin: undefined;
   Setpin1: undefined;
-  SetupAccount: undefined;
-  AddNewAccount: undefined;
   AllSet: undefined;
   MainScreen: undefined;
   Settings: undefined;

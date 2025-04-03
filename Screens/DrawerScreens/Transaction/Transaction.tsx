@@ -1,7 +1,17 @@
-import React from "react";
-import { View, Text, Image, Touchable, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  Touchable,
+  TouchableOpacity,
+  Modal,
+  FlatList,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import CustomD from "../../../Components/Practice";
+import { CustomButton } from "../../../Components/CustomButton";
 import styles from "../../Stylesheet";
 const Month = [
   "January",
@@ -17,6 +27,8 @@ const Month = [
   "November",
   "December",
 ];
+const FilterBy = ["Income", "Expense", "Transfer"];
+const SortBy = ["Highest", "Lowest", "Newest", "Oldest"];
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 
@@ -26,6 +38,10 @@ interface Props {
   navigation: Transactionprop;
 }
 export default function Transaction({ navigation }: Props) {
+  const [modalVisible, setModalVisible] = useState(false);
+  function toggleModal() {
+    setModalVisible(!modalVisible);
+  }
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -37,7 +53,7 @@ export default function Transaction({ navigation }: Props) {
             styleItem={styles.dropdownItems}
             styleArrow={styles.homeArrow}
           />
-          <TouchableOpacity>
+          <TouchableOpacity onPress={toggleModal}>
             <Image
               source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/sort.png")}
               style={styles.sortImage}
@@ -56,6 +72,59 @@ export default function Transaction({ navigation }: Props) {
             />
           </TouchableOpacity>
         </View>
+        <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
+          <TouchableWithoutFeedback onPress={toggleModal}>
+            <View style={styles.modalOverlay}>
+              <View style={[styles.modalContainer, { height: "65%" }]}>
+                <View style={styles.filter}>
+                  <Text style={styles.notiTitle}>Filter Transaction</Text>
+                  <TouchableOpacity style={styles.reset}>
+                    <Text style={[styles.homeTitle, { color: "rgb(42, 124, 118)" }]}>Reset</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.FilterOptions}>
+                  <Text style={styles.notiTitle}>Filter By</Text>
+                  <FlatList
+                    numColumns={3}
+                    contentContainerStyle={styles.flatListContainer}
+                    data={FilterBy}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity style={styles.filterButton}>
+                        <Text style={styles.filterButtonText}>{item}</Text>
+                      </TouchableOpacity>
+                    )}
+                  />
+                </View>
+                <View style={[styles.FilterOptions, { flex: 0.35 }]}>
+                  <Text style={styles.notiTitle}>Sort By</Text>
+                  <FlatList
+                    numColumns={3}
+                    contentContainerStyle={styles.flatListContainer}
+                    data={SortBy}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity style={styles.filterButton}>
+                        <Text style={styles.filterButtonText}>{item}</Text>
+                      </TouchableOpacity>
+                    )}
+                  />
+                </View>
+                <View style={styles.FilterCategory}>
+                  <Text style={styles.notiTitle}>Category</Text>
+                  <TouchableOpacity style={[styles.settingsOptions, { marginTop: 20 }]}>
+                    <Text style={styles.settingtitle}>Choose Category</Text>
+                    <Image
+                      style={{ position: "absolute", right: "1%" }}
+                      source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
+                    />
+                  </TouchableOpacity>
+                  <View style={styles.Apply}>
+                    <CustomButton title="Apply" bg="rgb(42, 124, 118)" color="white" />
+                  </View>
+                </View>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
       </SafeAreaView>
     </SafeAreaProvider>
   );
