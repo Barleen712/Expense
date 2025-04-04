@@ -15,6 +15,7 @@
     "@react-native-picker/picker": "2.9.0",
     "@react-navigation/bottom-tabs": "^7.3.2",
     "@react-navigation/stack": "^7.2.2",
+    "@reduxjs/toolkit": "^2.6.1",
     "expo": "~52.0.40",
     "expo-camera": "~16.0.18",
     "expo-document-picker": "~13.0.3",
@@ -42,7 +43,8 @@
     "react-native-select-dropdown": "^4.0.1",
     "react-native-slider-text": "^0.0.10",
     "react-native-svg": "^15.11.2",
-    "react-native-vector-icons": "^10.2.0"
+    "react-native-vector-icons": "^10.2.0",
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

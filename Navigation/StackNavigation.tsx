@@ -19,7 +19,9 @@ import Theme from "../Screens/DrawerScreens/Profile/Theme";
 import Security from "../Screens/DrawerScreens/Profile/Security";
 import Language from "../Screens/DrawerScreens/Profile/Language";
 import Notification from "../Screens/DrawerScreens/Profile/Notification";
-import Header from "../Components/Header";
+import DetailTransaction_Expense from "../Screens/DrawerScreens/Transaction/FinancialReport/DetailTransaction";
+import { DetailTransaction_Income } from "../Screens/DrawerScreens/Transaction/FinancialReport/DetailTransaction";
+import { DetailTransaction_Transfer } from "../Screens/DrawerScreens/Transaction/FinancialReport/DetailTransaction";
 import CreateBudget from "../Screens/DrawerScreens/Budget/CreateBudget";
 import Expense from "../Screens/DrawerScreens/Home/Expense";
 import Income from "../Screens/DrawerScreens/Home/Income";
@@ -63,6 +65,9 @@ export default function Screens() {
       <Stack.Screen name="FinancialReportBudget" component={FinancialReportBudget} />
       <Stack.Screen name="FinancialReportQuote" component={FinancialReportQuote} />
       <Stack.Screen name="FinancialReport" component={FinancialReport} />
+      <Stack.Screen name="DetailTransaction_Expense" component={DetailTransaction_Expense} />
+      <Stack.Screen name="DetailTransaction_Income" component={DetailTransaction_Income} />
+      <Stack.Screen name="DetailTransaction_Transfer" component={DetailTransaction_Transfer} />
     </Stack.Navigator>
   );
 }

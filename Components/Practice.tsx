@@ -1,19 +1,21 @@
 import SelectDropdown from "react-native-select-dropdown";
 import { View, Text, Image } from "react-native";
 import styles from "../Screens/Stylesheet";
+import { on } from "events";
 interface dropdown {
   data: Array<string>;
   name: string;
   styleButton: object;
   styleItem: object;
   styleArrow: object;
+  onSelectItem: (selectedItem: string, index: number) => void;
 }
-export default function CustomD({ name, data, styleButton, styleItem, styleArrow }: dropdown) {
+export default function CustomD({ name, data, styleButton, styleItem, styleArrow, onSelectItem }: dropdown) {
   return (
     <SelectDropdown
       data={data}
       onSelect={(selectedItem, index) => {
-        console.log(selectedItem, index);
+        onSelectItem(selectedItem, index);
       }}
       renderButton={(selectedItem) => {
         return (

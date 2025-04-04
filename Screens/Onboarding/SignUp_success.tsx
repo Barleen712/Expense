@@ -1,19 +1,18 @@
-import React,{useEffect}from "react";
+import React, { useEffect } from "react";
 import { Image, View, Text } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import styles from "../Stylesheet";
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
-type AllSetProp = StackNavigationProp<StackParamList, 'AllSet'>;
+type AllSetProp = StackNavigationProp<StackParamList, "AllSet">;
 
 interface Props {
   navigation: AllSetProp;
 }
-export default function Success({navigation}:Props) {
+export default function Success({ navigation }: Props) {
   useEffect(() => {
-
     const timer = setTimeout(() => {
-      navigation.navigate('MainScreen');
+      navigation.replace("MainScreen");
     }, 2000);
     return () => clearTimeout(timer);
   }, [navigation]);

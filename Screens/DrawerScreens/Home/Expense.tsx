@@ -13,6 +13,7 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Keyboard,
+  TextInput,
 } from "react-native";
 import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
@@ -28,6 +29,8 @@ import Input from "../../../Components/CustomTextInput";
 import CustomD from "../../../Components/Practice";
 import SelectImageWithDocumentPicker from "./Attachment";
 import { ScrollView } from "react-native-gesture-handler";
+import { useDispatch } from "react-redux";
+import { addValue, total } from "../../../Slice/IncomeSlice";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -49,6 +52,10 @@ export default function Expense({ navigation }: Props) {
   const [close, setclose] = useState(false);
   const [document, setDocument] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
+  const [Expenses, setExpenses] = useState<string>("$0");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedWallet, setSelectedWallet] = useState("");
+  const [Description, setDescription] = useState("");
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -64,7 +71,30 @@ export default function Expense({ navigation }: Props) {
       });
     }
   };
-
+  const handleExpenseChange = (text: string) => {
+    const numericValue = text.replace(/[^0-9.]/g, "");
+    setExpenses(`$${numericValue}`);
+  };
+  const handleFocus = () => {
+    if (Expenses === "" || Expenses === "$0" || Expenses === "$") {
+      setExpenses("$");
+    }
+  };
+  const dispatch = useDispatch();
+  function add() {
+    const numericIncome = parseFloat(Expenses.replace("$", "") || "0");
+    dispatch(
+      addValue({
+        amount: numericIncome,
+        description: Description,
+        category: selectedCategory,
+        wallet: selectedWallet,
+        moneyCategory: "Expense",
+      })
+    );
+    dispatch(total());
+    navigation.goBack();
+  }
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -79,7 +109,15 @@ export default function Expense({ navigation }: Props) {
               <View style={[styles.add, { backgroundColor: "rgba(253, 60, 74, 1)" }]}>
                 <View style={styles.balanceView}>
                   <Text style={styles.balance}>How much ?</Text>
-                  <Text style={styles.amount}>$0</Text>
+                  <TouchableOpacity activeOpacity={1}>
+                    <TextInput
+                      value={Expenses}
+                      keyboardType="numeric"
+                      onChangeText={handleExpenseChange}
+                      style={styles.amount}
+                      onFocus={handleFocus}
+                    ></TextInput>
+                  </TouchableOpacity>
                 </View>
                 <View style={[styles.selection]}>
                   <CustomD
@@ -88,14 +126,23 @@ export default function Expense({ navigation }: Props) {
                     styleButton={styles.textinput}
                     styleItem={styles.dropdownItems}
                     styleArrow={styles.arrowDown}
+                    onSelectItem={(item) => setSelectedCategory(item)}
                   />
-                  <Input title="Description" color="rgb(56, 88, 85)" css={styles.textinput} isPass={false} />
+                  <Input
+                    title="Description"
+                    color="rgb(56, 88, 85)"
+                    css={styles.textinput}
+                    isPass={false}
+                    name={Description}
+                    onchange={setDescription}
+                  />
                   <CustomD
                     name="Wallet"
                     data={wallet}
                     styleButton={styles.textinput}
                     styleItem={styles.dropdownItems}
                     styleArrow={styles.arrowDown}
+                    onSelectItem={(item) => setSelectedWallet(item)}
                   />
                   {showAttach && (
                     <TouchableOpacity
@@ -155,7 +202,7 @@ export default function Expense({ navigation }: Props) {
                     title="Continue"
                     bg="rgba(205, 153, 141, 0.13)"
                     color="rgba(253, 60, 74, 1)"
-                    press={() => navigation.goBack()}
+                    press={add}
                   />
                 </View>
               </View>

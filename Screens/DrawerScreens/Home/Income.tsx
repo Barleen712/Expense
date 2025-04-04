@@ -14,6 +14,7 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   ScrollView,
+  TextInput,
 } from "react-native";
 import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
@@ -27,13 +28,16 @@ import Header from "../../../Components/Header";
 import Entypo from "@expo/vector-icons/Entypo";
 import Input from "../../../Components/CustomTextInput";
 import CustomD from "../../../Components/Practice";
+import { useSelector, useDispatch } from "react-redux";
 import SelectImageWithDocumentPicker from "./Attachment";
+import { addValue, total } from "../../../Slice/IncomeSlice";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
   navigation: IncomeProp;
 }
+
 const category = ["Shopping", "Food", "Entertainment", "Savings", "Transportation", "Bills", "Miscellaneous"];
 const wallet = ["PayPal", "Google Pay", "Paytm", "PhonePe", "Apple Pay", "Razorpay", "Mobikwik"];
 export default function Income({ navigation }: Props) {
@@ -44,12 +48,20 @@ export default function Income({ navigation }: Props) {
   const [close, setclose] = useState(false);
   const [document, setDocument] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
+  const [Income, setIncome] = useState<string>("$0");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedWallet, setSelectedWallet] = useState("");
+  const [Description, setDescription] = useState("");
   const modal = [
     require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Camera.png"),
     require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Image.png"),
     require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Document.png"),
   ];
-
+  const handleFocus = () => {
+    if (Income === "" || Income === "$0" || Income === "$") {
+      setIncome("$");
+    }
+  };
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -65,6 +77,25 @@ export default function Income({ navigation }: Props) {
       });
     }
   };
+  const handleIncomeChange = (text: string) => {
+    const numericValue = text.replace(/[^0-9.]/g, "");
+    setIncome(`$${numericValue}`);
+  };
+  const dispatch = useDispatch();
+  function add() {
+    const numericIncome = parseFloat(Income.replace("$", "") || "0");
+    dispatch(
+      addValue({
+        amount: numericIncome,
+        description: Description,
+        category: selectedCategory,
+        wallet: selectedWallet,
+        moneyCategory: "Income",
+      })
+    );
+    dispatch(total());
+    navigation.goBack();
+  }
 
   return (
     <SafeAreaProvider>
@@ -80,7 +111,15 @@ export default function Income({ navigation }: Props) {
               <View style={[styles.add, { backgroundColor: "rgba(0, 168, 107, 1))" }]}>
                 <View style={styles.balanceView}>
                   <Text style={styles.balance}>How much ?</Text>
-                  <Text style={styles.amount}>$0</Text>
+                  <TouchableOpacity activeOpacity={1}>
+                    <TextInput
+                      value={Income}
+                      keyboardType="numeric"
+                      onChangeText={handleIncomeChange}
+                      style={styles.amount}
+                      onFocus={handleFocus}
+                    ></TextInput>
+                  </TouchableOpacity>
                 </View>
                 <View style={[styles.selection]}>
                   <CustomD
@@ -89,14 +128,23 @@ export default function Income({ navigation }: Props) {
                     styleButton={styles.textinput}
                     styleItem={styles.dropdownItems}
                     styleArrow={styles.arrowDown}
+                    onSelectItem={(item) => setSelectedCategory(item)}
                   />
-                  <Input title="Description" color="rgb(56, 88, 85)" css={styles.textinput} isPass={false} />
+                  <Input
+                    title="Description"
+                    color="black"
+                    css={styles.textinput}
+                    isPass={false}
+                    name={Description}
+                    onchange={setDescription}
+                  />
                   <CustomD
                     name="Wallet"
                     data={wallet}
                     styleButton={styles.textinput}
                     styleItem={styles.dropdownItems}
                     styleArrow={styles.arrowDown}
+                    onSelectItem={(item) => setSelectedWallet(item)}
                   />
                   {showAttach && (
                     <TouchableOpacity
@@ -152,12 +200,7 @@ export default function Income({ navigation }: Props) {
                       />
                     </View>
                   </View>
-                  <CustomButton
-                    title="Continue"
-                    bg="rgba(173, 210, 189, 0.6)"
-                    color="rgb(42, 124, 118)"
-                    press={() => navigation.goBack()}
-                  />
+                  <CustomButton title="Continue" bg="rgba(173, 210, 189, 0.6)" color="rgb(42, 124, 118)" press={add} />
                 </View>
               </View>
               <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>

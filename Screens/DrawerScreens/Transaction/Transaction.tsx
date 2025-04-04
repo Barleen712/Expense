@@ -12,6 +12,7 @@ import {
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import CustomD from "../../../Components/Practice";
 import { CustomButton } from "../../../Components/CustomButton";
+import { useSelector } from "react-redux";
 import styles from "../../Stylesheet";
 const Month = [
   "January",
@@ -42,6 +43,7 @@ export default function Transaction({ navigation }: Props) {
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
+  const transaction = useSelector((state: RootState) => state.Money.amount);
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -125,6 +127,19 @@ export default function Transaction({ navigation }: Props) {
             </View>
           </TouchableWithoutFeedback>
         </Modal>
+        <FlatList
+          style={{ width: "90%", flex: 6 }}
+          data={transaction}
+          renderItem={({ item }) => (
+            <View style={{ margin: 4, backgroundColor: "pink" }}>
+              <Text>{item.category}</Text>
+              <Text>{item.amount}</Text>
+              <Text>{item.description}</Text>
+              <Text>{item.wallet}</Text>
+              <Text>{item.moneyCategory}</Text>
+            </View>
+          )}
+        />
       </SafeAreaView>
     </SafeAreaProvider>
   );

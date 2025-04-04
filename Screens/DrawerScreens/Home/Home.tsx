@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, Image, Platform, Dimensions, FlatList } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -8,6 +8,8 @@ import { LineChart } from "react-native-gifted-charts";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import CustomD from "../../../Components/Practice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../Store/Store";
 
 type Homeprop = StackNavigationProp<StackParamList, "MainScreen">;
 
@@ -29,8 +31,7 @@ const Month = [
   "November",
   "December",
 ];
-const date = new Date();
-const MonthIndex = date.getMonth();
+
 const lineData = [
   { value: 20 },
   { value: 45 },
@@ -47,10 +48,20 @@ const lineData = [
   { value: 178 },
   { value: 0 },
 ];
+const date = new Date();
+const MonthIndex = date.getMonth();
 export default function Home({ navigation }: Props) {
   const [month, showmonth] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
-
+  const transaction = useSelector((state: RootState) => state.Money.amount);
+  const income = useSelector((state: RootState) => state.Money.income);
+  const expense = useSelector((state: RootState) => state.Money.expense);
+  const expenses = useSelector((state: RootState) =>
+    state.Money.amount.filter((item) => item.moneyCategory === "Expense")
+  );
+  const Graph = expenses.map((expense) => ({
+    value: expense.amount,
+  }));
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -71,14 +82,14 @@ export default function Home({ navigation }: Props) {
               <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Income.png")} />
               <View style={{ padding: 5 }}>
                 <Text style={styles.homeTitle}>Income</Text>
-                <Text style={styles.budgetMonthtext}>$0.00</Text>
+                <Text style={styles.budgetMonthtext}>${income}</Text>
               </View>
             </View>
             <View style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}>
               <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Expense.png")} />
               <View style={{ padding: 5 }}>
                 <Text style={styles.homeTitle}>Expense</Text>
-                <Text style={styles.budgetMonthtext}>$0.00</Text>
+                <Text style={styles.budgetMonthtext}>${expense}</Text>
               </View>
             </View>
           </View>
@@ -91,7 +102,7 @@ export default function Home({ navigation }: Props) {
         <View style={styles.linechart}>
           <Text style={[styles.notiTitle, { margin: 15 }]}>Spend Frequency</Text>
           <LineChart
-            data={lineData}
+            data={Graph}
             width={Dimensions.get("window").width}
             adjustToWidth={true}
             disableScroll
@@ -134,6 +145,28 @@ export default function Home({ navigation }: Props) {
               );
             }}
           ></FlatList>
+        </View>
+        <View style={styles.RecentTrans}>
+          <View style={styles.filterRecent}>
+            <Text style={styles.notiTitle}>Recent Transaction</Text>
+            <TouchableOpacity style={styles.reset}>
+              <Text style={[styles.homeTitle, { color: "rgb(42, 124, 118)" }]}>See All</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            style={{ width: "90%", flex: 6 }}
+            data={transaction}
+            initialNumToRender={3}
+            renderItem={({ item }) => (
+              <View style={{ margin: 4, backgroundColor: "pink" }}>
+                <Text>{item.category}</Text>
+                <Text>{item.amount}</Text>
+                <Text>{item.description}</Text>
+                <Text>{item.wallet}</Text>
+                <Text>{item.moneyCategory}</Text>
+              </View>
+            )}
+          />
         </View>
       </SafeAreaView>
     </SafeAreaProvider>

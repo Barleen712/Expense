@@ -144,6 +144,27 @@ export default function FinancialReport({ navigation }: Props) {
             </TouchableOpacity>
           </View>
         </View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("DetailTransaction_Expense")}
+          style={{ backgroundColor: "rgba(220, 234, 233, 0.6)", width: "80%", margin: 10 }}
+        >
+          <Text>Shoping</Text>
+          <Text>$120</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("DetailTransaction_Income")}
+          style={{ backgroundColor: "rgba(220, 234, 233, 0.6)", width: "80%", margin: 10 }}
+        >
+          <Text>Salary</Text>
+          <Text>$5000</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("DetailTransaction_Transfer")}
+          style={{ backgroundColor: "rgba(220, 234, 233, 0.6)", width: "80%", margin: 10 }}
+        >
+          <Text>Transfer</Text>
+          <Text>$2000</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     </SafeAreaProvider>
   );

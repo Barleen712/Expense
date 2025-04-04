@@ -29,5 +29,8 @@ type StackParamList = {
   FinancialReportQuote: undefined;
   FinancialReportIncome: undefined;
   FinancialReport: undefined;
+  DetailTransaction_Expense: undefined;
+  DetailTransaction_Income: undefined;
+  DetailTransaction_Transfer: undefined;
 };
 export default StackParamList;
