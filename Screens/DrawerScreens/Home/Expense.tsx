@@ -30,14 +30,14 @@ import CustomD from "../../../Components/Practice";
 import SelectImageWithDocumentPicker from "./Attachment";
 import { ScrollView } from "react-native-gesture-handler";
 import { useDispatch } from "react-redux";
-import { addValue, total } from "../../../Slice/IncomeSlice";
+import { addTransaction } from "../../../Slice/IncomeSlice";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
   navigation: IncomeProp;
 }
-const category = ["Shopping", "Food", "Entertainment", "Savings", "Transportation", "Bills", "Miscellaneous"];
+const category = ["Shopping", "Food", "Entertainment", "Subscription", "Transportation", "Bills", "Miscellaneous"];
 const wallet = ["PayPal", "Google Pay", "Paytm", "PhonePe", "Apple Pay", "Razorpay", "Mobikwik"];
 const modal = [
   require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/CameraRed.png"),
@@ -84,7 +84,7 @@ export default function Expense({ navigation }: Props) {
   function add() {
     const numericIncome = parseFloat(Expenses.replace("$", "") || "0");
     dispatch(
-      addValue({
+      addTransaction({
         amount: numericIncome,
         description: Description,
         category: selectedCategory,
@@ -92,7 +92,6 @@ export default function Expense({ navigation }: Props) {
         moneyCategory: "Expense",
       })
     );
-    dispatch(total());
     navigation.goBack();
   }
   return (

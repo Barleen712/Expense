@@ -1,5 +1,6 @@
 import React from "react";
-import { Platform, View, Text } from "react-native";
+import { LineChart } from "react-native-gifted-charts";
+import { Platform, View, Text, Dimensions } from "react-native";
 import Svg, { Circle, G } from "react-native-svg";
 import styles from "../../../Stylesheet";
 interface Donut {
@@ -7,7 +8,7 @@ interface Donut {
   radius?: number;
   strokeWidth?: number;
 }
-const DonutChart = ({ data, radius = Platform.OS === "ios" ? 70 : 80, strokeWidth = 20 }: Donut) => {
+export const DonutChart = ({ data, radius = Platform.OS === "ios" ? 70 : 80, strokeWidth = 20 }: Donut) => {
   const circumference = 2 * Math.PI * radius;
   let previousPercentage = 0;
 
@@ -48,4 +49,32 @@ const DonutChart = ({ data, radius = Platform.OS === "ios" ? 70 : 80, strokeWidt
     </View>
   );
 };
-export default DonutChart;
+interface lineData {
+  data: { value: number }[];
+}
+export const Linearchart = ({ data }: lineData) => {
+  return (
+    <LineChart
+      data={data}
+      width={Dimensions.get("window").width}
+      adjustToWidth={true}
+      disableScroll
+      yAxisLabelWidth={0}
+      height={Dimensions.get("window").height * 0.2}
+      startFillColor="rgb(78, 144, 114)" // Start gradient color
+      endFillColor="white"
+      initialSpacing={0}
+      endSpacing={0}
+      color="rgb(42, 124, 118)"
+      thickness={8}
+      hideDataPoints
+      hideRules
+      showVerticalLines={false}
+      areaChart
+      hideYAxisText
+      hideAxesAndRules
+      focusEnabled={false}
+      curved
+    />
+  );
+};

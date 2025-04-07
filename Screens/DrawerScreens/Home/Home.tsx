@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { View, Text, TouchableOpacity, Image, Platform, Dimensions, FlatList } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -9,13 +9,14 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import CustomD from "../../../Components/Practice";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../Store/Store";
-
-type Homeprop = StackNavigationProp<StackParamList, "MainScreen">;
-
-interface Props {
-  navigation: Homeprop;
-}
+import {
+  selectTransactions,
+  selectExpenseTotal,
+  selectIncomeTotal,
+  selectExpensesAndTransfers,
+} from "../../../Slice/Selectors";
+import { categoryMap } from "../../Constants";
+import TransactionList from "./TransactionsList";
 const Flat = ["Today", "Week", "Month", "Year"];
 const Month = [
   "January",
@@ -50,18 +51,18 @@ const lineData = [
 ];
 const date = new Date();
 const MonthIndex = date.getMonth();
-export default function Home({ navigation }: Props) {
+export default function Home({ navigation }) {
   const [month, showmonth] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
-  const transaction = useSelector((state: RootState) => state.Money.amount);
-  const income = useSelector((state: RootState) => state.Money.income);
-  const expense = useSelector((state: RootState) => state.Money.expense);
-  const expenses = useSelector((state: RootState) =>
-    state.Money.amount.filter((item) => item.moneyCategory === "Expense")
+  const transactions = useSelector(selectTransactions);
+  const income = useSelector(selectIncomeTotal);
+  const expense = useSelector(selectExpenseTotal);
+  const expensesAndTransfers = useSelector(selectExpensesAndTransfers);
+  const Graph = useMemo(
+    () => expensesAndTransfers.map((expense) => ({ value: expense.amount })),
+    [expensesAndTransfers]
   );
-  const Graph = expenses.map((expense) => ({
-    value: expense.amount,
-  }));
+  Graph.reverse();
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -149,24 +150,11 @@ export default function Home({ navigation }: Props) {
         <View style={styles.RecentTrans}>
           <View style={styles.filterRecent}>
             <Text style={styles.notiTitle}>Recent Transaction</Text>
-            <TouchableOpacity style={styles.reset}>
+            <TouchableOpacity style={styles.reset} onPress={() => navigation.navigate("Transactions")}>
               <Text style={[styles.homeTitle, { color: "rgb(42, 124, 118)" }]}>See All</Text>
             </TouchableOpacity>
           </View>
-          <FlatList
-            style={{ width: "90%", flex: 6 }}
-            data={transaction}
-            initialNumToRender={3}
-            renderItem={({ item }) => (
-              <View style={{ margin: 4, backgroundColor: "pink" }}>
-                <Text>{item.category}</Text>
-                <Text>{item.amount}</Text>
-                <Text>{item.description}</Text>
-                <Text>{item.wallet}</Text>
-                <Text>{item.moneyCategory}</Text>
-              </View>
-            )}
-          />
+          <TransactionList data={transactions.slice(0, 5)} />
         </View>
       </SafeAreaView>
     </SafeAreaProvider>

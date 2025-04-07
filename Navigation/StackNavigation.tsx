@@ -32,6 +32,8 @@ import FinancialReportExpense, {
   FinancialReportQuote,
 } from "../Screens/DrawerScreens/Transaction/FinancialReport/Report";
 import FinancialReport from "../Screens/DrawerScreens/Transaction/FinancialReport/FinancialReport";
+import Transaction from "../Screens/DrawerScreens/Transaction/Transaction";
+import TransactionList from "../Screens/DrawerScreens/Home/TransactionsList";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {

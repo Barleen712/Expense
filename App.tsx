@@ -7,7 +7,7 @@ import Store from "./Store/Store";
 import SelectImageWithDocumentPicker from "./Screens/DrawerScreens/Home/Attachment";
 import Income from "./Screens/DrawerScreens/Home/Income";
 import FinancialReport from "./Screens/DrawerScreens/Transaction/FinancialReport/FinancialReport";
-import DonutChart from "./Screens/DrawerScreens/Transaction/FinancialReport/Donut";
+import DonutChart from "./Screens/DrawerScreens/Transaction/FinancialReport/Graph";
 import Transfer from "./Screens/DrawerScreens/Home/Transfer";
 import Tabscreens from "./Navigation/TabNavigation";
 import Expense from "./Screens/DrawerScreens/Home/Expense";

@@ -4,6 +4,8 @@ import styles from "../../../Stylesheet";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import Header from "../../../../Components/Header";
 import { CustomButton } from "../../../../Components/CustomButton";
+import { selectTransactions } from "../../../../Slice/Selectors";
+import { useSelector } from "react-redux";
 interface DetailTransactionProps {
   navigation: any;
   bg: string;
@@ -49,7 +51,7 @@ function DetailTransaction({
       <SafeAreaView style={styles.container}>
         <Header title="Detail Transaction" press={() => navigation.goBack()} bgcolor={bg} color="white" />
         <View style={[styles.DetailHead, { backgroundColor: bg }]}>
-          <Text style={[styles.number, { fontWeight: "bold" }]}>{amount}</Text>
+          <Text style={[styles.number, { fontWeight: "bold" }]}>${amount}</Text>
           {title && <Text style={[styles.notiTitle, { color: "white" }]}>{title}</Text>}
           <Text style={[styles.MonthText, { fontSize: 12 }]}>{time}</Text>
         </View>
@@ -133,47 +135,50 @@ function DetailTransaction({
   );
 }
 
-export default function DetailTransaction_Expense({ navigation }) {
+export default function DetailTransaction_Expense({ navigation, route }) {
+  const { value } = route.params;
   return (
     <DetailTransaction
       navigation={navigation}
       bg="rgba(253, 60, 74, 1)"
       color="rgba(205, 153, 141, 0.13)"
-      amount="$120"
-      title="Buy some grocery"
+      amount={value.amount}
+      title={value.description}
       time="Saturday 4 June 2021 16:20"
       type="Expense"
-      category="Shopping"
-      wallet="Wallet"
+      category={value.category}
+      wallet={value.wallet}
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
     />
   );
 }
-export function DetailTransaction_Income({ navigation }) {
+export function DetailTransaction_Income({ navigation, route }) {
+  const { value } = route.params;
   return (
     <DetailTransaction
       navigation={navigation}
       bg="rgba(0, 168, 107, 1)"
       color="rgba(173, 210, 189, 0.6)"
-      amount="$5000"
-      title="Salary for July"
+      amount={value.amount}
+      title={value.description}
       time="Saturday 4 June 2021 16:20"
       type="Income"
-      category="Salary"
-      wallet="Chase"
+      category={value.category}
+      wallet={value.wallet}
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
     />
   );
 }
-export function DetailTransaction_Transfer({ navigation }) {
+export function DetailTransaction_Transfer({ navigation, route }) {
+  const { value } = route.params;
   return (
     <DetailTransaction
       navigation={navigation}
       bg="rgba(0, 119, 255, 1)"
       color="rgba(115, 116, 119, 0.14)"
-      amount="$5000"
+      amount={value.amount}
       time="Saturday 4 June 2021 16:20"
       type="Transfer"
       category="PayPal"

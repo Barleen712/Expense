@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { selectTransactions } from "../../../Slice/Selectors";
 import CustomD from "../../../Components/Practice";
 import { CustomButton } from "../../../Components/CustomButton";
 import { useSelector } from "react-redux";
@@ -32,6 +33,7 @@ const FilterBy = ["Income", "Expense", "Transfer"];
 const SortBy = ["Highest", "Lowest", "Newest", "Oldest"];
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
+import TransactionList from "../Home/TransactionsList";
 
 type Transactionprop = StackNavigationProp<StackParamList, "MainScreen">;
 
@@ -43,7 +45,8 @@ export default function Transaction({ navigation }: Props) {
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
-  const transaction = useSelector((state: RootState) => state.Money.amount);
+  const transactions = useSelector(selectTransactions);
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -127,19 +130,9 @@ export default function Transaction({ navigation }: Props) {
             </View>
           </TouchableWithoutFeedback>
         </Modal>
-        <FlatList
-          style={{ width: "90%", flex: 6 }}
-          data={transaction}
-          renderItem={({ item }) => (
-            <View style={{ margin: 4, backgroundColor: "pink" }}>
-              <Text>{item.category}</Text>
-              <Text>{item.amount}</Text>
-              <Text>{item.description}</Text>
-              <Text>{item.wallet}</Text>
-              <Text>{item.moneyCategory}</Text>
-            </View>
-          )}
-        />
+        <View style={{ width: "100%", flex: 0.75, alignItems: "center" }}>
+          <TransactionList data={transactions} />
+        </View>
       </SafeAreaView>
     </SafeAreaProvider>
   );

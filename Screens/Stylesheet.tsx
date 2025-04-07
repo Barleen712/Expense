@@ -928,6 +928,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  Trans: {
+    borderRadius: 20,
+    borderWidth: 0.3,
+    borderColor: "grey",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "38%",
+    height: 35,
+  },
   RecentTrans: { flex: 0.23, alignItems: "center" },
 });
 export default styles;

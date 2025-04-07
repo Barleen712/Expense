@@ -30,7 +30,7 @@ import Input from "../../../Components/CustomTextInput";
 import CustomD from "../../../Components/Practice";
 import { useSelector, useDispatch } from "react-redux";
 import SelectImageWithDocumentPicker from "./Attachment";
-import { addValue, total } from "../../../Slice/IncomeSlice";
+import { addTransaction } from "../../../Slice/IncomeSlice";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -38,7 +38,7 @@ interface Props {
   navigation: IncomeProp;
 }
 
-const category = ["Shopping", "Food", "Entertainment", "Savings", "Transportation", "Bills", "Miscellaneous"];
+const category = ["Salary", "Passive Income"];
 const wallet = ["PayPal", "Google Pay", "Paytm", "PhonePe", "Apple Pay", "Razorpay", "Mobikwik"];
 export default function Income({ navigation }: Props) {
   const [Expense, setExpense] = useState(false);
@@ -85,7 +85,7 @@ export default function Income({ navigation }: Props) {
   function add() {
     const numericIncome = parseFloat(Income.replace("$", "") || "0");
     dispatch(
-      addValue({
+      addTransaction({
         amount: numericIncome,
         description: Description,
         category: selectedCategory,
@@ -93,7 +93,6 @@ export default function Income({ navigation }: Props) {
         moneyCategory: "Income",
       })
     );
-    dispatch(total());
     navigation.goBack();
   }
 

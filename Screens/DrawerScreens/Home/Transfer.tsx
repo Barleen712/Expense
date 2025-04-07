@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  Button,
+  TextInput,
   Image,
   TouchableOpacity,
   Switch,
-  ImageBackground,
   Modal,
-  Linking,
   Platform,
   TouchableWithoutFeedback,
   ScrollView,
@@ -20,22 +18,19 @@ import * as IntentLauncher from "expo-intent-launcher";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import styles from "../../Stylesheet";
 import { CustomButton } from "../../../Components/CustomButton";
-import DropDown from "../../../Components/DropDown";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
 import Entypo from "@expo/vector-icons/Entypo";
 import Input from "../../../Components/CustomTextInput";
-import CustomD from "../../../Components/Practice";
 import SelectImageWithDocumentPicker from "./Attachment";
-
+import { addTransaction } from "../../../Slice/IncomeSlice";
+import { useDispatch } from "react-redux";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
   navigation: IncomeProp;
 }
-const category = ["Shopping", "Food", "Entertainment", "Savings", "Transportation", "Bills", "Miscellaneous"];
-const wallet = ["PayPal", "Google Pay", "Paytm", "PhonePe", "Apple Pay", "Razorpay", "Mobikwik"];
 const modal = [
   require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/CameraBlue.png"),
   require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/ImageBlue.png"),
@@ -49,6 +44,10 @@ export default function Income({ navigation }: Props) {
   const [close, setclose] = useState(false);
   const [document, setDocument] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
+  const [Transfer, setTransfer] = useState<string>("$0");
+  const [From, setFrom] = useState("");
+  const [To, setTo] = useState("");
+  const [Description, setDescription] = useState("");
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -64,7 +63,29 @@ export default function Income({ navigation }: Props) {
       });
     }
   };
-
+  const handleTransferChange = (text: string) => {
+    const numericValue = text.replace(/[^0-9.]/g, "");
+    setTransfer(`$${numericValue}`);
+  };
+  const handleFocus = () => {
+    if (Transfer === "" || Transfer === "$0" || Transfer === "$") {
+      setTransfer("$");
+    }
+  };
+  const dispatch = useDispatch();
+  function add() {
+    const numericIncome = parseFloat(Transfer.replace("$", "") || "0");
+    dispatch(
+      addTransaction({
+        amount: numericIncome,
+        description: Description,
+        category: From + " -> " + To,
+        moneyCategory: "Transfer",
+        wallet: "",
+      })
+    );
+    navigation.goBack();
+  }
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -79,22 +100,51 @@ export default function Income({ navigation }: Props) {
               <View style={[styles.add, { backgroundColor: "rgba(0, 119, 255, 1)" }]}>
                 <View style={styles.balanceView}>
                   <Text style={styles.balance}>How much ?</Text>
-                  <Text style={styles.amount}>$0</Text>
+                  <TouchableOpacity activeOpacity={1}>
+                    <TextInput
+                      value={Transfer}
+                      keyboardType="numeric"
+                      onChangeText={handleTransferChange}
+                      style={styles.amount}
+                      onFocus={handleFocus}
+                    ></TextInput>
+                  </TouchableOpacity>
                 </View>
                 <View style={[styles.selection]}>
                   <View style={{ flexDirection: "row", width: "100%" }}>
                     <View style={{ width: "50%" }}>
-                      <Input title="From" color="rgb(56, 88, 85)" css={styles.textinput} isPass={false} />
+                      <Input
+                        title="From"
+                        color="rgb(56, 88, 85)"
+                        css={styles.textinput}
+                        isPass={false}
+                        name={From}
+                        onchange={setFrom}
+                      />
                     </View>
                     <View style={{ width: "50%" }}>
-                      <Input title="To" color="rgb(56, 88, 85)" css={styles.textinput} isPass={false} />
+                      <Input
+                        title="To"
+                        color="rgb(56, 88, 85)"
+                        css={styles.textinput}
+                        isPass={false}
+                        name={To}
+                        onchange={setTo}
+                      />
                     </View>
                     <Image
                       style={{ width: 40, height: 40, position: "absolute", top: "25%", left: "45%" }}
                       source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Transfer.png")}
                     />
                   </View>
-                  <Input title="Description" color="rgb(56, 88, 85)" css={styles.textinput} isPass={false} />
+                  <Input
+                    title="Description"
+                    color="rgb(56, 88, 85)"
+                    css={styles.textinput}
+                    isPass={false}
+                    name={Description}
+                    onchange={setDescription}
+                  />
 
                   {showAttach && (
                     <TouchableOpacity
@@ -154,7 +204,7 @@ export default function Income({ navigation }: Props) {
                     title="Continue"
                     bg="rgba(115, 116, 119, 0.14)"
                     color="rgba(0, 119, 255, 1)"
-                    press={() => navigation.goBack()}
+                    press={add}
                   />
                 </View>
               </View>
