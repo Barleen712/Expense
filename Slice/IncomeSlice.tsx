@@ -28,8 +28,14 @@ export const ExpenseTrackerSlice = createSlice({
         ...action.payload,
       });
     },
+    deleteTransaction: (state, action) => {
+      const { keyVal } = action.payload;
+
+      const index = state.amount.findIndex((item) => item.key === keyVal);
+      state.amount = [...state.amount.slice(0, index), ...state.amount.slice(index + 1)];
+    },
   },
 });
 
-export const { addTransaction } = ExpenseTrackerSlice.actions;
+export const { addTransaction, deleteTransaction } = ExpenseTrackerSlice.actions;
 export default ExpenseTrackerSlice.reducer;

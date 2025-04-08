@@ -10,3 +10,17 @@ export const categoryMap = {
   Salary: require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Salary.png"),
   "Passive Income": require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Passive Income.png"),
 };
+export const Month = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];

@@ -21,21 +21,25 @@ export const selectIncome = createSelector([selectTransactions], (transactions) 
   transactions.filter((item) => item.moneyCategory === "Income")
 );
 
-export const CategoryExpense = createSelector([selectExpensesAndTransfers], (transactions) => {
-  const categoryMap = transactions.reduce((acc, transaction) => {
-    const category = transaction.category;
+export const CategoryExpense = createSelector(
+  [selectExpensesAndTransfers, selectExpenseTotal],
+  (transactions, expenseTotal) => {
+    const categoryMap = transactions.reduce((acc, transaction) => {
+      const category = transaction.category.includes("->") ? "Transfer" : transaction.category;
 
-    if (!acc[category]) {
-      acc[category] = 0;
-    }
-    acc[category] += transaction.amount;
+      if (!acc[category]) {
+        acc[category] = 0;
+      }
+      acc[category] += transaction.amount;
 
-    return acc;
-  }, {} as Record<string, number>);
-  return Object.entries(categoryMap)
-    .map(([category, total]) => ({
-      category,
-      total: parseFloat(total.toFixed(2)),
-    }))
-    .sort((a, b) => b.total - a.total);
-});
+      return acc;
+    }, {} as Record<string, number>);
+
+    return Object.entries(categoryMap)
+      .map(([category, total]) => ({
+        category,
+        total: (total / expenseTotal) * 100,
+      }))
+      .sort((a, b) => b.total - a.total);
+  }
+);

@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   heading: {
     fontFamily: "Inter",
     fontWeight: "bold",
-    fontSize: Platform.OS === "ios" ? 33 : 35,
+    fontSize: Platform.OS === "ios" ? 28 : 35,
     color: "black",
   },
   destext: {
@@ -567,23 +567,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   homeHeadgradient: {
-    flex: 0.3,
+    flex: 0.25,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
     alignItems: "center",
+    paddingBottom: 5,
   },
   homeHeadView: {
-    width: "88%",
+    width: "90%",
     flexDirection: "row",
     justifyContent: "space-between",
-    height: "35%",
+    height: "38%",
   },
   headButton: {
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
     borderRadius: 25,
-    width: "45%",
+    width: "43%",
   },
   homeTitle: {
     fontFamily: "Inter",
@@ -613,7 +614,7 @@ const styles = StyleSheet.create({
     fontSize: Platform.OS === "ios" ? 18 : 20,
   },
   linechart: {
-    flex: 0.3,
+    flex: Platform.OS === "ios" ? 0.28 : 0.3,
   },
   attachment: {
     width: "90%",
@@ -630,7 +631,7 @@ const styles = StyleSheet.create({
   flatView: {
     alignItems: "center",
     justifyContent: "center",
-    margin: 10,
+    margin: 5,
     borderRadius: 20,
     marginLeft: 5,
     marginRight: 5,
@@ -760,7 +761,7 @@ const styles = StyleSheet.create({
   },
   ExpenseIncomeSelect: {
     flex: 0.1,
-    marginTop: 50,
+    marginTop: 10,
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
@@ -805,10 +806,9 @@ const styles = StyleSheet.create({
   reset: {
     backgroundColor: "rgba(220, 234, 233, 0.6)",
     width: "18%",
-    height: "70%",
+    height: "60%",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
     borderColor: "grey",
     borderRadius: 30,
   },
@@ -922,7 +922,7 @@ const styles = StyleSheet.create({
     height: 60,
   },
   filterRecent: {
-    flex: 0.25,
+    flex: Platform.OS === "ios" ? 0.2 : 0.25,
     width: "95%",
     flexDirection: "row",
     alignItems: "center",
@@ -937,6 +937,6 @@ const styles = StyleSheet.create({
     width: "38%",
     height: 35,
   },
-  RecentTrans: { flex: 0.23, alignItems: "center" },
+  RecentTrans: { flex: 0.33, alignItems: "center" },
 });
 export default styles;

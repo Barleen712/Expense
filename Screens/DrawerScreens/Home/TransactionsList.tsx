@@ -22,7 +22,6 @@ interface TransactionListProps {
 export default function TransactionList({ data }: TransactionListProps) {
   const navigation = useNavigation();
   function navigateFunc({ index }) {
-    console.log(index);
     if (data[index].moneyCategory === "Income") navigation.navigate("DetailTransaction_Income", { value: data[index] });
     else if (data[index].moneyCategory === "Expense")
       navigation.navigate("DetailTransaction_Expense", { value: data[index] });
@@ -52,7 +51,7 @@ export default function TransactionList({ data }: TransactionListProps) {
             style={{
               margin: 4,
               backgroundColor: "rgba(237, 234, 234, 0.28)",
-              height: 89,
+              height: 80,
               borderRadius: 20,
               flexDirection: "row",
               alignItems: "center",

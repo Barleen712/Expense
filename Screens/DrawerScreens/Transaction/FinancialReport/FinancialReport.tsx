@@ -19,15 +19,19 @@ import {
 import { DonutChart } from "./Graph";
 import { Linearchart } from "./Graph";
 import TransactionList from "../../Home/TransactionsList";
-const data = [
-  { percentage: 20, color: "rgba(66, 150, 144, 1)" },
-  { percentage: 15, color: "yellow" },
-  { percentage: 25, color: "rgb(176, 220, 217)" },
-  { percentage: 10, color: "red" },
-  { percentage: 5, color: "pink" },
-  { percentage: 8, color: "blue" },
-  { percentage: 17, color: "green" },
-];
+import CategoryList from "./CategoryList";
+const CATEGORY_COLORS: Record<string, string> = {
+  Food: "rgba(253, 60, 74, 1)",
+  Transport: "yellow",
+  Shopping: "rgba(252, 172, 18, 1)",
+  Entertainment: "#6CCACF",
+  Subscription: "rgba(127, 61, 255, 1)",
+  Transportation: "yellow",
+  Transfer: "rgba(0, 119, 255, 1)",
+  Bills: "purple",
+  Miscellaneous: "#2A7C6C",
+};
+const height = Dimensions.get("window").height * 0.22;
 const Month = [
   "January",
   "February",
@@ -65,7 +69,10 @@ export default function FinancialReport({ navigation }: Props) {
   GraphExpenses.reverse();
   GraphIncome.reverse();
   const category = useSelector(CategoryExpense);
-  console.log(category);
+  const pieData = category.map((item) => ({
+    percentage: item.total,
+    color: CATEGORY_COLORS[item.category],
+  }));
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -100,20 +107,20 @@ export default function FinancialReport({ navigation }: Props) {
           </TouchableOpacity>
         </View>
         {line && Expense && (
-          <View style={[styles.linechart]}>
+          <View style={[styles.linechart, { flex: 0.4 }]}>
             <Text style={[styles.typeText, { margin: 5, paddingLeft: 10, color: "black" }]}>{expense}</Text>
-            <Linearchart data={GraphExpenses} />
+            <Linearchart data={GraphExpenses} height={height} />
           </View>
         )}
         {line && Income && (
-          <View style={[styles.linechart]}>
+          <View style={[styles.linechart, { flex: 0.4 }]}>
             <Text style={[styles.typeText, { margin: 5, paddingLeft: 10, color: "black" }]}>{income}</Text>
-            <Linearchart data={GraphIncome} />
+            <Linearchart data={GraphIncome} height={height} />
           </View>
         )}
         {pie && (
-          <View style={styles.linechart}>
-            <DonutChart data={data} />
+          <View style={[styles.linechart, { flex: 0.4 }]}>
+            <DonutChart data={pieData} value={expense} />
           </View>
         )}
         <View style={styles.ExpenseIncomeSelect}>
@@ -170,8 +177,9 @@ export default function FinancialReport({ navigation }: Props) {
               />
             </TouchableOpacity>
           </View>
-          {Expense && <TransactionList data={expensesAndTransfers} />}
-          {Income && <TransactionList data={incomeValues} />}
+          {line && Expense && <TransactionList data={expensesAndTransfers} />}
+          {line && Income && <TransactionList data={incomeValues} />}
+          {pie && <CategoryList />}
         </View>
       </SafeAreaView>
     </SafeAreaProvider>

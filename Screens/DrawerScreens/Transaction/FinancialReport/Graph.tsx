@@ -5,16 +5,21 @@ import Svg, { Circle, G } from "react-native-svg";
 import styles from "../../../Stylesheet";
 interface Donut {
   data: Array<object>;
+  value: number;
   radius?: number;
   strokeWidth?: number;
 }
-export const DonutChart = ({ data, radius = Platform.OS === "ios" ? 70 : 80, strokeWidth = 20 }: Donut) => {
+export const DonutChart = ({
+  data,
+  value,
+  radius = Platform.OS === "ios" ? 80 : 90,
+  strokeWidth = Platform.OS === "ios" ? 20 : 25,
+}: Donut) => {
   const circumference = 2 * Math.PI * radius;
   let previousPercentage = 0;
-
   return (
-    <View style={{ alignItems: "center", justifyContent: "center" }}>
-      <Text style={[styles.typeText, { position: "absolute", top: "40%", color: "black" }]}>$332</Text>
+    <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
+      <Text style={[styles.typeText, { position: "absolute", top: "40%", color: "black" }]}>{value}</Text>
       <Svg
         width={2 * (radius + strokeWidth)}
         height={2 * (radius + strokeWidth)}
@@ -51,8 +56,9 @@ export const DonutChart = ({ data, radius = Platform.OS === "ios" ? 70 : 80, str
 };
 interface lineData {
   data: { value: number }[];
+  height: number;
 }
-export const Linearchart = ({ data }: lineData) => {
+export const Linearchart = ({ data, height }: lineData) => {
   return (
     <LineChart
       data={data}
@@ -60,8 +66,8 @@ export const Linearchart = ({ data }: lineData) => {
       adjustToWidth={true}
       disableScroll
       yAxisLabelWidth={0}
-      height={Dimensions.get("window").height * 0.2}
-      startFillColor="rgb(78, 144, 114)" // Start gradient color
+      height={height}
+      startFillColor="rgb(78, 144, 114)"
       endFillColor="white"
       initialSpacing={0}
       endSpacing={0}

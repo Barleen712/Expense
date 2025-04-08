@@ -5,7 +5,8 @@ import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import Header from "../../../../Components/Header";
 import { CustomButton } from "../../../../Components/CustomButton";
 import { selectTransactions } from "../../../../Slice/Selectors";
-import { useSelector } from "react-redux";
+import { deleteTransaction } from "../../../../Slice/IncomeSlice";
+import { useSelector, useDispatch } from "react-redux";
 interface DetailTransactionProps {
   navigation: any;
   bg: string;
@@ -17,6 +18,7 @@ interface DetailTransactionProps {
   category: string;
   wallet: string;
   des: string;
+  keyVal: string;
 }
 function DetailTransaction({
   navigation,
@@ -29,16 +31,19 @@ function DetailTransaction({
   category,
   wallet,
   des,
+  keyVal,
 }: DetailTransactionProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [succes, setsuccess] = useState(false);
+  const dispatch = useDispatch();
   function toggleSuccess() {
     setsuccess(!succes);
   }
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
-  function deleteTransaction() {
+  function deleteTransactions() {
+    dispatch(deleteTransaction({ keyVal }));
     toggleModal();
     setsuccess(true);
     setTimeout(() => {
@@ -98,7 +103,7 @@ function DetailTransaction({
               </Text>
               <View style={styles.modalButton}>
                 <View style={styles.modalY}>
-                  <CustomButton title="Yes" bg={bg} color="white" press={deleteTransaction} />
+                  <CustomButton title="Yes" bg={bg} color="white" press={deleteTransactions} />
                 </View>
                 <View style={styles.modalN}>
                   <CustomButton title="No" bg={color} color={bg} press={toggleModal} />
@@ -150,6 +155,7 @@ export default function DetailTransaction_Expense({ navigation, route }) {
       wallet={value.wallet}
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
+      keyVal={value.key}
     />
   );
 }
@@ -168,6 +174,7 @@ export function DetailTransaction_Income({ navigation, route }) {
       wallet={value.wallet}
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
+      keyVal={value.key}
     />
   );
 }
@@ -185,6 +192,7 @@ export function DetailTransaction_Transfer({ navigation, route }) {
       wallet="Chase"
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
+      keyVal={value.key}
     />
   );
 }
