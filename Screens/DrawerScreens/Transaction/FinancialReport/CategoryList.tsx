@@ -3,23 +3,19 @@ import { View, FlatList, Dimensions, Text } from "react-native";
 import styles from "../../../Stylesheet";
 import { useSelector } from "react-redux";
 import { ProgressBar } from "react-native-paper";
-import { CategoryExpense } from "../../../../Slice/Selectors";
+import { CATEGORY_COLORS } from "../../../Constants";
 const width = Dimensions.get("window").width;
-const CATEGORY_COLORS: Record<string, string> = {
-  Food: "rgba(253, 60, 74, 1)",
-  Transport: "yellow",
-  Shopping: "rgba(252, 172, 18, 1)",
-  Entertainment: "#6CCACF",
-  Subscription: "rgba(127, 61, 255, 1)",
-  Transportation: "yellow",
-  Transfer: "rgba(0, 119, 255, 1)",
-  Bills: "purple",
-  Miscellaneous: "#2A7C6C",
-};
 
-export default function CategoryList() {
-  const category = useSelector(CategoryExpense);
+interface CategoryItem {
+  category: string;
+  total: number;
+}
 
+interface CategoryListProps {
+  category: CategoryItem[];
+}
+
+export default function CategoryList({ category }: CategoryListProps) {
   return (
     <FlatList
       contentContainerStyle={{

@@ -43,3 +43,20 @@ export const CategoryExpense = createSelector(
       .sort((a, b) => b.total - a.total);
   }
 );
+export const CategoryIncome = createSelector([selectIncome, selectIncomeTotal], (transactions, incomeTotal) => {
+  const categoryMap = transactions.reduce((acc, transaction) => {
+    const category = transaction.category;
+    if (!acc[category]) {
+      acc[category] = 0;
+    }
+    acc[category] += transaction.amount;
+
+    return acc;
+  }, {} as Record<string, number>);
+  return Object.entries(categoryMap)
+    .map(([category, total]) => ({
+      category,
+      total: (total / incomeTotal) * 100,
+    }))
+    .sort((a, b) => b.total - a.total);
+});

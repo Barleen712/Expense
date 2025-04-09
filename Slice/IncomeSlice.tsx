@@ -7,6 +7,11 @@ interface IncomeEntry {
   category: string;
   wallet: string;
   moneyCategory: string;
+  attachment: {
+    type: "image" | "document";
+    uri: string | null;
+    name?: string;
+  };
 }
 
 interface IncomeState {
@@ -27,6 +32,7 @@ export const ExpenseTrackerSlice = createSlice({
         key: currentDate,
         ...action.payload,
       });
+      console.log(state.amount);
     },
     deleteTransaction: (state, action) => {
       const { keyVal } = action.payload;

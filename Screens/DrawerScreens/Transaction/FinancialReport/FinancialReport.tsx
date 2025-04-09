@@ -15,37 +15,16 @@ import {
   selectExpensesAndTransfers,
   selectIncome,
   CategoryExpense,
+  CategoryIncome,
 } from "../../../../Slice/Selectors";
 import { DonutChart } from "./Graph";
 import { Linearchart } from "./Graph";
 import TransactionList from "../../Home/TransactionsList";
 import CategoryList from "./CategoryList";
-const CATEGORY_COLORS: Record<string, string> = {
-  Food: "rgba(253, 60, 74, 1)",
-  Transport: "yellow",
-  Shopping: "rgba(252, 172, 18, 1)",
-  Entertainment: "#6CCACF",
-  Subscription: "rgba(127, 61, 255, 1)",
-  Transportation: "yellow",
-  Transfer: "rgba(0, 119, 255, 1)",
-  Bills: "purple",
-  Miscellaneous: "#2A7C6C",
-};
+import { CATEGORY_COLORS } from "../../../Constants";
+import { Month } from "../../../Constants";
 const height = Dimensions.get("window").height * 0.22;
-const Month = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+
 type financialProp = StackNavigationProp<StackParamList, "FinancialReport">;
 
 interface Props {
@@ -68,8 +47,13 @@ export default function FinancialReport({ navigation }: Props) {
   const GraphIncome = useMemo(() => incomeValues.map((income) => ({ value: income.amount })), [incomeValues]);
   GraphExpenses.reverse();
   GraphIncome.reverse();
-  const category = useSelector(CategoryExpense);
-  const pieData = category.map((item) => ({
+  const categoryExpense = useSelector(CategoryExpense);
+  const pieDataExpense = categoryExpense.map((item) => ({
+    percentage: item.total,
+    color: CATEGORY_COLORS[item.category],
+  }));
+  const categoryIncome = useSelector(CategoryIncome);
+  const pieDataIncome = categoryIncome.map((item) => ({
     percentage: item.total,
     color: CATEGORY_COLORS[item.category],
   }));
@@ -118,9 +102,14 @@ export default function FinancialReport({ navigation }: Props) {
             <Linearchart data={GraphIncome} height={height} />
           </View>
         )}
-        {pie && (
+        {pie && Expense && (
           <View style={[styles.linechart, { flex: 0.4 }]}>
-            <DonutChart data={pieData} value={expense} />
+            <DonutChart data={pieDataExpense} value={expense} />
+          </View>
+        )}
+        {pie && Income && (
+          <View style={[styles.linechart, { flex: 0.4 }]}>
+            <DonutChart data={pieDataIncome} value={income} />
           </View>
         )}
         <View style={styles.ExpenseIncomeSelect}>
@@ -179,7 +168,8 @@ export default function FinancialReport({ navigation }: Props) {
           </View>
           {line && Expense && <TransactionList data={expensesAndTransfers} />}
           {line && Income && <TransactionList data={incomeValues} />}
-          {pie && <CategoryList />}
+          {pie && Expense && <CategoryList category={categoryExpense} />}
+          {pie && Income && <CategoryList category={categoryIncome} />}
         </View>
       </SafeAreaView>
     </SafeAreaProvider>

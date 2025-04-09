@@ -91,6 +91,10 @@ export default function Income({ navigation }: Props) {
         category: selectedCategory,
         wallet: selectedWallet,
         moneyCategory: "Income",
+        attachment: {
+          type: "image",
+          uri: image,
+        },
       })
     );
     navigation.goBack();

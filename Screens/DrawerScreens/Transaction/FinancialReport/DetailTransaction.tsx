@@ -19,6 +19,7 @@ interface DetailTransactionProps {
   wallet: string;
   des: string;
   keyVal: string;
+  uri: string;
 }
 function DetailTransaction({
   navigation,
@@ -32,6 +33,7 @@ function DetailTransaction({
   wallet,
   des,
   keyVal,
+  uri,
 }: DetailTransactionProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [succes, setsuccess] = useState(false);
@@ -83,10 +85,7 @@ function DetailTransaction({
         </View>
         <View style={styles.attachView}>
           <Text style={styles.username}>Attachment</Text>
-          <Image
-            style={styles.attachImg}
-            source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Rectangle 207.png")}
-          />
+          <Image style={styles.attachImg} source={{ uri: uri }} onError={() => console.log("Failed to load image")} />
         </View>
         <View style={[styles.Apply, { flex: 0.1 }]}>
           <CustomButton title="Edit" bg={color} color={bg} />
@@ -161,6 +160,7 @@ export default function DetailTransaction_Expense({ navigation, route }) {
 }
 export function DetailTransaction_Income({ navigation, route }) {
   const { value } = route.params;
+  console.log(value, "dfjksd");
   return (
     <DetailTransaction
       navigation={navigation}
@@ -175,6 +175,7 @@ export function DetailTransaction_Income({ navigation, route }) {
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
       keyVal={value.key}
+      uri={value.uri}
     />
   );
 }

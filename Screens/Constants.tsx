@@ -24,3 +24,16 @@ export const Month = [
   "November",
   "December",
 ];
+export const CATEGORY_COLORS: Record<string, string> = {
+  Food: "rgba(253, 60, 74, 1)",
+  Transport: "yellow",
+  Shopping: "rgba(252, 172, 18, 1)",
+  Entertainment: "#6CCACF",
+  Subscription: "rgba(127, 61, 255, 1)",
+  Transportation: "yellow",
+  Transfer: "rgba(0, 119, 255, 1)",
+  Bills: "purple",
+  Miscellaneous: "#2A7C6C",
+  Salary: "rgba(0, 168, 107, 1)",
+  "Passive Income": "rgba(13, 14, 15, 1)",
+};
