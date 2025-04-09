@@ -32,7 +32,6 @@ export const ExpenseTrackerSlice = createSlice({
         key: currentDate,
         ...action.payload,
       });
-      console.log(state.amount);
     },
     deleteTransaction: (state, action) => {
       const { keyVal } = action.payload;

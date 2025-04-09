@@ -5,48 +5,56 @@ import Input from "../../Components/CustomTextInput";
 import GradientButton from "../../Components/CustomButton";
 import { auth } from "../FirebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
 import Header from "../../Components/Header";
-type LoginProp = StackNavigationProp<StackParamList, 'Login'>;
+type LoginProp = StackNavigationProp<StackParamList, "Login">;
 
 interface Props {
   navigation: LoginProp;
 }
-export default function Login({ navigation }:Props) {
-    const[email,setemail]=useState("")
-    const[password,setpass]=useState("")
- async function handlesLogin()
-  {
-    try{
-      await signInWithEmailAndPassword(auth,email,password)
-      navigation.replace("Setpin")
+export default function Login({ navigation }: Props) {
+  const [email, setemail] = useState("");
+  const [password, setpass] = useState("");
+  async function handlesLogin() {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigation.replace("Setpin");
+    } catch (error: any) {
+      alert(error.message);
     }
-    catch(error:any)
-    {
-      alert(error.message)
-    }
-
   }
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={{ alignItems: "center", backgroundColor: "white", flex: 1 }}>
-        <Header title="Login" press={()=>navigation.goBack()}/>
-        <View style={styles.input}>
-          <Input title="E-mail" color="rgb(56, 88, 85)" css={styles.textinput} name={email} onchange={setemail} isPass={false} />
-          <Input title="Password" color="rgb(56, 88, 85)" css={styles.textinput} isPass={true} name={password} onchange={setpass} />
-        </View>
-        <GradientButton title="Log In" handles={handlesLogin} />
-       <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-       <Text style={styles.forgot}>Forgot Password?</Text>
-       </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.replace("SignUp")}>
-          <Text style={styles.account}>
-            Don't have an account yet? <Text style={styles.span}>SignUp</Text>
-          </Text>
-        </TouchableOpacity>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <View style={{ alignItems: "center", backgroundColor: "white", flex: 1 }}>
+      <Header title="Login" press={() => navigation.goBack()} />
+      <View style={styles.input}>
+        <Input
+          title="E-mail"
+          color="rgb(56, 88, 85)"
+          css={styles.textinput}
+          name={email}
+          onchange={setemail}
+          isPass={false}
+        />
+        <Input
+          title="Password"
+          color="rgb(56, 88, 85)"
+          css={styles.textinput}
+          isPass={true}
+          name={password}
+          onchange={setpass}
+        />
+      </View>
+      <GradientButton title="Log In" handles={handlesLogin} />
+      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+        <Text style={styles.forgot}>Forgot Password?</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.replace("SignUp")}>
+        <Text style={styles.account}>
+          Don't have an account yet? <Text style={styles.span}>SignUp</Text>
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 }
 const styles = StyleSheet.create({

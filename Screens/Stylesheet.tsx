@@ -859,7 +859,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     flexDirection: "row",
     position: "absolute",
-    top: "31%",
+    top: "28%",
     height: "9%",
     left: "5%",
     alignItems: "center",

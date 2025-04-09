@@ -54,88 +54,86 @@ function DetailTransaction({
     }, 3000);
   }
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <Header title="Detail Transaction" press={() => navigation.goBack()} bgcolor={bg} color="white" />
-        <View style={[styles.DetailHead, { backgroundColor: bg }]}>
-          <Text style={[styles.number, { fontWeight: "bold" }]}>${amount}</Text>
-          {title && <Text style={[styles.notiTitle, { color: "white" }]}>{title}</Text>}
-          <Text style={[styles.MonthText, { fontSize: 12 }]}>{time}</Text>
+    <View style={styles.container}>
+      <Header title="Detail Transaction" press={() => navigation.goBack()} bgcolor={bg} color="white" />
+      <View style={[styles.DetailHead, { backgroundColor: bg }]}>
+        <Text style={[styles.number, { fontWeight: "bold" }]}>${amount}</Text>
+        {title && <Text style={[styles.notiTitle, { color: "white" }]}>{title}</Text>}
+        <Text style={[styles.MonthText, { fontSize: 12 }]}>{time}</Text>
+      </View>
+      <View style={styles.TypeContainer}>
+        <View style={styles.type}>
+          <Text style={styles.typeHead}>Type</Text>
+          <Text style={styles.Export1text}>{type}</Text>
         </View>
-        <View style={styles.TypeContainer}>
-          <View style={styles.type}>
-            <Text style={styles.typeHead}>Type</Text>
-            <Text style={styles.Export1text}>{type}</Text>
-          </View>
-          <View style={styles.type}>
-            <Text style={styles.typeHead}>Category</Text>
-            <Text style={styles.Export1text}>{category}</Text>
-          </View>
-          <View style={styles.type}>
-            <Text style={[styles.typeHead]}>Wallet</Text>
-            <Text style={styles.Export1text}>{wallet}</Text>
-          </View>
+        <View style={styles.type}>
+          <Text style={styles.typeHead}>Category</Text>
+          <Text style={styles.Export1text}>{category}</Text>
         </View>
-        <View style={styles.dashedline}>
-          <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Line 3.png")} />
+        <View style={styles.type}>
+          <Text style={[styles.typeHead]}>Wallet</Text>
+          <Text style={styles.Export1text}>{wallet}</Text>
         </View>
-        <View style={styles.Description}>
-          <Text style={styles.username}>Description</Text>
-          <Text style={[styles.exportText, { paddingLeft: 0 }]}>{des}</Text>
-        </View>
-        <View style={styles.attachView}>
-          <Text style={styles.username}>Attachment</Text>
-          <Image style={styles.attachImg} source={{ uri: uri }} onError={() => console.log("Failed to load image")} />
-        </View>
-        <View style={[styles.Apply, { flex: 0.1 }]}>
-          <CustomButton title="Edit" bg={color} color={bg} />
-        </View>
-        <TouchableOpacity style={styles.Trash} onPress={toggleModal}>
-          <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/trash.png")} />
-        </TouchableOpacity>
-        <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
-          <View style={styles.modalOverlay}>
-            <View style={[styles.modalContainer, { height: "30%" }]}>
-              <Text style={styles.logout}>Remove this transaction</Text>
-              <Text style={[styles.quesLogout, { width: "80%", textAlign: "center" }]}>
-                Are you sure do you want to remove this transaction?
-              </Text>
-              <View style={styles.modalButton}>
-                <View style={styles.modalY}>
-                  <CustomButton title="Yes" bg={bg} color="white" press={deleteTransactions} />
-                </View>
-                <View style={styles.modalN}>
-                  <CustomButton title="No" bg={color} color={bg} press={toggleModal} />
-                </View>
+      </View>
+      <View style={styles.dashedline}>
+        <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Line 3.png")} />
+      </View>
+      <View style={styles.Description}>
+        <Text style={styles.username}>Description</Text>
+        <Text style={[styles.exportText, { paddingLeft: 0 }]}>{des}</Text>
+      </View>
+      <View style={styles.attachView}>
+        <Text style={styles.username}>Attachment</Text>
+        <Image style={styles.attachImg} source={{ uri: uri }} onError={() => console.log("Failed to load image")} />
+      </View>
+      <View style={[styles.Apply, { flex: 0.1 }]}>
+        <CustomButton title="Edit" bg={color} color={bg} />
+      </View>
+      <TouchableOpacity style={styles.Trash} onPress={toggleModal}>
+        <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/trash.png")} />
+      </TouchableOpacity>
+      <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContainer, { height: "30%" }]}>
+            <Text style={styles.logout}>Remove this transaction</Text>
+            <Text style={[styles.quesLogout, { width: "80%", textAlign: "center" }]}>
+              Are you sure do you want to remove this transaction?
+            </Text>
+            <View style={styles.modalButton}>
+              <View style={styles.modalY}>
+                <CustomButton title="Yes" bg={bg} color="white" press={deleteTransactions} />
+              </View>
+              <View style={styles.modalN}>
+                <CustomButton title="No" bg={color} color={bg} press={toggleModal} />
               </View>
             </View>
           </View>
-        </Modal>
-        <Modal animationType="slide" transparent={true} visible={succes} onRequestClose={toggleSuccess}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainerTransaction}>
-              <Image
-                style={styles.deleteTrans}
-                source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/success.png")}
-              />
-              <Text
-                style={[
-                  styles.quesLogout,
-                  {
-                    width: "80%",
-                    textAlign: "center",
-                    color: "black",
-                    fontWeight: "bold",
-                  },
-                ]}
-              >
-                Transaction has been removed successfully
-              </Text>
-            </View>
+        </View>
+      </Modal>
+      <Modal animationType="slide" transparent={true} visible={succes} onRequestClose={toggleSuccess}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainerTransaction}>
+            <Image
+              style={styles.deleteTrans}
+              source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/success.png")}
+            />
+            <Text
+              style={[
+                styles.quesLogout,
+                {
+                  width: "80%",
+                  textAlign: "center",
+                  color: "black",
+                  fontWeight: "bold",
+                },
+              ]}
+            >
+              Transaction has been removed successfully
+            </Text>
           </View>
-        </Modal>
-      </SafeAreaView>
-    </SafeAreaProvider>
+        </View>
+      </Modal>
+    </View>
   );
 }
 
@@ -155,12 +153,12 @@ export default function DetailTransaction_Expense({ navigation, route }) {
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
       keyVal={value.key}
+      uri={value.attachment.uri}
     />
   );
 }
 export function DetailTransaction_Income({ navigation, route }) {
   const { value } = route.params;
-  console.log(value, "dfjksd");
   return (
     <DetailTransaction
       navigation={navigation}
@@ -175,7 +173,7 @@ export function DetailTransaction_Income({ navigation, route }) {
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
       keyVal={value.key}
-      uri={value.uri}
+      uri={value.attachment.uri}
     />
   );
 }
@@ -194,6 +192,7 @@ export function DetailTransaction_Transfer({ navigation, route }) {
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
       keyVal={value.key}
+      uri={value.attachment.uri}
     />
   );
 }

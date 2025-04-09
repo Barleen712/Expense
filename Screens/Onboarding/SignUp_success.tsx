@@ -18,13 +18,11 @@ export default function Success({ navigation }: Props) {
   }, [navigation]);
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.success}>
-          <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/success.png")} />
-          <Text style={styles.ForgotDes}>You are set!</Text>
-        </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <View style={styles.container}>
+      <View style={styles.success}>
+        <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/success.png")} />
+        <Text style={styles.ForgotDes}>You are set!</Text>
+      </View>
+    </View>
   );
 }

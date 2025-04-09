@@ -14,10 +14,10 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TextInput,
+  ScrollView,
 } from "react-native";
 import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import styles from "../../Stylesheet";
 import { CustomButton } from "../../../Components/CustomButton";
 import DropDown from "../../../Components/DropDown";
@@ -28,9 +28,9 @@ import Entypo from "@expo/vector-icons/Entypo";
 import Input from "../../../Components/CustomTextInput";
 import CustomD from "../../../Components/Practice";
 import SelectImageWithDocumentPicker from "./Attachment";
-import { ScrollView } from "react-native-gesture-handler";
 import { useDispatch } from "react-redux";
 import { addTransaction } from "../../../Slice/IncomeSlice";
+import { uploadImage } from "../../Constants";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -81,8 +81,13 @@ export default function Expense({ navigation }: Props) {
     }
   };
   const dispatch = useDispatch();
-  function add() {
+  async function add() {
     const numericIncome = parseFloat(Expenses.replace("$", "") || "0");
+    let supabaseImageUrl = null;
+
+    if (image) {
+      supabaseImageUrl = await uploadImage(image);
+    }
     dispatch(
       addTransaction({
         amount: numericIncome,
@@ -90,181 +95,183 @@ export default function Expense({ navigation }: Props) {
         category: selectedCategory,
         wallet: selectedWallet,
         moneyCategory: "Expense",
+        attachment: {
+          type: "image",
+          uri: supabaseImageUrl,
+        },
       })
     );
     navigation.goBack();
   }
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <Header title="Expense" press={() => navigation.goBack()} bgcolor="rgba(253, 60, 74, 1)" color="white" />
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ScrollView
-              scrollEnabled={Platform.OS === "ios" ? false : true}
-              contentContainerStyle={{ flexGrow: 1 }}
-              keyboardShouldPersistTaps="handled"
-            >
-              <View style={[styles.add, { backgroundColor: "rgba(253, 60, 74, 1)" }]}>
-                <View style={styles.balanceView}>
-                  <Text style={styles.balance}>How much ?</Text>
-                  <TouchableOpacity activeOpacity={1}>
-                    <TextInput
-                      value={Expenses}
-                      keyboardType="numeric"
-                      onChangeText={handleExpenseChange}
-                      style={styles.amount}
-                      onFocus={handleFocus}
-                    ></TextInput>
+    <View style={styles.container}>
+      <Header title="Expense" press={() => navigation.goBack()} bgcolor="rgba(253, 60, 74, 1)" color="white" />
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView
+            scrollEnabled={Platform.OS === "ios" ? false : true}
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View style={[styles.add, { backgroundColor: "rgba(253, 60, 74, 1)" }]}>
+              <View style={styles.balanceView}>
+                <Text style={styles.balance}>How much ?</Text>
+                <TouchableOpacity activeOpacity={1}>
+                  <TextInput
+                    value={Expenses}
+                    keyboardType="numeric"
+                    onChangeText={handleExpenseChange}
+                    style={styles.amount}
+                    onFocus={handleFocus}
+                  ></TextInput>
+                </TouchableOpacity>
+              </View>
+              <View style={[styles.selection]}>
+                <CustomD
+                  name="Category"
+                  data={category}
+                  styleButton={styles.textinput}
+                  styleItem={styles.dropdownItems}
+                  styleArrow={styles.arrowDown}
+                  onSelectItem={(item) => setSelectedCategory(item)}
+                />
+                <Input
+                  title="Description"
+                  color="rgb(56, 88, 85)"
+                  css={styles.textinput}
+                  isPass={false}
+                  name={Description}
+                  onchange={setDescription}
+                />
+                <CustomD
+                  name="Wallet"
+                  data={wallet}
+                  styleButton={styles.textinput}
+                  styleItem={styles.dropdownItems}
+                  styleArrow={styles.arrowDown}
+                  onSelectItem={(item) => setSelectedWallet(item)}
+                />
+                {showAttach && (
+                  <TouchableOpacity
+                    onPress={toggleModal}
+                    style={[
+                      styles.textinput,
+                      { borderStyle: "dashed", alignItems: "center", flexDirection: "row", justifyContent: "center" },
+                    ]}
+                  >
+                    <Entypo name="attachment" size={24} color="black" />
+                    <Text>Add attachment</Text>
+                  </TouchableOpacity>
+                )}
+                {image && (
+                  <View style={{ width: "100%", marginLeft: 30 }}>
+                    <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
+                  </View>
+                )}
+                {photo && (
+                  <View style={{ width: "100%", marginLeft: 30 }}>
+                    <Image source={{ uri: photo }} style={{ width: 90, height: 80, borderRadius: 10 }} />
+                  </View>
+                )}
+                {document && (
+                  <View
+                    style={{
+                      borderWidth: 0.5,
+                      borderColor: "grey",
+                      borderRadius: 5,
+                      width: "90%",
+                      height: "10%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: "rgba(205, 153, 141, 0.13)",
+                    }}
+                  >
+                    <TouchableOpacity onPress={() => openDocument()}>
+                      <Text>{document.split("/").pop()}</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+                <View style={styles.notiView}>
+                  <View style={styles.noti}>
+                    <Text style={styles.notiTitle}>Repeat</Text>
+                    <Text style={styles.notiDes}>Repeat Transaction</Text>
+                  </View>
+                  <View style={styles.switch}>
+                    <Switch
+                      trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgb(42, 124, 118)" }}
+                      value={Expense}
+                      thumbColor={"white"}
+                      onValueChange={setExpense}
+                    />
+                  </View>
+                </View>
+                <CustomButton
+                  title="Continue"
+                  bg="rgba(205, 153, 141, 0.13)"
+                  color="rgba(253, 60, 74, 1)"
+                  press={add}
+                />
+              </View>
+            </View>
+            <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
+              <TouchableWithoutFeedback onPress={toggleModal}>
+                <View style={styles.modalOverlay}>
+                  <TouchableOpacity style={styles.modalContainer}>
+                    <SelectImageWithDocumentPicker
+                      toggle={toggleModal}
+                      setAttach={() => setAttach(!showAttach)}
+                      image={image}
+                      setImage={setImage}
+                      setclose={() => setclose(!close)}
+                      setDocument={setDocument}
+                      modalItems={modal}
+                      setPhoto={setPhoto}
+                    />
                   </TouchableOpacity>
                 </View>
-                <View style={[styles.selection]}>
-                  <CustomD
-                    name="Category"
-                    data={category}
-                    styleButton={styles.textinput}
-                    styleItem={styles.dropdownItems}
-                    styleArrow={styles.arrowDown}
-                    onSelectItem={(item) => setSelectedCategory(item)}
-                  />
-                  <Input
-                    title="Description"
-                    color="rgb(56, 88, 85)"
-                    css={styles.textinput}
-                    isPass={false}
-                    name={Description}
-                    onchange={setDescription}
-                  />
-                  <CustomD
-                    name="Wallet"
-                    data={wallet}
-                    styleButton={styles.textinput}
-                    styleItem={styles.dropdownItems}
-                    styleArrow={styles.arrowDown}
-                    onSelectItem={(item) => setSelectedWallet(item)}
-                  />
-                  {showAttach && (
-                    <TouchableOpacity
-                      onPress={toggleModal}
-                      style={[
-                        styles.textinput,
-                        { borderStyle: "dashed", alignItems: "center", flexDirection: "row", justifyContent: "center" },
-                      ]}
-                    >
-                      <Entypo name="attachment" size={24} color="black" />
-                      <Text>Add attachment</Text>
-                    </TouchableOpacity>
-                  )}
-                  {image && (
-                    <View style={{ width: "100%", marginLeft: 30 }}>
-                      <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
-                    </View>
-                  )}
-                  {photo && (
-                    <View style={{ width: "100%", marginLeft: 30 }}>
-                      <Image source={{ uri: photo }} style={{ width: 90, height: 80, borderRadius: 10 }} />
-                    </View>
-                  )}
-                  {document && (
-                    <View
-                      style={{
-                        borderWidth: 0.5,
-                        borderColor: "grey",
-                        borderRadius: 5,
-                        width: "90%",
-                        height: "10%",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        backgroundColor: "rgba(205, 153, 141, 0.13)",
-                      }}
-                    >
-                      <TouchableOpacity onPress={() => openDocument()}>
-                        <Text>{document.split("/").pop()}</Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                  <View style={styles.notiView}>
-                    <View style={styles.noti}>
-                      <Text style={styles.notiTitle}>Repeat</Text>
-                      <Text style={styles.notiDes}>Repeat Transaction</Text>
-                    </View>
-                    <View style={styles.switch}>
-                      <Switch
-                        trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgb(42, 124, 118)" }}
-                        value={Expense}
-                        thumbColor={"white"}
-                        onValueChange={setExpense}
-                      />
-                    </View>
-                  </View>
-                  <CustomButton
-                    title="Continue"
-                    bg="rgba(205, 153, 141, 0.13)"
-                    color="rgba(253, 60, 74, 1)"
-                    press={add}
-                  />
-                </View>
-              </View>
-              <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
-                <TouchableWithoutFeedback onPress={toggleModal}>
-                  <View style={styles.modalOverlay}>
-                    <TouchableOpacity style={styles.modalContainer}>
-                      <SelectImageWithDocumentPicker
-                        toggle={toggleModal}
-                        setAttach={() => setAttach(!showAttach)}
-                        image={image}
-                        setImage={setImage}
-                        setclose={() => setclose(!close)}
-                        setDocument={setDocument}
-                        modalItems={modal}
-                        setPhoto={setPhoto}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </TouchableWithoutFeedback>
-              </Modal>
-              {close && (
-                <>
-                  {(image || photo) && (
-                    <TouchableOpacity
-                      style={{ position: "absolute", bottom: Platform.OS === "ios" ? "35%" : "31%", left: "28%" }}
-                      onPress={() => {
-                        setImage(null);
-                        setPhoto(null);
-                        setAttach(!showAttach);
-                        setDocument(null);
-                        setclose(false);
-                      }}
-                    >
-                      <Image
-                        style={{ width: 15, height: 15 }}
-                        source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/close.png")}
-                      />
-                    </TouchableOpacity>
-                  )}
+              </TouchableWithoutFeedback>
+            </Modal>
+            {close && (
+              <>
+                {(image || photo) && (
+                  <TouchableOpacity
+                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "35%" : "31%", left: "28%" }}
+                    onPress={() => {
+                      setImage(null);
+                      setPhoto(null);
+                      setAttach(!showAttach);
+                      setDocument(null);
+                      setclose(false);
+                    }}
+                  >
+                    <Image
+                      style={{ width: 15, height: 15 }}
+                      source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/close.png")}
+                    />
+                  </TouchableOpacity>
+                )}
 
-                  {document && (
-                    <TouchableOpacity
-                      style={{ position: "absolute", bottom: Platform.OS === "ios" ? "30%" : "28%", right: "3%" }}
-                      onPress={() => {
-                        setImage(null);
-                        setAttach(!showAttach);
-                        setDocument(null);
-                        setclose(false);
-                      }}
-                    >
-                      <Image
-                        style={{ width: 15, height: 15 }}
-                        source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/close.png")}
-                      />
-                    </TouchableOpacity>
-                  )}
-                </>
-              )}
-            </ScrollView>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </SafeAreaProvider>
+                {document && (
+                  <TouchableOpacity
+                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "30%" : "28%", right: "3%" }}
+                    onPress={() => {
+                      setImage(null);
+                      setAttach(!showAttach);
+                      setDocument(null);
+                      setclose(false);
+                    }}
+                  >
+                    <Image
+                      style={{ width: 15, height: 15 }}
+                      source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/close.png")}
+                    />
+                  </TouchableOpacity>
+                )}
+              </>
+            )}
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </View>
   );
 }

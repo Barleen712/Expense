@@ -48,92 +48,87 @@ export default function Transaction({ navigation }: Props) {
   const transactions = useSelector(selectTransactions);
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.transactionHead}>
-          <CustomD
-            name="Month"
-            data={Month}
-            styleButton={styles.homeMonth}
-            styleItem={styles.dropdownItems}
-            styleArrow={styles.homeArrow}
+    <View style={styles.container}>
+      <View style={styles.transactionHead}>
+        <CustomD
+          name="Month"
+          data={Month}
+          styleButton={styles.homeMonth}
+          styleItem={styles.dropdownItems}
+          styleArrow={styles.homeArrow}
+        />
+        <TouchableOpacity onPress={toggleModal}>
+          <Image
+            source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/sort.png")}
+            style={styles.sortImage}
           />
-          <TouchableOpacity onPress={toggleModal}>
-            <Image
-              source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/sort.png")}
-              style={styles.sortImage}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.reportView}>
-          <TouchableOpacity
-            style={styles.financialReport}
-            onPress={() => navigation.navigate("FinancialReportExpense")}
-          >
-            <Text style={styles.reportText}>See your financial report</Text>
-            <Image
-              style={styles.arrows}
-              source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
-            />
-          </TouchableOpacity>
-        </View>
-        <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
-          <TouchableWithoutFeedback onPress={toggleModal}>
-            <View style={styles.modalOverlay}>
-              <View style={[styles.modalContainer, { height: "65%" }]}>
-                <View style={styles.filter}>
-                  <Text style={styles.notiTitle}>Filter Transaction</Text>
-                  <TouchableOpacity style={styles.reset}>
-                    <Text style={[styles.homeTitle, { color: "rgb(42, 124, 118)" }]}>Reset</Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.FilterOptions}>
-                  <Text style={styles.notiTitle}>Filter By</Text>
-                  <FlatList
-                    numColumns={3}
-                    contentContainerStyle={styles.flatListContainer}
-                    data={FilterBy}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity style={styles.filterButton}>
-                        <Text style={styles.filterButtonText}>{item}</Text>
-                      </TouchableOpacity>
-                    )}
+        </TouchableOpacity>
+      </View>
+      <View style={styles.reportView}>
+        <TouchableOpacity style={styles.financialReport} onPress={() => navigation.navigate("FinancialReportExpense")}>
+          <Text style={styles.reportText}>See your financial report</Text>
+          <Image
+            style={styles.arrows}
+            source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
+          />
+        </TouchableOpacity>
+      </View>
+      <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
+        <TouchableWithoutFeedback onPress={toggleModal}>
+          <View style={styles.modalOverlay}>
+            <View style={[styles.modalContainer, { height: "65%" }]}>
+              <View style={styles.filter}>
+                <Text style={styles.notiTitle}>Filter Transaction</Text>
+                <TouchableOpacity style={styles.reset}>
+                  <Text style={[styles.homeTitle, { color: "rgb(42, 124, 118)" }]}>Reset</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.FilterOptions}>
+                <Text style={styles.notiTitle}>Filter By</Text>
+                <FlatList
+                  numColumns={3}
+                  contentContainerStyle={styles.flatListContainer}
+                  data={FilterBy}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity style={styles.filterButton}>
+                      <Text style={styles.filterButtonText}>{item}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+              <View style={[styles.FilterOptions, { flex: 0.35 }]}>
+                <Text style={styles.notiTitle}>Sort By</Text>
+                <FlatList
+                  numColumns={3}
+                  contentContainerStyle={styles.flatListContainer}
+                  data={SortBy}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity style={styles.filterButton}>
+                      <Text style={styles.filterButtonText}>{item}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+              <View style={styles.FilterCategory}>
+                <Text style={styles.notiTitle}>Category</Text>
+                <TouchableOpacity style={[styles.settingsOptions, { marginTop: 20 }]}>
+                  <Text style={styles.settingtitle}>Choose Category</Text>
+                  <Image
+                    style={{ position: "absolute", right: "1%" }}
+                    source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
                   />
-                </View>
-                <View style={[styles.FilterOptions, { flex: 0.35 }]}>
-                  <Text style={styles.notiTitle}>Sort By</Text>
-                  <FlatList
-                    numColumns={3}
-                    contentContainerStyle={styles.flatListContainer}
-                    data={SortBy}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity style={styles.filterButton}>
-                        <Text style={styles.filterButtonText}>{item}</Text>
-                      </TouchableOpacity>
-                    )}
-                  />
-                </View>
-                <View style={styles.FilterCategory}>
-                  <Text style={styles.notiTitle}>Category</Text>
-                  <TouchableOpacity style={[styles.settingsOptions, { marginTop: 20 }]}>
-                    <Text style={styles.settingtitle}>Choose Category</Text>
-                    <Image
-                      style={{ position: "absolute", right: "1%" }}
-                      source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
-                    />
-                  </TouchableOpacity>
-                  <View style={styles.Apply}>
-                    <CustomButton title="Apply" bg="rgb(42, 124, 118)" color="white" />
-                  </View>
+                </TouchableOpacity>
+                <View style={styles.Apply}>
+                  <CustomButton title="Apply" bg="rgb(42, 124, 118)" color="white" />
                 </View>
               </View>
             </View>
-          </TouchableWithoutFeedback>
-        </Modal>
-        <View style={{ width: "100%", flex: 0.75, alignItems: "center" }}>
-          <TransactionList data={transactions} />
-        </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+      <View style={{ width: "100%", flex: 0.75, alignItems: "center" }}>
+        <TransactionList data={transactions} />
+      </View>
+    </View>
   );
 }

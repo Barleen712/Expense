@@ -16,16 +16,14 @@ export default function Setpin02({ navigation }: Props) {
     navigation.navigate("AllSet");
   }
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={{ backgroundColor: "#2A7C76", flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <View style={styles.setup}>
-          <Text style={styles.setuptext}>Ok. Re type your PIN again.</Text>
-        </View>
-        <Pin />
-        <View style={styles.keypad}>
-          <Keypad change={handlenext} />
-        </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <View style={{ backgroundColor: "#2A7C76", flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <View style={styles.setup}>
+        <Text style={styles.setuptext}>Ok. Re type your PIN again.</Text>
+      </View>
+      <Pin />
+      <View style={styles.keypad}>
+        <Keypad change={handlenext} />
+      </View>
+    </View>
   );
 }
