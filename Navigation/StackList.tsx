@@ -32,5 +32,6 @@ type StackParamList = {
   DetailTransaction_Expense: undefined;
   DetailTransaction_Income: undefined;
   DetailTransaction_Transfer: undefined;
+  DetailBudget: undefined;
 };
 export default StackParamList;

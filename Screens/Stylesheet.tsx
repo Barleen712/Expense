@@ -418,6 +418,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
   noti: {
     width: "85%",
@@ -455,17 +457,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   budgetView: {
-    backgroundColor: "white",
+    backgroundColor: "rgba(252, 252, 252, 1)",
     borderTopStartRadius: "5%",
     borderTopRightRadius: "5%",
-    justifyContent: "center",
+    // justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    height: "80%",
+    height: "85%",
   },
   budgetButton: {
     position: "absolute",
-    bottom: "20%",
+    bottom: "18%",
     width: "100%",
     alignItems: "center",
   },
@@ -473,6 +475,8 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
     fontSize: Platform.OS === "ios" ? 14 : 16,
     color: "grey",
+    width: "70%",
+    textAlign: "center",
   },
   budgetMonth: {
     flexDirection: "row",
@@ -507,6 +511,7 @@ const styles = StyleSheet.create({
   dropdown: {
     width: "100%",
     justifyContent: "center",
+    alignItems: "center",
   },
   arrowDown: {
     position: "absolute",
@@ -726,17 +731,11 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   category: {
-    backgroundColor: "white",
-    height: 50,
     textAlign: "center",
     textAlignVertical: "center",
-    borderRadius: 20,
-    borderWidth: 0.5,
-    borderColor: "grey",
     fontSize: 16,
     fontWeight: "bold",
-    margin: 20,
-    padding: Platform.OS === "ios" ? 17 : 10,
+    //padding: Platform.OS === "ios" ? 17 : 10,
   },
   budgetReport: {
     flex: 0.8,

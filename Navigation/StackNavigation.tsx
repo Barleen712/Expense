@@ -34,6 +34,7 @@ import FinancialReportExpense, {
 import FinancialReport from "../Screens/DrawerScreens/Transaction/FinancialReport/FinancialReport";
 import Transaction from "../Screens/DrawerScreens/Transaction/Transaction";
 import TransactionList from "../Screens/DrawerScreens/Home/TransactionsList";
+import DetailedBudget from "../Screens/DrawerScreens/Budget/DetailedBudget";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
@@ -69,7 +70,7 @@ export default function Screens() {
       <Stack.Screen name="FinancialReport" component={FinancialReport} />
       <Stack.Screen name="DetailTransaction_Expense" component={DetailTransaction_Expense} />
       <Stack.Screen name="DetailTransaction_Income" component={DetailTransaction_Income} />
-      <Stack.Screen name="DetailTransaction_Transfer" component={DetailTransaction_Transfer} />
+      <Stack.Screen name="DetailBudget" component={DetailedBudget} />
     </Stack.Navigator>
   );
 }

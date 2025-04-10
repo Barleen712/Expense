@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Budget from "../Screens/DrawerScreens/Budget/Budget";
 
 interface IncomeEntry {
   key: string;
@@ -13,13 +14,20 @@ interface IncomeEntry {
     name?: string;
   };
 }
+interface BudgetEntery {
+  amount: number;
+  category: number;
+  percentage: number;
+}
 
 interface IncomeState {
   amount: IncomeEntry[];
+  budget: BudgetEntery[];
 }
 
 const initialState: IncomeState = {
   amount: [],
+  budget: [],
 };
 
 export const ExpenseTrackerSlice = createSlice({
@@ -39,8 +47,11 @@ export const ExpenseTrackerSlice = createSlice({
       const index = state.amount.findIndex((item) => item.key === keyVal);
       state.amount = [...state.amount.slice(0, index), ...state.amount.slice(index + 1)];
     },
+    addBudget: (state, action) => {
+      state.budget.unshift(action.payload);
+    },
   },
 });
 
-export const { addTransaction, deleteTransaction } = ExpenseTrackerSlice.actions;
+export const { addTransaction, deleteTransaction, addBudget } = ExpenseTrackerSlice.actions;
 export default ExpenseTrackerSlice.reducer;

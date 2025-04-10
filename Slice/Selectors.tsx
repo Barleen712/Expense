@@ -3,7 +3,7 @@ import { createSelector } from "@reduxjs/toolkit";
 const selectMoney = (state: RootState) => state.Money;
 
 export const selectTransactions = createSelector([selectMoney], (money) => money.amount);
-
+export const selectBudget = createSelector([selectMoney], (money) => money.budget);
 export const selectIncomeTotal = createSelector([selectTransactions], (transactions) =>
   transactions.reduce((acc, item) => (item.moneyCategory === "Income" ? acc + item.amount : acc), 0)
 );
@@ -60,3 +60,19 @@ export const CategoryIncome = createSelector([selectIncome, selectIncomeTotal], 
     }))
     .sort((a, b) => b.total - a.total);
 });
+export const BudgetCategory = createSelector(
+  [selectBudget, CategoryExpense, selectExpenseTotal],
+  (budget, categoryPercentages, totalExpenses) => {
+    return budget.map((item) => {
+      const categorySpent = categoryPercentages.find((value) => value.category === item.category);
+
+      const spentAmount = (categorySpent ? categorySpent.total : 0) * totalExpenses;
+
+      return {
+        category: item.category,
+        budgetvalue: item.amount,
+        amountSpent: spentAmount / 100,
+      };
+    });
+  }
+);

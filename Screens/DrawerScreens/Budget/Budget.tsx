@@ -1,24 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, Button, Image, TouchableOpacity } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { View, Text, Button, Image, TouchableOpacity, FlatList, Dimensions } from "react-native";
+import CategoryList from "../Transaction/FinancialReport/CategoryList";
 import styles from "../../Stylesheet";
 import { CustomButton } from "../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
-const Months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+import { Month } from "../../Constants";
+import { selectBudget, CategoryExpense, BudgetCategory } from "../../../Slice/Selectors";
+import { useSelector } from "react-redux";
+import { CATEGORY_COLORS } from "../../Constants";
+import { ProgressBar } from "react-native-paper";
+const width = Dimensions.get("window").width * 0.8;
 const date = new Date();
 const MonthIndex = date.getMonth();
 type Budgetprop = StackNavigationProp<StackParamList, "MainScreen">;
@@ -26,7 +18,6 @@ type Budgetprop = StackNavigationProp<StackParamList, "MainScreen">;
 interface Props {
   navigation: Budgetprop;
 }
-
 export default function Budget({ navigation }: Props) {
   function handleprev() {
     setmonth(month - 1);
@@ -41,6 +32,7 @@ export default function Budget({ navigation }: Props) {
     }
   }
   const [month, setmonth] = useState(MonthIndex);
+  const Budgetcat = useSelector(BudgetCategory);
   return (
     <View style={styles.container}>
       <View style={styles.add}>
@@ -48,14 +40,85 @@ export default function Budget({ navigation }: Props) {
           <TouchableOpacity onPress={handleprev}>
             <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrowLeftWhite.png")} />
           </TouchableOpacity>
-          <Text style={styles.budgetMonthtext}>{Months[month]}</Text>
+          <Text style={styles.budgetMonthtext}>{Month[month]}</Text>
           <TouchableOpacity onPress={handlenext}>
             <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrowRightWhite.png")} />
           </TouchableOpacity>
         </View>
         <View style={styles.budgetView}>
-          <Text style={styles.budgetText}>You don’t have a budget.</Text>
-          <Text style={styles.budgetText}> Let’s make one so you in control.</Text>
+          {Budgetcat.length === 0 ? (
+            <Text style={styles.budgetText}>You don’t have a budget.{"\n"}Let’s make one so you in control.</Text>
+          ) : (
+            <View style={{ height: "70%" }}>
+              <FlatList
+                contentContainerStyle={{
+                  paddingBottom: 30,
+                }}
+                style={{ width: "90%", flex: 6 }}
+                data={Budgetcat}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => {
+                  const remaining = item.budgetvalue - item.amountSpent;
+                  return (
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate("DetailBudget")}
+                      style={{ margin: 10, backgroundColor: "rgba(255, 255, 255, 1)", padding: 10, borderRadius: 15 }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          borderWidth: 0.5,
+                          padding: 5,
+                          borderRadius: 15,
+                          justifyContent: "flex-start",
+                          alignItems: "center",
+                          backgroundColor: "rgba(241, 241, 250, 1)",
+                          borderColor: "grey",
+                          alignSelf: "flex-start",
+                          paddingHorizontal: 10,
+                        }}
+                      >
+                        <View
+                          style={{
+                            backgroundColor: CATEGORY_COLORS[item.category],
+                            width: 12,
+                            height: 12,
+                            borderRadius: 10,
+                          }}
+                        />
+                        <Text
+                          style={{
+                            paddingLeft: 5,
+                            flexShrink: 1,
+                          }}
+                        >
+                          {item.category}
+                        </Text>
+                      </View>
+                      <Text style={[styles.notiTitle, { color: "black", paddingTop: 5 }]}>Remaining ${remaining}</Text>
+                      <ProgressBar
+                        progress={item.amountSpent / item.budgetvalue}
+                        color={CATEGORY_COLORS[item.category]}
+                        fillStyle={{
+                          borderRadius: 20,
+                        }}
+                        style={{
+                          backgroundColor: "rgba(214, 224, 220, 0.24)",
+                          width: width,
+                          height: 15,
+                          borderRadius: 20,
+                          marginTop: 5,
+                        }}
+                      />
+                      <Text style={[styles.quesLogout, { marginTop: 5 }]}>
+                        ${item.amountSpent} of ${item.budgetvalue}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+            </View>
+          )}
           <View style={styles.budgetButton}>
             <CustomButton
               title="Create a budget"
