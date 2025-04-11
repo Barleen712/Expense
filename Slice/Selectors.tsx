@@ -38,6 +38,7 @@ export const CategoryExpense = createSelector(
     return Object.entries(categoryMap)
       .map(([category, total]) => ({
         category,
+        amount: total,
         total: (total / expenseTotal) * 100,
       }))
       .sort((a, b) => b.total - a.total);
@@ -66,12 +67,13 @@ export const BudgetCategory = createSelector(
     return budget.map((item) => {
       const categorySpent = categoryPercentages.find((value) => value.category === item.category);
 
-      const spentAmount = (categorySpent ? categorySpent.total : 0) * totalExpenses;
+      const spentAmount = categorySpent ? categorySpent.amount : 0;
 
       return {
         category: item.category,
         budgetvalue: item.amount,
-        amountSpent: spentAmount / 100,
+        amountSpent: spentAmount,
+        alertPercent: item.percentage,
       };
     });
   }

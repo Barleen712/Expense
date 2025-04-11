@@ -18,20 +18,32 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
 import CustomSlider from "../../../Components/Slider";
-import { addBudget } from "../../../Slice/IncomeSlice";
+import { addBudget, updateBudget } from "../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
 type CreateBudgetProp = StackNavigationProp<StackParamList, "CreateBudget">;
 
 interface Props {
   navigation: CreateBudgetProp;
+  route: {
+    params: {
+      value: number;
+      percentage: number;
+      alert: boolean;
+      edit: boolean;
+      category: boolean;
+      index?: number;
+      header: string;
+    };
+  };
 }
 const category = ["Shopping", "Food", "Entertainment", "Subscription", "Transportation", "Bills", "Miscellaneous"];
 
-export default function CreateBudget({ navigation }: Props) {
-  const [Expense, setExpense] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [Budget, setBudget] = useState<string>("$0");
-  const [sliderValue, setSliderValue] = useState(20);
+export default function CreateBudget({ navigation, route }: Props) {
+  const parameters = route.params;
+  const [Expense, setExpense] = useState(parameters.alert);
+  const [sliderValue, setSliderValue] = useState(parameters.percentage);
+  const [Budget, setBudget] = useState<string>(`$${parameters.value}`);
+  const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const handleFocus = () => {
     if (Budget === "" || Budget === "$0" || Budget === "$") {
       setBudget("$");
@@ -47,9 +59,22 @@ export default function CreateBudget({ navigation }: Props) {
     dispatch(addBudget({ category: selectedCategory, amount: numericBudget, percentage: Math.round(sliderValue) }));
     navigation.goBack();
   }
+  function editBudget() {
+    const numericBudget = parseFloat(Budget.replace("$", "") || "0");
+    dispatch(
+      updateBudget({
+        category: selectedCategory,
+        percentage: sliderValue,
+        amount: numericBudget,
+        index: parameters.index,
+      })
+    );
+    navigation.goBack();
+    navigation.goBack();
+  }
   return (
     <View style={styles.container}>
-      <Header title="Create Budget" press={() => navigation.goBack()} bgcolor="rgb(56, 88, 85)" color="white" />
+      <Header title={parameters.header} press={() => navigation.goBack()} bgcolor="rgb(56, 88, 85)" color="white" />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.add}>
           <View style={styles.balanceView}>
@@ -66,7 +91,7 @@ export default function CreateBudget({ navigation }: Props) {
           </View>
           <View style={styles.selection}>
             <CustomD
-              name="Category"
+              name={parameters.category}
               data={category}
               styleButton={styles.textinput}
               styleItem={styles.dropdownItems}
@@ -89,7 +114,12 @@ export default function CreateBudget({ navigation }: Props) {
                 </View>
               </View>
               {Expense && <CustomSlider value={sliderValue} setvalue={setSliderValue} />}
-              <CustomButton title="Continue" bg="rgb(42, 124, 118)" color="white" press={add} />
+              <CustomButton
+                title="Continue"
+                bg="rgb(42, 124, 118)"
+                color="white"
+                press={parameters.edit ? editBudget : add}
+              />
             </View>
           </View>
         </View>

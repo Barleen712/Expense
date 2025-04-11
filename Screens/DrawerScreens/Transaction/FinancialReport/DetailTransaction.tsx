@@ -7,6 +7,7 @@ import { CustomButton } from "../../../../Components/CustomButton";
 import { selectTransactions } from "../../../../Slice/Selectors";
 import { deleteTransaction } from "../../../../Slice/IncomeSlice";
 import { useSelector, useDispatch } from "react-redux";
+import CustomModal from "../../Budget/Modal";
 interface DetailTransactionProps {
   navigation: any;
   bg: string;
@@ -46,12 +47,6 @@ function DetailTransaction({
   }
   function deleteTransactions() {
     dispatch(deleteTransaction({ keyVal }));
-    toggleModal();
-    setsuccess(true);
-    setTimeout(() => {
-      setsuccess(false);
-      navigation.goBack();
-    }, 3000);
   }
   return (
     <View style={styles.container}>
@@ -92,47 +87,17 @@ function DetailTransaction({
       <TouchableOpacity style={styles.Trash} onPress={toggleModal}>
         <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/trash.png")} />
       </TouchableOpacity>
-      <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContainer, { height: "30%" }]}>
-            <Text style={styles.logout}>Remove this transaction</Text>
-            <Text style={[styles.quesLogout, { width: "80%", textAlign: "center" }]}>
-              Are you sure do you want to remove this transaction?
-            </Text>
-            <View style={styles.modalButton}>
-              <View style={styles.modalY}>
-                <CustomButton title="Yes" bg={bg} color="white" press={deleteTransactions} />
-              </View>
-              <View style={styles.modalN}>
-                <CustomButton title="No" bg={color} color={bg} press={toggleModal} />
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
-      <Modal animationType="slide" transparent={true} visible={succes} onRequestClose={toggleSuccess}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainerTransaction}>
-            <Image
-              style={styles.deleteTrans}
-              source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/success.png")}
-            />
-            <Text
-              style={[
-                styles.quesLogout,
-                {
-                  width: "80%",
-                  textAlign: "center",
-                  color: "black",
-                  fontWeight: "bold",
-                },
-              ]}
-            >
-              Transaction has been removed successfully
-            </Text>
-          </View>
-        </View>
-      </Modal>
+      <CustomModal
+        visible={modalVisible}
+        setVisible={() => setModalVisible(!modalVisible)}
+        color={color}
+        bg={bg}
+        head="Remove this transaction"
+        text="Are you sure you want to remove this transaction?"
+        onsuccess="Transaction has been removed successfully"
+        navigation={navigation}
+        deleteT={deleteTransactions}
+      />
     </View>
   );
 }

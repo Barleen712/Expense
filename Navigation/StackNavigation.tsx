@@ -70,6 +70,7 @@ export default function Screens() {
       <Stack.Screen name="FinancialReport" component={FinancialReport} />
       <Stack.Screen name="DetailTransaction_Expense" component={DetailTransaction_Expense} />
       <Stack.Screen name="DetailTransaction_Income" component={DetailTransaction_Income} />
+      <Stack.Screen name="DetailTransaction_Transfer" component={DetailTransaction_Transfer} />
       <Stack.Screen name="DetailBudget" component={DetailedBudget} />
     </Stack.Navigator>
   );

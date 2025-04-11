@@ -443,6 +443,7 @@ const styles = StyleSheet.create({
     height: "10%",
     flexDirection: "row",
     alignItems: "center",
+    paddingTop: 10,
   },
   iconContainer: {
     padding: 10,
@@ -902,7 +903,7 @@ const styles = StyleSheet.create({
   Trash: {
     position: "absolute",
     right: "3%",
-    top: "6%",
+    top: "4%",
     width: 32,
     height: 32,
   },
@@ -935,6 +936,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "38%",
     height: 35,
+  },
+  limitexceed: {
+    flexDirection: "row",
+    backgroundColor: "rgba(253, 60, 74, 1)",
+    width: "60%",
+    marginTop: 30,
+    height: "12%",
+    borderRadius: 25,
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   RecentTrans: { flex: 0.33, alignItems: "center" },
 });

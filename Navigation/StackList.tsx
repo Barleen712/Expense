@@ -20,7 +20,15 @@ type StackParamList = {
   Language: undefined;
   Notification: undefined;
   Header: undefined;
-  CreateBudget: undefined;
+  CreateBudget: {
+    value: number;
+    category: string;
+    alert: boolean;
+    percentage: number;
+    index?: number;
+    edit: boolean;
+    header: string;
+  };
   Expense: undefined;
   Income: undefined;
   Transfer: undefined;
@@ -32,6 +40,14 @@ type StackParamList = {
   DetailTransaction_Expense: undefined;
   DetailTransaction_Income: undefined;
   DetailTransaction_Transfer: undefined;
-  DetailBudget: undefined;
+  DetailBudget: {
+    category: string;
+    remaining: number;
+    progress: number;
+    exceeded: boolean;
+    index: number;
+    total: number;
+    percentage: number;
+  };
 };
 export default StackParamList;

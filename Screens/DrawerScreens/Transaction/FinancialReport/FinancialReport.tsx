@@ -41,12 +41,22 @@ export default function FinancialReport({ navigation }: Props) {
   const expensesAndTransfers = useSelector(selectExpensesAndTransfers);
   const incomeValues = useSelector(selectIncome);
   const GraphExpenses = useMemo(
-    () => expensesAndTransfers.map((expense) => ({ value: expense.amount })),
+    () =>
+      expensesAndTransfers
+        .slice()
+        .reverse()
+        .map((expense) => ({ value: expense.amount })),
     [expensesAndTransfers]
   );
-  const GraphIncome = useMemo(() => incomeValues.map((income) => ({ value: income.amount })), [incomeValues]);
-  GraphExpenses.reverse();
-  GraphIncome.reverse();
+  const GraphIncome = useMemo(
+    () =>
+      incomeValues
+        .slice()
+        .reverse()
+        .map((income) => ({ value: income.amount })),
+    [incomeValues]
+  );
+
   const categoryExpense = useSelector(CategoryExpense);
   const pieDataExpense = categoryExpense.map((item) => ({
     percentage: item.total,
@@ -57,6 +67,7 @@ export default function FinancialReport({ navigation }: Props) {
     percentage: item.total,
     color: CATEGORY_COLORS[item.category],
   }));
+
   return (
     <View style={styles.container}>
       <Header title="Financial Report" press={() => navigation.goBack()} />

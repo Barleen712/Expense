@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View, Text, Button, Image, TouchableOpacity, FlatList, Dimensions } from "react-native";
 import CategoryList from "../Transaction/FinancialReport/CategoryList";
 import styles from "../../Stylesheet";
@@ -6,10 +6,12 @@ import { CustomButton } from "../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { Month } from "../../Constants";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import { selectBudget, CategoryExpense, BudgetCategory } from "../../../Slice/Selectors";
 import { useSelector } from "react-redux";
 import { CATEGORY_COLORS } from "../../Constants";
 import { ProgressBar } from "react-native-paper";
+import { exec } from "child_process";
 const width = Dimensions.get("window").width * 0.8;
 const date = new Date();
 const MonthIndex = date.getMonth();
@@ -33,6 +35,93 @@ export default function Budget({ navigation }: Props) {
   }
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
+  const renderBudgetItems = useCallback(
+    ({ item, index }) => {
+      let remaining = item.budgetvalue - item.amountSpent;
+      let progress = item.amountSpent / item.budgetvalue;
+      if (remaining < 0) {
+        remaining = 0;
+        progress = 1;
+      }
+      const exceeded = item.amountSpent > item.budgetvalue;
+      return (
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("DetailBudget", {
+              index: index,
+              category: item.category,
+              remaining: remaining,
+              progress: progress,
+              exceeded: exceeded,
+              total: item.budgetvalue,
+              percentage: item.alertPercent,
+            })
+          }
+          style={{ margin: 10, backgroundColor: "rgba(255, 255, 255, 1)", padding: 10, borderRadius: 15 }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              borderWidth: 0.5,
+              padding: 5,
+              borderRadius: 15,
+              justifyContent: "flex-start",
+              alignItems: "center",
+              backgroundColor: "rgba(241, 241, 250, 1)",
+              borderColor: "grey",
+              alignSelf: "flex-start",
+              paddingHorizontal: 10,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: CATEGORY_COLORS[item.category],
+                width: 12,
+                height: 12,
+                borderRadius: 10,
+              }}
+            />
+            <Text
+              style={{
+                paddingLeft: 5,
+                flexShrink: 1,
+              }}
+            >
+              {item.category}
+            </Text>
+          </View>
+          <Text style={[styles.notiTitle, { color: "black", paddingTop: 5 }]}>Remaining ${remaining}</Text>
+          <ProgressBar
+            progress={progress}
+            color={CATEGORY_COLORS[item.category]}
+            fillStyle={{
+              borderRadius: 20,
+            }}
+            style={{
+              backgroundColor: "rgba(214, 224, 220, 0.24)",
+              width: width,
+              height: 15,
+              borderRadius: 20,
+              marginTop: 5,
+            }}
+          />
+          <Text style={[styles.quesLogout, { marginTop: 5 }]}>
+            ${item.amountSpent} of ${item.budgetvalue}
+          </Text>
+          {exceeded && <Text style={[styles.categoryText, { color: "red" }]}>You've exceeded the limit</Text>}
+          {exceeded && (
+            <AntDesign
+              name="exclamationcircle"
+              size={24}
+              color="red"
+              style={{ position: "absolute", right: "5%", top: "5%" }}
+            />
+          )}
+        </TouchableOpacity>
+      );
+    },
+    [navigation]
+  );
   return (
     <View style={styles.container}>
       <View style={styles.add}>
@@ -57,65 +146,7 @@ export default function Budget({ navigation }: Props) {
                 style={{ width: "90%", flex: 6 }}
                 data={Budgetcat}
                 showsVerticalScrollIndicator={false}
-                renderItem={({ item }) => {
-                  const remaining = item.budgetvalue - item.amountSpent;
-                  return (
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate("DetailBudget")}
-                      style={{ margin: 10, backgroundColor: "rgba(255, 255, 255, 1)", padding: 10, borderRadius: 15 }}
-                    >
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          borderWidth: 0.5,
-                          padding: 5,
-                          borderRadius: 15,
-                          justifyContent: "flex-start",
-                          alignItems: "center",
-                          backgroundColor: "rgba(241, 241, 250, 1)",
-                          borderColor: "grey",
-                          alignSelf: "flex-start",
-                          paddingHorizontal: 10,
-                        }}
-                      >
-                        <View
-                          style={{
-                            backgroundColor: CATEGORY_COLORS[item.category],
-                            width: 12,
-                            height: 12,
-                            borderRadius: 10,
-                          }}
-                        />
-                        <Text
-                          style={{
-                            paddingLeft: 5,
-                            flexShrink: 1,
-                          }}
-                        >
-                          {item.category}
-                        </Text>
-                      </View>
-                      <Text style={[styles.notiTitle, { color: "black", paddingTop: 5 }]}>Remaining ${remaining}</Text>
-                      <ProgressBar
-                        progress={item.amountSpent / item.budgetvalue}
-                        color={CATEGORY_COLORS[item.category]}
-                        fillStyle={{
-                          borderRadius: 20,
-                        }}
-                        style={{
-                          backgroundColor: "rgba(214, 224, 220, 0.24)",
-                          width: width,
-                          height: 15,
-                          borderRadius: 20,
-                          marginTop: 5,
-                        }}
-                      />
-                      <Text style={[styles.quesLogout, { marginTop: 5 }]}>
-                        ${item.amountSpent} of ${item.budgetvalue}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                }}
+                renderItem={renderBudgetItems}
               />
             </View>
           )}
@@ -124,7 +155,16 @@ export default function Budget({ navigation }: Props) {
               title="Create a budget"
               bg="rgb(42, 124, 118)"
               color="white"
-              press={() => navigation.navigate("CreateBudget")}
+              press={() =>
+                navigation.navigate("CreateBudget", {
+                  value: 0,
+                  category: "Category",
+                  alert: false,
+                  percentage: 20,
+                  edit: false,
+                  header: "Create Budget",
+                })
+              }
             />
           </View>
         </View>

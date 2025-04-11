@@ -34,7 +34,7 @@ export const CATEGORY_COLORS: Record<string, string> = {
   Shopping: "rgba(252, 172, 18, 1)",
   Entertainment: "#6CCACF",
   Subscription: "rgba(127, 61, 255, 1)",
-  Transportation: "yellow",
+  Transportation: "#CC7400",
   Transfer: "rgba(0, 119, 255, 1)",
   Bills: "purple",
   Miscellaneous: "#2A7C6C",

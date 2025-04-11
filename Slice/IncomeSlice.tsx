@@ -50,8 +50,16 @@ export const ExpenseTrackerSlice = createSlice({
     addBudget: (state, action) => {
       state.budget.unshift(action.payload);
     },
+    deleteBudget: (state, action) => {
+      const index = action.payload;
+      state.budget = [...state.budget.slice(0, index), ...state.budget.slice(index + 1)];
+    },
+    updateBudget: (state, action) => {
+      const { index, amount, category, percentage } = action.payload;
+      state.budget[index] = { amount, category, percentage };
+    },
   },
 });
 
-export const { addTransaction, deleteTransaction, addBudget } = ExpenseTrackerSlice.actions;
+export const { addTransaction, deleteTransaction, addBudget, deleteBudget, updateBudget } = ExpenseTrackerSlice.actions;
 export default ExpenseTrackerSlice.reducer;
