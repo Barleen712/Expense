@@ -8,6 +8,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "./StackList";
 import Budget from "../Screens/DrawerScreens/Budget/Budget";
 import Profile from "../Screens/DrawerScreens/Profile/Profile";
+import { StringConstants } from "../Screens/Constants";
+import { useTranslation } from "react-i18next";
 type BottomTabprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
@@ -41,16 +43,18 @@ export default function Tabscreens({ navigation }: Props) {
     selectedTab: string;
     navigate: any;
   }
+  const { t } = useTranslation();
   const renderTabBar = ({ routeName, selectedTab, navigate }: renderCircle) => (
     <TouchableOpacity onPress={() => navigate(routeName)} style={styles.tabbarItem}>
       {_renderIcon(routeName, selectedTab)}
       <Text style={[styles.tabText, { color: routeName === selectedTab ? "rgb(42, 124, 118)" : "gray" }]}>
-        {routeName}
+        {t(routeName)}
       </Text>
     </TouchableOpacity>
   );
   const [plus, setplus] = useState(true);
   const [cross, setcross] = useState(false);
+
   return (
     <CurvedBottomBarExpo.Navigator
       type="DOWN"

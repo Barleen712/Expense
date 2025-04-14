@@ -8,6 +8,8 @@ import StackParamList from "../../../Navigation/StackList";
 import { CustomButton } from "../../../Components/CustomButton";
 import { auth } from "../../FirebaseConfig";
 import { signOut } from "firebase/auth";
+import { StringConstants } from "../../Constants";
+import { useTranslation } from "react-i18next";
 type Profileprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
@@ -27,6 +29,7 @@ export default function Profile({ navigation }: Props) {
       alert("Their was some error");
     }
   }
+  const { t } = useTranslation();
   return (
     <View>
       <View style={styles.profile}>
@@ -49,28 +52,28 @@ export default function Profile({ navigation }: Props) {
             <View style={styles.icons}>
               <Ionicons name="wallet" color="rgb(42, 124, 118)" size={30} />
             </View>
-            <Text style={styles.optionsText}>Account</Text>
+            <Text style={styles.optionsText}>{t(StringConstants.Account)}</Text>
           </TouchableOpacity>
           <View style={styles.Line}></View>
           <TouchableOpacity style={styles.optionView} onPress={() => navigation.navigate("Settings")}>
             <View style={styles.icons}>
               <Ionicons name="settings" color="rgb(42, 124, 118)" size={30} />
             </View>
-            <Text style={styles.optionsText}>Settings</Text>
+            <Text style={styles.optionsText}>{t(StringConstants.Settings)}</Text>
           </TouchableOpacity>
           <View style={styles.Line}></View>
           <TouchableOpacity style={styles.optionView} onPress={() => navigation.navigate("Export")}>
             <View style={styles.icons}>
               <Ionicons name="push-outline" color="rgb(42, 124, 118)" size={30} />
             </View>
-            <Text style={styles.optionsText}>Export Data</Text>
+            <Text style={styles.optionsText}>{t(StringConstants.ExportData)}</Text>
           </TouchableOpacity>
           <View style={styles.Line}></View>
           <TouchableOpacity style={styles.optionView} onPress={toggleModal}>
             <View style={styles.logouticon}>
               <Ionicons name="log-out-outline" color="red" size={30} />
             </View>
-            <Text style={styles.optionsText}>Logout</Text>
+            <Text style={styles.optionsText}>{t(StringConstants.Logout)}</Text>
           </TouchableOpacity>
         </View>
       </View>

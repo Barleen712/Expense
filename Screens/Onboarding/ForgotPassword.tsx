@@ -7,25 +7,30 @@ import styles from "../Stylesheet";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
 import Header from "../../Components/Header";
+import { StringConstants } from "../Constants";
+import { useTranslation } from "react-i18next";
 type ForgotPasswordProp = StackNavigationProp<StackParamList, "ForgotPassword">;
 
 interface Props {
   navigation: ForgotPasswordProp;
 }
+
 export default function ForgotPass({ navigation }: Props) {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Header title="Forgot Password" press={() => navigation.goBack()} />
+      <Header title={t(StringConstants.ForgotPassword)} press={() => navigation.goBack()} />
       <View style={styles.ForgotTitle}>
         <Text style={styles.ForgotDes}>
-          Don’t worry {"\n"}
-          Enter your email and we’ll send you a link to reset your password.
+          {t(StringConstants.DontWorry)}
+          {"\n"}
+          {t(StringConstants.Enteryouremail)}
         </Text>
       </View>
       <View style={styles.email}>
-        <Input title="E-mail" color="rgb(56, 88, 85)" css={styles.textinput} />
+        <Input title={t(StringConstants.Email)} color="rgb(56, 88, 85)" css={styles.textinput} />
         <CustomButton
-          title="Continue"
+          title={t(StringConstants.Continue)}
           bg="rgb(42, 124, 118)"
           color="white"
           press={() => navigation.navigate("EmailSent")}

@@ -8,6 +8,8 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
 import Header from "../../Components/Header";
+import { useTranslation } from "react-i18next";
+import { StringConstants } from "../Constants";
 type SignupProp = StackNavigationProp<StackParamList, "SignUp">;
 
 interface Props {
@@ -29,12 +31,13 @@ export default function SignUp({ navigation }: Props) {
     setemail("");
     setemail("");
   }
+  const { t } = useTranslation();
   return (
     <View style={{ alignItems: "center", backgroundColor: "white", flex: 1 }}>
-      <Header title="Sign Up" press={() => navigation.goBack()}></Header>
+      <Header title={t(StringConstants.SignUp)} press={() => navigation.goBack()}></Header>
       <View style={styles.input}>
         <Input
-          title="Name"
+          title={t(StringConstants.Name)}
           color="rgb(56, 88, 85)"
           css={styles.textinput}
           name={name}
@@ -42,7 +45,7 @@ export default function SignUp({ navigation }: Props) {
           isPass={false}
         />
         <Input
-          title="Email"
+          title={t(StringConstants.Email)}
           color="rgb(56, 88, 85)"
           css={styles.textinput}
           name={email}
@@ -50,7 +53,7 @@ export default function SignUp({ navigation }: Props) {
           isPass={false}
         />
         <Input
-          title="Password"
+          title={t(StringConstants.Password)}
           color="rgb(56, 88, 85)"
           css={styles.textinput}
           isPass={true}
@@ -61,22 +64,22 @@ export default function SignUp({ navigation }: Props) {
       <View style={{ flexDirection: "row", margin: 20 }}>
         <View style={{ borderWidth: Platform.OS === "ios" ? 1 : 0 }}></View>
         <Text>
-          By signing up, you agree to the{" "}
-          <Text style={{ color: "rgb(57, 112, 109)" }}>Terms of Service and Privacy Policy</Text>
+          {t(StringConstants.Bysigningupyouagreetothe)}{" "}
+          <Text style={{ color: "rgb(57, 112, 109)" }}>{t(StringConstants.TermsofServiceandPrivacyPolicy)}</Text>
         </Text>
       </View>
       <GradientButton title="Sign Up" handles={handleSignUp} />
-      <Text style={styles.or}>Or with</Text>
+      <Text style={styles.or}>{t(StringConstants.orwith)}</Text>
       <TouchableOpacity style={styles.GoogleView}>
         <Image
           style={styles.Google}
           source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Google.png")}
         />
-        <Text style={styles.textGoogle}>Sign Up with Google</Text>
+        <Text style={styles.textGoogle}>{t(StringConstants.SignUpwithGoogle)}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.replace("Login")}>
         <Text style={styles.account}>
-          Already have an account? <Text style={styles.span}>Login</Text>
+          {t(StringConstants.Alreadyhaveanaccount)} <Text style={styles.span}>{t(StringConstants.Login)}</Text>
         </Text>
       </TouchableOpacity>
     </View>

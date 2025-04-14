@@ -5,6 +5,8 @@ import styles from "../../Stylesheet";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
+import { useTranslation } from "react-i18next";
+import { StringConstants } from "../../Constants";
 
 type SettingsProp = StackNavigationProp<StackParamList, "Settings">;
 
@@ -12,13 +14,14 @@ interface Props {
   navigation: SettingsProp;
 }
 export default function Settings({ navigation }: Props) {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Header title="Settings" press={() => navigation.goBack()} />
+      <Header title={t(StringConstants.Settings)} press={() => navigation.goBack()} />
       <View style={styles.Line}></View>
       <View style={styles.settings}>
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Currency")}>
-          <Text style={styles.settingtitle}>Currency</Text>
+          <Text style={styles.settingtitle}>{t(StringConstants.Currency)}</Text>
           <View style={styles.titleoption}>
             <Text style={styles.settingtext}>USD</Text>
           </View>
@@ -29,7 +32,7 @@ export default function Settings({ navigation }: Props) {
         </TouchableOpacity>
         <View style={styles.Line}></View>
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Language")}>
-          <Text style={styles.settingtitle}>Language</Text>
+          <Text style={styles.settingtitle}>{t(StringConstants.Language)}</Text>
           <View style={styles.titleoption}>
             <Text style={styles.settingtext}>English</Text>
           </View>
@@ -40,7 +43,7 @@ export default function Settings({ navigation }: Props) {
         </TouchableOpacity>
         <View style={styles.Line}></View>
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Theme")}>
-          <Text style={styles.settingtitle}>Theme</Text>
+          <Text style={styles.settingtitle}>{t(StringConstants.Theme)}</Text>
           <View style={styles.titleoption}>
             <Text style={styles.settingtext}>Light</Text>
           </View>
@@ -51,7 +54,7 @@ export default function Settings({ navigation }: Props) {
         </TouchableOpacity>
         <View style={styles.Line}></View>
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Security")}>
-          <Text style={styles.settingtitle}>Security</Text>
+          <Text style={styles.settingtitle}>{t(StringConstants.Security)}</Text>
           <View style={styles.titleoption}>
             <Text style={styles.settingtext}>Pin</Text>
           </View>
@@ -62,7 +65,7 @@ export default function Settings({ navigation }: Props) {
         </TouchableOpacity>
         <View style={styles.Line}></View>
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Notification")}>
-          <Text style={styles.settingtitle}>Notification</Text>
+          <Text style={styles.settingtitle}>{t(StringConstants.Notification)}</Text>
           <View style={styles.titleoption}></View>
           <Image
             style={styles.arrows}
@@ -73,7 +76,7 @@ export default function Settings({ navigation }: Props) {
       </View>
       <View style={styles.settings}>
         <TouchableOpacity style={styles.settingsOptions}>
-          <Text style={styles.settingtitle}>About</Text>
+          <Text style={styles.settingtitle}>{t(StringConstants.About)}</Text>
           <View style={styles.titleoption}></View>
           <Image
             style={styles.arrows}
@@ -82,7 +85,7 @@ export default function Settings({ navigation }: Props) {
         </TouchableOpacity>
         <View style={styles.Line}></View>
         <TouchableOpacity style={styles.settingsOptions}>
-          <Text style={styles.settingtitle}>Help</Text>
+          <Text style={styles.settingtitle}>{t(StringConstants.Help)}</Text>
           <View style={styles.titleoption}></View>
           <Image
             style={styles.arrows}

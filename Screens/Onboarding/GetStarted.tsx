@@ -6,6 +6,8 @@ import { CustomButton } from "../../Components/CustomButton";
 const { width: screenWidth } = Dimensions.get("window");
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
+import { useTranslation } from "react-i18next";
+import { StringConstants } from "../Constants";
 type GetstartedNavigationProp = StackNavigationProp<StackParamList, "GetStarted">;
 
 interface Props {
@@ -25,6 +27,7 @@ export default function Getstarted({ navigation }: Props) {
     navigation.navigate("Login");
   }
   const [activeIndex, setActiveIndex] = useState(0);
+  const { t } = useTranslation();
   const data = [
     {
       id: "1",
@@ -49,8 +52,8 @@ export default function Getstarted({ navigation }: Props) {
     return (
       <View style={styles.view}>
         <Image source={item.image} style={styles.image} />
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.des}>{item.des}</Text>
+        <Text style={styles.title}>{t(item.title)}</Text>
+        <Text style={styles.des}>{t(item.des)}</Text>
       </View>
     );
   };
@@ -71,8 +74,13 @@ export default function Getstarted({ navigation }: Props) {
           <View key={index} style={[styles.dot, activeIndex === index && styles.activeDot]} />
         ))}
       </View>
-      <CustomButton title="Sign Up" bg="rgb(42, 124, 118)" color="white" press={signup} />
-      <CustomButton title="Login" bg="rgba(220, 234, 233, 0.6)" color="rgb(42, 124, 118)" press={login} />
+      <CustomButton title={t(StringConstants.SignUp)} bg="rgb(42, 124, 118)" color="white" press={signup} />
+      <CustomButton
+        title={t(StringConstants.Login)}
+        bg="rgba(220, 234, 233, 0.6)"
+        color="rgb(42, 124, 118)"
+        press={login}
+      />
     </View>
   );
 }

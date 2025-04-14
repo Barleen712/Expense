@@ -8,6 +8,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
 import Header from "../../Components/Header";
+import { useTranslation } from "react-i18next";
+import { StringConstants } from "../Constants";
 type LoginProp = StackNavigationProp<StackParamList, "Login">;
 
 interface Props {
@@ -24,12 +26,13 @@ export default function Login({ navigation }: Props) {
       alert(error.message);
     }
   }
+  const { t } = useTranslation();
   return (
     <View style={{ alignItems: "center", backgroundColor: "white", flex: 1 }}>
-      <Header title="Login" press={() => navigation.goBack()} />
+      <Header title={t(StringConstants.Login)} press={() => navigation.goBack()} />
       <View style={styles.input}>
         <Input
-          title="E-mail"
+          title={t(StringConstants.Email)}
           color="rgb(56, 88, 85)"
           css={styles.textinput}
           name={email}
@@ -37,7 +40,7 @@ export default function Login({ navigation }: Props) {
           isPass={false}
         />
         <Input
-          title="Password"
+          title={t(StringConstants.Password)}
           color="rgb(56, 88, 85)"
           css={styles.textinput}
           isPass={true}
@@ -45,13 +48,13 @@ export default function Login({ navigation }: Props) {
           onchange={setpass}
         />
       </View>
-      <GradientButton title="Log In" handles={handlesLogin} />
+      <GradientButton title={t(StringConstants.Login)} handles={handlesLogin} />
       <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-        <Text style={styles.forgot}>Forgot Password?</Text>
+        <Text style={styles.forgot}>{t(StringConstants.ForgotPassword)}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.replace("SignUp")}>
         <Text style={styles.account}>
-          Don't have an account yet? <Text style={styles.span}>SignUp</Text>
+          {t(StringConstants.Donthaveanaccountyet)} <Text style={styles.span}>{t(StringConstants.SignUp)}</Text>
         </Text>
       </TouchableOpacity>
     </View>

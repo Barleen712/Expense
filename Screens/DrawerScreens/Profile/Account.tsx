@@ -6,7 +6,8 @@ import { CustomButton } from "../../../Components/CustomButton";
 import Header from "../../../Components/Header";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
-import { WalletMap } from "../../Constants";
+import { WalletMap, StringConstants } from "../../Constants";
+import { useTranslation } from "react-i18next";
 type AccountProp = StackNavigationProp<StackParamList, "Account">;
 
 interface Props {
@@ -14,12 +15,13 @@ interface Props {
 }
 const wallet = ["PayPal", "Google Pay", "Paytm", "PhonePe", "Apple Pay"];
 export default function Account({ navigation }: Props) {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Header title="Account" press={() => navigation.goBack()} />
+      <Header title={t(StringConstants.Account)} press={() => navigation.goBack()} />
       <View style={styles.accountbg}>
         <View style={styles.accbalance}>
-          <Text style={styles.accTitle}>Account Balance</Text>
+          <Text style={styles.accTitle}>{t(StringConstants.AccountBalance)}</Text>
           <Text style={styles.accamount}>$94500</Text>
         </View>
         <ImageBackground

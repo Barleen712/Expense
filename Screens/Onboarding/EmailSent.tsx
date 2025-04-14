@@ -5,12 +5,15 @@ import { CustomButton } from "../../Components/CustomButton";
 import styles from "../Stylesheet";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
+import { StringConstants } from "../Constants";
+import { useTranslation } from "react-i18next";
 type EmailSentProp = StackNavigationProp<StackParamList, "EmailSent">;
 
 interface Props {
   navigation: EmailSentProp;
 }
 export default function EmailSent({ navigation }: Props) {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <View style={styles.emailImgView}>
@@ -20,13 +23,11 @@ export default function EmailSent({ navigation }: Props) {
         />
       </View>
       <View style={styles.emailDes}>
-        <Text style={styles.ForgotDes}>Your email is on the way</Text>
-        <Text style={styles.emailDesText}>
-          Check your email test@test.com and follow the instructions to reset your password
-        </Text>
+        <Text style={styles.ForgotDes}>{t(StringConstants.Youremailisontheway)}</Text>
+        <Text style={styles.emailDesText}>{t(StringConstants.Checkyouremail)}</Text>
         <View style={styles.backToLogin}>
           <CustomButton
-            title="Back to Login"
+            title={t(StringConstants.BacktoLogin)}
             bg="rgb(42, 124, 118)"
             color="white"
             press={() => navigation.popTo("Login")}

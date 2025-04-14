@@ -3,6 +3,8 @@ import { View, Text, Button, Image, StyleSheet, ImageBackground, Platform, Touch
 import { LinearGradient } from "expo-linear-gradient";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
+import { StringConstants } from "../Constants";
+import { useTranslation } from "react-i18next";
 type Homeprop = StackNavigationProp<StackParamList, "Home">;
 
 interface Props {
@@ -12,6 +14,7 @@ export default function Onboarding({ navigation }: Props) {
   function handlePress() {
     navigation.navigate("Login");
   }
+  const { t } = useTranslation();
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.image}>
@@ -34,20 +37,20 @@ export default function Onboarding({ navigation }: Props) {
       </View>
       <View style={styles.getstarted}>
         <View style={styles.title}>
-          <Text style={styles.save}>Spend Smarter</Text>
-          <Text style={styles.save}>Save More</Text>
+          <Text style={styles.save}>{t(StringConstants.SpendSmarter)}</Text>
         </View>
         <View style={styles.button}>
           <LinearGradient colors={["#69AEA9", "#3F8782"]} style={styles.gradient}>
             <TouchableOpacity onPress={() => navigation.replace("GetStarted")}>
-              <Text style={styles.start}>Get started</Text>
+              <Text style={styles.start}>{t(StringConstants.GetStarted)}</Text>
             </TouchableOpacity>
           </LinearGradient>
         </View>
         <View style={styles.text}>
           <TouchableOpacity onPress={handlePress}>
             <Text>
-              Already Have Account?<Text style={styles.login}> Log in</Text>
+              {t(StringConstants.Alreadyhaveanaccount)}
+              <Text style={styles.login}>{t(StringConstants.Login)}</Text>
             </Text>
           </TouchableOpacity>
         </View>
@@ -90,8 +93,9 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
     fontWeight: 700,
     color: "rgb(67, 136, 131)",
-    fontSize: Platform.OS === "ios" ? 30 : 35,
+    fontSize: Platform.OS === "ios" ? 30 : 30,
     alignItems: "center",
+    textAlign: "center",
     justifyContent: "center",
   },
   getstarted: {
@@ -119,6 +123,7 @@ const styles = StyleSheet.create({
     flex: 0.4,
     justifyContent: "center",
     alignItems: "center",
+    width: "70%",
   },
   button: {
     flex: 0.35,

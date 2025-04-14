@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     fontWeight: Platform.OS === "ios" ? 500 : 600,
     fontSize: Platform.OS === "ios" ? 24 : 28,
     color: "black",
+    textAlign: "center",
   },
   emailImgView: {
     flex: 0.45,
