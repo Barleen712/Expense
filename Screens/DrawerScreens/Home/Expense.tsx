@@ -38,7 +38,7 @@ interface Props {
   navigation: IncomeProp;
 }
 const category = ["Shopping", "Food", "Entertainment", "Subscription", "Transportation", "Bills", "Miscellaneous"];
-const wallet = ["PayPal", "Google Pay", "Paytm", "PhonePe", "Apple Pay", "Razorpay", "Mobikwik"];
+const wallet = ["PayPal", "Google Pay", "Paytm", "PhonePe", "Apple Pay"];
 const modal = [
   require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/CameraRed.png"),
   require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/ImageRed.png"),

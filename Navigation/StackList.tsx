@@ -49,5 +49,8 @@ type StackParamList = {
     total: number;
     percentage: number;
   };
+  DetailAccount: {
+    wallet: number;
+  };
 };
 export default StackParamList;

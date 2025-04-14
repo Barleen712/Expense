@@ -97,3 +97,10 @@ export const uploadImage = async (imageUri: string) => {
     return null;
   }
 };
+export const WalletMap: Record<string, string> = {
+  PayPal: require("../assets/paypal.png"),
+  Paytm: require("../assets/paytm.png"),
+  "Google Pay": require("../assets/gpay.png"),
+  PhonePe: require("../assets/phonePe.png"),
+  "Apple Pay": require("../assets/apple-pay.png"),
+};
