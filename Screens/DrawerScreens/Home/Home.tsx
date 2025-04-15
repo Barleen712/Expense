@@ -40,6 +40,8 @@ export default function Home({ navigation }) {
   const height = Dimensions.get("window").height * 0.2;
   const { t } = useTranslation();
   const Flat = ["Today", "Week", "Month", "Year"];
+  const rate = useSelector((state) => state.Rates);
+  console.log(rate, "saghbg");
   return (
     <SafeAreaView style={[styles.container]}>
       <LinearGradient colors={["rgb(229, 255, 243)", "rgba(205, 230, 200, 0.09)"]} style={styles.homeHeadgradient}>

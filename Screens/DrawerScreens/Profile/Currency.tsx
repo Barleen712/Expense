@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Platform, Image, FlatList } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import styles from "../../Stylesheet";
@@ -6,6 +6,8 @@ import { Ionicons } from "@expo/vector-icons";
 import Header from "../../../Components/Header";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
+import { fetchRates } from "../../../Slice/CurrencySlice";
+import { useDispatch } from "react-redux";
 type CurrencyProp = StackNavigationProp<StackParamList, "Currency">;
 
 interface Props {
@@ -21,7 +23,7 @@ export default function Currency({ navigation }: Props) {
     { name: "Russia", code: "RUB" },
     { name: "United Stated", code: "USD" },
   ];
-
+  const dispatch = useDispatch();
   const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
 
   return (
@@ -33,7 +35,13 @@ export default function Currency({ navigation }: Props) {
         data={currencies}
         renderItem={({ item }) => (
           <View>
-            <TouchableOpacity onPress={() => setSelectedCurrency(item.code)} style={styles.items}>
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedCurrency(item.code);
+                dispatch(fetchRates());
+              }}
+              style={styles.items}
+            >
               <Text style={styles.itemTitle}>
                 {item.name} ({item.code})
               </Text>
