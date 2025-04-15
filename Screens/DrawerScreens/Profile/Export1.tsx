@@ -5,12 +5,14 @@ import styles from "../../Stylesheet";
 import { CustomButton } from "../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
+import { useTranslation } from "react-i18next";
 type Export1Prop = StackNavigationProp<StackParamList, "Export">;
 
 interface Props {
   navigation: Export1Prop;
 }
 export default function Export1({ navigation }: Props) {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <View style={styles.export1}>
@@ -19,15 +21,16 @@ export default function Export1({ navigation }: Props) {
         </View>
         <View style={styles.exportimg}>
           <Text style={styles.Export1text}>
-            Check your email, we send you the financial report. In certain cases, it might take a little longer,
-            depending on the time period and the volume of activity.
+            {t(
+              "Check your email, we send you the financial report. In certain cases, it might take a little longer, depending on the time period and the volume of activity."
+            )}
           </Text>
         </View>
       </View>
 
       <View style={styles.exportButton}>
         <CustomButton
-          title="Back to Home"
+          title={t("Back to Home")}
           bg="rgb(42, 124, 118)"
           color="white"
           press={() => navigation.navigate("MainScreen")}

@@ -7,6 +7,8 @@ import { ProgressBar, MD3Colors } from "react-native-paper";
 const width = Dimensions.get("window").width;
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
+import { useTranslation } from "react-i18next";
+import { StringConstants } from "../../../Constants";
 
 type Transactionprop = StackNavigationProp<StackParamList, "FinancialReportExpense">;
 
@@ -44,7 +46,7 @@ export function FinancialReportIncome({ navigation }: Props) {
       type="You Earned 💰"
       progress={0.5}
       amount="$6000"
-      detail="and your biggest income is from"
+      detail="your biggest Income is from"
       category="Salary"
       amount1="$5000"
       bg="rgba(0, 168, 107, 1)"
@@ -59,6 +61,7 @@ export function FinancialReportBudget({ navigation }: Props) {
     }, 3000);
     return () => clearTimeout(id);
   }, [navigation]);
+  const { t } = useTranslation();
   return (
     <View style={[styles.card, { backgroundColor: "rgba(0, 119, 255, 1)" }]}>
       <View style={styles.cardMonth}>
@@ -71,10 +74,12 @@ export function FinancialReportBudget({ navigation }: Props) {
             margin: 10,
           }}
         />
-        <Text style={styles.MonthText}>This Month</Text>
+        <Text style={styles.MonthText}>{t("This Month")}</Text>
       </View>
       <View style={styles.budgetReport}>
-        <Text style={[styles.detailText, { fontSize: 32, color: "white" }]}>2 of 12 Budget is exceeds the limit</Text>
+        <Text style={[styles.detailText, { fontSize: 32, color: "white" }]}>
+          2 of 12 {t(StringConstants.Budgetisexceedsthelimit)}
+        </Text>
         <View style={{ flexDirection: "row" }}>
           <Text style={styles.category}>Shopping</Text>
           <Text style={styles.category}>Food</Text>
@@ -84,6 +89,7 @@ export function FinancialReportBudget({ navigation }: Props) {
   );
 }
 export function FinancialReportQuote({ navigation }: Props) {
+  const { t } = useTranslation();
   return (
     <View
       style={[
@@ -106,11 +112,11 @@ export function FinancialReportQuote({ navigation }: Props) {
         }}
       />
       <View>
-        <Text style={[styles.typeText, { color: "black" }]}>“Financial freedom is freedom from fear.”</Text>
-        <Text style={[styles.MonthText, { color: "black" }]}>-Robert Kiyosaki</Text>
+        <Text style={[styles.typeText, { color: "black" }]}>“{t(StringConstants.Financialfreedon)}”</Text>
+        <Text style={[styles.MonthText, { color: "black" }]}>-{t(StringConstants.RobertKiyosaki)}</Text>
       </View>
       <CustomButton
-        title="See the full detail"
+        title={t(StringConstants.Seethefulldetail)}
         bg="rgba(165, 168, 130, 0.5)"
         color="black"
         press={() => navigation.replace("FinancialReport")}

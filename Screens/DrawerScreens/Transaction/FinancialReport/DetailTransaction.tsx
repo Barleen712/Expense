@@ -8,6 +8,8 @@ import { selectTransactions } from "../../../../Slice/Selectors";
 import { deleteTransaction } from "../../../../Slice/IncomeSlice";
 import { useSelector, useDispatch } from "react-redux";
 import CustomModal from "../../Budget/Modal";
+import { useTranslation } from "react-i18next";
+import { StringConstants } from "../../../Constants";
 interface DetailTransactionProps {
   navigation: any;
   bg: string;
@@ -48,9 +50,10 @@ function DetailTransaction({
   function deleteTransactions() {
     dispatch(deleteTransaction({ keyVal }));
   }
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Header title="Detail Transaction" press={() => navigation.goBack()} bgcolor={bg} color="white" />
+      <Header title={t("Detail Transaction")} press={() => navigation.goBack()} bgcolor={bg} color="white" />
       <View style={[styles.DetailHead, { backgroundColor: bg }]}>
         <Text style={[styles.number, { fontWeight: "bold" }]}>${amount}</Text>
         {title && <Text style={[styles.notiTitle, { color: "white" }]}>{title}</Text>}
@@ -58,31 +61,31 @@ function DetailTransaction({
       </View>
       <View style={styles.TypeContainer}>
         <View style={styles.type}>
-          <Text style={styles.typeHead}>Type</Text>
-          <Text style={styles.Export1text}>{type}</Text>
+          <Text style={styles.typeHead}>{t("Type")}</Text>
+          <Text style={styles.Export1text}>{t(type)}</Text>
         </View>
         <View style={styles.type}>
-          <Text style={styles.typeHead}>Category</Text>
-          <Text style={styles.Export1text}>{category}</Text>
+          <Text style={styles.typeHead}>{t("Category")}</Text>
+          <Text style={styles.Export1text}>{t(category)}</Text>
         </View>
         <View style={styles.type}>
-          <Text style={[styles.typeHead]}>Wallet</Text>
-          <Text style={styles.Export1text}>{wallet}</Text>
+          <Text style={[styles.typeHead]}>{t("Wallet")}</Text>
+          <Text style={styles.Export1text}>{t(wallet)}</Text>
         </View>
       </View>
       <View style={styles.dashedline}>
         <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Line 3.png")} />
       </View>
       <View style={styles.Description}>
-        <Text style={styles.username}>Description</Text>
+        <Text style={styles.username}></Text>
         <Text style={[styles.exportText, { paddingLeft: 0 }]}>{des}</Text>
       </View>
       <View style={styles.attachView}>
-        <Text style={styles.username}>Attachment</Text>
+        <Text style={styles.username}>{t("Attachment")}</Text>
         <Image style={styles.attachImg} source={{ uri: uri }} onError={() => console.log("Failed to load image")} />
       </View>
       <View style={[styles.Apply, { flex: 0.1 }]}>
-        <CustomButton title="Edit" bg={color} color={bg} />
+        <CustomButton title={t("Edit")} bg={color} color={bg} />
       </View>
       <TouchableOpacity style={styles.Trash} onPress={toggleModal}>
         <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/trash.png")} />
@@ -92,9 +95,9 @@ function DetailTransaction({
         setVisible={() => setModalVisible(!modalVisible)}
         color={color}
         bg={bg}
-        head="Remove this transaction"
-        text="Are you sure you want to remove this transaction?"
-        onsuccess="Transaction has been removed successfully"
+        head={t(StringConstants.Removethistransaction)}
+        text={t(StringConstants.Areyousure)}
+        onsuccess={t(StringConstants.Transactionhasbeensuccessfully)}
         navigation={navigation}
         deleteT={deleteTransactions}
       />

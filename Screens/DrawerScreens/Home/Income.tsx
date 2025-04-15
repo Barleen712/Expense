@@ -31,6 +31,8 @@ import { useSelector, useDispatch } from "react-redux";
 import SelectImageWithDocumentPicker from "./Attachment";
 import { addTransaction } from "../../../Slice/IncomeSlice";
 import { uploadImage } from "../../Constants";
+import { useTranslation } from "react-i18next";
+import { StringConstants } from "../../Constants";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -81,7 +83,7 @@ export default function Income({ navigation }: Props) {
     const numericValue = text.replace(/[^0-9.]/g, "");
     setIncome(`$${numericValue}`);
   };
-
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   async function add() {
     const numericIncome = parseFloat(Income.replace("$", "") || "0");
@@ -109,7 +111,12 @@ export default function Income({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <Header title="Income" press={() => navigation.goBack()} bgcolor="rgba(0, 168, 107, 1)" color="white" />
+      <Header
+        title={t(StringConstants.Income)}
+        press={() => navigation.goBack()}
+        bgcolor="rgba(0, 168, 107, 1)"
+        color="white"
+      />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView
@@ -119,7 +126,7 @@ export default function Income({ navigation }: Props) {
           >
             <View style={[styles.add, { backgroundColor: "rgba(0, 168, 107, 1))" }]}>
               <View style={styles.balanceView}>
-                <Text style={styles.balance}>How much ?</Text>
+                <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
                 <TouchableOpacity activeOpacity={1}>
                   <TextInput
                     value={Income}
@@ -132,7 +139,7 @@ export default function Income({ navigation }: Props) {
               </View>
               <View style={[styles.selection]}>
                 <CustomD
-                  name="Category"
+                  name={t(StringConstants.Category)}
                   data={category}
                   styleButton={styles.textinput}
                   styleItem={styles.dropdownItems}
@@ -140,7 +147,7 @@ export default function Income({ navigation }: Props) {
                   onSelectItem={(item) => setSelectedCategory(item)}
                 />
                 <Input
-                  title="Description"
+                  title={t(StringConstants.Description)}
                   color="black"
                   css={styles.textinput}
                   isPass={false}
@@ -148,7 +155,7 @@ export default function Income({ navigation }: Props) {
                   onchange={setDescription}
                 />
                 <CustomD
-                  name="Wallet"
+                  name={t(StringConstants.Wallet)}
                   data={wallet}
                   styleButton={styles.textinput}
                   styleItem={styles.dropdownItems}
@@ -164,7 +171,7 @@ export default function Income({ navigation }: Props) {
                     ]}
                   >
                     <Entypo name="attachment" size={24} color="black" />
-                    <Text>Add attachment</Text>
+                    <Text>{t(StringConstants.Addattachment)}</Text>
                   </TouchableOpacity>
                 )}
                 {image && (
@@ -197,8 +204,8 @@ export default function Income({ navigation }: Props) {
                 )}
                 <View style={styles.notiView}>
                   <View style={styles.noti}>
-                    <Text style={styles.notiTitle}>Repeat</Text>
-                    <Text style={styles.notiDes}>Repeat Transaction</Text>
+                    <Text style={styles.notiTitle}>{t("Repeat")}</Text>
+                    <Text style={styles.notiDes}>{t(StringConstants.RepeatTransaction)}</Text>
                   </View>
                   <View style={styles.switch}>
                     <Switch
@@ -209,7 +216,12 @@ export default function Income({ navigation }: Props) {
                     />
                   </View>
                 </View>
-                <CustomButton title="Continue" bg="rgba(173, 210, 189, 0.6)" color="rgb(42, 124, 118)" press={add} />
+                <CustomButton
+                  title={t(StringConstants.Continue)}
+                  bg="rgba(173, 210, 189, 0.6)"
+                  color="rgb(42, 124, 118)"
+                  press={add}
+                />
               </View>
             </View>
             <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>

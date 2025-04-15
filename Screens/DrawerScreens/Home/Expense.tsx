@@ -31,6 +31,8 @@ import SelectImageWithDocumentPicker from "./Attachment";
 import { useDispatch } from "react-redux";
 import { addTransaction } from "../../../Slice/IncomeSlice";
 import { uploadImage } from "../../Constants";
+import { useTranslation } from "react-i18next";
+import { StringConstants } from "../../Constants";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -56,6 +58,7 @@ export default function Expense({ navigation }: Props) {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedWallet, setSelectedWallet] = useState("");
   const [Description, setDescription] = useState("");
+
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -103,9 +106,10 @@ export default function Expense({ navigation }: Props) {
     );
     navigation.goBack();
   }
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Header title="Expense" press={() => navigation.goBack()} bgcolor="rgba(253, 60, 74, 1)" color="white" />
+      <Header title={t("Expense")} press={() => navigation.goBack()} bgcolor="rgba(253, 60, 74, 1)" color="white" />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView
@@ -115,7 +119,7 @@ export default function Expense({ navigation }: Props) {
           >
             <View style={[styles.add, { backgroundColor: "rgba(253, 60, 74, 1)" }]}>
               <View style={styles.balanceView}>
-                <Text style={styles.balance}>How much ?</Text>
+                <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
                 <TouchableOpacity activeOpacity={1}>
                   <TextInput
                     value={Expenses}
@@ -128,7 +132,7 @@ export default function Expense({ navigation }: Props) {
               </View>
               <View style={[styles.selection]}>
                 <CustomD
-                  name="Category"
+                  name={t(StringConstants.Category)}
                   data={category}
                   styleButton={styles.textinput}
                   styleItem={styles.dropdownItems}
@@ -136,7 +140,7 @@ export default function Expense({ navigation }: Props) {
                   onSelectItem={(item) => setSelectedCategory(item)}
                 />
                 <Input
-                  title="Description"
+                  title={t(StringConstants.Description)}
                   color="rgb(56, 88, 85)"
                   css={styles.textinput}
                   isPass={false}
@@ -144,7 +148,7 @@ export default function Expense({ navigation }: Props) {
                   onchange={setDescription}
                 />
                 <CustomD
-                  name="Wallet"
+                  name={t(StringConstants.Wallet)}
                   data={wallet}
                   styleButton={styles.textinput}
                   styleItem={styles.dropdownItems}
@@ -160,7 +164,7 @@ export default function Expense({ navigation }: Props) {
                     ]}
                   >
                     <Entypo name="attachment" size={24} color="black" />
-                    <Text>Add attachment</Text>
+                    <Text>{t(StringConstants.Addattachment)}</Text>
                   </TouchableOpacity>
                 )}
                 {image && (
@@ -193,8 +197,8 @@ export default function Expense({ navigation }: Props) {
                 )}
                 <View style={styles.notiView}>
                   <View style={styles.noti}>
-                    <Text style={styles.notiTitle}>Repeat</Text>
-                    <Text style={styles.notiDes}>Repeat Transaction</Text>
+                    <Text style={styles.notiTitle}>{t("Repeat")}</Text>
+                    <Text style={styles.notiDes}>{t(StringConstants.RecentTransaction)}</Text>
                   </View>
                   <View style={styles.switch}>
                     <Switch
@@ -206,7 +210,7 @@ export default function Expense({ navigation }: Props) {
                   </View>
                 </View>
                 <CustomButton
-                  title="Continue"
+                  title={t(StringConstants.Continue)}
                   bg="rgba(205, 153, 141, 0.13)"
                   color="rgba(253, 60, 74, 1)"
                   press={add}

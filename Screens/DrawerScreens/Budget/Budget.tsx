@@ -11,10 +11,11 @@ import { selectBudget, CategoryExpense, BudgetCategory } from "../../../Slice/Se
 import { useSelector } from "react-redux";
 import { CATEGORY_COLORS } from "../../Constants";
 import { ProgressBar } from "react-native-paper";
-import { exec } from "child_process";
 const width = Dimensions.get("window").width * 0.8;
 const date = new Date();
 const MonthIndex = date.getMonth();
+import { useTranslation } from "react-i18next";
+import { StringConstants } from "../../Constants";
 type Budgetprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
@@ -87,10 +88,12 @@ export default function Budget({ navigation }: Props) {
                 flexShrink: 1,
               }}
             >
-              {item.category}
+              {t(item.category)}
             </Text>
           </View>
-          <Text style={[styles.notiTitle, { color: "black", paddingTop: 5 }]}>Remaining ${remaining}</Text>
+          <Text style={[styles.notiTitle, { color: "black", paddingTop: 5 }]}>
+            {t("Remaining")} ${remaining}
+          </Text>
           <ProgressBar
             progress={progress}
             color={CATEGORY_COLORS[item.category]}
@@ -108,7 +111,7 @@ export default function Budget({ navigation }: Props) {
           <Text style={[styles.quesLogout, { marginTop: 5 }]}>
             ${item.amountSpent} of ${item.budgetvalue}
           </Text>
-          {exceeded && <Text style={[styles.categoryText, { color: "red" }]}>You've exceeded the limit</Text>}
+          {exceeded && <Text style={[styles.categoryText, { color: "red" }]}>{t("You've exceeded the limit")}</Text>}
           {exceeded && (
             <AntDesign
               name="exclamationcircle"
@@ -122,6 +125,7 @@ export default function Budget({ navigation }: Props) {
     },
     [navigation]
   );
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <View style={styles.add}>
@@ -129,14 +133,17 @@ export default function Budget({ navigation }: Props) {
           <TouchableOpacity onPress={handleprev}>
             <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrowLeftWhite.png")} />
           </TouchableOpacity>
-          <Text style={styles.budgetMonthtext}>{Month[month]}</Text>
+          <Text style={styles.budgetMonthtext}>{t(Month[month])}</Text>
           <TouchableOpacity onPress={handlenext}>
             <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrowRightWhite.png")} />
           </TouchableOpacity>
         </View>
         <View style={styles.budgetView}>
           {Budgetcat.length === 0 ? (
-            <Text style={styles.budgetText}>You don’t have a budget.{"\n"}Let’s make one so you in control.</Text>
+            <Text style={styles.budgetText}>
+              {t(StringConstants.Youdonthaveabudget)}.{"\n"}
+              {t(StringConstants.Letmake)}.
+            </Text>
           ) : (
             <View style={{ height: "70%" }}>
               <FlatList
@@ -152,7 +159,7 @@ export default function Budget({ navigation }: Props) {
           )}
           <View style={styles.budgetButton}>
             <CustomButton
-              title="Create a budget"
+              title={t(StringConstants.CreateaBudget)}
               bg="rgb(42, 124, 118)"
               color="white"
               press={() =>

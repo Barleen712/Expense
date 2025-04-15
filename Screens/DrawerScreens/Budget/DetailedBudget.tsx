@@ -7,12 +7,13 @@ import styles from "../../Stylesheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { categoryMap } from "../../Constants";
 import { ProgressBar } from "react-native-paper";
-import { CATEGORY_COLORS } from "../../Constants";
+import { CATEGORY_COLORS, StringConstants } from "../../Constants";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { CustomButton } from "../../../Components/CustomButton";
 import CustomModal from "./Modal";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteBudget } from "../../../Slice/IncomeSlice";
+import { useTranslation } from "react-i18next";
 type DetailedBudget = StackNavigationProp<StackParamList, "DetailBudget">;
 
 interface Props {
@@ -37,18 +38,19 @@ export default function DetailedBudget({ navigation, route }: Props) {
   function deleteBudgetFunction() {
     dispatch(deleteBudget(index));
   }
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Header title="Detail Budget" press={() => navigation.goBack()} />
+      <Header title={t(StringConstants.DetailBudget)} press={() => navigation.goBack()} />
       <TouchableOpacity style={styles.Trash} onPress={() => setModalVisible(true)}>
         <CustomModal
           visible={modalVisible}
           setVisible={() => setModalVisible(!modalVisible)}
           color="rgba(237, 234, 234, 0.28)"
           bg={CATEGORY_COLORS[category]}
-          head="Remove this budget"
-          text="Are you sure you want to remove this budget?"
-          onsuccess="Budget has been removed successfully"
+          head={t("Remove this budget")}
+          text={t("Are you sure you want to remove this budget?")}
+          onsuccess={t("Budget has been successfully removed")}
           navigation={navigation}
           deleteT={deleteBudgetFunction}
         />
@@ -75,7 +77,7 @@ export default function DetailedBudget({ navigation, route }: Props) {
             <Text style={styles.category}>{category}</Text>
           </View>
           <View style={{ alignItems: "center", marginTop: 10 }}>
-            <Text style={[styles.typeText, { color: "black" }]}>Remaining</Text>
+            <Text style={[styles.typeText, { color: "black" }]}>{t("Remaining")}</Text>
             <Text style={[styles.amountText, { marginVertical: 0, color: "black" }]}>${remaining}</Text>
           </View>
           <ProgressBar
@@ -95,13 +97,13 @@ export default function DetailedBudget({ navigation, route }: Props) {
           {exceeded && (
             <View style={styles.limitexceed}>
               <AntDesign name="exclamationcircle" size={24} color="white" />
-              <Text style={[styles.categoryText, { color: "white" }]}>You've exceeded the limit</Text>
+              <Text style={[styles.categoryText, { color: "white" }]}>{t("You've exceeded the limit")}</Text>
             </View>
           )}
         </View>
         <View style={{ width: "100%", alignItems: "center" }}>
           <CustomButton
-            title="Edit"
+            title={t("Edit")}
             bg={CATEGORY_COLORS[category]}
             color="white"
             press={() =>

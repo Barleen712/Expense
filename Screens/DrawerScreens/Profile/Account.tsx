@@ -61,7 +61,7 @@ export default function Account({ navigation }: Props) {
                   >
                     <Image style={{ width: 40, height: 40 }} source={WalletMap[item]}></Image>
                   </View>
-                  <Text style={styles.optionsText}>{item}</Text>
+                  <Text style={styles.optionsText}>{t(item)}</Text>
                 </View>
                 <Text style={[styles.optionsText, { flex: 0 }]}>$400</Text>
               </TouchableOpacity>

@@ -1,7 +1,7 @@
 import SelectDropdown from "react-native-select-dropdown";
 import { View, Text, Image } from "react-native";
 import styles from "../Screens/Stylesheet";
-import { on } from "events";
+import { useTranslation } from "react-i18next";
 interface dropdown {
   data: Array<string>;
   name: string;
@@ -11,11 +11,14 @@ interface dropdown {
   onSelectItem: (selectedItem: string, index: number) => void;
 }
 export default function CustomD({ name, data, styleButton, styleItem, styleArrow, onSelectItem }: dropdown) {
+  const { t } = useTranslation();
+  const translatedData = data.map((item) => t(item));
   return (
     <SelectDropdown
-      data={data}
+      data={translatedData}
       onSelect={(selectedItem, index) => {
-        onSelectItem(selectedItem, index);
+        const originalItem = data[index];
+        onSelectItem(originalItem, index);
       }}
       renderButton={(selectedItem) => {
         return (

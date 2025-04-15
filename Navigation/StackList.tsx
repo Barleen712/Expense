@@ -41,7 +41,7 @@ type StackParamList = {
   DetailTransaction_Income: undefined;
   DetailTransaction_Transfer: undefined;
   DetailBudget: {
-    category: string;
+    category: any;
     remaining: number;
     progress: number;
     exceeded: boolean;

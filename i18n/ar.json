@@ -1,0 +1,152 @@
+{
+  "Get Started": "ابدأ الآن",
+  "Gain total control of your money": "تحكم الكامل في أموالك",
+  "Know where your money goes": "اعرف أين تذهب أموالك",
+  "Planning ahead": "التخطيط المسبق",
+  "Become your own money manager and make every cent count": "كن مدير أموالك الخاص وحافظ على كل قرش",
+  "Track your transaction easily,with categories and financial report": "تابع معاملاتك بسهولة مع الفئات والتقارير المالية",
+  "Setup your budget for each category so you in control": "اضبط ميزانيتك لكل فئة لتبقى مسيطرًا",
+  "Sign Up": "التسجيل",
+  "Login": "تسجيل الدخول",
+  "Name": "الاسم",
+  "Email": "البريد الإلكتروني",
+  "Password": "كلمة المرور",
+  "By signing up, you agree to the ": "بالتسجيل، أنت توافق على",
+  "Terms of Service and Privacy Policy": "شروط الخدمة وسياسة الخصوصية",
+  "or with": "أو باستخدام",
+  "Sign Up with Google": "التسجيل عبر جوجل",
+  "Already have an account?": "هل لديك حساب بالفعل؟",
+  "Forgot Password": "نسيت كلمة المرور؟",
+  "Don’t have an account yet?": "ليس لديك حساب بعد؟",
+  "Income": "الدخل",
+  "Expense": "المصروفات",
+  "Search results": "نتائج البحث",
+  "Language": "اللغة",
+  "Spend Smarter Save More": "أنفق بحكمة ووفر أكثر",
+  "Let’s setup you Pin": "لنقم بإعداد رقمك السري",
+  "Ok. Re type your Pin again": "حسنًا. أعد إدخال رقمك السري",
+  "You are set": "لقد انتهيت",
+  "Account Balance": "رصيد الحساب",
+  "Spend Frequency": "تكرار الإنفاق",
+  "Today": "اليوم",
+  "Week": "الأسبوع",
+  "Month": "الشهر",
+  "Year": "السنة",
+  "Recent Transaction": "المعاملات الأخيرة",
+  "See All": "عرض الكل",
+  "Don’t Worry": "لا تقلق",
+  "Enter your email and we’ll send you a link to reset your password": "أدخل بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور",
+  "Continue": "متابعة",
+  "Your email is on the way": "تم إرسال بريدك الإلكتروني",
+  "Check your email test@test.com and follow the instructions to reset your password": "تحقق من بريدك الإلكتروني test@test.com واتبع التعليمات لإعادة تعيين كلمة المرور",
+  "Back to Login": "العودة لتسجيل الدخول",
+  "Home": "الرئيسية",
+  "Transactions": "المعاملات",
+  "Budget": "الميزانية",
+  "Profile": "الملف الشخصي",
+  "See your financial report": "اطلع على تقريرك المالي",
+  "Account": "الحساب",
+  "Settings": "الإعدادات",
+  "Export Data": "تصدير البيانات",
+  "Logout": "تسجيل الخروج",
+  "Currency": "العملة",
+  "Theme": "السمة",
+  "Security": "الأمان",
+  "Notification": "الإشعارات",
+  "About": "حول",
+  "Help": "مساعدة",
+  "How much?": "بكم؟",
+  "Category": "الفئة",
+  "Description": "الوصف",
+  "Wallet": "المحفظة",
+  "Add attachment": "إضافة مرفق",
+  "From": "من",
+  "To": "إلى",
+  "Create a Budget": "إنشاء ميزانية",
+  "Filter Transaction": "تصفية المعاملات",
+  "Filter By": "تصفية حسب",
+  "Transfer": "تحويل",
+  "Sort By": "ترتيب حسب",
+  "Highest": "الأعلى",
+  "Lowest": "الأقل",
+  "Newest": "الأحدث",
+  "Oldest": "الأقدم",
+  "Choose Category": "اختر الفئة",
+  "Apply": "تطبيق",
+  "Reset": "إعادة تعيين",
+  "Repeat": "تكرار",
+  "Repeat Transaction": "تكرار المعاملة",
+  "You don’t have a budget": "ليس لديك ميزانية",
+  "Let’s make one so you in control": "لنقم بإنشاء واحدة لتبقى مسيطرًا",
+  "Paypal": "باي بال",
+  "Google Pay": "جوجل باي",
+  "Paytm": "باي تي إم",
+  "PhonePe": "فون بي",
+  "Apple Pay": "آبل باي",
+  "Pin": "الرقم السري",
+  "Fingerprint": "البصمة",
+  "Face ID": "الوجه",
+  "Light": "فاتح",
+  "Dark": "غامق",
+  "Using device theme": "استخدام سمة الجهاز",
+  "Salary": "الراتب",
+  "Shopping": "التسوق",
+  "Food": "الطعام",
+  "Entertainment": "الترفيه",
+  "Subscription": "الاشتراكات",
+  "Transportation": "المواصلات",
+  "Bills": "الفواتير",
+  "Miscellaneous": "متنوع",
+  "Detail Transaction": "تفاصيل المعاملة",
+  "Type": "النوع",
+  "Attachment": "المرفق",
+  "Edit": "تعديل",
+  "Remove this transaction": "إزالة هذه المعاملة",
+  "Are you sure you want to remove this transaction?": "هل أنت متأكد أنك تريد إزالة هذه المعاملة؟",
+  "Yes": "نعم",
+  "No": "لا",
+  "Transaction has been successfully removed": "تمت إزالة المعاملة بنجاح",
+  "This Month": "هذا الشهر",
+  "You Earned 💰": "لقد ربحت 💰",
+  "You Spend 💸": "لقد أنفقت 💸",
+  "and your biggest spending is from": "وإنفاقك الأكبر هو من",
+  "your biggest Income is from": "وإيرادك الأكبر هو من",
+  "Financial freedom is freedom from fear": "الحرية المالية هي التحرر من الخوف",
+  "Robert Kiyosaki": "روبرت كيوساكي",
+  "See the full detail": "رؤية التفاصيل الكاملة",
+  "Budget is exceeds the limit": "الميزانية تجاوزت الحد",
+  "Financial Report": "التقرير المالي",
+  "Create Budget": "إنشاء ميزانية",
+  "Receive Alert": "تلقي تنبيه",
+  "Receive alert when it reaches some point": "تلقي تنبيه عند الوصول إلى نقطة معينة",
+  "Remaining": "المتبقي",
+  "January": "يناير",
+  "February": "فبراير",
+  "March": "مارس",
+  "April": "أبريل",
+  "May": "مايو",
+  "June": "يونيو",
+  "July": "يوليو",
+  "August": "أغسطس",
+  "September": "سبتمبر",
+  "October": "أكتوبر",
+  "November": "نوفمبر",
+  "December": "ديسمبر",
+  "Detail Budget": "تفاصيل الميزانية",
+  "Remove this budget": "إزالة هذه الميزانية",
+  "Are you sure you want to remove this budget?": "هل أنت متأكد أنك تريد إزالة هذه الميزانية؟",
+  "Budget has been successfully removed": "تمت إزالة الميزانية بنجاح",
+  "How much do you want to spend?": "كم تريد أن تنفق؟",
+  "Logout?": "تسجيل الخروج؟",
+  "Are you sure you want to logout?": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+  "You've exceeded the limit": "لقد تجاوزت الحد",
+  "Passive Income": "الدخل السلبي",
+  "What data do you want to export?": "ما البيانات التي تريد تصديرها؟",
+  "When date range?": "ما الفترة الزمنية؟",
+  "What format do you want to export?": "ما التنسيق الذي تريد التصدير إليه؟",
+  "Detail Account": "تفاصيل الحساب",
+  "Edit Budget": "تعديل الميزانية",
+  "Export": "تصدير",
+  "Back to Home": "العودة إلى الرئيسية",
+  "Check your email, we send you the financial report. In certain cases, it might take a little longer, depending on the time period and the volume of activity.": "تحقق من بريدك الإلكتروني، لقد أرسلنا لك التقرير المالي. في بعض الحالات، قد يستغرق ذلك وقتًا أطول قليلاً، اعتمادًا على الفترة الزمنية وحجم النشاط."
+}

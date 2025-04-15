@@ -80,14 +80,19 @@ export default function Profile({ navigation }: Props) {
       <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
-            <Text style={styles.logout}>Logout?</Text>
-            <Text style={styles.quesLogout}>Are you sure do you want to logout?</Text>
+            <Text style={styles.logout}>{t("Logout")}?</Text>
+            <Text style={styles.quesLogout}>{t("Are you sure you want to logout?")}</Text>
             <View style={styles.modalButton}>
               <View style={styles.modalY}>
-                <CustomButton title="Yes" bg="rgb(42, 124, 118)" color="white" press={handleLogout} />
+                <CustomButton title={t("Yes")} bg="rgb(42, 124, 118)" color="white" press={handleLogout} />
               </View>
               <View style={styles.modalN}>
-                <CustomButton title="No" bg="rgba(220, 234, 233, 0.6)" color="rgb(42, 124, 118)" press={toggleModal} />
+                <CustomButton
+                  title={t("No")}
+                  bg="rgba(220, 234, 233, 0.6)"
+                  color="rgb(42, 124, 118)"
+                  press={toggleModal}
+                />
               </View>
             </View>
           </View>

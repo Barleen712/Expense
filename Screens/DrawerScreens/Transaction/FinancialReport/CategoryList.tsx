@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { ProgressBar } from "react-native-paper";
 import { CATEGORY_COLORS } from "../../../Constants";
 const width = Dimensions.get("window").width;
-
+import { useTranslation } from "react-i18next";
 interface CategoryItem {
   category: string;
   total: number;
@@ -16,6 +16,7 @@ interface CategoryListProps {
 }
 
 export default function CategoryList({ category }: CategoryListProps) {
+  const { t } = useTranslation();
   return (
     <FlatList
       contentContainerStyle={{
@@ -54,7 +55,7 @@ export default function CategoryList({ category }: CategoryListProps) {
                 flexShrink: 1,
               }}
             >
-              {item.category}
+              {t(item.category)}
             </Text>
           </View>
 

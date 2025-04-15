@@ -7,6 +7,7 @@ import { selectTransactions } from "../../../Slice/Selectors";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
+import { useTranslation } from "react-i18next";
 
 interface TransactionListProps {
   data: Array<{
@@ -27,7 +28,7 @@ export default function TransactionList({ data }: TransactionListProps) {
       navigation.navigate("DetailTransaction_Expense", { value: data[index] });
     else navigation.navigate("DetailTransaction_Transfer", { value: data[index] });
   }
-
+  const { t } = useTranslation();
   return (
     <FlatList
       contentContainerStyle={{
@@ -64,7 +65,7 @@ export default function TransactionList({ data }: TransactionListProps) {
               />
             </View>
             <View style={{ width: "54%", padding: 5 }}>
-              <Text style={[styles.balance, { color: "black", marginTop: 15 }]}>{item.category}</Text>
+              <Text style={[styles.balance, { color: "black", marginTop: 15 }]}>{t(item.category)}</Text>
               <Text style={[styles.categoryText, { color: "rgba(145, 145, 159, 1)", marginTop: 10 }]}>
                 {item.description}
               </Text>

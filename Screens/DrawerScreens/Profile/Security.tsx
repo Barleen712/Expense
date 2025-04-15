@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
+import { useTranslation } from "react-i18next";
 type SecurityProp = StackNavigationProp<StackParamList, "Account">;
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 export default function Security({ navigation }: Props) {
   const currencies = ["PIN", "Fingerprint", "Face ID"];
   const [selected, setSelected] = useState("PIN");
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <Header title="Security" press={() => navigation.goBack()} />
@@ -24,7 +26,7 @@ export default function Security({ navigation }: Props) {
         renderItem={({ item }) => (
           <View>
             <TouchableOpacity onPress={() => setSelected(item)} style={styles.items}>
-              <Text style={styles.itemTitle}>{item}</Text>
+              <Text style={styles.itemTitle}>{t(item)}</Text>
               {selected === item && (
                 <View style={styles.itemSelected}>
                   <Ionicons name="checkmark-circle" size={20} color="green"></Ionicons>

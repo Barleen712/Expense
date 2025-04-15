@@ -18,25 +18,20 @@ interface Props {
 export default function Language({ navigation }: Props) {
   const changeLanguage = (language) => {
     i18n.changeLanguage(language);
-    console.log("Change Language");
   };
   const { t } = useTranslation();
   const currencies = [
-    { name: "Arabic", code: "AR" },
-    { name: "Chinese", code: "ZH" },
-    { name: "Dutch", code: "RUB" },
-    { name: "English", code: "EN" },
-    { name: "French", code: "FR" },
-    { name: "German", code: "DE" },
-    { name: "Hindi", code: "HI" },
-    { name: "Indonesian", code: "ID" },
-    { name: "Italian", code: "IT" },
-    { name: "Korean", code: "KO" },
+    { name: "Arabic", code: "AR", tc: "ar" },
+    { name: "Chinese", code: "ZH", tc: "zh" },
+    { name: "English", code: "EN", tc: "en" },
+    { name: "Italian", code: "IT", tc: "it" },
+    { name: "Spanish", code: "ES", tc: "es" },
+    { name: "Hindi", code: "HI", tc: "hi" },
   ];
-  const [selectedLanguage, setSelectedLanguage] = useState("EN");
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
   return (
     <View style={styles.container}>
-      <Header title={t(StringConstants.Language)} press={() => navigation.goBack()} />
+      <Header title={t("Language")} press={() => navigation.goBack()} />
       <View style={styles.Line}></View>
       <FlatList
         style={styles.settings}
@@ -44,11 +39,17 @@ export default function Language({ navigation }: Props) {
         scrollEnabled={false}
         renderItem={({ item }) => (
           <View>
-            <TouchableOpacity onPress={() => changeLanguage("es")} style={styles.items}>
+            <TouchableOpacity
+              onPress={() => {
+                changeLanguage(item.tc);
+                setSelectedLanguage(item.tc);
+              }}
+              style={styles.items}
+            >
               <Text style={styles.itemTitle}>
                 {item.name} ({item.code})
               </Text>
-              {selectedLanguage === item.code && (
+              {selectedLanguage === item.tc && (
                 <View style={styles.itemSelected}>
                   <Ionicons name="checkmark-circle" size={20} color="green"></Ionicons>
                 </View>

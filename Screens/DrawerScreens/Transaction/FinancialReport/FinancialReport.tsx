@@ -9,6 +9,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { StringConstants } from "../../../Constants";
 import {
   selectIncomeTotal,
   selectExpenseTotal,
@@ -67,10 +69,10 @@ export default function FinancialReport({ navigation }: Props) {
     percentage: item.total,
     color: CATEGORY_COLORS[item.category],
   }));
-
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Header title="Financial Report" press={() => navigation.goBack()} />
+      <Header title={t(StringConstants.FinancialReport)} press={() => navigation.goBack()} />
       <View style={[styles.transactionHead]}>
         <CustomD
           name="Month"
@@ -134,7 +136,9 @@ export default function FinancialReport({ navigation }: Props) {
               { backgroundColor: Expense ? "rgba(42, 124, 118, 1)" : "rgba(220, 234, 233, 0.6)", borderRadius: 35 },
             ]}
           >
-            <Text style={[styles.setuptext, { color: Expense ? "white" : "rgba(42, 124, 118, 1)" }]}>Expense</Text>
+            <Text style={[styles.setuptext, { color: Expense ? "white" : "rgba(42, 124, 118, 1)" }]}>
+              {t(StringConstants.Expense)}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -146,7 +150,9 @@ export default function FinancialReport({ navigation }: Props) {
               { backgroundColor: Income ? "rgba(42, 124, 118, 1)" : "rgba(220, 234, 233, 0.6)", borderRadius: 35 },
             ]}
           >
-            <Text style={[styles.setuptext, { color: Income ? "white" : "rgba(42, 124, 118, 1)" }]}>Income</Text>
+            <Text style={[styles.setuptext, { color: Income ? "white" : "rgba(42, 124, 118, 1)" }]}>
+              {t(StringConstants.Income)}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

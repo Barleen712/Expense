@@ -25,7 +25,9 @@ import Input from "../../../Components/CustomTextInput";
 import SelectImageWithDocumentPicker from "./Attachment";
 import { addTransaction } from "../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
-import { uploadImage } from "../../Constants";
+import { uploadImage, StringConstants } from "../../Constants";
+import { useTranslation } from "react-i18next";
+
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -72,6 +74,7 @@ export default function Income({ navigation }: Props) {
       setTransfer("$");
     }
   };
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   async function add() {
     const numericIncome = parseFloat(Transfer.replace("$", "") || "0");
@@ -97,7 +100,12 @@ export default function Income({ navigation }: Props) {
   }
   return (
     <View style={styles.container}>
-      <Header title="Transfer" press={() => navigation.goBack()} bgcolor="rgba(0, 119, 255, 1)" color="white" />
+      <Header
+        title={t(StringConstants.Transfer)}
+        press={() => navigation.goBack()}
+        bgcolor="rgba(0, 119, 255, 1)"
+        color="white"
+      />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView
@@ -107,7 +115,7 @@ export default function Income({ navigation }: Props) {
           >
             <View style={[styles.add, { backgroundColor: "rgba(0, 119, 255, 1)" }]}>
               <View style={styles.balanceView}>
-                <Text style={styles.balance}>How much ?</Text>
+                <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
                 <TouchableOpacity activeOpacity={1}>
                   <TextInput
                     value={Transfer}
@@ -122,7 +130,7 @@ export default function Income({ navigation }: Props) {
                 <View style={{ flexDirection: "row", width: "100%" }}>
                   <View style={{ width: "50%" }}>
                     <Input
-                      title="From"
+                      title={t("From")}
                       color="rgb(56, 88, 85)"
                       css={styles.textinput}
                       isPass={false}
@@ -132,7 +140,7 @@ export default function Income({ navigation }: Props) {
                   </View>
                   <View style={{ width: "50%" }}>
                     <Input
-                      title="To"
+                      title={t("To")}
                       color="rgb(56, 88, 85)"
                       css={styles.textinput}
                       isPass={false}
@@ -146,7 +154,7 @@ export default function Income({ navigation }: Props) {
                   />
                 </View>
                 <Input
-                  title="Description"
+                  title={t(StringConstants.Description)}
                   color="rgb(56, 88, 85)"
                   css={styles.textinput}
                   isPass={false}
@@ -163,7 +171,7 @@ export default function Income({ navigation }: Props) {
                     ]}
                   >
                     <Entypo name="attachment" size={24} color="black" />
-                    <Text>Add attachment</Text>
+                    <Text>{t(StringConstants.Addattachment)}</Text>
                   </TouchableOpacity>
                 )}
                 {image && (
@@ -196,8 +204,8 @@ export default function Income({ navigation }: Props) {
                 )}
                 <View style={styles.notiView}>
                   <View style={styles.noti}>
-                    <Text style={styles.notiTitle}>Repeat</Text>
-                    <Text style={styles.notiDes}>Repeat Transaction</Text>
+                    <Text style={styles.notiTitle}>{t("Repeat")}</Text>
+                    <Text style={styles.notiDes}>{t(StringConstants.RecentTransaction)}</Text>
                   </View>
                   <View style={styles.switch}>
                     <Switch
@@ -209,7 +217,7 @@ export default function Income({ navigation }: Props) {
                   </View>
                 </View>
                 <CustomButton
-                  title="Continue"
+                  title={t(StringConstants.Continue)}
                   bg="rgba(115, 116, 119, 0.14)"
                   color="rgba(0, 119, 255, 1)"
                   press={add}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, View, Image, Text } from "react-native";
 import styles from "../../Stylesheet";
-
+import { useTranslation } from "react-i18next";
 import { CustomButton } from "../../../Components/CustomButton";
 export default function CustomModal({ visible, setVisible, color, bg, head, text, navigation, onsuccess, deleteT }) {
   function toggleModal() {
@@ -17,6 +17,7 @@ export default function CustomModal({ visible, setVisible, color, bg, head, text
       navigation.goBack();
     }, 3000);
   }
+  const { t } = useTranslation();
   return (
     <View>
       <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={toggleModal}>
@@ -26,10 +27,10 @@ export default function CustomModal({ visible, setVisible, color, bg, head, text
             <Text style={[styles.quesLogout, { width: "80%", textAlign: "center" }]}>{text}</Text>
             <View style={styles.modalButton}>
               <View style={styles.modalY}>
-                <CustomButton title="Yes" bg={bg} color="white" press={toggleSuccess} />
+                <CustomButton title={t("Yes")} bg={bg} color="white" press={toggleSuccess} />
               </View>
               <View style={styles.modalN}>
-                <CustomButton title="No" bg={color} color={bg} press={toggleModal} />
+                <CustomButton title={t("No")} bg={color} color={bg} press={toggleModal} />
               </View>
             </View>
           </View>

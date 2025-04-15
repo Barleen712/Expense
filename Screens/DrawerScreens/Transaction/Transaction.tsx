@@ -34,6 +34,8 @@ const SortBy = ["Highest", "Lowest", "Newest", "Oldest"];
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import TransactionList from "../Home/TransactionsList";
+import { StringConstants } from "../../Constants";
+import { useTranslation } from "react-i18next";
 
 type Transactionprop = StackNavigationProp<StackParamList, "MainScreen">;
 
@@ -46,7 +48,7 @@ export default function Transaction({ navigation }: Props) {
     setModalVisible(!modalVisible);
   }
   const transactions = useSelector(selectTransactions);
-
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <View style={styles.transactionHead}>
@@ -66,7 +68,7 @@ export default function Transaction({ navigation }: Props) {
       </View>
       <View style={styles.reportView}>
         <TouchableOpacity style={styles.financialReport} onPress={() => navigation.navigate("FinancialReportExpense")}>
-          <Text style={styles.reportText}>See your financial report</Text>
+          <Text style={styles.reportText}>{t(StringConstants.Seeyourfinancialreport)}</Text>
           <Image
             style={styles.arrows}
             source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
@@ -78,48 +80,48 @@ export default function Transaction({ navigation }: Props) {
           <View style={styles.modalOverlay}>
             <View style={[styles.modalContainer, { height: "65%" }]}>
               <View style={styles.filter}>
-                <Text style={styles.notiTitle}>Filter Transaction</Text>
+                <Text style={styles.notiTitle}>{t(StringConstants.FilterTransaction)}</Text>
                 <TouchableOpacity style={styles.reset}>
-                  <Text style={[styles.homeTitle, { color: "rgb(42, 124, 118)" }]}>Reset</Text>
+                  <Text style={[styles.homeTitle, { color: "rgb(42, 124, 118)" }]}>{t("Reset")}</Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.FilterOptions}>
-                <Text style={styles.notiTitle}>Filter By</Text>
+                <Text style={styles.notiTitle}>{t(StringConstants.FilterBy)}</Text>
                 <FlatList
                   numColumns={3}
                   contentContainerStyle={styles.flatListContainer}
                   data={FilterBy}
                   renderItem={({ item }) => (
                     <TouchableOpacity style={styles.filterButton}>
-                      <Text style={styles.filterButtonText}>{item}</Text>
+                      <Text style={styles.filterButtonText}>{t(item)}</Text>
                     </TouchableOpacity>
                   )}
                 />
               </View>
               <View style={[styles.FilterOptions, { flex: 0.35 }]}>
-                <Text style={styles.notiTitle}>Sort By</Text>
+                <Text style={styles.notiTitle}>{t(StringConstants.SortBy)}</Text>
                 <FlatList
                   numColumns={3}
                   contentContainerStyle={styles.flatListContainer}
                   data={SortBy}
                   renderItem={({ item }) => (
                     <TouchableOpacity style={styles.filterButton}>
-                      <Text style={styles.filterButtonText}>{item}</Text>
+                      <Text style={styles.filterButtonText}>{t(item)}</Text>
                     </TouchableOpacity>
                   )}
                 />
               </View>
               <View style={styles.FilterCategory}>
-                <Text style={styles.notiTitle}>Category</Text>
+                <Text style={styles.notiTitle}>{t(StringConstants.Category)}</Text>
                 <TouchableOpacity style={[styles.settingsOptions, { marginTop: 20 }]}>
-                  <Text style={styles.settingtitle}>Choose Category</Text>
+                  <Text style={styles.settingtitle}>{t(StringConstants.ChooseCategory)}</Text>
                   <Image
                     style={{ position: "absolute", right: "1%" }}
                     source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
                   />
                 </TouchableOpacity>
                 <View style={styles.Apply}>
-                  <CustomButton title="Apply" bg="rgb(42, 124, 118)" color="white" />
+                  <CustomButton title={t("Apply")} bg="rgb(42, 124, 118)" color="white" />
                 </View>
               </View>
             </View>

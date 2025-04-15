@@ -20,6 +20,8 @@ import Header from "../../../Components/Header";
 import CustomSlider from "../../../Components/Slider";
 import { addBudget, updateBudget } from "../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { StringConstants } from "../../Constants";
 type CreateBudgetProp = StackNavigationProp<StackParamList, "CreateBudget">;
 
 interface Props {
@@ -30,7 +32,7 @@ interface Props {
       percentage: number;
       alert: boolean;
       edit: boolean;
-      category: boolean;
+      category: string;
       index?: number;
       header: string;
     };
@@ -72,13 +74,14 @@ export default function CreateBudget({ navigation, route }: Props) {
     navigation.goBack();
     navigation.goBack();
   }
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Header title={parameters.header} press={() => navigation.goBack()} bgcolor="rgb(56, 88, 85)" color="white" />
+      <Header title={t(parameters.header)} press={() => navigation.goBack()} bgcolor="rgb(56, 88, 85)" color="white" />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.add}>
           <View style={styles.balanceView}>
-            <Text style={styles.balance}>How much do you want to spend ?</Text>
+            <Text style={styles.balance}>{t("How much do you want to spend?")}</Text>
             <TouchableOpacity activeOpacity={1}>
               <TextInput
                 value={Budget}
@@ -91,7 +94,7 @@ export default function CreateBudget({ navigation, route }: Props) {
           </View>
           <View style={styles.selection}>
             <CustomD
-              name={parameters.category}
+              name={t(parameters.category)}
               data={category}
               styleButton={styles.textinput}
               styleItem={styles.dropdownItems}
@@ -101,8 +104,8 @@ export default function CreateBudget({ navigation, route }: Props) {
             <View style={styles.dropdown}>
               <View style={styles.notiView}>
                 <View style={styles.noti}>
-                  <Text style={styles.notiTitle}>Receive Alert</Text>
-                  <Text style={styles.notiDes}>Receive alert when it reaches some point</Text>
+                  <Text style={styles.notiTitle}>{t(StringConstants.RecieveAlert)}</Text>
+                  <Text style={styles.notiDes}>{t(StringConstants.Receivealertwhenitreachessomepoint)}</Text>
                 </View>
                 <View style={styles.switch}>
                   <Switch
@@ -115,7 +118,7 @@ export default function CreateBudget({ navigation, route }: Props) {
               </View>
               {Expense && <CustomSlider value={sliderValue} setvalue={setSliderValue} />}
               <CustomButton
-                title="Continue"
+                title={t(StringConstants.Continue)}
                 bg="rgb(42, 124, 118)"
                 color="white"
                 press={parameters.edit ? editBudget : add}
