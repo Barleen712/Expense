@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, ImageBackground } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import styles from "../../Stylesheet";
@@ -8,13 +8,17 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
 import { useTranslation } from "react-i18next";
+import CustomD from "../../../Components/Practice";
+import { GenerateCSVReport } from "./ExportCSV";
 type ExportProp = StackNavigationProp<StackParamList, "Export">;
 
 interface Props {
   navigation: ExportProp;
 }
+const category = ["CSV", "PDF"];
 export default function Export({ navigation }: Props) {
   const { t } = useTranslation();
+  const [selectedCategory, setSelectedCategory] = useState("CSV");
   return (
     <View style={styles.container}>
       <Header title={t("Export Data")} press={() => navigation.goBack()} />
@@ -25,15 +29,17 @@ export default function Export({ navigation }: Props) {
         <Text style={styles.exportText}>{t("When date range?")}</Text>
         <Input title="Last 30 days" color="rgb(56, 88, 85)" css={styles.textinput1} isPass={false} />
         <Text style={styles.exportText}>{t("What format do you want to export?")}</Text>
-        <Input title="Csv" color="rgb(56, 88, 85)" css={styles.textinput1} isPass={false} />
+        <CustomD
+          name={selectedCategory}
+          data={category}
+          styleButton={styles.textinput}
+          styleItem={styles.dropdownItems}
+          styleArrow={styles.arrowDown}
+          onSelectItem={(item) => setSelectedCategory(item)}
+        />
       </View>
       <View style={styles.exportButton}>
-        <CustomButton
-          title={t("Export")}
-          bg="rgb(42, 124, 118)"
-          color="white"
-          press={() => navigation.navigate("Export1")}
-        />
+        <CustomButton title={t("Export")} bg="rgb(42, 124, 118)" color="white" press={GenerateCSVReport} />
       </View>
     </View>
   );
