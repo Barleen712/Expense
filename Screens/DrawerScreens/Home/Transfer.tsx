@@ -38,7 +38,7 @@ const modal = [
   require("../../../assets/ImageBlue.png"),
   require("../../../assets/DocumentBlue.png"),
 ];
-export default function Income({ navigation }: Props) {
+export default function Income({ navigation, route }: Props) {
   const [Expense, setExpense] = useState(false);
   const [showAttach, setAttach] = useState(true);
   const [image, setImage] = useState<string | null>(null);
@@ -150,7 +150,7 @@ export default function Income({ navigation }: Props) {
                   </View>
                   <Image
                     style={{ width: 40, height: 40, position: "absolute", top: "25%", left: "45%" }}
-                    source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Transfer.png")}
+                    source={require("../../../assets/Transfer.png")}
                   />
                 </View>
                 <Input

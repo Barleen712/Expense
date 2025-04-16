@@ -33,6 +33,7 @@ import { addTransaction } from "../../../Slice/IncomeSlice";
 import { uploadImage } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
+import { updateTransaction } from "../../../Slice/IncomeSlice";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -46,7 +47,8 @@ const modal = [
   require("../../../assets/ImageRed.png"),
   require("../../../assets/DocumentRed.png"),
 ];
-export default function Expense({ navigation }: Props) {
+export default function Expense({ navigation, route }: Props) {
+  const parameters = route.params;
   const [Expense, setExpense] = useState(false);
   const [showAttach, setAttach] = useState(true);
   const [image, setImage] = useState<string | null>(null);
@@ -54,10 +56,10 @@ export default function Expense({ navigation }: Props) {
   const [close, setclose] = useState(false);
   const [document, setDocument] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
-  const [Expenses, setExpenses] = useState<string>("$0");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedWallet, setSelectedWallet] = useState("");
-  const [Description, setDescription] = useState("");
+  const [Expenses, setExpenses] = useState<string>(`$${parameters.amount}`);
+  const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
+  const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
+  const [Description, setDescription] = useState(`${parameters.title}`);
 
   function toggleModal() {
     setModalVisible(!modalVisible);
@@ -85,7 +87,7 @@ export default function Expense({ navigation }: Props) {
   };
   const dispatch = useDispatch();
   async function add() {
-    const numericIncome = parseFloat(Expenses.replace("$", "") || "0");
+    const numericExpense = parseFloat(Expenses.replace("$", "") || "0");
     let supabaseImageUrl = null;
 
     if (image) {
@@ -93,7 +95,7 @@ export default function Expense({ navigation }: Props) {
     }
     dispatch(
       addTransaction({
-        amount: numericIncome,
+        amount: numericExpense,
         description: Description,
         category: selectedCategory,
         wallet: selectedWallet,
@@ -107,6 +109,21 @@ export default function Expense({ navigation }: Props) {
     navigation.goBack();
   }
   const { t } = useTranslation();
+  function editExpense() {
+    const numericExpense = parseFloat(Expenses.replace("$", "") || "0");
+    dispatch(
+      updateTransaction({
+        amount: numericExpense,
+        description: Description,
+        category: selectedCategory,
+        wallet: selectedWallet,
+        key: parameters.keyVal,
+        moneyCategory: "Expense",
+      })
+    );
+    navigation.goBack();
+    navigation.goBack();
+  }
   return (
     <View style={styles.container}>
       <Header title={t("Expense")} press={() => navigation.goBack()} bgcolor="rgba(253, 60, 74, 1)" color="white" />
@@ -132,7 +149,7 @@ export default function Expense({ navigation }: Props) {
               </View>
               <View style={[styles.selection]}>
                 <CustomD
-                  name={t(StringConstants.Category)}
+                  name={t(parameters.category)}
                   data={category}
                   styleButton={styles.textinput}
                   styleItem={styles.dropdownItems}
@@ -148,7 +165,7 @@ export default function Expense({ navigation }: Props) {
                   onchange={setDescription}
                 />
                 <CustomD
-                  name={t(StringConstants.Wallet)}
+                  name={t(parameters.wallet)}
                   data={wallet}
                   styleButton={styles.textinput}
                   styleItem={styles.dropdownItems}
@@ -213,7 +230,7 @@ export default function Expense({ navigation }: Props) {
                   title={t(StringConstants.Continue)}
                   bg="rgba(205, 153, 141, 0.13)"
                   color="rgba(253, 60, 74, 1)"
-                  press={add}
+                  press={parameters.edit ? editExpense : add}
                 />
               </View>
             </View>

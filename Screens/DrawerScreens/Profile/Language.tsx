@@ -8,7 +8,6 @@ import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
 import i18n from "../../../i18n/i18next";
 import { useTranslation } from "react-i18next";
-import { StringConstants } from "../../Constants";
 
 type LanguageProp = StackNavigationProp<StackParamList, "Account">;
 

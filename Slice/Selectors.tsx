@@ -74,6 +74,7 @@ export const BudgetCategory = createSelector(
         budgetvalue: item.amount,
         amountSpent: spentAmount,
         alertPercent: item.percentage,
+        notification: item.notification,
       };
     });
   }

@@ -45,12 +45,16 @@ export default function CreateBudget({ navigation, route }: Props) {
   const [Expense, setExpense] = useState(parameters.alert);
   const [sliderValue, setSliderValue] = useState(parameters.percentage);
   const [Budget, setBudget] = useState<string>(`$${parameters.value}`);
+  const [missing, setmissing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const handleFocus = () => {
-    if (Budget === "" || Budget === "$0" || Budget === "$") {
+    if (missing === true) {
+      setmissing(false);
+    } else if (Budget === "" || Budget === "$0" || Budget === "$") {
       setBudget("$");
     }
   };
+
   const handleIncomeChange = (text: string) => {
     const numericValue = text.replace(/[^0-9.]/g, "");
     setBudget(`$${numericValue}`);
@@ -58,7 +62,18 @@ export default function CreateBudget({ navigation, route }: Props) {
   const dispatch = useDispatch();
   function add() {
     const numericBudget = parseFloat(Budget.replace("$", "") || "0");
-    dispatch(addBudget({ category: selectedCategory, amount: numericBudget, percentage: Math.round(sliderValue) }));
+    if (selectedCategory === "Category" || numericBudget === 0) {
+      setmissing(true);
+      return;
+    }
+    dispatch(
+      addBudget({
+        category: selectedCategory,
+        amount: numericBudget,
+        percentage: Math.round(sliderValue),
+        notification: Expense,
+      })
+    );
     navigation.goBack();
   }
   function editBudget() {
@@ -82,15 +97,13 @@ export default function CreateBudget({ navigation, route }: Props) {
         <View style={styles.add}>
           <View style={styles.balanceView}>
             <Text style={styles.balance}>{t("How much do you want to spend?")}</Text>
-            <TouchableOpacity activeOpacity={1}>
-              <TextInput
-                value={Budget}
-                keyboardType="numeric"
-                onChangeText={handleIncomeChange}
-                style={styles.amount}
-                onFocus={handleFocus}
-              ></TextInput>
-            </TouchableOpacity>
+            <TextInput
+              value={Budget}
+              keyboardType="numeric"
+              onChangeText={handleIncomeChange}
+              style={styles.amount}
+              onFocus={handleFocus}
+            />
           </View>
           <View style={styles.selection}>
             <CustomD
@@ -124,6 +137,11 @@ export default function CreateBudget({ navigation, route }: Props) {
                 press={parameters.edit ? editBudget : add}
               />
             </View>
+            {missing && (
+              <View style={{ position: "absolute", top: "2%", left: "7%" }}>
+                <Text style={{ color: "red", fontStyle: "bold" }}>*Specify Category and Budget Amount</Text>
+              </View>
+            )}
           </View>
         </View>
       </TouchableWithoutFeedback>

@@ -29,9 +29,9 @@ type StackParamList = {
     edit: boolean;
     header: string;
   };
-  Expense: undefined;
-  Income: undefined;
-  Transfer: undefined;
+  Expense: { amount: number; category: string; edit: boolean; title: string; wallet: string };
+  Income: { amount: number; category: string; edit: boolean; title: string; wallet: string };
+  Transfer: { amount: number; category: string; edit: boolean; title: string; wallet: string };
   FinancialReportExpense: undefined;
   FinancialReportBudget: undefined;
   FinancialReportQuote: undefined;

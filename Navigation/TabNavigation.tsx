@@ -78,7 +78,15 @@ export default function Tabscreens({ navigation }: Props) {
             {cross && <Ionicons name="close-outline" size={30} color="white" />}
             {cross && (
               <TouchableOpacity
-                onPress={() => navigation.navigate("Transfer")}
+                onPress={() =>
+                  navigation.navigate("Transfer", {
+                    amount: 0,
+                    category: "Category",
+                    edit: false,
+                    title: "",
+                    wallet: "Wallet",
+                  })
+                }
                 style={{
                   position: "absolute",
                   left: -15,
@@ -91,7 +99,15 @@ export default function Tabscreens({ navigation }: Props) {
             )}
             {cross && (
               <TouchableOpacity
-                onPress={() => navigation.navigate("Expense")}
+                onPress={() =>
+                  navigation.navigate("Expense", {
+                    amount: 0,
+                    category: "Category",
+                    edit: false,
+                    title: "",
+                    wallet: "Wallet",
+                  })
+                }
                 style={{ position: "absolute", left: 55, bottom: 55 }}
               >
                 <Image source={require("../assets/ExpenseButton.png")} />
@@ -99,7 +115,15 @@ export default function Tabscreens({ navigation }: Props) {
             )}
             {cross && (
               <TouchableOpacity
-                onPress={() => navigation.navigate("Income")}
+                onPress={() =>
+                  navigation.navigate("Income", {
+                    amount: 0,
+                    category: "Category",
+                    edit: false,
+                    title: "",
+                    wallet: "Wallet",
+                  })
+                }
                 style={{ position: "absolute", right: 55, bottom: 55 }}
               >
                 <Image source={require("../assets/IncomeButton.png")} />

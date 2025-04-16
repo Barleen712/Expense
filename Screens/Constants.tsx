@@ -13,6 +13,7 @@ export const categoryMap = {
   Salary: require("../assets/Salary.png"),
   "Passive Income": require("../assets/Passive Income.png"),
 };
+export const Food = "../assets/Food.png";
 export const Month = [
   "January",
   "February",

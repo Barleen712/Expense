@@ -33,6 +33,7 @@ import { addTransaction } from "../../../Slice/IncomeSlice";
 import { uploadImage } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
+import { updateTransaction } from "../../../Slice/IncomeSlice";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -42,7 +43,8 @@ interface Props {
 
 const category = ["Salary", "Passive Income"];
 const wallet = ["PayPal", "Google Pay", "Paytm", "PhonePe", "Apple Pay", "Razorpay", "Mobikwik"];
-export default function Income({ navigation }: Props) {
+export default function Income({ navigation, route }: Props) {
+  const parameters = route.params;
   const [Expense, setExpense] = useState(false);
   const [showAttach, setAttach] = useState(true);
   const [image, setImage] = useState<string | null>(null);
@@ -50,10 +52,10 @@ export default function Income({ navigation }: Props) {
   const [close, setclose] = useState(false);
   const [document, setDocument] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
-  const [Income, setIncome] = useState<string>("$0");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedWallet, setSelectedWallet] = useState("");
-  const [Description, setDescription] = useState("");
+  const [Income, setIncome] = useState<string>(`$${parameters.amount}`);
+  const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
+  const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
+  const [Description, setDescription] = useState(`${parameters.title}`);
   const modal = [
     require("../../../assets/Camera.png"),
     require("../../../assets/Image.png"),
@@ -108,6 +110,21 @@ export default function Income({ navigation }: Props) {
     );
     navigation.goBack();
   }
+  function editIncome() {
+    const numericIncome = parseFloat(Income.replace("$", "") || "0");
+    dispatch(
+      updateTransaction({
+        amount: numericIncome,
+        description: Description,
+        category: selectedCategory,
+        wallet: selectedWallet,
+        key: parameters.keyVal,
+        moneyCategory: "Income",
+      })
+    );
+    navigation.goBack();
+    navigation.goBack();
+  }
 
   return (
     <View style={styles.container}>
@@ -139,7 +156,7 @@ export default function Income({ navigation }: Props) {
               </View>
               <View style={[styles.selection]}>
                 <CustomD
-                  name={t(StringConstants.Category)}
+                  name={t(parameters.category)}
                   data={category}
                   styleButton={styles.textinput}
                   styleItem={styles.dropdownItems}
@@ -155,7 +172,7 @@ export default function Income({ navigation }: Props) {
                   onchange={setDescription}
                 />
                 <CustomD
-                  name={t(StringConstants.Wallet)}
+                  name={t(parameters.wallet)}
                   data={wallet}
                   styleButton={styles.textinput}
                   styleItem={styles.dropdownItems}
@@ -220,7 +237,7 @@ export default function Income({ navigation }: Props) {
                   title={t(StringConstants.Continue)}
                   bg="rgba(173, 210, 189, 0.6)"
                   color="rgb(42, 124, 118)"
-                  press={add}
+                  press={parameters.edit ? editIncome : add}
                 />
               </View>
             </View>

@@ -42,7 +42,12 @@ export default function Home({ navigation }) {
   const Flat = ["Today", "Week", "Month", "Year"];
   const Rates = useSelector((state) => state.Rates);
   const currency = Rates.selectedCurrencyCode;
-  const convertRate = Rates.Rate[currency];
+  let convertRate;
+  if (currency === "USD") {
+    convertRate = 1;
+  } else {
+    convertRate = Rates.Rate[currency];
+  }
 
   return (
     <SafeAreaView style={[styles.container]}>

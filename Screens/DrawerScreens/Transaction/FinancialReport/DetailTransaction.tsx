@@ -54,6 +54,15 @@ function DetailTransaction({
   const Rates = useSelector((state) => state.Rates);
   const currency = Rates.selectedCurrencyCode;
   const convertRate = Rates.Rate[currency];
+  function EditTransaction() {
+    if (type === "Income") {
+      navigation.navigate("Income", { amount, title, category, wallet, keyVal, edit: true });
+    } else if (type === "Expense") {
+      navigation.navigate("Expense", { amount, title, category, wallet, keyVal, edit: true });
+    } else {
+      navigation.navigate("Transfer", { amount, title, category, wallet, keyVal, edit: true });
+    }
+  }
   return (
     <View style={styles.container}>
       <Header title={t("Detail Transaction")} press={() => navigation.goBack()} bgcolor={bg} color="white" />
@@ -91,7 +100,7 @@ function DetailTransaction({
         <Image style={styles.attachImg} source={{ uri: uri }} onError={() => console.log("Failed to load image")} />
       </View>
       <View style={[styles.Apply, { flex: 0.1 }]}>
-        <CustomButton title={t("Edit")} bg={color} color={bg} />
+        <CustomButton title={t("Edit")} bg={color} color={bg} press={EditTransaction} />
       </View>
       <TouchableOpacity style={styles.Trash} onPress={toggleModal}>
         <Image source={require("../../../../assets/trash.png")} />

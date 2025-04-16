@@ -4,13 +4,13 @@ interface Currency {
   Rate: { [currency: string]: number };
   Loading: boolean;
   error: string | null;
-  selectedCurrencyCode: "";
+  selectedCurrencyCode: string;
 }
 const initialState: Currency = {
   Rate: {},
   Loading: false,
   error: null,
-  selectedCurrencyCode: "",
+  selectedCurrencyCode: "USD",
 };
 const Currency_Convert = createSlice({
   name: "Rates",

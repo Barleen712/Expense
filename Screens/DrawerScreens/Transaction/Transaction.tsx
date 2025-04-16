@@ -60,19 +60,13 @@ export default function Transaction({ navigation }: Props) {
           styleArrow={styles.homeArrow}
         />
         <TouchableOpacity onPress={toggleModal}>
-          <Image
-            source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/sort.png")}
-            style={styles.sortImage}
-          />
+          <Image source={require("../../../assets/sort.png")} style={styles.sortImage} />
         </TouchableOpacity>
       </View>
       <View style={styles.reportView}>
         <TouchableOpacity style={styles.financialReport} onPress={() => navigation.navigate("FinancialReportExpense")}>
           <Text style={styles.reportText}>{t(StringConstants.Seeyourfinancialreport)}</Text>
-          <Image
-            style={styles.arrows}
-            source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
-          />
+          <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>
       </View>
       <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
@@ -115,10 +109,7 @@ export default function Transaction({ navigation }: Props) {
                 <Text style={styles.notiTitle}>{t(StringConstants.Category)}</Text>
                 <TouchableOpacity style={[styles.settingsOptions, { marginTop: 20 }]}>
                   <Text style={styles.settingtitle}>{t(StringConstants.ChooseCategory)}</Text>
-                  <Image
-                    style={{ position: "absolute", right: "1%" }}
-                    source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
-                  />
+                  <Image style={{ position: "absolute", right: "1%" }} source={require("../../../assets/arrow.png")} />
                 </TouchableOpacity>
                 <View style={styles.Apply}>
                   <CustomButton title={t("Apply")} bg="rgb(42, 124, 118)" color="white" />
