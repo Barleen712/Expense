@@ -31,19 +31,19 @@ export default function Getstarted({ navigation }: Props) {
   const data = [
     {
       id: "1",
-      image: require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Control.png"),
+      image: require("../../assets/Control.png"),
       title: "Gain total control of your money",
       des: "Become your own money manager and make every cent count",
     },
     {
       id: "2",
-      image: require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Know.png"),
+      image: require("../../assets/Know.png"),
       title: "Know where your money goes",
       des: "Track your transaction easily,with categories and financial report ",
     },
     {
       id: "3",
-      image: require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Plan.png"),
+      image: require("../../assets/Plan.png"),
       title: "Planning activities in budget",
       des: "Setup your budget for each category so you in control",
     },

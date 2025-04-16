@@ -42,9 +42,9 @@ interface Props {
 const category = ["Shopping", "Food", "Entertainment", "Subscription", "Transportation", "Bills", "Miscellaneous"];
 const wallet = ["PayPal", "Google Pay", "Paytm", "PhonePe", "Apple Pay"];
 const modal = [
-  require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/CameraRed.png"),
-  require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/ImageRed.png"),
-  require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/DocumentRed.png"),
+  require("../../../assets/CameraRed.png"),
+  require("../../../assets/ImageRed.png"),
+  require("../../../assets/DocumentRed.png"),
 ];
 export default function Expense({ navigation }: Props) {
   const [Expense, setExpense] = useState(false);
@@ -248,10 +248,7 @@ export default function Expense({ navigation }: Props) {
                       setclose(false);
                     }}
                   >
-                    <Image
-                      style={{ width: 15, height: 15 }}
-                      source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/close.png")}
-                    />
+                    <Image style={{ width: 15, height: 15 }} source={require("../../../assets/close.png")} />
                   </TouchableOpacity>
                 )}
 
@@ -265,10 +262,7 @@ export default function Expense({ navigation }: Props) {
                       setclose(false);
                     }}
                   >
-                    <Image
-                      style={{ width: 15, height: 15 }}
-                      source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/close.png")}
-                    />
+                    <Image style={{ width: 15, height: 15 }} source={require("../../../assets/close.png")} />
                   </TouchableOpacity>
                 )}
               </>

@@ -8,6 +8,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { fetchRates } from "../../../Slice/CurrencySlice";
 import { useDispatch } from "react-redux";
+import { setCurrencycode } from "../../../Slice/CurrencySlice";
 type CurrencyProp = StackNavigationProp<StackParamList, "Currency">;
 
 interface Props {
@@ -15,17 +16,16 @@ interface Props {
 }
 export default function Currency({ navigation }: Props) {
   const currencies = [
-    { name: "Germany", code: "EUR" },
+    { name: "Australia", code: "AUD" },
+    { name: "Canada", code: "CAD" },
     { name: "India", code: "INR" },
-    { name: "Indonesia", code: "IDR" },
-    { name: "Japan", code: "JPR" },
-    { name: "Koria", code: "WON" },
+    { name: "Pound", code: "GBP" },
     { name: "Russia", code: "RUB" },
     { name: "United Stated", code: "USD" },
   ];
   const dispatch = useDispatch();
   const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
-
+  console.log("currency", selectedCurrency);
   return (
     <View style={styles.container}>
       <Header title="Currency" press={() => navigation.goBack()} />
@@ -38,7 +38,8 @@ export default function Currency({ navigation }: Props) {
             <TouchableOpacity
               onPress={() => {
                 setSelectedCurrency(item.code);
-                dispatch(fetchRates());
+                //dispatch(fetchRates());
+                dispatch(setCurrencycode(item.code));
               }}
               style={styles.items}
             >

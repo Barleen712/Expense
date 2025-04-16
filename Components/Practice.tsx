@@ -24,10 +24,7 @@ export default function CustomD({ name, data, styleButton, styleItem, styleArrow
         return (
           <View style={styleButton}>
             <Text>{selectedItem || name}</Text>
-            <Image
-              style={styleArrow}
-              source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrowDown.png")}
-            />
+            <Image style={styleArrow} source={require("../assets/arrowDown.png")} />
           </View>
         );
       }}

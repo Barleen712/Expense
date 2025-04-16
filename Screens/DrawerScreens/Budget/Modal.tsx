@@ -39,10 +39,7 @@ export default function CustomModal({ visible, setVisible, color, bg, head, text
       <Modal animationType="slide" transparent={true} visible={success} onRequestClose={toggleSuccess}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainerTransaction}>
-            <Image
-              style={styles.deleteTrans}
-              source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/success.png")}
-            />
+            <Image style={styles.deleteTrans} source={require("../../../assets/success.png")} />
             <Text
               style={[
                 styles.quesLogout,

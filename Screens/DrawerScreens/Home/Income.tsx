@@ -55,9 +55,9 @@ export default function Income({ navigation }: Props) {
   const [selectedWallet, setSelectedWallet] = useState("");
   const [Description, setDescription] = useState("");
   const modal = [
-    require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Camera.png"),
-    require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Image.png"),
-    require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Document.png"),
+    require("../../../assets/Camera.png"),
+    require("../../../assets/Image.png"),
+    require("../../../assets/Document.png"),
   ];
   const handleFocus = () => {
     if (Income === "" || Income === "$0" || Income === "$") {
@@ -255,10 +255,7 @@ export default function Income({ navigation }: Props) {
                       setclose(false);
                     }}
                   >
-                    <Image
-                      style={{ width: 15, height: 15 }}
-                      source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/close.png")}
-                    />
+                    <Image style={{ width: 15, height: 15 }} source={require("../../../assets/close.png")} />
                   </TouchableOpacity>
                 )}
 
@@ -272,10 +269,7 @@ export default function Income({ navigation }: Props) {
                       setclose(false);
                     }}
                   >
-                    <Image
-                      style={{ width: 15, height: 15 }}
-                      source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/close.png")}
-                    />
+                    <Image style={{ width: 15, height: 15 }} source={require("../../../assets/close.png")} />
                   </TouchableOpacity>
                 )}
               </>

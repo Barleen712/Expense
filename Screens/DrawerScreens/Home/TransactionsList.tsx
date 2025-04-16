@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList, View, Image, Text, TouchableOpacity } from "react-native";
 import styles from "../../Stylesheet";
-import { categoryMap } from "../../Constants";
+import { categoryMap, currencies } from "../../Constants";
 import { useSelector } from "react-redux";
 import { selectTransactions } from "../../../Slice/Selectors";
 import { useNavigation } from "@react-navigation/native";
@@ -21,6 +21,9 @@ interface TransactionListProps {
 }
 
 export default function TransactionList({ data }: TransactionListProps) {
+  const Rates = useSelector((state) => state.Rates);
+  const currency = Rates.selectedCurrencyCode;
+  const convertRate = Rates.Rate[currency];
   const navigation = useNavigation();
   function navigateFunc({ index }) {
     if (data[index].moneyCategory === "Income") navigation.navigate("DetailTransaction_Income", { value: data[index] });
@@ -84,7 +87,9 @@ export default function TransactionList({ data }: TransactionListProps) {
                   },
                 ]}
               >
-                {item.moneyCategory === "Income" ? "+" : "-"}${item.amount}
+                {item.moneyCategory === "Income" ? "+" : "-"}
+                {currencies[currency]}
+                {(item.amount * convertRate).toFixed(2)}
               </Text>
               <Text>{formattedTime}</Text>
             </View>

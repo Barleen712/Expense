@@ -591,7 +591,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     borderRadius: 25,
-    width: "43%",
+    width: "45%",
   },
   homeTitle: {
     fontFamily: "Inter",

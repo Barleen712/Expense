@@ -5,7 +5,7 @@ import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
 import styles from "../../Stylesheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { categoryMap } from "../../Constants";
+import { categoryMap, currencies } from "../../Constants";
 import { ProgressBar } from "react-native-paper";
 import { CATEGORY_COLORS, StringConstants } from "../../Constants";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -39,6 +39,9 @@ export default function DetailedBudget({ navigation, route }: Props) {
     dispatch(deleteBudget(index));
   }
   const { t } = useTranslation();
+  const Rates = useSelector((state) => state.Rates);
+  const currency = Rates.selectedCurrencyCode;
+  const convertRate = Rates.Rate[currency];
   return (
     <View style={styles.container}>
       <Header title={t(StringConstants.DetailBudget)} press={() => navigation.goBack()} />
@@ -78,7 +81,10 @@ export default function DetailedBudget({ navigation, route }: Props) {
           </View>
           <View style={{ alignItems: "center", marginTop: 10 }}>
             <Text style={[styles.typeText, { color: "black" }]}>{t("Remaining")}</Text>
-            <Text style={[styles.amountText, { marginVertical: 0, color: "black" }]}>${remaining}</Text>
+            <Text style={[styles.amountText, { marginVertical: 0, color: "black" }]}>
+              {currencies[currency]}
+              {(remaining * convertRate).toFixed(2)}
+            </Text>
           </View>
           <ProgressBar
             progress={progress}

@@ -10,7 +10,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { StringConstants } from "../../../Constants";
+import { currencies, StringConstants } from "../../../Constants";
 import {
   selectIncomeTotal,
   selectExpenseTotal,
@@ -70,6 +70,9 @@ export default function FinancialReport({ navigation }: Props) {
     color: CATEGORY_COLORS[item.category],
   }));
   const { t } = useTranslation();
+  const Rates = useSelector((state) => state.Rates);
+  const currency = Rates.selectedCurrencyCode;
+  const convertRate = Rates.Rate[currency];
   return (
     <View style={styles.container}>
       <Header title={t(StringConstants.FinancialReport)} press={() => navigation.goBack()} />
@@ -104,13 +107,18 @@ export default function FinancialReport({ navigation }: Props) {
       </View>
       {line && Expense && (
         <View style={[styles.linechart, { flex: 0.4 }]}>
-          <Text style={[styles.typeText, { margin: 5, paddingLeft: 10, color: "black" }]}>{expense}</Text>
+          <Text style={[styles.typeText, { margin: 5, paddingLeft: 10, color: "black" }]}>
+            {currencies[currency]}
+            {(expense * convertRate).toFixed(2)}
+          </Text>
           <Linearchart data={GraphExpenses} height={height} />
         </View>
       )}
       {line && Income && (
         <View style={[styles.linechart, { flex: 0.4 }]}>
-          <Text style={[styles.typeText, { margin: 5, paddingLeft: 10, color: "black" }]}>{income}</Text>
+          <Text style={[styles.typeText, { margin: 5, paddingLeft: 10, color: "black" }]}>
+            {currencies[currency]} {(income * convertRate).toFixed(2)}
+          </Text>
           <Linearchart data={GraphIncome} height={height} />
         </View>
       )}
@@ -176,10 +184,7 @@ export default function FinancialReport({ navigation }: Props) {
             styleArrow={styles.homeArrow}
           />
           <TouchableOpacity>
-            <Image
-              source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/sort.png")}
-              style={styles.sortImage}
-            />
+            <Image source={require("../../../../assets/sort.png")} style={styles.sortImage} />
           </TouchableOpacity>
         </View>
         {line && Expense && <TransactionList data={expensesAndTransfers} />}

@@ -34,9 +34,9 @@ interface Props {
   navigation: IncomeProp;
 }
 const modal = [
-  require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/CameraBlue.png"),
-  require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/ImageBlue.png"),
-  require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/DocumentBlue.png"),
+  require("../../../assets/CameraBlue.png"),
+  require("../../../assets/ImageBlue.png"),
+  require("../../../assets/DocumentBlue.png"),
 ];
 export default function Income({ navigation }: Props) {
   const [Expense, setExpense] = useState(false);
@@ -255,10 +255,7 @@ export default function Income({ navigation }: Props) {
                       setclose(false);
                     }}
                   >
-                    <Image
-                      style={{ width: 15, height: 15 }}
-                      source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/close.png")}
-                    />
+                    <Image style={{ width: 15, height: 15 }} source={require("../../../assets/close.png")} />
                   </TouchableOpacity>
                 )}
 
@@ -272,10 +269,7 @@ export default function Income({ navigation }: Props) {
                       setclose(false);
                     }}
                   >
-                    <Image
-                      style={{ width: 15, height: 15 }}
-                      source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/close.png")}
-                    />
+                    <Image style={{ width: 15, height: 15 }} source={require("../../../assets/close.png")} />
                   </TouchableOpacity>
                 )}
               </>

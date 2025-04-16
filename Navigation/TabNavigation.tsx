@@ -86,7 +86,7 @@ export default function Tabscreens({ navigation }: Props) {
                   bottom: 125,
                 }}
               >
-                <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/TransferButton.png")} />
+                <Image source={require("../assets/TransferButton.png")} />
               </TouchableOpacity>
             )}
             {cross && (
@@ -94,7 +94,7 @@ export default function Tabscreens({ navigation }: Props) {
                 onPress={() => navigation.navigate("Expense")}
                 style={{ position: "absolute", left: 55, bottom: 55 }}
               >
-                <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/ExpenseButton.png")} />
+                <Image source={require("../assets/ExpenseButton.png")} />
               </TouchableOpacity>
             )}
             {cross && (
@@ -102,7 +102,7 @@ export default function Tabscreens({ navigation }: Props) {
                 onPress={() => navigation.navigate("Income")}
                 style={{ position: "absolute", right: 55, bottom: 55 }}
               >
-                <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/IncomeButton.png")} />
+                <Image source={require("../assets/IncomeButton.png")} />
               </TouchableOpacity>
             )}
           </TouchableOpacity>

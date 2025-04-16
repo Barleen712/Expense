@@ -3,6 +3,8 @@ import { LineChart } from "react-native-gifted-charts";
 import { Platform, View, Text, Dimensions } from "react-native";
 import Svg, { Circle, G } from "react-native-svg";
 import styles from "../../../Stylesheet";
+import { useSelector } from "react-redux";
+import { currencies } from "../../../Constants";
 interface Donut {
   data: Array<object>;
   value: number;
@@ -17,9 +19,15 @@ export const DonutChart = ({
 }: Donut) => {
   const circumference = 2 * Math.PI * radius;
   let previousPercentage = 0;
+  const Rates = useSelector((state) => state.Rates);
+  const currency = Rates.selectedCurrencyCode;
+  const convertRate = Rates.Rate[currency];
   return (
     <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
-      <Text style={[styles.typeText, { position: "absolute", top: "40%", color: "black" }]}>{value}</Text>
+      <Text style={[styles.typeText, { position: "absolute", top: "40%", color: "black" }]}>
+        {currencies[currency]}
+        {(value * convertRate).toFixed(2)}
+      </Text>
       <Svg
         width={2 * (radius + strokeWidth)}
         height={2 * (radius + strokeWidth)}

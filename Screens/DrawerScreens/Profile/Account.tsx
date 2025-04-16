@@ -24,10 +24,7 @@ export default function Account({ navigation }: Props) {
           <Text style={styles.accTitle}>{t(StringConstants.AccountBalance)}</Text>
           <Text style={styles.accamount}>$94500</Text>
         </View>
-        <ImageBackground
-          style={styles.bg}
-          source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/BG.png")}
-        />
+        <ImageBackground style={styles.bg} source={require("../../../assets/BG.png")} />
       </View>
       <View style={{ flex: 0.7, marginTop: 30 }}>
         <FlatList

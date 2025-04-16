@@ -9,7 +9,7 @@ import { deleteTransaction } from "../../../../Slice/IncomeSlice";
 import { useSelector, useDispatch } from "react-redux";
 import CustomModal from "../../Budget/Modal";
 import { useTranslation } from "react-i18next";
-import { StringConstants } from "../../../Constants";
+import { StringConstants, currencies } from "../../../Constants";
 interface DetailTransactionProps {
   navigation: any;
   bg: string;
@@ -51,11 +51,17 @@ function DetailTransaction({
     dispatch(deleteTransaction({ keyVal }));
   }
   const { t } = useTranslation();
+  const Rates = useSelector((state) => state.Rates);
+  const currency = Rates.selectedCurrencyCode;
+  const convertRate = Rates.Rate[currency];
   return (
     <View style={styles.container}>
       <Header title={t("Detail Transaction")} press={() => navigation.goBack()} bgcolor={bg} color="white" />
       <View style={[styles.DetailHead, { backgroundColor: bg }]}>
-        <Text style={[styles.number, { fontWeight: "bold" }]}>${amount}</Text>
+        <Text style={[styles.number, { fontWeight: "bold" }]}>
+          {currencies[currency]}
+          {(amount * convertRate).toFixed(2)}
+        </Text>
         {title && <Text style={[styles.notiTitle, { color: "white" }]}>{title}</Text>}
         <Text style={[styles.MonthText, { fontSize: 12 }]}>{time}</Text>
       </View>
@@ -74,7 +80,7 @@ function DetailTransaction({
         </View>
       </View>
       <View style={styles.dashedline}>
-        <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Line 3.png")} />
+        <Image source={require("../../../../assets/Line 3.png")} />
       </View>
       <View style={styles.Description}>
         <Text style={styles.username}></Text>
@@ -88,7 +94,7 @@ function DetailTransaction({
         <CustomButton title={t("Edit")} bg={color} color={bg} />
       </View>
       <TouchableOpacity style={styles.Trash} onPress={toggleModal}>
-        <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/trash.png")} />
+        <Image source={require("../../../../assets/trash.png")} />
       </TouchableOpacity>
       <CustomModal
         visible={modalVisible}

@@ -17,7 +17,7 @@ export default function Export1({ navigation }: Props) {
     <View style={styles.container}>
       <View style={styles.export1}>
         <View style={styles.exportimg}>
-          <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Export.png")} />
+          <Image source={require("../../../assets/Export.png")} />
         </View>
         <View style={styles.exportimg}>
           <Text style={styles.Export1text}>

@@ -5,7 +5,7 @@ import styles from "../../Stylesheet";
 import { CustomButton } from "../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
-import { Month } from "../../Constants";
+import { currencies, Month } from "../../Constants";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { selectBudget, CategoryExpense, BudgetCategory } from "../../../Slice/Selectors";
 import { useSelector } from "react-redux";
@@ -34,6 +34,9 @@ export default function Budget({ navigation }: Props) {
       setmonth(0);
     }
   }
+  const Rates = useSelector((state) => state.Rates);
+  const currency = Rates.selectedCurrencyCode;
+  const convertRate = Rates.Rate[currency];
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
   const renderBudgetItems = useCallback(
@@ -92,7 +95,8 @@ export default function Budget({ navigation }: Props) {
             </Text>
           </View>
           <Text style={[styles.notiTitle, { color: "black", paddingTop: 5 }]}>
-            {t("Remaining")} ${remaining}
+            {t("Remaining")} {currencies[currency]}
+            {(remaining * convertRate).toFixed(2)}
           </Text>
           <ProgressBar
             progress={progress}
@@ -109,7 +113,9 @@ export default function Budget({ navigation }: Props) {
             }}
           />
           <Text style={[styles.quesLogout, { marginTop: 5 }]}>
-            ${item.amountSpent} of ${item.budgetvalue}
+            {currencies[currency]}
+            {(item.amountSpent * convertRate).toFixed(2)} of {currencies[currency]}
+            {(item.budgetvalue * convertRate).toFixed(2)}
           </Text>
           {exceeded && <Text style={[styles.categoryText, { color: "red" }]}>{t("You've exceeded the limit")}</Text>}
           {exceeded && (
@@ -131,11 +137,11 @@ export default function Budget({ navigation }: Props) {
       <View style={styles.add}>
         <View style={styles.budgetMonth}>
           <TouchableOpacity onPress={handleprev}>
-            <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrowLeftWhite.png")} />
+            <Image source={require("../../../assets/arrowLeftWhite.png")} />
           </TouchableOpacity>
           <Text style={styles.budgetMonthtext}>{t(Month[month])}</Text>
           <TouchableOpacity onPress={handlenext}>
-            <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrowRightWhite.png")} />
+            <Image source={require("../../../assets/arrowRightWhite.png")} />
           </TouchableOpacity>
         </View>
         <View style={styles.budgetView}>

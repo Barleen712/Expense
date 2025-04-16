@@ -25,10 +25,7 @@ export default function Settings({ navigation }: Props) {
           <View style={styles.titleoption}>
             <Text style={styles.settingtext}>USD</Text>
           </View>
-          <Image
-            style={styles.arrows}
-            source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
-          />
+          <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>
         <View style={styles.Line}></View>
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Language")}>
@@ -36,10 +33,7 @@ export default function Settings({ navigation }: Props) {
           <View style={styles.titleoption}>
             <Text style={styles.settingtext}>English</Text>
           </View>
-          <Image
-            style={styles.arrows}
-            source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
-          />
+          <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>
         <View style={styles.Line}></View>
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Theme")}>
@@ -47,10 +41,7 @@ export default function Settings({ navigation }: Props) {
           <View style={styles.titleoption}>
             <Text style={styles.settingtext}>Light</Text>
           </View>
-          <Image
-            style={styles.arrows}
-            source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
-          />
+          <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>
         <View style={styles.Line}></View>
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Security")}>
@@ -58,19 +49,13 @@ export default function Settings({ navigation }: Props) {
           <View style={styles.titleoption}>
             <Text style={styles.settingtext}>Pin</Text>
           </View>
-          <Image
-            style={styles.arrows}
-            source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
-          />
+          <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>
         <View style={styles.Line}></View>
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Notification")}>
           <Text style={styles.settingtitle}>{t(StringConstants.Notification)}</Text>
           <View style={styles.titleoption}></View>
-          <Image
-            style={styles.arrows}
-            source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
-          />
+          <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>
         <View style={styles.Line}></View>
       </View>
@@ -78,19 +63,13 @@ export default function Settings({ navigation }: Props) {
         <TouchableOpacity style={styles.settingsOptions}>
           <Text style={styles.settingtitle}>{t(StringConstants.About)}</Text>
           <View style={styles.titleoption}></View>
-          <Image
-            style={styles.arrows}
-            source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
-          />
+          <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>
         <View style={styles.Line}></View>
         <TouchableOpacity style={styles.settingsOptions}>
           <Text style={styles.settingtitle}>{t(StringConstants.Help)}</Text>
           <View style={styles.titleoption}></View>
-          <Image
-            style={styles.arrows}
-            source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/arrow.png")}
-          />
+          <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>
         <View style={styles.Line}></View>
       </View>

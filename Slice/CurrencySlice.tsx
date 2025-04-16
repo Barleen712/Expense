@@ -4,11 +4,13 @@ interface Currency {
   Rate: { [currency: string]: number };
   Loading: boolean;
   error: string | null;
+  selectedCurrencyCode: "";
 }
 const initialState: Currency = {
   Rate: {},
   Loading: false,
   error: null,
+  selectedCurrencyCode: "",
 };
 const Currency_Convert = createSlice({
   name: "Rates",
@@ -23,7 +25,11 @@ const Currency_Convert = createSlice({
     fetchRatesFailure: (state, action) => {
       (state.Loading = false), (state.error = action.payload);
     },
+    setCurrencycode: (state, action) => {
+      state.selectedCurrencyCode = action.payload;
+      console.log(state.selectedCurrencyCode);
+    },
   },
 });
-export const { fetchRates, fetchRatesFailure, fetchRatesSuccess } = Currency_Convert.actions;
+export const { fetchRates, fetchRatesFailure, fetchRatesSuccess, setCurrencycode } = Currency_Convert.actions;
 export default Currency_Convert.reducer;

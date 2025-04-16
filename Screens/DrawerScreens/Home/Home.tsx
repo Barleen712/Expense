@@ -24,7 +24,7 @@ import {
   selectExpenseTotal,
 } from "../../../Slice/Selectors";
 import TransactionList from "./TransactionsList";
-import { StringConstants } from "../../Constants";
+import { StringConstants, currencies } from "../../Constants";
 import { useTranslation } from "react-i18next";
 export default function Home({ navigation }) {
   const income = useSelector(selectIncomeTotal);
@@ -40,8 +40,10 @@ export default function Home({ navigation }) {
   const height = Dimensions.get("window").height * 0.2;
   const { t } = useTranslation();
   const Flat = ["Today", "Week", "Month", "Year"];
-  const rate = useSelector((state) => state.Rates);
-  console.log(rate, "saghbg");
+  const Rates = useSelector((state) => state.Rates);
+  const currency = Rates.selectedCurrencyCode;
+  const convertRate = Rates.Rate[currency];
+
   return (
     <SafeAreaView style={[styles.container]}>
       <LinearGradient colors={["rgb(229, 255, 243)", "rgba(205, 230, 200, 0.09)"]} style={styles.homeHeadgradient}>
@@ -58,20 +60,22 @@ export default function Home({ navigation }) {
         </View>
         <View style={styles.homeHeadView}>
           <View style={[styles.headButton, { backgroundColor: "rgba(0, 168, 107, 1)" }]}>
-            <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Income.png")} />
+            <Image source={require("../../../assets/Income.png")} />
             <View style={{ padding: 5 }}>
               <Text style={styles.homeTitle}>{t(StringConstants.Income)}</Text>
               <Text style={{ fontSize: Platform.OS === "ios" ? 21 : 24, color: "white", fontWeight: "bold" }}>
-                ${income}
+                {currencies[currency]}
+                {(income * convertRate).toFixed(2)}
               </Text>
             </View>
           </View>
           <View style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}>
-            <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Expense.png")} />
+            <Image source={require("../../../assets/Expense.png")} />
             <View style={{ padding: 5 }}>
               <Text style={styles.homeTitle}>{t(StringConstants.Expense)}</Text>
               <Text style={{ fontSize: Platform.OS === "ios" ? 21 : 24, color: "white", fontWeight: "bold" }}>
-                ${expense}
+                {currencies[currency]}
+                {(expense * convertRate).toFixed(2)}
               </Text>
             </View>
           </View>

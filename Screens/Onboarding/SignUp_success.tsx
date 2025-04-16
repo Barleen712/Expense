@@ -22,7 +22,7 @@ export default function Success({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.success}>
-        <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/success.png")} />
+        <Image source={require("../../assets/success.png")} />
         <Text style={styles.ForgotDes}>{t(StringConstants.Youareset)}</Text>
       </View>
     </View>

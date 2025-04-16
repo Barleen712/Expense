@@ -18,22 +18,10 @@ export default function Onboarding({ navigation }: Props) {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View style={styles.image}>
-        <Image
-          source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Group 2.png")}
-          style={styles.group2}
-        />
-        <Image
-          source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Group 1.png")}
-          style={styles.group1}
-        />
-        <Image
-          source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Coint.png")}
-          style={styles.coint}
-        />
-        <Image
-          source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Donut.png")}
-          style={styles.donut}
-        />
+        <Image source={require("../../assets/Group 2.png")} style={styles.group2} />
+        <Image source={require("../../assets/Group 1.png")} style={styles.group1} />
+        <Image source={require("../../assets/Coint.png")} style={styles.coint} />
+        <Image source={require("../../assets/Donut.png")} style={styles.donut} />
       </View>
       <View style={styles.getstarted}>
         <View style={styles.title}>

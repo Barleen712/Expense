@@ -34,7 +34,7 @@ export default function Profile({ navigation }: Props) {
     <View>
       <View style={styles.profile}>
         <View style={styles.userphoto}>
-          <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Profile.png")} />
+          <Image source={require("../../../assets/Profile.png")} />
         </View>
         <View style={styles.details}>
           <Text style={styles.username}>Username</Text>
@@ -42,7 +42,7 @@ export default function Profile({ navigation }: Props) {
         </View>
         <View style={styles.icon}>
           <TouchableOpacity>
-            <Image source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Button Icon.png")} />
+            <Image source={require("../../../assets/Button Icon.png")} />
           </TouchableOpacity>
         </View>
       </View>

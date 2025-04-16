@@ -2,16 +2,16 @@ import { Platform } from "react-native";
 import { supabase } from "./SuperbaseConfig";
 import RNFS from "react-native-fs";
 export const categoryMap = {
-  Food: require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Food.png"),
-  Shopping: require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Shopping.png"),
-  Subscription: require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Subscription.png"),
-  Miscellaneous: require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Miscellaneous.png"),
-  Entertainment: require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Entertainment.png"),
-  Transportation: require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Transportation.png"),
-  Bills: require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Bills.png"),
-  Transfer: require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Transfer.png"),
-  Salary: require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Salary.png"),
-  "Passive Income": require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Passive Income.png"),
+  Food: require("../assets/Food.png"),
+  Shopping: require("../assets/Shopping.png"),
+  Subscription: require("../assets/Subscription.png"),
+  Miscellaneous: require("../assets/Miscellaneous.png"),
+  Entertainment: require("../assets/Entertainment.png"),
+  Transportation: require("../assets/Transportation.png"),
+  Bills: require("../assets/Bills.png"),
+  Transfer: require("../assets/Transfer.png"),
+  Salary: require("../assets/Salary.png"),
+  "Passive Income": require("../assets/Passive Income.png"),
 };
 export const Month = [
   "January",
@@ -190,4 +190,12 @@ export const StringConstants = {
   RecieveAlert: "Recieve Alert",
   Receivealertwhenitreachessomepoint: "Receive alert when it reaches some point",
   DetailBudget: "Detail Budget",
+};
+export const currencies: Record<string, string> = {
+  USD: "$",
+  GBP: "£",
+  CAD: "$",
+  INR: "₹",
+  AUD: "$",
+  RUB: "₽",
 };

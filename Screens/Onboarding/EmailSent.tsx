@@ -17,10 +17,7 @@ export default function EmailSent({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.emailImgView}>
-        <Image
-          style={styles.emailImg}
-          source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/email.png")}
-        />
+        <Image style={styles.emailImg} source={require("../../assets/email.png")} />
       </View>
       <View style={styles.emailDes}>
         <Text style={styles.ForgotDes}>{t(StringConstants.Youremailisontheway)}</Text>

@@ -71,10 +71,7 @@ export default function SignUp({ navigation }: Props) {
       <GradientButton title="Sign Up" handles={handleSignUp} />
       <Text style={styles.or}>{t(StringConstants.orwith)}</Text>
       <TouchableOpacity style={styles.GoogleView}>
-        <Image
-          style={styles.Google}
-          source={require("/Users/chicmic/Desktop/Project/ExpenseTracker/assets/Google.png")}
-        />
+        <Image style={styles.Google} source={require("../../assets/Google.png")} />
         <Text style={styles.textGoogle}>{t(StringConstants.SignUpwithGoogle)}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.replace("Login")}>
