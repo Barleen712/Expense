@@ -26,6 +26,9 @@ export default function Currency({ navigation }: Props) {
   const dispatch = useDispatch();
   const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
   console.log("currency", selectedCurrency);
+  // useEffect(() => {
+  //   dispatch(fetchRates());
+  // }, []);
   return (
     <View style={styles.container}>
       <Header title="Currency" press={() => navigation.goBack()} />
@@ -38,7 +41,6 @@ export default function Currency({ navigation }: Props) {
             <TouchableOpacity
               onPress={() => {
                 setSelectedCurrency(item.code);
-                //dispatch(fetchRates());
                 dispatch(setCurrencycode(item.code));
               }}
               style={styles.items}

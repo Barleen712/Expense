@@ -11,7 +11,8 @@ type AllSetProp = StackNavigationProp<StackParamList, "AllSet">;
 interface Props {
   navigation: AllSetProp;
 }
-export default function Success({ navigation }: Props) {
+export default function Success({ navigation, route }: Props) {
+  const { title } = route.params;
   useEffect(() => {
     const timer = setTimeout(() => {
       navigation.replace("MainScreen");
@@ -23,7 +24,7 @@ export default function Success({ navigation }: Props) {
     <View style={styles.container}>
       <View style={styles.success}>
         <Image source={require("../../assets/success.png")} />
-        <Text style={styles.ForgotDes}>{t(StringConstants.Youareset)}</Text>
+        <Text style={styles.ForgotDes}>{t(title)}</Text>
       </View>
     </View>
   );

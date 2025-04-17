@@ -19,6 +19,7 @@ import {
 } from "react-native";
 import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
+import { auth } from "../../../Screens/FirebaseConfig";
 import styles from "../../Stylesheet";
 import { CustomButton } from "../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -34,6 +35,7 @@ import { uploadImage } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
 import { updateTransaction } from "../../../Slice/IncomeSlice";
+import { AddTransaction } from "../../FirestoreHandler";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -87,6 +89,7 @@ export default function Income({ navigation, route }: Props) {
   };
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const user = auth.currentUser;
   async function add() {
     const numericIncome = parseFloat(Income.replace("$", "") || "0");
     let supabaseImageUrl = null;
@@ -108,6 +111,15 @@ export default function Income({ navigation, route }: Props) {
         },
       })
     );
+    AddTransaction({
+      amount: numericIncome,
+      description: Description,
+      category: selectedCategory,
+      wallet: selectedWallet,
+      moneyCategory: "Income",
+      Date: new Date().toISOString(),
+      userId: user.uid,
+    });
     navigation.goBack();
   }
   function editIncome() {

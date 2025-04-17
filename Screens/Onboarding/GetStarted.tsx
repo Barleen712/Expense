@@ -58,7 +58,7 @@ export default function Getstarted({ navigation }: Props) {
     );
   };
   return (
-    <View style={{ alignItems: "center", backgroundColor: "white", flex: 1 }}>
+    <View style={{ alignItems: "center", backgroundColor: "white", flex: 1, paddingTop: 30 }}>
       <Carousel
         data={data}
         renderItem={render}
@@ -75,12 +75,14 @@ export default function Getstarted({ navigation }: Props) {
         ))}
       </View>
       <CustomButton title={t(StringConstants.SignUp)} bg="rgb(42, 124, 118)" color="white" press={signup} />
-      <CustomButton
-        title={t(StringConstants.Login)}
-        bg="rgba(220, 234, 233, 0.6)"
-        color="rgb(42, 124, 118)"
-        press={login}
-      />
+      <View style={{ marginTop: 10, width: "100%", alignItems: "center" }}>
+        <CustomButton
+          title={t(StringConstants.Login)}
+          bg="rgba(220, 234, 233, 0.6)"
+          color="rgb(42, 124, 118)"
+          press={login}
+        />
+      </View>
     </View>
   );
 }

@@ -27,6 +27,8 @@ import { addTransaction } from "../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
 import { uploadImage, StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
+import { AddTransaction } from "../../FirestoreHandler";
+import { auth } from "../../FirebaseConfig";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -76,6 +78,7 @@ export default function Income({ navigation, route }: Props) {
   };
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const user = auth.currentUser;
   async function add() {
     const numericIncome = parseFloat(Transfer.replace("$", "") || "0");
     let supabaseImageUrl = null;
@@ -96,6 +99,14 @@ export default function Income({ navigation, route }: Props) {
         },
       })
     );
+    AddTransaction({
+      amount: numericIncome,
+      description: Description,
+      category: From + " -> " + To,
+      moneyCategory: "Transfer",
+      Date: new Date().toISOString(),
+      userId: user.uid,
+    });
     navigation.goBack();
   }
   return (

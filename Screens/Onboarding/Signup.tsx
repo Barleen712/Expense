@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform, Image, ActivityIndicator } from "react-native";
 import GradientButton from "../../Components/CustomButton";
 import Input from "../../Components/CustomTextInput";
 import { Checkbox } from "react-native-paper";
@@ -10,6 +10,8 @@ import StackParamList from "../../Navigation/StackList";
 import Header from "../../Components/Header";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../Constants";
+import { signOut } from "firebase/auth";
+import Success from "./SignUp_success";
 type SignupProp = StackNavigationProp<StackParamList, "SignUp">;
 
 interface Props {
@@ -19,11 +21,13 @@ export default function SignUp({ navigation }: Props) {
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
   const [password, setpass] = useState("");
+  const [loading, setLoading] = useState(false);
   const [isSelected, changeSelection] = useState(false);
   async function handleSignUp() {
+    setLoading(true);
     try {
       const user = await createUserWithEmailAndPassword(auth, email, password);
-      navigation.replace("Login");
+      setLoading(false);
     } catch (error: any) {
       alert(error.message);
     }
@@ -32,6 +36,13 @@ export default function SignUp({ navigation }: Props) {
     setemail("");
   }
   const { t } = useTranslation();
+  if (loading) {
+    return (
+      <View style={{ height: "100%", alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
+      </View>
+    );
+  }
   return (
     <View style={{ alignItems: "center", backgroundColor: "white", flex: 1 }}>
       <Header title={t(StringConstants.SignUp)} press={() => navigation.goBack()}></Header>

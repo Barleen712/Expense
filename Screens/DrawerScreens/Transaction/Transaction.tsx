@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -36,6 +36,8 @@ import StackParamList from "../../../Navigation/StackList";
 import TransactionList from "../Home/TransactionsList";
 import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
+import { auth, db } from "../../FirebaseConfig";
+import { query, collection, where, onSnapshot } from "firebase/firestore";
 
 type Transactionprop = StackNavigationProp<StackParamList, "MainScreen">;
 
@@ -47,7 +49,38 @@ export default function Transaction({ navigation }: Props) {
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
-  const transactions = useSelector(selectTransactions);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const user = auth.currentUser;
+    if (!user) {
+      setTransactions([]);
+      setLoading(false);
+      return;
+    }
+
+    const q = query(collection(db, "Transactions"), where("userId", "==", user.uid));
+
+    // Subscribe to real-time updates
+    const unsubscribe = onSnapshot(
+      q,
+      (querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setTransactions(data);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching transactions: ", error);
+        setLoading(false);
+      }
+    );
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+  const sortedTransactions = [...transactions].sort((a, b) => {
+    return new Date(b.Date) - new Date(a.Date);
+  });
   const { t } = useTranslation();
   return (
     <View style={styles.container}>
@@ -120,7 +153,7 @@ export default function Transaction({ navigation }: Props) {
         </TouchableWithoutFeedback>
       </Modal>
       <View style={{ width: "100%", flex: 0.75, alignItems: "center" }}>
-        <TransactionList data={transactions} />
+        <TransactionList data={sortedTransactions} />
       </View>
     </View>
   );

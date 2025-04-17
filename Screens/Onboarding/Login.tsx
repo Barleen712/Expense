@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Platform } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Platform, ActivityIndicator } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import Input from "../../Components/CustomTextInput";
 import GradientButton from "../../Components/CustomButton";
@@ -10,6 +10,7 @@ import StackParamList from "../../Navigation/StackList";
 import Header from "../../Components/Header";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../Constants";
+import Success from "./SignUp_success";
 type LoginProp = StackNavigationProp<StackParamList, "Login">;
 
 interface Props {
@@ -18,15 +19,25 @@ interface Props {
 export default function Login({ navigation }: Props) {
   const [email, setemail] = useState("");
   const [password, setpass] = useState("");
+  const [loading, setLoading] = useState(false);
   async function handlesLogin() {
     try {
+      setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
-      navigation.replace("Setpin");
+      setLoading(false);
+      navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
     } catch (error: any) {
       alert(error.message);
     }
   }
   const { t } = useTranslation();
+  if (loading) {
+    return (
+      <View style={{ height: "100%", alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
+      </View>
+    );
+  }
   return (
     <View style={{ alignItems: "center", backgroundColor: "white", flex: 1 }}>
       <Header title={t(StringConstants.Login)} press={() => navigation.goBack()} />

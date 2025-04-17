@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   homeHeadView: {
-    width: "90%",
+    width: "95%",
     flexDirection: "row",
     justifyContent: "space-between",
     height: "38%",
@@ -591,7 +591,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 10,
     borderRadius: 25,
-    width: "45%",
+    width: "49%",
   },
   homeTitle: {
     fontFamily: "Inter",

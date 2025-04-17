@@ -24,7 +24,6 @@ export default function Profile({ navigation }: Props) {
     try {
       toggleModal();
       await signOut(auth);
-      navigation.replace("Home");
     } catch (error) {
       alert("Their was some error");
     }

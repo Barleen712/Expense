@@ -41,20 +41,29 @@ const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
   return (
     <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Home" component={Onboarding}></Stack.Screen>
-      <Stack.Screen name="Login" component={Login}></Stack.Screen>
-      <Stack.Screen name="ForgotPassword" component={ForgotPass}></Stack.Screen>
-      <Stack.Screen name="EmailSent" component={EmailSent}></Stack.Screen>
-      <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
-      <Stack.Screen name="GetStarted" component={Getstarted}></Stack.Screen>
-      <Stack.Screen name="Setpin" component={Setpin}></Stack.Screen>
-      <Stack.Screen name="Setpin1" component={Setpin02}></Stack.Screen>
-      <Stack.Screen name="AllSet" component={Success}></Stack.Screen>
-      <Stack.Screen name="MainScreen" component={Tabscreens}></Stack.Screen>
+      <Stack.Screen name="Home" component={Onboarding} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="SignUp" component={SignUp} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPass} />
+      <Stack.Screen name="EmailSent" component={EmailSent} />
+      <Stack.Screen name="GetStarted" component={Getstarted} />
+      {/*  <Stack.Screen name="Setpin" component={Setpin} /> */}
+      <Stack.Screen name="AllSet" component={Success} />
+    </Stack.Navigator>
+  );
+}
+const Stack2 = createStackNavigator<StackParamList>();
+export function TabScreens() {
+  return (
+    <Stack2.Navigator initialRouteName="MainScreen" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Setpin" component={Setpin} />
+      <Stack.Screen name="AllSet" component={Success} />
+      <Stack.Screen name="Setpin1" component={Setpin02} />
+      <Stack.Screen name="MainScreen" component={Tabscreens} />
       <Stack.Screen name="Settings" component={Settings} />
       <Stack.Screen name="Account" component={Account} />
       <Stack.Screen name="Export" component={Export} />
-      <Stack.Screen name="Export1" component={Export1}></Stack.Screen>
+      <Stack.Screen name="Export1" component={Export1} />
       <Stack.Screen name="Currency" component={Currency} />
       <Stack.Screen name="Theme" component={Theme} />
       <Stack.Screen name="Security" component={Security} />
@@ -74,6 +83,6 @@ export default function Screens() {
       <Stack.Screen name="DetailTransaction_Transfer" component={DetailTransaction_Transfer} />
       <Stack.Screen name="DetailBudget" component={DetailedBudget} />
       <Stack.Screen name="DetailAccount" component={DetailAccount} />
-    </Stack.Navigator>
+    </Stack2.Navigator>
   );
 }

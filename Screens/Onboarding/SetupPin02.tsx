@@ -15,7 +15,7 @@ interface Props {
 }
 export default function Setpin02({ navigation }: Props) {
   function handlenext() {
-    navigation.navigate("AllSet");
+    navigation.navigate("AllSet", { title: "All Set" });
   }
   const { t } = useTranslation();
   return (

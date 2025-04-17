@@ -10,6 +10,7 @@ import Header from "../../../Components/Header";
 import { useTranslation } from "react-i18next";
 import CustomD from "../../../Components/Practice";
 import { GenerateCSVReport } from "./ExportCSV";
+import { generateReportPDF } from "./ExportPDF";
 type ExportProp = StackNavigationProp<StackParamList, "Export">;
 
 interface Props {
@@ -39,7 +40,7 @@ export default function Export({ navigation }: Props) {
         />
       </View>
       <View style={styles.exportButton}>
-        <CustomButton title={t("Export")} bg="rgb(42, 124, 118)" color="white" press={GenerateCSVReport} />
+        <CustomButton title={t("Export")} bg="rgb(42, 124, 118)" color="white" press={generateReportPDF} />
       </View>
     </View>
   );

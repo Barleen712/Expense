@@ -34,6 +34,8 @@ import { uploadImage } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
 import { updateTransaction } from "../../../Slice/IncomeSlice";
+import { AddTransaction } from "../../FirestoreHandler";
+import { auth } from "../../FirebaseConfig";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -86,6 +88,7 @@ export default function Expense({ navigation, route }: Props) {
     }
   };
   const dispatch = useDispatch();
+  const user = auth.currentUser;
   async function add() {
     const numericExpense = parseFloat(Expenses.replace("$", "") || "0");
     let supabaseImageUrl = null;
@@ -106,6 +109,15 @@ export default function Expense({ navigation, route }: Props) {
         },
       })
     );
+    AddTransaction({
+      amount: numericExpense,
+      description: Description,
+      category: selectedCategory,
+      wallet: selectedWallet,
+      moneyCategory: "Expense",
+      Date: new Date().toISOString(),
+      userId: user.uid,
+    });
     navigation.goBack();
   }
   const { t } = useTranslation();

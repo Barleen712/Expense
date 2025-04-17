@@ -42,7 +42,7 @@ export default function TransactionList({ data }: TransactionListProps) {
       initialNumToRender={3}
       showsVerticalScrollIndicator={false}
       renderItem={({ item, index }) => {
-        const date = new Date(item.key);
+        const date = new Date(item.Date);
         let hours = date.getHours();
         const minutes = date.getMinutes().toString().padStart(2, "0");
         const meridiem = hours >= 12 ? "PM" : "AM";

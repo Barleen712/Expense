@@ -22,6 +22,8 @@ import { addBudget, updateBudget } from "../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
+import { AddBudget } from "../../FirestoreHandler";
+import { auth } from "../../FirebaseConfig";
 type CreateBudgetProp = StackNavigationProp<StackParamList, "CreateBudget">;
 
 interface Props {
@@ -60,6 +62,7 @@ export default function CreateBudget({ navigation, route }: Props) {
     setBudget(`$${numericValue}`);
   };
   const dispatch = useDispatch();
+  const user = auth.currentUser;
   function add() {
     const numericBudget = parseFloat(Budget.replace("$", "") || "0");
     if (selectedCategory === "Category" || numericBudget === 0) {
@@ -74,6 +77,14 @@ export default function CreateBudget({ navigation, route }: Props) {
         notification: Expense,
       })
     );
+    AddBudget({
+      category: selectedCategory,
+      amount: numericBudget,
+      percentage: Math.round(sliderValue),
+      notification: Expense,
+      userId: user.uid,
+      Date: new Date().toISOString(),
+    });
     navigation.goBack();
   }
   function editBudget() {

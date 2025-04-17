@@ -21,8 +21,8 @@ const SelectImageWithDocumentPicker = ({
   setclose,
   setDocument,
   modalItems,
-  setPhoto,
-}: Images) => {
+}: // setPhoto,
+Images) => {
   const pickImageFromGallery = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
@@ -84,7 +84,7 @@ const SelectImageWithDocumentPicker = ({
     });
 
     if (!result.canceled) {
-      setPhoto(result.assets[0].uri);
+      setImage(result.assets[0].uri);
     }
     setAttach();
     setclose();

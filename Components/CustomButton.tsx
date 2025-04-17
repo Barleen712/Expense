@@ -7,11 +7,11 @@ interface Gradient {
 }
 export default function GradientButton({ title, handles }: Gradient) {
   return (
-    <LinearGradient colors={["#69AEA9", "#3F8782"]} style={styles.gradient}>
-      <TouchableOpacity onPress={handles}>
+    <TouchableOpacity onPress={handles} style={styles.gradient}>
+      <LinearGradient colors={["#69AEA9", "#3F8782"]} style={[styles.gradient, { width: "100%" }]}>
         <Text style={styles.text}>{title}</Text>
-      </TouchableOpacity>
-    </LinearGradient>
+      </LinearGradient>
+    </TouchableOpacity>
   );
 }
 interface CustomButton {
