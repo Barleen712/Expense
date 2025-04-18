@@ -69,6 +69,7 @@ export default function Home({ navigation }) {
       q,
       (querySnapshot) => {
         const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setTransactions(data)
         setLoading(false);
       },
       (error) => {

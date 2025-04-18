@@ -6,7 +6,6 @@ import Screens from "./Navigation/StackNavigation";
 import { Provider } from "react-redux";
 import Store from "./Store/Store";
 import Home from "./Screens/DrawerScreens/Home/Home";
-import "../ExpenseTracker/i18n/i18next";
 import notifee, { AuthorizationStatus } from "@notifee/react-native";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Screens/FirebaseConfig";
