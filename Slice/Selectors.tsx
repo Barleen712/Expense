@@ -4,8 +4,12 @@ const selectMoney = (state: RootState) => state.Money;
 
 export const selectTransactions = createSelector([selectMoney], (money) => money.amount);
 export const selectBudget = createSelector([selectMoney], (money) => money.budget);
+
 export const selectIncomeTotal = createSelector([selectTransactions], (transactions) =>
-  transactions.reduce((acc, item) => (item.moneyCategory === "Income" ? acc + item.amount : acc), 0)
+  transactions.reduce(
+    (acc, item) => (item.moneyCategory === "Income"?acc + item.amount : acc),
+    0
+  )
 );
 
 export const selectExpenseTotal = createSelector([selectTransactions], (transactions) =>

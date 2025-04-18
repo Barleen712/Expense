@@ -24,6 +24,7 @@ import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
 import { AddBudget } from "../../FirestoreHandler";
 import { auth } from "../../FirebaseConfig";
+import { GetBudget } from "../../FirestoreHandler";
 type CreateBudgetProp = StackNavigationProp<StackParamList, "CreateBudget">;
 
 interface Props {
@@ -85,6 +86,7 @@ export default function CreateBudget({ navigation, route }: Props) {
       userId: user.uid,
       Date: new Date().toISOString(),
     });
+    GetBudget()
     navigation.goBack();
   }
   function editBudget() {

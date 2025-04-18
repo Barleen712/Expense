@@ -18,6 +18,7 @@ import {
   selectIncome,
   CategoryExpense,
   CategoryIncome,
+  selectTransactions,
 } from "../../../../Slice/Selectors";
 import { DonutChart } from "./Graph";
 import { Linearchart } from "./Graph";
@@ -40,23 +41,35 @@ export default function FinancialReport({ navigation }: Props) {
   const [Income, setIncome] = useState(false);
   const income = useSelector(selectIncomeTotal);
   const expense = useSelector(selectExpenseTotal);
-  const expensesAndTransfers = useSelector(selectExpensesAndTransfers);
+  const transaction=useSelector(selectTransactions)
   const incomeValues = useSelector(selectIncome);
-  const GraphExpenses = useMemo(
-    () =>
-      expensesAndTransfers
-        .slice()
-        .reverse()
-        .map((expense) => ({ value: expense.amount })),
-    [expensesAndTransfers]
-  );
+  const expensesAndTransfers=useSelector(selectExpensesAndTransfers)
+  const sortedIncome = [...incomeValues].sort((a,b) => {
+    return new Date(b.Date) - new Date(a.Date);
+  });
+  const sortedExpense= [...expensesAndTransfers].sort((a, b) => {
+    return new Date(b.Date) - new Date(a.Date);
+  });
+ const GraphExpenses = useMemo(
+  () =>
+    transaction
+      .filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer")
+      .sort((a, b) => {
+        return new Date(a.Date) - new Date(b.Date);
+      })
+      .map((expense) => ({ value: expense.amount })),
+  [transaction]
+);
   const GraphIncome = useMemo(
     () =>
-      incomeValues
-        .slice()
-        .reverse()
+      transaction
+        .filter((item) => item.moneyCategory === "Income")
+        .sort((a, b) => {
+          return new Date(a.Date) - new Date(b.Date);
+        })
         .map((income) => ({ value: income.amount })),
-    [incomeValues]
+    [transaction]
+   
   );
 
   const categoryExpense = useSelector(CategoryExpense);
@@ -187,8 +200,8 @@ export default function FinancialReport({ navigation }: Props) {
             <Image source={require("../../../../assets/sort.png")} style={styles.sortImage} />
           </TouchableOpacity>
         </View>
-        {line && Expense && <TransactionList data={expensesAndTransfers} />}
-        {line && Income && <TransactionList data={incomeValues} />}
+        {line && Expense && <TransactionList data={sortedExpense} />}
+        {line && Income && <TransactionList data={sortedIncome} />}
         {pie && Expense && <CategoryList category={categoryExpense} />}
         {pie && Income && <CategoryList category={categoryIncome} />}
       </View>

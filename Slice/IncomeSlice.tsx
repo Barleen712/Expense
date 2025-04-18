@@ -1,18 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Budget from "../Screens/DrawerScreens/Budget/Budget";
-
 interface IncomeEntry {
-  key: string;
   amount: number;
   description: string;
   category: string;
   wallet: string;
   moneyCategory: string;
-  attachment: {
-    type: "image" | "document";
-    uri: string | null;
-    name?: string;
-  };
+  Date:string,
+  id: string;
 }
 interface BudgetEntery {
   amount: number;
@@ -24,23 +18,33 @@ interface BudgetEntery {
 interface IncomeState {
   amount: IncomeEntry[];
   budget: BudgetEntery[];
+  loading:boolean;
 }
 
 const initialState: IncomeState = {
   amount: [],
   budget: [],
+  loading:false,
+
 };
 
 export const ExpenseTrackerSlice = createSlice({
   name: "Money",
   initialState,
   reducers: {
-    addTransaction: (state, action: PayloadAction<Omit<IncomeEntry, "key">>) => {
-      const currentDate = new Date().toISOString();
-      state.amount.unshift({
-        key: currentDate,
-        ...action.payload,
-      });
+    loadingTransaction:(state,action: PayloadAction<boolean>)=>
+    {
+      state.loading=action.payload
+    },
+    addTransaction: (state,action)=>
+    {
+      state.loading=false
+      const existingTransaction = state.amount.find(
+        (transaction) => transaction.id === action.payload.id
+      );
+      if (!existingTransaction) {
+        state.amount.push(action.payload);
+      }
     },
     deleteTransaction: (state, action) => {
       const { keyVal } = action.payload;
@@ -71,6 +75,8 @@ export const ExpenseTrackerSlice = createSlice({
   },
 });
 
-export const { addTransaction, deleteTransaction, addBudget, deleteBudget, updateBudget, updateTransaction } =
+export const { addTransaction, deleteTransaction, addBudget, deleteBudget, updateBudget, updateTransaction,
+  loadingTransaction
+} =
   ExpenseTrackerSlice.actions;
 export default ExpenseTrackerSlice.reducer;
