@@ -9,6 +9,7 @@ import {
   Dimensions,
   SafeAreaView,
   ActivityIndicator,
+  ScrollView
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomD from "../../../Components/Practice";
@@ -26,6 +27,7 @@ import TransactionList from "./TransactionsList";
 import { StringConstants, currencies } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import useTransactionListener from "../../../Saga/TransactionSaga";
+
 export default function Home({ navigation }) {
  useTransactionListener()
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
@@ -157,7 +159,10 @@ const loading = useSelector((state: RootState) => state.Money.loading)
             <Text style={[styles.homeTitle, { color: "rgb(42, 124, 118)" }]}>{t(StringConstants.SeeAll)}</Text>
           </TouchableOpacity>
         </View>
-         <TransactionList data={sortedTransactions.slice(0,3)}/>
+         {/* <TransactionList data={sortedTransactions.slice(0,3)}/> */}
+         <View  style={{width:"90%",flex:1}}>
+           <TransactionList data={sortedTransactions.slice(0,3)}/>
+         </View>
       </View>
     </SafeAreaView>
   );

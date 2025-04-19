@@ -12,6 +12,7 @@ import { auth } from "./Screens/FirebaseConfig";
 import { TabScreens } from "./Navigation/StackNavigation";
 import { ActivityIndicator } from "react-native-paper";
 import styles from "./Screens/Stylesheet";
+import MyComponent from "./Component";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -55,7 +56,10 @@ export default function App() {
   }
   return (
     <Provider store={Store}>
-      <NavigationContainer>{user ? <TabScreens /> : <Screens />}</NavigationContainer>
+      <NavigationContainer>
+        {user ? <TabScreens/> : <Screens />}
+        
+        </NavigationContainer>
     </Provider>
   );
 }
