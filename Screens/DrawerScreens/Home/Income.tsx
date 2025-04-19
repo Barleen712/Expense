@@ -20,6 +20,7 @@ import {
 import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
 import { auth } from "../../../Screens/FirebaseConfig";
+import { updateDocument } from "../../FirestoreHandler";
 import styles from "../../Stylesheet";
 import { CustomButton } from "../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -98,19 +99,19 @@ export default function Income({ navigation, route }: Props) {
       // Upload to Supabase
       supabaseImageUrl = await uploadImage(image);
     }
-    dispatch(
-      addTransaction({
-        amount: numericIncome,
-        description: Description,
-        category: selectedCategory,
-        wallet: selectedWallet,
-        moneyCategory: "Income",
-        attachment: {
-          type: "image",
-          uri: supabaseImageUrl,
-        },
-      })
-    );
+    // dispatch(
+    //   addTransaction({
+    //     amount: numericIncome,
+    //     description: Description,
+    //     category: selectedCategory,
+    //     wallet: selectedWallet,
+    //     moneyCategory: "Income",
+    //     attachment: {
+    //       type: "image",
+    //       uri: supabaseImageUrl,
+    //     },
+    //   })
+    // );
     AddTransaction({
       amount: numericIncome,
       description: Description,
@@ -130,9 +131,16 @@ export default function Income({ navigation, route }: Props) {
         description: Description,
         category: selectedCategory,
         wallet: selectedWallet,
-        key: parameters.keyVal,
+        id: parameters.id,
         moneyCategory: "Income",
-      })
+      }))
+            updateDocument("Transactions",parameters.id,{
+                  amount: numericIncome,
+                  description: Description,
+                  category: selectedCategory,
+                  wallet: selectedWallet,
+      
+                }
     );
     navigation.goBack();
     navigation.goBack();

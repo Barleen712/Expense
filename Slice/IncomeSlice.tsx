@@ -13,6 +13,7 @@ interface BudgetEntery {
   category: number;
   percentage: number;
   notification: boolean;
+  id:string
 }
 
 interface IncomeState {
@@ -38,7 +39,6 @@ export const ExpenseTrackerSlice = createSlice({
     },
     addTransaction: (state,action)=>
     {
-      state.loading=false
       const existingTransaction = state.amount.find(
         (transaction) => transaction.id === action.payload.id
       );
@@ -47,30 +47,40 @@ export const ExpenseTrackerSlice = createSlice({
       }
     },
     deleteTransaction: (state, action) => {
-      const { keyVal } = action.payload;
-
-      const index = state.amount.findIndex((item) => item.key === keyVal);
+      const  id  = action.payload;
+      const index = state.amount.findIndex((item) => item.id === id);
       state.amount = [...state.amount.slice(0, index), ...state.amount.slice(index + 1)];
+  
     },
     updateTransaction: (state, action) => {
-      const { key, amount, category, wallet, description } = action.payload;
-      const index = state.amount.findIndex((item) => item.key === key);
+      const { id, amount, category, wallet, description } = action.payload;
+      const index = state.amount.findIndex((item) => item.id === id);
       state.amount[index].amount = amount;
       state.amount[index].category = category;
       state.amount[index].description = description;
       state.amount[index].wallet = wallet;
     },
     addBudget: (state, action) => {
-      state.budget.unshift(action.payload);
-      console.log(state.budget);
+      const existingTransaction = state.budget.find(
+        (transaction) => transaction.id === action.payload.id
+      );
+      if (!existingTransaction) {
+        state.budget.push(action.payload)
+      }
     },
     deleteBudget: (state, action) => {
-      const index = action.payload;
+      const id = action.payload;
+      const index = state.budget.findIndex((item) => item.id === id);
       state.budget = [...state.budget.slice(0, index), ...state.budget.slice(index + 1)];
+     
     },
     updateBudget: (state, action) => {
-      const { index, amount, category, percentage } = action.payload;
-      state.budget[index] = { amount, category, percentage };
+      const { id, amount, category, percentage,noti } = action.payload;
+      const index = state.budget.findIndex((item) => item.id === id);
+      state.budget[index].amount = amount;
+      state.budget[index].category = category;
+      state.budget[index].notification = noti;
+      state.budget[index].percentage = percentage;
     },
   },
 });

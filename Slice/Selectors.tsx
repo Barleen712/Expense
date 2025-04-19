@@ -74,6 +74,7 @@ export const BudgetCategory = createSelector(
       const spentAmount = categorySpent ? categorySpent.amount : 0;
 
       return {
+        id:item.id,
         category: item.category,
         budgetvalue: item.amount,
         amountSpent: spentAmount,

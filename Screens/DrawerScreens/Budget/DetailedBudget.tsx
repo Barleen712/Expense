@@ -14,6 +14,7 @@ import CustomModal from "./Modal";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteBudget } from "../../../Slice/IncomeSlice";
 import { useTranslation } from "react-i18next";
+import { deleteDocument } from "../../FirestoreHandler";
 type DetailedBudget = StackNavigationProp<StackParamList, "DetailBudget">;
 
 interface Props {
@@ -24,7 +25,7 @@ interface Props {
       remaining: number;
       progress: number;
       exceeded: boolean;
-      index: number;
+      index: string;
       total: number;
       percentage: number;
     };
@@ -37,6 +38,7 @@ export default function DetailedBudget({ navigation, route }: Props) {
   const dispatch = useDispatch();
   function deleteBudgetFunction() {
     dispatch(deleteBudget(index));
+     deleteDocument("Budgets",index)
   }
   const { t } = useTranslation();
   const Rates = useSelector((state) => state.Rates);

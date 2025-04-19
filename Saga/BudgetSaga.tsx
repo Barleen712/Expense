@@ -1,42 +1,32 @@
-// BudgetSaga.ts
-import { call, put, select, takeLatest } from "redux-saga/effects";
-import { onDisplayNotification } from "../Screens/DrawerScreens/Budget/TestNotification";
-import { BudgetCategory } from "../Slice/Selectors";
-import { addTransaction } from "../Slice/IncomeSlice";
-console.log(addTransaction.type);
-function* handleExpenseCheck(action) {
-  if (action.payload.moneyCategory === "Expense") {
-    const budgetItems: {
-      category: string;
-      budgetvalue: number;
-      amountSpent: number;
-      alertPercent: number;
-      notification: number;
-    }[] = yield select(BudgetCategory);
-    const category = action.payload.category;
+import { useDispatch } from "react-redux";
+import {addBudget,loadingTransaction} from "../Slice/IncomeSlice"
+import { useEffect } from "react";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { db, auth } from "../Screens/FirebaseConfig";
 
-    const matchingBudget = budgetItems.find((item) => item.category === category);
-
-    if (matchingBudget) {
-      const { budgetvalue, amountSpent, alertPercent, notification } = matchingBudget;
-      const progress = (amountSpent / budgetvalue) * 100;
-
-      if (progress >= alertPercent && notification) {
-        yield call(onDisplayNotification, {
-          title: "Budget Alert",
-          body: `${category} expenses have crossed ${alertPercent}% of budget!`,
+const useBudgetListener = () => {
+    const dispatch = useDispatch();
+  
+    useEffect(() => {
+      const user = auth.currentUser;
+      if (!user) return;
+      dispatch(loadingTransaction(true))
+      const q = query(collection(db, "Budgets"), where("userId", "==", user.uid));
+  
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        data.forEach((transaction) => {
+          dispatch(addBudget(transaction));
         });
-      }
-      if (progress > 100) {
-        yield call(onDisplayNotification, {
-          title: "Budget Exceed",
-          body: "You have exceded the limit",
-        });
-      }
-    }
-  }
-}
+        dispatch(loadingTransaction(false))
+      });
+  
+      return () => unsubscribe();
+    }, [dispatch]);
+  };
+  
 
-export function* BudgetSaga() {
-  yield takeLatest("Money/addTransaction", handleExpenseCheck);
-}
+export default useBudgetListener

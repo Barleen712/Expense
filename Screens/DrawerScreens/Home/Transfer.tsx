@@ -86,19 +86,19 @@ export default function Income({ navigation, route }: Props) {
     if (image) {
       supabaseImageUrl = await uploadImage(image);
     }
-    dispatch(
-      addTransaction({
-        amount: numericIncome,
-        description: Description,
-        category: From + " -> " + To,
-        moneyCategory: "Transfer",
-        wallet: "",
-        attachment: {
-          type: "image",
-          uri: supabaseImageUrl,
-        },
-      })
-    );
+    // dispatch(
+    //   addTransaction({
+    //     amount: numericIncome,
+    //     description: Description,
+    //     category: From + " -> " + To,
+    //     moneyCategory: "Transfer",
+    //     wallet: "",
+    //     attachment: {
+    //       type: "image",
+    //       uri: supabaseImageUrl,
+    //     },
+    //   })
+    // );
     AddTransaction({
       amount: numericIncome,
       description: Description,

@@ -20,7 +20,7 @@ import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
 import styles from "../../Stylesheet";
 import { CustomButton } from "../../../Components/CustomButton";
-import DropDown from "../../../Components/DropDown";
+import { updateDocument } from "../../FirestoreHandler";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
@@ -62,7 +62,7 @@ export default function Expense({ navigation, route }: Props) {
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
-
+ console.log(parameters.id)
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -96,19 +96,19 @@ export default function Expense({ navigation, route }: Props) {
     if (image) {
       supabaseImageUrl = await uploadImage(image);
     }
-    dispatch(
-      addTransaction({
-        amount: numericExpense,
-        description: Description,
-        category: selectedCategory,
-        wallet: selectedWallet,
-        moneyCategory: "Expense",
-        attachment: {
-          type: "image",
-          uri: supabaseImageUrl,
-        },
-      })
-    );
+    // dispatch(
+    //   addTransaction({
+    //     amount: numericExpense,
+    //     description: Description,
+    //     category: selectedCategory,
+    //     wallet: selectedWallet,
+    //     moneyCategory: "Expense",
+    //     attachment: {
+    //       type: "image",
+    //       uri: supabaseImageUrl,
+    //     },
+    //   })
+    // );
     AddTransaction({
       amount: numericExpense,
       description: Description,
@@ -129,10 +129,17 @@ export default function Expense({ navigation, route }: Props) {
         description: Description,
         category: selectedCategory,
         wallet: selectedWallet,
-        key: parameters.keyVal,
+        id: parameters.id,
         moneyCategory: "Expense",
-      })
-    );
+      }))
+        updateDocument("Transactions",parameters.id,{
+            amount: numericExpense,
+            description: Description,
+            category: selectedCategory,
+            wallet: selectedWallet,
+
+          }
+        );
     navigation.goBack();
     navigation.goBack();
   }

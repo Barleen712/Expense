@@ -9,6 +9,7 @@ import { deleteTransaction } from "../../../../Slice/IncomeSlice";
 import { useSelector, useDispatch } from "react-redux";
 import CustomModal from "../../Budget/Modal";
 import { useTranslation } from "react-i18next";
+import { deleteDocument } from "../../../FirestoreHandler";
 import { StringConstants, currencies } from "../../../Constants";
 interface DetailTransactionProps {
   navigation: any;
@@ -23,6 +24,7 @@ interface DetailTransactionProps {
   des: string;
   keyVal: string;
   uri: string;
+  id:string
 }
 function DetailTransaction({
   navigation,
@@ -37,6 +39,7 @@ function DetailTransaction({
   des,
   keyVal,
   uri,
+  id
 }: DetailTransactionProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [succes, setsuccess] = useState(false);
@@ -48,19 +51,21 @@ function DetailTransaction({
     setModalVisible(!modalVisible);
   }
   function deleteTransactions() {
-    dispatch(deleteTransaction({ keyVal }));
+     dispatch(deleteTransaction( id));
+    deleteDocument("Transactions",id)
   }
+  console.log(id)
   const { t } = useTranslation();
   const Rates = useSelector((state) => state.Rates);
   const currency = Rates.selectedCurrencyCode;
   const convertRate = Rates.Rate[currency];
   function EditTransaction() {
     if (type === "Income") {
-      navigation.navigate("Income", { amount, title, category, wallet, keyVal, edit: true });
+      navigation.navigate("Income", { amount, title, category, wallet, edit: true,id });
     } else if (type === "Expense") {
-      navigation.navigate("Expense", { amount, title, category, wallet, keyVal, edit: true });
+      navigation.navigate("Expense", { amount, title, category, wallet, edit: true,id });
     } else {
-      navigation.navigate("Transfer", { amount, title, category, wallet, keyVal, edit: true });
+      navigation.navigate("Transfer", { amount, title, category, wallet, edit: true,id });
     }
   }
   return (
@@ -133,6 +138,7 @@ export default function DetailTransaction_Expense({ navigation, route }) {
       type="Expense"
       category={value.category}
       wallet={value.wallet}
+      id={value.id}
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
     />
@@ -151,6 +157,7 @@ export function DetailTransaction_Income({ navigation, route }) {
       type="Income"
       category={value.category}
       wallet={value.wallet}
+      id={value.id}
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
     />
@@ -170,8 +177,9 @@ export function DetailTransaction_Transfer({ navigation, route }) {
       wallet="Chase"
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
-      keyVal={value.key}
-      uri={value.attachment.uri}
+            id={value.id}
+      // keyVal={value.key}
+      // uri={value.attachment.uri}
     />
   );
 }

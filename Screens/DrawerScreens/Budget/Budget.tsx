@@ -16,12 +16,29 @@ const date = new Date();
 const MonthIndex = date.getMonth();
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
+import useBudgetListener from "../../../Saga/BudgetSaga";
 type Budgetprop = StackNavigationProp<StackParamList, "MainScreen">;
-
+import { ActivityIndicator } from "react-native";
 interface Props {
   navigation: Budgetprop;
 }
 export default function Budget({ navigation }: Props) {
+  useBudgetListener()
+  const loading = useSelector((state: RootState) => state.Money.loading)
+  // if (loading)
+  //   return (
+  //     <View
+  //       style={{
+  //         height: "100%",
+  //         alignItems: "center",
+  //         justifyContent: "center",
+  //         backgroundColor: "rgba(0, 0, 0, 0.5)",
+  //       }}
+  //     >
+  //       <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
+  //     </View>
+  //   );
+  
   function handleprev() {
     setmonth(month - 1);
     if (month == 0) {
@@ -39,6 +56,7 @@ export default function Budget({ navigation }: Props) {
   const convertRate = Rates.Rate[currency];
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
+  const budget=useSelector(selectBudget)
   const renderBudgetItems = useCallback(
     ({ item, index }) => {
       let remaining = item.budgetvalue - item.amountSpent;
@@ -52,7 +70,7 @@ export default function Budget({ navigation }: Props) {
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("DetailBudget", {
-              index: index,
+              index: item.id,
               category: item.category,
               remaining: remaining,
               progress: progress,
@@ -132,6 +150,21 @@ export default function Budget({ navigation }: Props) {
     [navigation]
   );
   const { t } = useTranslation();
+if(loading)
+  {
+    return (
+          <View
+            style={{
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            }}
+          >
+            <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
+          </View>
+        );
+  }
   return (
     <View style={styles.container}>
       <View style={styles.add}>

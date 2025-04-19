@@ -24,7 +24,8 @@ import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
 import { AddBudget } from "../../FirestoreHandler";
 import { auth } from "../../FirebaseConfig";
-import { GetBudget } from "../../FirestoreHandler";
+import { updateBudgetDocument } from "../../FirestoreHandler";
+
 type CreateBudgetProp = StackNavigationProp<StackParamList, "CreateBudget">;
 
 interface Props {
@@ -36,7 +37,7 @@ interface Props {
       alert: boolean;
       edit: boolean;
       category: string;
-      index?: number;
+      index?: string;
       header: string;
     };
   };
@@ -70,14 +71,14 @@ export default function CreateBudget({ navigation, route }: Props) {
       setmissing(true);
       return;
     }
-    dispatch(
-      addBudget({
-        category: selectedCategory,
-        amount: numericBudget,
-        percentage: Math.round(sliderValue),
-        notification: Expense,
-      })
-    );
+    // dispatch(
+    //   addBudget({
+    //     category: selectedCategory,
+    //     amount: numericBudget,
+    //     percentage: Math.round(sliderValue),
+    //     notification: Expense,
+    //   })
+    // );
     AddBudget({
       category: selectedCategory,
       amount: numericBudget,
@@ -86,7 +87,6 @@ export default function CreateBudget({ navigation, route }: Props) {
       userId: user.uid,
       Date: new Date().toISOString(),
     });
-    GetBudget()
     navigation.goBack();
   }
   function editBudget() {
@@ -96,9 +96,17 @@ export default function CreateBudget({ navigation, route }: Props) {
         category: selectedCategory,
         percentage: sliderValue,
         amount: numericBudget,
-        index: parameters.index,
+        id: parameters.index,
       })
     );
+    updateBudgetDocument("Budgets",parameters.index,
+      {
+        category: selectedCategory,
+        percentage: sliderValue,
+        amount: numericBudget,
+        noti:Expense
+      }
+    )
     navigation.goBack();
     navigation.goBack();
   }

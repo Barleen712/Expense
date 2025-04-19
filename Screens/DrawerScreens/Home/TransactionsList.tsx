@@ -25,11 +25,11 @@ export default function TransactionList({ data }: TransactionListProps) {
   const currency = Rates.selectedCurrencyCode;
   const convertRate = Rates.Rate[currency];
   const navigation = useNavigation();
-  function navigateFunc({ index }) {
-    if (data[index].moneyCategory === "Income") navigation.navigate("DetailTransaction_Income", { value: data[index] });
-    else if (data[index].moneyCategory === "Expense")
-      navigation.navigate("DetailTransaction_Expense", { value: data[index] });
-    else navigation.navigate("DetailTransaction_Transfer", { value: data[index] });
+  function navigateFunc({item }) {
+    if (item.moneyCategory === "Income") navigation.navigate("DetailTransaction_Income", { value: item });
+    else if (item.moneyCategory === "Expense")
+      navigation.navigate("DetailTransaction_Expense", { value: item });
+    else navigation.navigate("DetailTransaction_Transfer", { value: item});
   }
   const { t } = useTranslation();
   return (
@@ -41,7 +41,7 @@ export default function TransactionList({ data }: TransactionListProps) {
       data={data}
       initialNumToRender={3}
       showsVerticalScrollIndicator={false}
-      renderItem={({ item, index }) => {
+      renderItem={({ item}) => {
         const date = new Date(item.Date);
         let hours = date.getHours();
         const minutes = date.getMinutes().toString().padStart(2, "0");
@@ -51,7 +51,7 @@ export default function TransactionList({ data }: TransactionListProps) {
         const formattedTime = `${hours}:${minutes} ${meridiem}`;
         return (
           <TouchableOpacity
-            onPress={() => navigateFunc({ index })}
+            onPress={() => navigateFunc({ item})}
             style={{
               margin: 4,
               backgroundColor: "rgba(237, 234, 234, 0.28)",

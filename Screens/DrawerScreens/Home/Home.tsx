@@ -85,7 +85,14 @@ const loading = useSelector((state: RootState) => state.Money.loading)
           <Text style={styles.heading}>$94500</Text>
         </View>
         <View style={styles.homeHeadView}>
-          <View style={[styles.headButton, { backgroundColor: "rgba(0, 168, 107, 1)" }]}>
+          <TouchableOpacity onPress={()=>navigation.navigate("Income",{
+                    amount: 0,
+                    category: "Category",
+                    edit: false,
+                    title: "",
+                    wallet: "Wallet",
+                  })}
+           style={[styles.headButton, { backgroundColor: "rgba(0, 168, 107, 1)" }]}>
             <Image source={require("../../../assets/Income.png")} />
             <View style={{ padding: 5 }}>
               <Text style={styles.homeTitle}>{t(StringConstants.Income)}</Text>
@@ -94,8 +101,16 @@ const loading = useSelector((state: RootState) => state.Money.loading)
                 {(income * convertRate).toFixed(2)}
               </Text>
             </View>
-          </View>
-          <View style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}>
+          </TouchableOpacity>
+          <TouchableOpacity
+          onPress={()=>navigation.navigate("Expense",{
+            amount: 0,
+            category: "Category",
+            edit: false,
+            title: "",
+            wallet: "Wallet",
+          })}
+         style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}>
             <Image source={require("../../../assets/Expense.png")} />
             <View style={{ padding: 5 }}>
               <Text style={styles.homeTitle}>{t(StringConstants.Expense)}</Text>
@@ -104,7 +119,7 @@ const loading = useSelector((state: RootState) => state.Money.loading)
                 {(expense*convertRate).toFixed(2)}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       </LinearGradient>
       <View style={styles.linechart}>

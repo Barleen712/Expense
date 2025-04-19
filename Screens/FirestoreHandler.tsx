@@ -1,6 +1,6 @@
 import { addDoc } from "firebase/firestore";
 import { db, auth } from "./FirebaseConfig";
-import { collection, query, getDocs, where,onSnapshot } from "firebase/firestore";
+import { collection, query, getDocs, where,onSnapshot ,deleteDoc,doc,updateDoc} from "firebase/firestore";
 export async function AddTransaction(transactionData) {
   try {
     const docRef = await addDoc(collection(db, "Transactions"), transactionData);
@@ -17,17 +17,27 @@ export async function AddBudget(budgetData) {
   }
 }
 
-export async function GetBudget()
-{
-  const q=query(collection(db,("Budgets")))
-  const unsubscribe = onSnapshot(
-        q,
-        (querySnapshot) => {
-          const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-          console.log(data)
-        },
-        (error) => {
-          console.error("Error fetching transactions: ", error);
-        }
-      );
-}
+export const deleteDocument = async (collection:string,id:string)=> {
+  await deleteDoc(doc(db, collection, id))
+};
+export const updateDocument = async (collection:string,id:string,data) => {
+  const userRef = doc(db, collection, id)
+ await updateDoc(userRef, {
+    "amount":data.amount,
+    "category":data.category,
+    "description":data.description,
+    "wallet":data.wallet
+   });
+  
+};
+export const updateBudgetDocument = async (collection:string,id:string,data) => {
+  const userRef = doc(db, collection, id)
+ await updateDoc(userRef, {
+    "amount":data.amount,
+    "category":data.category,
+       "notification":data.noti,
+    "percentage":data.percentage,
+
+   });
+  
+};
