@@ -65,7 +65,7 @@ export const ExpenseTrackerSlice = createSlice({
         (transaction) => transaction.id === action.payload.id
       );
       if (!existingTransaction) {
-        state.budget.push(action.payload)
+        state.budget.unshift(action.payload)
       }
     },
     deleteBudget: (state, action) => {

@@ -39,11 +39,13 @@ export default function FinancialReport({ navigation }: Props) {
   const [pie, showpie] = useState(false);
   const [Expense, setExpense] = useState(true);
   const [Income, setIncome] = useState(false);
+  const [month,setMonth]=useState(Month[new Date().getMonth()])
   const income = useSelector(selectIncomeTotal);
   const expense = useSelector(selectExpenseTotal);
   const transaction=useSelector(selectTransactions)
   const incomeValues = useSelector(selectIncome);
   const expensesAndTransfers=useSelector(selectExpensesAndTransfers)
+  const [selected,setSelected]=useState('')
   const sortedIncome = [...incomeValues].sort((a,b) => {
     return new Date(b.Date) - new Date(a.Date);
   });
@@ -91,11 +93,12 @@ export default function FinancialReport({ navigation }: Props) {
       <Header title={t(StringConstants.FinancialReport)} press={() => navigation.goBack()} />
       <View style={[styles.transactionHead]}>
         <CustomD
-          name="Month"
+          name={month}
           data={Month}
           styleButton={styles.homeMonth}
           styleItem={styles.dropdownItems}
           styleArrow={styles.homeArrow}
+          onSelectItem={(item)=>setMonth(item)}
         />
         <TouchableOpacity style={styles.reportGraph}>
           <TouchableOpacity
@@ -195,13 +198,20 @@ export default function FinancialReport({ navigation }: Props) {
             styleButton={styles.Trans}
             styleItem={styles.dropdownItems}
             styleArrow={styles.homeArrow}
+            onSelectItem={(item)=>setSelected(item)}
           />
           <TouchableOpacity>
             <Image source={require("../../../../assets/sort.png")} style={styles.sortImage} />
           </TouchableOpacity>
         </View>
-        {line && Expense && <TransactionList data={sortedExpense} />}
-        {line && Income && <TransactionList data={sortedIncome} />}
+        {line&&Expense&&<View style={{flex:1}}>
+        <TransactionList data={sortedExpense} />
+        </View>}
+        {line&&Income&&<View style={{flex:1}}>
+        <TransactionList data={sortedIncome} />
+        </View>}
+        {/* {line && Expense && <TransactionList data={sortedExpense} />}
+        {line && Income && <TransactionList data={sortedIncome} />} */}
         {pie && Expense && <CategoryList category={categoryExpense} />}
         {pie && Income && <CategoryList category={categoryIncome} />}
       </View>

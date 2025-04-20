@@ -11,6 +11,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Screens/FirebaseConfig";
 import { TabScreens } from "./Navigation/StackNavigation";
 import { ActivityIndicator } from "react-native-paper";
+import BiometricAuth from "./Screens/DrawerScreens/Profile/Biometrics";
 import styles from "./Screens/Stylesheet";
 import MyComponent from "./Component";
 const checkApplicationPermission = async () => {
@@ -58,26 +59,60 @@ export default function App() {
     <Provider store={Store}>
       <NavigationContainer>
         {user ? <TabScreens/> : <Screens />}
+        {/* <BiometricAuth/> */}
         
         </NavigationContainer>
     </Provider>
   );
 }
 
-// // import { useTranslation } from "react-i18next";
-// // import { StringConstants } from "./Screens/Constants";
-// // const BookScreen = () => {
-// //   const { t } = useTranslation();
+// // // import { useTranslation } from "react-i18next";
+// // // import { StringConstants } from "./Screens/Constants";
+// // // const BookScreen = () => {
+// // //   const { t } = useTranslation();
 
-// //   const changeLanguage = (language) => {
-// //     i18n.changeLanguage(language);
-// //   };
-// //   return (
-// //     <View>
-// //       <Text>{t(StringConstants.changeLanguage)}</Text>
-// //       <Button title="Change to Spanish" onPress={() => changeLanguage("es")} />
-// //       <Button title="Change to Italian" onPress={() => changeLanguage("it")} />
-// //       <Button title="Change to English" onPress={() => changeLanguage("en")} />
-// //     </View>
-// //   );
-// // // };
+// // //   const changeLanguage = (language) => {
+// // //     i18n.changeLanguage(language);
+// // //   };
+// // //   return (
+// // //     <View>
+// // //       <Text>{t(StringConstants.changeLanguage)}</Text>
+// // //       <Button title="Change to Spanish" onPress={() => changeLanguage("es")} />
+// // //       <Button title="Change to Italian" onPress={() => changeLanguage("it")} />
+// // //       <Button title="Change to English" onPress={() => changeLanguage("en")} />
+// // //     </View>
+// // //   );
+// // // // };
+// import React, { useEffect } from 'react';
+// import { Button, View } from 'react-native';
+// import { GoogleSignin } from '@react-native-google-signin/google-signin';
+// import { clampRGBA } from 'react-native-reanimated/lib/typescript/Colors';
+
+// const App = () => {
+//   useEffect(() => {
+//     GoogleSignin.configure({
+//       webClientId: '53534647041-pinc0e5hilnf8cs5q2dfuk2amcvui26f.apps.googleusercontent.com', // from Firebase console
+//     });
+//    console.log("done")
+//   }, []);
+
+//   const signIn = async () => {
+//     try {
+//       await GoogleSignin.hasPlayServices();
+//       console.log("done1")
+//       const userInfo = await GoogleSignin.signIn();
+//       console.log("done2")
+//       console.log('User Info:', userInfo);
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+
+//   return (
+//     <View style={{backgroundColor:"red"}}>
+//       <Button title="Sign in with Google" onPress={signIn} />
+//     </View>
+//   );
+// };
+
+// export default App;

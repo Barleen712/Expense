@@ -1,6 +1,9 @@
 import { Platform } from "react-native";
 import { supabase } from "./SuperbaseConfig";
 import RNFS from "react-native-fs";
+import ReactNativeBiometrics, { FaceID } from 'react-native-biometrics';
+
+const rnBiometrics = new ReactNativeBiometrics();
 export const categoryMap = {
   Food: require("../assets/Food.png"),
   Shopping: require("../assets/Shopping.png"),
@@ -71,7 +74,6 @@ export const uploadImage = async (imageUri: string) => {
     } else {
       base64Image = await RNFS.readFile(imageUri, "base64");
     }
-
     if (!base64Image) {
       throw new Error("Failed to convert image to Base64");
     }
@@ -92,6 +94,7 @@ export const uploadImage = async (imageUri: string) => {
     if (!urlData.publicUrl) {
       throw new Error("Failed to retrieve public URL");
     }
+    console.log("done")
     return urlData.publicUrl;
   } catch (e) {
     console.error("Image upload error:", e);
@@ -199,4 +202,30 @@ export const currencies: Record<string, string> = {
   INR: "₹",
   AUD: "$",
   RUB: "₽",
+};
+export const handleBiometricAuth = async () => {
+  const { available, biometryType } = await rnBiometrics.isSensorAvailable();
+
+  if (available) {
+  
+
+    rnBiometrics
+      .simplePrompt({ promptMessage: 'Confirm your identity' })
+      .then(resultObject => {
+        const { success } = resultObject;
+
+        if (success) {
+          console.log('Biometric authentication successful');
+          // TODO: navigate to home screen or unlock content here
+        } else {
+          console.log('Biometric authentication cancelled');
+          // Optional: Handle fallback silently
+        }
+      })
+      .catch(() => {
+        console.log('Biometric authentication failed');
+      });
+  } else {
+    console.log('Biometrics not supported on this device');
+  }
 };

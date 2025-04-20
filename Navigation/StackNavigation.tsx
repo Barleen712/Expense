@@ -26,6 +26,7 @@ import CreateBudget from "../Screens/DrawerScreens/Budget/CreateBudget";
 import Expense from "../Screens/DrawerScreens/Home/Expense";
 import Income from "../Screens/DrawerScreens/Home/Income";
 import Transfer from "../Screens/DrawerScreens/Home/Transfer";
+import { handleBiometricAuth } from "../Screens/Constants";
 import FinancialReportExpense, {
   FinancialReportBudget,
   FinancialReportIncome,
@@ -36,6 +37,10 @@ import Transaction from "../Screens/DrawerScreens/Transaction/Transaction";
 import TransactionList from "../Screens/DrawerScreens/Home/TransactionsList";
 import DetailedBudget from "../Screens/DrawerScreens/Budget/DetailedBudget";
 import DetailAccount from "../Screens/DrawerScreens/Profile/DetailAccount";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { fetchRates } from "../Slice/CurrencySlice";
+
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
@@ -54,6 +59,12 @@ export default function Screens() {
 }
 const Stack2 = createStackNavigator<StackParamList>();
 export function TabScreens() {
+  const dispatch=useDispatch()
+  useEffect(()=>
+  {
+    handleBiometricAuth()
+    // dispatch(fetchRates());
+  },[])
   return (
     <Stack2.Navigator initialRouteName="MainScreen" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Setpin" component={Setpin} />

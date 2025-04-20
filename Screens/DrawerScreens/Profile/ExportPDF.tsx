@@ -16,7 +16,7 @@ export const generateReportPDF = async () => {
   const budgetData = BudgetCategory(state);
   const transactionRows = transactions
     .map((t) => {
-      const date = new Date(t.key).toLocaleDateString();
+      const date = new Date(t.Date).toLocaleDateString();
       return `
       <tr>
         <td>${date}</td>

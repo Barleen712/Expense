@@ -62,7 +62,6 @@ export default function Expense({ navigation, route }: Props) {
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
- console.log(parameters.id)
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -117,6 +116,10 @@ export default function Expense({ navigation, route }: Props) {
       moneyCategory: "Expense",
       Date: new Date().toISOString(),
       userId: user.uid,
+      attachment: {
+              type: "image",
+              uri: supabaseImageUrl,
+            },
     });
     navigation.goBack();
   }

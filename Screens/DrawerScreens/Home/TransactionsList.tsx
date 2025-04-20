@@ -113,7 +113,7 @@ export default function TransactionList({ data }: TransactionListProps) {
               },
             ]}
           >
-            {item.moneyCategory === 'Income' ? '+' : '-'}${item.amount}
+            {item.moneyCategory === 'Income' ? '+' : '-'}{currencies[currency]}{(item.amount)*convertRate}
           </Text>
           <Text>{formattedTime}</Text>
         </View>

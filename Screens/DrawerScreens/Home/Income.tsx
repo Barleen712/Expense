@@ -16,6 +16,7 @@ import {
   ScrollView,
   TextInput,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
@@ -59,6 +60,7 @@ export default function Income({ navigation, route }: Props) {
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
+  const[loading,setLoading]=useState(false)
   const modal = [
     require("../../../assets/Camera.png"),
     require("../../../assets/Image.png"),
@@ -97,7 +99,9 @@ export default function Income({ navigation, route }: Props) {
 
     if (image) {
       // Upload to Supabase
+      setLoading(true)
       supabaseImageUrl = await uploadImage(image);
+      setLoading(false)
     }
     // dispatch(
     //   addTransaction({
@@ -120,6 +124,10 @@ export default function Income({ navigation, route }: Props) {
       moneyCategory: "Income",
       Date: new Date().toISOString(),
       userId: user.uid,
+      attachment: {
+              type: "image",
+              uri: supabaseImageUrl,
+            },
     });
     navigation.goBack();
   }

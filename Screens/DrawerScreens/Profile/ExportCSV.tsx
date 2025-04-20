@@ -19,7 +19,7 @@ export const GenerateCSVReport = async () => {
   csvContent += "Transactions:\n";
   csvContent += "Date,Type,Category,Amount,Description,Wallet\n";
   transactions.forEach((t) => {
-    const date = new Date(t.key).toLocaleDateString();
+    const date = new Date(t.Date).toLocaleDateString();
     csvContent += `${date},${t.moneyCategory},${t.category},$${t.amount},${t.description},${t.wallet}\n`;
   });
 

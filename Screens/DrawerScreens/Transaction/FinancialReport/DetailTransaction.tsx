@@ -22,7 +22,6 @@ interface DetailTransactionProps {
   category: string;
   wallet: string;
   des: string;
-  keyVal: string;
   uri: string;
   id:string
 }
@@ -37,7 +36,6 @@ function DetailTransaction({
   category,
   wallet,
   des,
-  keyVal,
   uri,
   id
 }: DetailTransactionProps) {
@@ -54,7 +52,6 @@ function DetailTransaction({
      dispatch(deleteTransaction( id));
     deleteDocument("Transactions",id)
   }
-  console.log(id)
   const { t } = useTranslation();
   const Rates = useSelector((state) => state.Rates);
   const currency = Rates.selectedCurrencyCode;
@@ -127,6 +124,7 @@ function DetailTransaction({
 
 export default function DetailTransaction_Expense({ navigation, route }) {
   const { value } = route.params;
+
   return (
     <DetailTransaction
       navigation={navigation}
@@ -141,6 +139,7 @@ export default function DetailTransaction_Expense({ navigation, route }) {
       id={value.id}
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
+      uri={value.attachment.uri}
     />
   );
 }
@@ -160,6 +159,7 @@ export function DetailTransaction_Income({ navigation, route }) {
       id={value.id}
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
+            uri={value.attachment.uri}
     />
   );
 }
@@ -179,7 +179,7 @@ export function DetailTransaction_Transfer({ navigation, route }) {
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
             id={value.id}
       // keyVal={value.key}
-      // uri={value.attachment.uri}
+       uri={value.attachment.uri}
     />
   );
 }

@@ -20,6 +20,16 @@ const category = ["CSV", "PDF"];
 export default function Export({ navigation }: Props) {
   const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState("CSV");
+  function exporting()
+  {
+    if(selectedCategory==="CSV")
+    {
+      GenerateCSVReport()
+    }
+    else{
+      generateReportPDF()
+    }
+  }
   return (
     <View style={styles.container}>
       <Header title={t("Export Data")} press={() => navigation.goBack()} />
@@ -40,7 +50,7 @@ export default function Export({ navigation }: Props) {
         />
       </View>
       <View style={styles.exportButton}>
-        <CustomButton title={t("Export")} bg="rgb(42, 124, 118)" color="white" press={generateReportPDF} />
+        <CustomButton title={t("Export")} bg="rgb(42, 124, 118)" color="white" press={exporting} />
       </View>
     </View>
   );

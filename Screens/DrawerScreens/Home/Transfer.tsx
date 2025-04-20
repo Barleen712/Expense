@@ -106,6 +106,11 @@ export default function Income({ navigation, route }: Props) {
       moneyCategory: "Transfer",
       Date: new Date().toISOString(),
       userId: user.uid,
+      attachment: {
+              type: "image",
+              uri: supabaseImageUrl,
+            },
+
     });
     navigation.goBack();
   }

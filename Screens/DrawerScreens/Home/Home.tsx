@@ -29,8 +29,10 @@ import { useTranslation } from "react-i18next";
 import useTransactionListener from "../../../Saga/TransactionSaga";
 
 export default function Home({ navigation }) {
+  const index=new Date().getMonth()
  useTransactionListener()
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
+  const [month,selectMonth]=useState(Month[index])
   const height = Dimensions.get("window").height * 0.2;
   const { t } = useTranslation();
   const Flat = ["Today", "Week", "Month", "Year"];
@@ -76,11 +78,12 @@ const loading = useSelector((state: RootState) => state.Money.loading)
     <SafeAreaView style={[styles.container]}>
       <LinearGradient colors={["rgb(229, 255, 243)", "rgba(205, 230, 200, 0.09)"]} style={styles.homeHeadgradient}>
         <CustomD
-          name="Month"
+          name={month}
           data={Month}
           styleButton={styles.homeMonth}
           styleItem={styles.dropdownItems}
           styleArrow={styles.homeArrow}
+          onSelectItem={(item) => selectMonth(item)}
         />
         <View style={{ padding: 8 }}>
           <Text style={styles.username}>{t(StringConstants.AccountBalance)}</Text>
