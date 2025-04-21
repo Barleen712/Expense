@@ -41,7 +41,6 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchRates } from "../Slice/CurrencySlice";
 
-
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
   return (
@@ -52,19 +51,18 @@ export default function Screens() {
       <Stack.Screen name="ForgotPassword" component={ForgotPass} />
       <Stack.Screen name="EmailSent" component={EmailSent} />
       <Stack.Screen name="GetStarted" component={Getstarted} />
-      {/*  <Stack.Screen name="Setpin" component={Setpin} /> */}
+      {/* <Stack.Screen name="Setpin" component={Setpin} /> */}
       <Stack.Screen name="AllSet" component={Success} />
     </Stack.Navigator>
   );
 }
 const Stack2 = createStackNavigator<StackParamList>();
 export function TabScreens() {
-  const dispatch=useDispatch()
-  useEffect(()=>
-  {
-    handleBiometricAuth()
-    // dispatch(fetchRates());
-  },[])
+  const dispatch = useDispatch();
+  useEffect(() => {
+    handleBiometricAuth();
+    dispatch(fetchRates());
+  }, []);
   return (
     <Stack2.Navigator initialRouteName="MainScreen" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Setpin" component={Setpin} />

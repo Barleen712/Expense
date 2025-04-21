@@ -8,24 +8,34 @@ interface IncomeEntry {
   Date: string;
   id: string;
 }
-interface BudgetEntery {
+interface BudgetEntry {
   amount: number;
   category: number;
   percentage: number;
   notification: boolean;
   id: string;
 }
+interface NotificationEntry {
+  id: string;
+  title: string;
+  body: string;
+  timestamp: string;
+}
 
 interface IncomeState {
   amount: IncomeEntry[];
-  budget: BudgetEntery[];
+  budget: BudgetEntry[];
   loading: boolean;
+  notification: NotificationEntry[];
+  shownAlerts: Record<string, boolean>[];
 }
 
 const initialState: IncomeState = {
   amount: [],
   budget: [],
   loading: false,
+  notification: [],
+  shownAlerts: [],
 };
 
 export const ExpenseTrackerSlice = createSlice({
@@ -73,10 +83,19 @@ export const ExpenseTrackerSlice = createSlice({
       state.budget[index].notification = noti;
       state.budget[index].percentage = percentage;
     },
+    addNotification: (state, action) => {
+      console.log(action.payload);
+      state.notification.unshift(action.payload);
+      console.log(state.notification, "wgfgeiwu");
+    },
+    markAlertShown: (state, action: PayloadAction<string>) => {
+      state.shownAlerts[action.payload] = true;
+    },
     clearData: (state) => {
       state.amount = [];
       state.budget = [];
       state.loading = false;
+      state.notification = [];
     },
   },
 });
@@ -89,6 +108,8 @@ export const {
   updateBudget,
   updateTransaction,
   loadingTransaction,
+  addNotification,
+  markAlertShown,
   clearData,
 } = ExpenseTrackerSlice.actions;
 export default ExpenseTrackerSlice.reducer;

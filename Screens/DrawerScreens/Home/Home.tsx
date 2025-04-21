@@ -17,7 +17,7 @@ import styles from "../../Stylesheet";
 import { Month } from "../../Constants";
 import { Linearchart } from "../Transaction/FinancialReport/Graph";
 import { useSelector } from "react-redux";
-
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { selectTransactions, selectIncomeTotal, selectExpenseTotal } from "../../../Slice/Selectors";
 import TransactionList from "./TransactionsList";
 import { StringConstants, currencies } from "../../Constants";
@@ -59,6 +59,8 @@ export default function Home({ navigation }) {
     [transaction]
   );
   const loading = useSelector((state: RootState) => state.Money.loading);
+  const notification = useSelector((state) => state.Money.notification);
+  console.log(notification);
   if (loading)
     return (
       <View
@@ -75,6 +77,12 @@ export default function Home({ navigation }) {
   return (
     <SafeAreaView style={[styles.container]}>
       <LinearGradient colors={["rgb(229, 255, 243)", "rgba(205, 230, 200, 0.09)"]} style={styles.homeHeadgradient}>
+        <TouchableOpacity style={{ position: "absolute", right: "4%", top: "5%" }}>
+          <Ionicons name="notifications" size={24} color="rgb(56, 88, 85)" />
+        </TouchableOpacity>
+        <TouchableOpacity style={{ position: "absolute", left: "4%", top: "3%" }}>
+          <Image style={{ height: 30, width: 30 }} source={require("../../../assets/Avatar.png")} />
+        </TouchableOpacity>
         <CustomD
           name={t(month)}
           data={Month}
@@ -100,10 +108,16 @@ export default function Home({ navigation }) {
             }
             style={[styles.headButton, { backgroundColor: "rgba(0, 168, 107, 1)" }]}
           >
-            <Image source={require("../../../assets/Income.png")} />
+            <Image style={{ height: 40, width: 40 }} source={require("../../../assets/Income.png")} />
             <View style={{ padding: 5 }}>
               <Text style={styles.homeTitle}>{t(StringConstants.Income)}</Text>
-              <Text style={{ fontSize: Platform.OS === "ios" ? 21 : 24, color: "white", fontWeight: "bold" }}>
+              <Text
+                style={{
+                  fontSize: Platform.OS === "ios" ? 21 : 22,
+                  color: "white",
+                  fontWeight: "bold",
+                }}
+              >
                 {currencies[currency]}
                 {(income * convertRate).toFixed(2)}
               </Text>
@@ -121,10 +135,10 @@ export default function Home({ navigation }) {
             }
             style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}
           >
-            <Image source={require("../../../assets/Expense.png")} />
+            <Image style={{ height: 40, width: 40 }} source={require("../../../assets/Expense.png")} />
             <View style={{ padding: 5 }}>
               <Text style={styles.homeTitle}>{t(StringConstants.Expense)}</Text>
-              <Text style={{ fontSize: Platform.OS === "ios" ? 21 : 24, color: "white", fontWeight: "bold" }}>
+              <Text style={{ fontSize: Platform.OS === "ios" ? 21 : 22, color: "white", fontWeight: "bold" }}>
                 {currencies[currency]}
                 {(expense * convertRate).toFixed(2)}
               </Text>
@@ -169,7 +183,7 @@ export default function Home({ navigation }) {
         </View>
         {/* <TransactionList data={sortedTransactions.slice(0,3)}/> */}
         <View style={{ width: "90%", flex: 1 }}>
-          <TransactionList data={sortedTransactions.slice(0, 3)} />
+          <TransactionList data={sortedTransactions.slice(0, 5)} />
         </View>
       </View>
     </SafeAreaView>
