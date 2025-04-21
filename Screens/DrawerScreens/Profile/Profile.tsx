@@ -10,12 +10,15 @@ import { auth } from "../../FirebaseConfig";
 import { signOut } from "firebase/auth";
 import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { clearData } from "../../../Slice/IncomeSlice";
 type Profileprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
   navigation: Profileprop;
 }
 export default function Profile({ navigation }: Props) {
+  const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   function toggleModal() {
     setModalVisible(!modalVisible);
@@ -23,6 +26,7 @@ export default function Profile({ navigation }: Props) {
   async function handleLogout() {
     try {
       toggleModal();
+      dispatch(clearData());
       await signOut(auth);
     } catch (error) {
       alert("Their was some error");

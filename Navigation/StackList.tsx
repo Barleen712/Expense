@@ -31,7 +31,7 @@ type StackParamList = {
   };
   Expense: { amount: number; category: string; edit: boolean; title: string; wallet: string };
   Income: { amount: number; category: string; edit: boolean; title: string; wallet: string };
-  Transfer: { amount: number; category: string; edit: boolean; title: string; wallet: string };
+  Transfer: { amount: number; to: string; from: string; edit: boolean; title: string; id: string };
   FinancialReportExpense: undefined;
   FinancialReportBudget: undefined;
   FinancialReportQuote: undefined;

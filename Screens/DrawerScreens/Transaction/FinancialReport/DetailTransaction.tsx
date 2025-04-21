@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Modal } from "react-native";
+import { View, Text, Image, TouchableOpacity, Modal, TouchableWithoutFeedback } from "react-native";
 import styles from "../../../Stylesheet";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import Header from "../../../../Components/Header";
@@ -23,7 +23,7 @@ interface DetailTransactionProps {
   wallet: string;
   des: string;
   uri: string;
-  id:string
+  id: string;
 }
 function DetailTransaction({
   navigation,
@@ -37,9 +37,10 @@ function DetailTransaction({
   wallet,
   des,
   uri,
-  id
+  id,
 }: DetailTransactionProps) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [image, showImage] = useState(false);
   const [succes, setsuccess] = useState(false);
   const dispatch = useDispatch();
   function toggleSuccess() {
@@ -49,8 +50,8 @@ function DetailTransaction({
     setModalVisible(!modalVisible);
   }
   function deleteTransactions() {
-     dispatch(deleteTransaction( id));
-    deleteDocument("Transactions",id)
+    dispatch(deleteTransaction(id));
+    deleteDocument("Transactions", id);
   }
   const { t } = useTranslation();
   const Rates = useSelector((state) => state.Rates);
@@ -58,11 +59,11 @@ function DetailTransaction({
   const convertRate = Rates.Rate[currency];
   function EditTransaction() {
     if (type === "Income") {
-      navigation.navigate("Income", { amount, title, category, wallet, edit: true,id });
+      navigation.navigate("Income", { amount, title, category, wallet, edit: true, id });
     } else if (type === "Expense") {
-      navigation.navigate("Expense", { amount, title, category, wallet, edit: true,id });
+      navigation.navigate("Expense", { amount, title, category, wallet, edit: true, id });
     } else {
-      navigation.navigate("Transfer", { amount, title, category, wallet, edit: true,id });
+      navigation.navigate("Transfer", { amount, to: category, from: type, title: des, edit: true, id });
     }
   }
   return (
@@ -94,12 +95,14 @@ function DetailTransaction({
         <Image source={require("../../../../assets/Line 3.png")} />
       </View>
       <View style={styles.Description}>
-        <Text style={styles.username}></Text>
+        <Text style={styles.username}>{t("Description")}</Text>
         <Text style={[styles.exportText, { paddingLeft: 0 }]}>{des}</Text>
       </View>
       <View style={styles.attachView}>
         <Text style={styles.username}>{t("Attachment")}</Text>
-        <Image style={styles.attachImg} source={{ uri: uri }} onError={() => console.log("Failed to load image")} />
+        <TouchableOpacity onPress={() => showImage(true)}>
+          <Image style={styles.attachImg} source={{ uri: uri }} onError={() => console.log("Failed to load image")} />
+        </TouchableOpacity>
       </View>
       <View style={[styles.Apply, { flex: 0.1 }]}>
         <CustomButton title={t("Edit")} bg={color} color={bg} press={EditTransaction} />
@@ -118,6 +121,19 @@ function DetailTransaction({
         navigation={navigation}
         deleteT={deleteTransactions}
       />
+      <Modal animationType="slide" transparent={true} visible={image} onRequestClose={() => showImage(false)}>
+        <TouchableWithoutFeedback onPress={() => showImage(false)}>
+          <View style={[styles.modalOverlay, { backgroundColor: "rgba(24, 13, 13, 0.89)" }]}>
+            <View style={{ height: "90%", position: "absolute", bottom: 0, width: "100%" }}>
+              <Image
+                style={{ height: "100%", resizeMode: "contain" }}
+                source={{ uri: uri }}
+                onError={() => console.log("Failed to load image")}
+              />
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </View>
   );
 }
@@ -159,12 +175,15 @@ export function DetailTransaction_Income({ navigation, route }) {
       id={value.id}
       des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
             velit mollit. Exercitation veniam consequat sunt nostrud amet."
-            uri={value.attachment.uri}
+      uri={value.attachment.uri}
     />
   );
 }
 export function DetailTransaction_Transfer({ navigation, route }) {
   const { value } = route.params;
+  const arrow = value.category.indexOf("->");
+  const From = value.category.slice(0, arrow);
+  const To = value.category.slice(arrow + 3, value.category.length - 1);
   return (
     <DetailTransaction
       navigation={navigation}
@@ -172,14 +191,13 @@ export function DetailTransaction_Transfer({ navigation, route }) {
       color="rgba(115, 116, 119, 0.14)"
       amount={value.amount}
       time="Saturday 4 June 2021 16:20"
-      type="Transfer"
-      category="PayPal"
-      wallet="Chase"
-      des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
-            velit mollit. Exercitation veniam consequat sunt nostrud amet."
-            id={value.id}
+      type={From}
+      category={To}
+      wallet="Transfer"
+      des={value.description}
+      id={value.id}
       // keyVal={value.key}
-       uri={value.attachment.uri}
+      uri={value.attachment.uri}
     />
   );
 }

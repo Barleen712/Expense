@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, Image } from "react-native";
 import styles from "../../../Stylesheet";
 import { ProgressBar, MD3Colors } from "react-native-paper";
 import { useTranslation } from "react-i18next";
-import { StringConstants } from "../../../Constants";
+import { useSelector } from "react-redux";
+import { StringConstants, categoryMap, currencies } from "../../../Constants";
 interface Report {
   type: string;
   amount: string;
@@ -15,6 +16,14 @@ interface Report {
 }
 const width = Dimensions.get("window").width;
 export default function FaceCard({ type, amount, detail, category, amount1, bg, progress }: Report) {
+  const Rates = useSelector((state) => state.Rates);
+  const currency = Rates.selectedCurrencyCode;
+  let convertRate;
+  if (currency === "USD") {
+    convertRate = 1;
+  } else {
+    convertRate = Rates.Rate[currency];
+  }
   const { t } = useTranslation();
   return (
     <View style={[styles.card, { backgroundColor: bg }]}>
@@ -32,14 +41,51 @@ export default function FaceCard({ type, amount, detail, category, amount1, bg, 
       </View>
       <View style={styles.typeView}>
         <Text style={styles.typeText}>{t(type)}</Text>
-        <Text style={styles.amountText}>{amount}</Text>
+        <Text style={styles.amountText}>
+          {" "}
+          {currencies[currency]} {(amount * convertRate).toFixed(2)}
+        </Text>
       </View>
 
       <View style={styles.detailView}>
         <View style={styles.detailbox}>
           <Text style={styles.detailText}>{t(detail)} </Text>
-          <Text style={styles.category}>{category}</Text>
-          <Text style={[styles.typeText, { color: "black" }]}>{amount1}</Text>
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                borderWidth: 0.3,
+                padding: 10,
+                margin: 15,
+                // marginTop: 5,
+                backgroundColor: "rgba(189, 194, 194, 0.17)",
+                borderRadius: 20,
+              }}
+            >
+              <Image
+                style={{ width: 40, height: 40 }}
+                source={categoryMap[category === "Transfer" ? "Transfer" : category]}
+              />
+              <Text
+                style={{
+                  paddingLeft: 5,
+                  flexShrink: 1,
+                  fontFamily: "Inter",
+                  fontWeight: "bold",
+                  fontSize: 18,
+                }}
+              >
+                {t(category)}
+              </Text>
+            </View>
+            <Text style={[styles.typeText, { color: "black" }]}>
+              {currencies[currency]} {(amount1 * convertRate).toFixed(2)}
+            </Text>
+          </View>
+          {/* <Text style={styles.category}>{category}</Text>
+          <Text style={[styles.typeText, { color: "black" }]}>{amount1}</Text> */}
         </View>
       </View>
     </View>

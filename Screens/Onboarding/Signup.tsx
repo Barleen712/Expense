@@ -9,15 +9,21 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
 import Header from "../../Components/Header";
 import { useTranslation } from "react-i18next";
-import { StringConstants } from "../Constants";
+import { StringConstants, handleGoogleSignIn } from "../Constants";
 import { signOut } from "firebase/auth";
 import Success from "./SignUp_success";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 type SignupProp = StackNavigationProp<StackParamList, "SignUp">;
 
 interface Props {
   navigation: SignupProp;
 }
 export default function SignUp({ navigation }: Props) {
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: "26672937768-d1b1daba6ovl6md8bkrfaaffpiugeihh.apps.googleusercontent.com",
+    });
+  }, []);
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
   const [password, setpass] = useState("");
@@ -36,6 +42,12 @@ export default function SignUp({ navigation }: Props) {
     setemail("");
   }
   const { t } = useTranslation();
+
+  function GoogleSignIn() {
+    setLoading(true);
+    handleGoogleSignIn();
+    setLoading(false);
+  }
   if (loading) {
     return (
       <View style={{ height: "100%", alignItems: "center", justifyContent: "center" }}>
@@ -81,7 +93,7 @@ export default function SignUp({ navigation }: Props) {
       </View>
       <GradientButton title="Sign Up" handles={handleSignUp} />
       <Text style={styles.or}>{t(StringConstants.orwith)}</Text>
-      <TouchableOpacity style={styles.GoogleView}>
+      <TouchableOpacity style={styles.GoogleView} onPress={GoogleSignIn}>
         <Image style={styles.Google} source={require("../../assets/Google.png")} />
         <Text style={styles.textGoogle}>{t(StringConstants.SignUpwithGoogle)}</Text>
       </TouchableOpacity>

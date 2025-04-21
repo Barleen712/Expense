@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
   },
   budgetButton: {
     position: "absolute",
-    bottom: "18%",
+    bottom: "15%",
     width: "100%",
     alignItems: "center",
   },
@@ -703,6 +703,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 32,
     fontWeight: "bold",
+    textAlign: "center",
   },
   amountText: {
     color: "white",
@@ -713,7 +714,7 @@ const styles = StyleSheet.create({
   detailbox: {
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 10,
+    //  padding: 10,
     width: "90%",
     height: "70%",
     alignItems: "center",
@@ -740,10 +741,12 @@ const styles = StyleSheet.create({
     //padding: Platform.OS === "ios" ? 17 : 10,
   },
   budgetReport: {
-    flex: 0.8,
+    flex: 0.5,
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
+    marginTop: 40,
+    paddingTop: 100,
   },
   reportGraph: {
     flexDirection: "row",

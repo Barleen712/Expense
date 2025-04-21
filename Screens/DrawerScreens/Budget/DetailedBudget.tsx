@@ -38,7 +38,7 @@ export default function DetailedBudget({ navigation, route }: Props) {
   const dispatch = useDispatch();
   function deleteBudgetFunction() {
     dispatch(deleteBudget(index));
-     deleteDocument("Budgets",index)
+    deleteDocument("Budgets", index);
   }
   const { t } = useTranslation();
   const Rates = useSelector((state) => state.Rates);
@@ -66,20 +66,31 @@ export default function DetailedBudget({ navigation, route }: Props) {
           <View
             style={{
               flexDirection: "row",
-              width: "35%",
-              backgroundColor: "white",
-              height: 64,
-              borderRadius: 20,
-              borderWidth: 0.5,
-              borderColor: "grey",
               alignItems: "center",
-              justifyContent: "space-between",
-              paddingLeft: 10,
-              paddingRight: 10,
+              justifyContent: "center",
+              borderWidth: 0.3,
+              padding: 10,
+              margin: 15,
+              // marginTop: 5,
+              backgroundColor: "rgba(254, 255, 255, 0.85)",
+              borderRadius: 20,
             }}
           >
-            <Image style={{ width: 30, height: 30 }} source={categoryMap[category]} />
-            <Text style={styles.category}>{category}</Text>
+            <Image
+              style={{ width: 40, height: 40 }}
+              source={categoryMap[category === "Transfer" ? "Transfer" : category]}
+            />
+            <Text
+              style={{
+                paddingLeft: 5,
+                flexShrink: 1,
+                fontFamily: "Inter",
+                fontWeight: "bold",
+                fontSize: 18,
+              }}
+            >
+              {t(category)}
+            </Text>
           </View>
           <View style={{ alignItems: "center", marginTop: 10 }}>
             <Text style={[styles.typeText, { color: "black" }]}>{t("Remaining")}</Text>

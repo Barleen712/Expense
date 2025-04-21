@@ -9,7 +9,7 @@ import {
   Dimensions,
   SafeAreaView,
   ActivityIndicator,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomD from "../../../Components/Practice";
@@ -18,21 +18,19 @@ import { Month } from "../../Constants";
 import { Linearchart } from "../Transaction/FinancialReport/Graph";
 import { useSelector } from "react-redux";
 
-import {
-  selectTransactions,
-  selectIncomeTotal,
-  selectExpenseTotal,
-} from "../../../Slice/Selectors";
+import { selectTransactions, selectIncomeTotal, selectExpenseTotal } from "../../../Slice/Selectors";
 import TransactionList from "./TransactionsList";
 import { StringConstants, currencies } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import useTransactionListener from "../../../Saga/TransactionSaga";
+import useBudgetListener from "../../../Saga/BudgetSaga";
 
 export default function Home({ navigation }) {
-  const index=new Date().getMonth()
- useTransactionListener()
+  const index = new Date().getMonth();
+  useTransactionListener();
+  useBudgetListener();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
-  const [month,selectMonth]=useState(Month[index])
+  const [month, selectMonth] = useState(Month[index]);
   const height = Dimensions.get("window").height * 0.2;
   const { t } = useTranslation();
   const Flat = ["Today", "Week", "Month", "Year"];
@@ -44,23 +42,23 @@ export default function Home({ navigation }) {
   } else {
     convertRate = Rates.Rate[currency];
   }
-  const transaction=useSelector(selectTransactions)
+  const transaction = useSelector(selectTransactions);
   const sortedTransactions = [...transaction].sort((a, b) => {
     return new Date(b.Date) - new Date(a.Date);
   });
- const income=useSelector(selectIncomeTotal)
- const expense=useSelector(selectExpenseTotal)
- const GraphExpenses = useMemo(
-  () =>
-    transaction
-      .filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer")
-      .sort((a, b) => {
-        return new Date(a.Date) - new Date(b.Date);
-      })
-      .map((expense) => ({ value: expense.amount })),
-  [transaction]
-);
-const loading = useSelector((state: RootState) => state.Money.loading)
+  const income = useSelector(selectIncomeTotal);
+  const expense = useSelector(selectExpenseTotal);
+  const GraphExpenses = useMemo(
+    () =>
+      transaction
+        .filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer")
+        .sort((a, b) => {
+          return new Date(a.Date) - new Date(b.Date);
+        })
+        .map((expense) => ({ value: expense.amount })),
+    [transaction]
+  );
+  const loading = useSelector((state: RootState) => state.Money.loading);
   if (loading)
     return (
       <View
@@ -78,7 +76,7 @@ const loading = useSelector((state: RootState) => state.Money.loading)
     <SafeAreaView style={[styles.container]}>
       <LinearGradient colors={["rgb(229, 255, 243)", "rgba(205, 230, 200, 0.09)"]} style={styles.homeHeadgradient}>
         <CustomD
-          name={month}
+          name={t(month)}
           data={Month}
           styleButton={styles.homeMonth}
           styleItem={styles.dropdownItems}
@@ -90,14 +88,18 @@ const loading = useSelector((state: RootState) => state.Money.loading)
           <Text style={styles.heading}>$94500</Text>
         </View>
         <View style={styles.homeHeadView}>
-          <TouchableOpacity onPress={()=>navigation.navigate("Income",{
-                    amount: 0,
-                    category: "Category",
-                    edit: false,
-                    title: "",
-                    wallet: "Wallet",
-                  })}
-           style={[styles.headButton, { backgroundColor: "rgba(0, 168, 107, 1)" }]}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("Income", {
+                amount: 0,
+                category: "Category",
+                edit: false,
+                title: "",
+                wallet: "Wallet",
+              })
+            }
+            style={[styles.headButton, { backgroundColor: "rgba(0, 168, 107, 1)" }]}
+          >
             <Image source={require("../../../assets/Income.png")} />
             <View style={{ padding: 5 }}>
               <Text style={styles.homeTitle}>{t(StringConstants.Income)}</Text>
@@ -108,20 +110,23 @@ const loading = useSelector((state: RootState) => state.Money.loading)
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-          onPress={()=>navigation.navigate("Expense",{
-            amount: 0,
-            category: "Category",
-            edit: false,
-            title: "",
-            wallet: "Wallet",
-          })}
-         style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}>
+            onPress={() =>
+              navigation.navigate("Expense", {
+                amount: 0,
+                category: "Category",
+                edit: false,
+                title: "",
+                wallet: "Wallet",
+              })
+            }
+            style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}
+          >
             <Image source={require("../../../assets/Expense.png")} />
             <View style={{ padding: 5 }}>
               <Text style={styles.homeTitle}>{t(StringConstants.Expense)}</Text>
               <Text style={{ fontSize: Platform.OS === "ios" ? 21 : 24, color: "white", fontWeight: "bold" }}>
                 {currencies[currency]}
-                {(expense*convertRate).toFixed(2)}
+                {(expense * convertRate).toFixed(2)}
               </Text>
             </View>
           </TouchableOpacity>
@@ -162,10 +167,10 @@ const loading = useSelector((state: RootState) => state.Money.loading)
             <Text style={[styles.homeTitle, { color: "rgb(42, 124, 118)" }]}>{t(StringConstants.SeeAll)}</Text>
           </TouchableOpacity>
         </View>
-         {/* <TransactionList data={sortedTransactions.slice(0,3)}/> */}
-         <View  style={{width:"90%",flex:1}}>
-           <TransactionList data={sortedTransactions.slice(0,3)}/>
-         </View>
+        {/* <TransactionList data={sortedTransactions.slice(0,3)}/> */}
+        <View style={{ width: "90%", flex: 1 }}>
+          <TransactionList data={sortedTransactions.slice(0, 3)} />
+        </View>
       </View>
     </SafeAreaView>
   );

@@ -21,9 +21,7 @@ export default function DetailAccount({ navigation, route }) {
 
         <Text style={[styles.ForgotDes, { paddingTop: 10 }]}>{t(wallet)}</Text>
         <Text style={[styles.heading, { paddingTop: 10 }]}>$2400</Text>
-        <View style={{ flex: 0.1, width: "90%", justifyContent: "center", marginTop: 50 }}>
-          <Text style={styles.optionsText}>{t("Today")}</Text>
-        </View>
+        <View style={{ flex: 0.1, width: "90%", justifyContent: "center", marginTop: 50 }}></View>
         <TransactionList data={walletCategory} />
       </View>
     </View>

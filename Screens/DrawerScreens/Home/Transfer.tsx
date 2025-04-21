@@ -29,6 +29,8 @@ import { uploadImage, StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { AddTransaction } from "../../FirestoreHandler";
 import { auth } from "../../FirebaseConfig";
+import { updateDocument } from "../../FirestoreHandler";
+import { updateTransaction } from "../../../Slice/IncomeSlice";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -41,6 +43,8 @@ const modal = [
   require("../../../assets/DocumentBlue.png"),
 ];
 export default function Income({ navigation, route }: Props) {
+  const { from, to, amount, id, edit, title } = route.params;
+
   const [Expense, setExpense] = useState(false);
   const [showAttach, setAttach] = useState(true);
   const [image, setImage] = useState<string | null>(null);
@@ -48,10 +52,11 @@ export default function Income({ navigation, route }: Props) {
   const [close, setclose] = useState(false);
   const [document, setDocument] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
-  const [Transfer, setTransfer] = useState<string>("$0");
-  const [From, setFrom] = useState("");
-  const [To, setTo] = useState("");
-  const [Description, setDescription] = useState("");
+  const [Transfer, setTransfer] = useState<string>(`$${amount}`);
+  const [From, setFrom] = useState(`${from}`);
+  const [To, setTo] = useState(`${to}`);
+  const [Description, setDescription] = useState(`${title}`);
+
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -107,13 +112,33 @@ export default function Income({ navigation, route }: Props) {
       Date: new Date().toISOString(),
       userId: user.uid,
       attachment: {
-              type: "image",
-              uri: supabaseImageUrl,
-            },
-
+        type: "image",
+        uri: supabaseImageUrl,
+      },
     });
     navigation.goBack();
   }
+  function editTransfer() {
+    const numericExpense = parseFloat(Transfer.replace("$", "") || "0");
+    dispatch(
+      updateTransaction({
+        amount: numericExpense,
+        description: Description,
+        category: From + " -> " + To,
+        id: id,
+        moneyCategory: "Expense",
+      })
+    );
+    updateDocument("Transactions", id, {
+      amount: numericExpense,
+      description: Description,
+      category: From + " -> " + To,
+      moneyCategory: "Transfer",
+    });
+    navigation.goBack();
+    navigation.goBack();
+  }
+
   return (
     <View style={styles.container}>
       <Header
@@ -236,7 +261,7 @@ export default function Income({ navigation, route }: Props) {
                   title={t(StringConstants.Continue)}
                   bg="rgba(115, 116, 119, 0.14)"
                   color="rgba(0, 119, 255, 1)"
-                  press={add}
+                  press={edit ? editTransfer : add}
                 />
               </View>
             </View>

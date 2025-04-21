@@ -23,8 +23,7 @@ interface Props {
   navigation: Budgetprop;
 }
 export default function Budget({ navigation }: Props) {
-  useBudgetListener()
-  const loading = useSelector((state: RootState) => state.Money.loading)
+  const loading = useSelector((state: RootState) => state.Money.loading);
   // if (loading)
   //   return (
   //     <View
@@ -38,7 +37,7 @@ export default function Budget({ navigation }: Props) {
   //       <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
   //     </View>
   //   );
-  
+
   function handleprev() {
     setmonth(month - 1);
     if (month == 0) {
@@ -56,7 +55,7 @@ export default function Budget({ navigation }: Props) {
   const convertRate = Rates.Rate[currency];
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
-  const budget=useSelector(selectBudget)
+  const budget = useSelector(selectBudget);
   const renderBudgetItems = useCallback(
     ({ item, index }) => {
       let remaining = item.budgetvalue - item.amountSpent;
@@ -150,20 +149,19 @@ export default function Budget({ navigation }: Props) {
     [navigation]
   );
   const { t } = useTranslation();
-if(loading)
-  {
+  if (loading) {
     return (
-          <View
-            style={{
-              height: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            }}
-          >
-            <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
-          </View>
-        );
+      <View
+        style={{
+          height: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+        }}
+      >
+        <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
+      </View>
+    );
   }
   return (
     <View style={styles.container}>
@@ -184,7 +182,7 @@ if(loading)
               {t(StringConstants.Letmake)}.
             </Text>
           ) : (
-            <View style={{ height: "70%" }}>
+            <View style={{ height: "75%" }}>
               <FlatList
                 contentContainerStyle={{
                   paddingBottom: 30,

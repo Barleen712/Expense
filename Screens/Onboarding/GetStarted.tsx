@@ -39,7 +39,7 @@ export default function Getstarted({ navigation }: Props) {
       id: "2",
       image: require("../../assets/Know.png"),
       title: "Know where your money goes",
-      des: "Track your transaction easily,with categories and financial report ",
+      des: "Track your transaction easily,with categories and financial report",
     },
     {
       id: "3",
@@ -58,7 +58,7 @@ export default function Getstarted({ navigation }: Props) {
     );
   };
   return (
-    <View style={{ alignItems: "center", backgroundColor: "white", flex: 1, paddingTop: 30 }}>
+    <View style={{ alignItems: "center", backgroundColor: "white", flex: 1, paddingTop: 20 }}>
       <Carousel
         data={data}
         renderItem={render}
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   view: {
     flex: 1,
     alignItems: "center",
-    padding: 20,
+    padding: 10,
   },
   image: {
     height: Platform.OS === "ios" ? 220 : 300,

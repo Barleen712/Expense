@@ -46,11 +46,11 @@ interface Props {
 }
 export default function Transaction({ navigation }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [month,setMonth]=useState(Month[new Date().getMonth()])
+  const [month, setMonth] = useState(Month[new Date().getMonth()]);
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
-  const transactions=useSelector(selectTransactions)
+  const transactions = useSelector(selectTransactions);
   const sortedTransactions = [...transactions].sort((a, b) => {
     return new Date(b.Date) - new Date(a.Date);
   });
@@ -59,12 +59,12 @@ export default function Transaction({ navigation }: Props) {
     <View style={styles.container}>
       <View style={styles.transactionHead}>
         <CustomD
-          name={month}
+          name={t(month)}
           data={Month}
           styleButton={styles.homeMonth}
           styleItem={styles.dropdownItems}
           styleArrow={styles.homeArrow}
-          onSelectItem={(item)=>setMonth(item)}
+          onSelectItem={(item) => setMonth(item)}
         />
         <TouchableOpacity onPress={toggleModal}>
           <Image source={require("../../../assets/sort.png")} style={styles.sortImage} />

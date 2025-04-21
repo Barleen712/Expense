@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "53534647041",
-    "project_id": "practice-3dc14",
-    "storage_bucket": "practice-3dc14.firebasestorage.app"
+    "project_number": "26672937768",
+    "project_id": "expensetracker-d6937",
+    "storage_bucket": "expensetracker-d6937.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:53534647041:android:779304190cde9f083ff100",
+        "mobilesdk_app_id": "1:26672937768:android:67d4934cac9105540a2e1d",
         "android_client_info": {
-          "package_name": "com.anonymous.ExpenseTracker"
+          "package_name": "com.anonymous.BarleenExpenseTracker"
         }
       },
       "oauth_client": [
         {
-          "client_id": "53534647041-hurrljd29g5aie3ifbrg2lemul5pok8h.apps.googleusercontent.com",
+          "client_id": "26672937768-h3e6uulqn2a972vhst1hdlnd3ncie10s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.anonymous.ExpenseTracker",
-            "certificate_hash": "76161ba87e79028e98f80bfb5257cf760ada1cf3"
+            "package_name": "com.anonymous.BarleenExpenseTracker",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {
-          "client_id": "53534647041-pinc0e5hilnf8cs5q2dfuk2amcvui26f.apps.googleusercontent.com",
+          "client_id": "26672937768-d1b1daba6ovl6md8bkrfaaffpiugeihh.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD6TcXhuyHq6kTfOX11SBzkhVcjT2NBUpw"
+          "current_key": "AIzaSyC9bdDSAW6hKDEiADXU6uloVOtUtcdzARI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "53534647041-pinc0e5hilnf8cs5q2dfuk2amcvui26f.apps.googleusercontent.com",
+              "client_id": "26672937768-d1b1daba6ovl6md8bkrfaaffpiugeihh.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

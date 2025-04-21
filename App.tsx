@@ -14,6 +14,7 @@ import { ActivityIndicator } from "react-native-paper";
 import BiometricAuth from "./Screens/DrawerScreens/Profile/Biometrics";
 import styles from "./Screens/Stylesheet";
 import MyComponent from "./Component";
+import { FinancialReportIncome } from "./Screens/DrawerScreens/Transaction/FinancialReport/Report";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -58,10 +59,9 @@ export default function App() {
   return (
     <Provider store={Store}>
       <NavigationContainer>
-        {user ? <TabScreens/> : <Screens />}
+        {user ? <TabScreens /> : <Screens />}
         {/* <BiometricAuth/> */}
-        
-        </NavigationContainer>
+      </NavigationContainer>
     </Provider>
   );
 }
@@ -83,34 +83,35 @@ export default function App() {
 // // //     </View>
 // // //   );
 // // // // };
-// import React, { useEffect } from 'react';
-// import { Button, View } from 'react-native';
-// import { GoogleSignin } from '@react-native-google-signin/google-signin';
-// import { clampRGBA } from 'react-native-reanimated/lib/typescript/Colors';
-
+// import React, { useEffect } from "react";
+// import { Button, View } from "react-native";
+// import { GoogleSignin } from "@react-native-google-signin/google-signin";
+// import { auth } from "./Screens/FirebaseConfig";
+// import { GoogleAuthProvider } from "firebase/auth";
+// import { signInWithCredential } from "firebase/auth";
+// import { clampRGBA } from "react-native-reanimated/lib/typescript/Colors";
 // const App = () => {
 //   useEffect(() => {
 //     GoogleSignin.configure({
-//       webClientId: '53534647041-pinc0e5hilnf8cs5q2dfuk2amcvui26f.apps.googleusercontent.com', // from Firebase console
+//       webClientId: "26672937768-d1b1daba6ovl6md8bkrfaaffpiugeihh.apps.googleusercontent.com",
 //     });
-//    console.log("done")
 //   }, []);
-
-//   const signIn = async () => {
+//   const handleGoogleSignIn = async () => {
 //     try {
 //       await GoogleSignin.hasPlayServices();
-//       console.log("done1")
 //       const userInfo = await GoogleSignin.signIn();
-//       console.log("done2")
-//       console.log('User Info:', userInfo);
-//     } catch (error) {
-//       console.error(error);
+//       const tokens = await GoogleSignin.getTokens();
+//       const googleCredential = GoogleAuthProvider.credential(tokens.idToken);
+//       const creds = await signInWithCredential(auth, googleCredential);
+//     } catch (error: any) {
+//       console.error("Google Sign-In Error:", error);
+//       Alert.alert("Error", error.message || "Google Sign-In failed");
 //     }
 //   };
 
 //   return (
-//     <View style={{backgroundColor:"red"}}>
-//       <Button title="Sign in with Google" onPress={signIn} />
+//     <View style={{ backgroundColor: "red" }}>
+//       <Button title="Sign in with Google" onPress={handleGoogleSignIn} />
 //     </View>
 //   );
 // };

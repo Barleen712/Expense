@@ -39,29 +39,29 @@ export default function FinancialReport({ navigation }: Props) {
   const [pie, showpie] = useState(false);
   const [Expense, setExpense] = useState(true);
   const [Income, setIncome] = useState(false);
-  const [month,setMonth]=useState(Month[new Date().getMonth()])
+  const [month, setMonth] = useState(Month[new Date().getMonth()]);
   const income = useSelector(selectIncomeTotal);
   const expense = useSelector(selectExpenseTotal);
-  const transaction=useSelector(selectTransactions)
+  const transaction = useSelector(selectTransactions);
   const incomeValues = useSelector(selectIncome);
-  const expensesAndTransfers=useSelector(selectExpensesAndTransfers)
-  const [selected,setSelected]=useState('')
-  const sortedIncome = [...incomeValues].sort((a,b) => {
+  const expensesAndTransfers = useSelector(selectExpensesAndTransfers);
+  const [selected, setSelected] = useState("");
+  const sortedIncome = [...incomeValues].sort((a, b) => {
     return new Date(b.Date) - new Date(a.Date);
   });
-  const sortedExpense= [...expensesAndTransfers].sort((a, b) => {
+  const sortedExpense = [...expensesAndTransfers].sort((a, b) => {
     return new Date(b.Date) - new Date(a.Date);
   });
- const GraphExpenses = useMemo(
-  () =>
-    transaction
-      .filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer")
-      .sort((a, b) => {
-        return new Date(a.Date) - new Date(b.Date);
-      })
-      .map((expense) => ({ value: expense.amount })),
-  [transaction]
-);
+  const GraphExpenses = useMemo(
+    () =>
+      transaction
+        .filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer")
+        .sort((a, b) => {
+          return new Date(a.Date) - new Date(b.Date);
+        })
+        .map((expense) => ({ value: expense.amount })),
+    [transaction]
+  );
   const GraphIncome = useMemo(
     () =>
       transaction
@@ -71,7 +71,6 @@ export default function FinancialReport({ navigation }: Props) {
         })
         .map((income) => ({ value: income.amount })),
     [transaction]
-   
   );
 
   const categoryExpense = useSelector(CategoryExpense);
@@ -90,15 +89,23 @@ export default function FinancialReport({ navigation }: Props) {
   const convertRate = Rates.Rate[currency];
   return (
     <View style={styles.container}>
-      <Header title={t(StringConstants.FinancialReport)} press={() => navigation.goBack()} />
+      <Header
+        title={t(StringConstants.FinancialReport)}
+        press={() => {
+          navigation.goBack();
+          navigation.goBack();
+          navigation.goBack();
+          navigation.goBack();
+        }}
+      />
       <View style={[styles.transactionHead]}>
         <CustomD
-          name={month}
+          name={t(month)}
           data={Month}
           styleButton={styles.homeMonth}
           styleItem={styles.dropdownItems}
           styleArrow={styles.homeArrow}
-          onSelectItem={(item)=>setMonth(item)}
+          onSelectItem={(item) => setMonth(item)}
         />
         <TouchableOpacity style={styles.reportGraph}>
           <TouchableOpacity
@@ -123,7 +130,7 @@ export default function FinancialReport({ navigation }: Props) {
       </View>
       {line && Expense && (
         <View style={[styles.linechart, { flex: 0.4 }]}>
-          <Text style={[styles.typeText, { margin: 5, paddingLeft: 10, color: "black" }]}>
+          <Text style={{ margin: 5, paddingLeft: 10, color: "black", fontSize: 32, fontWeight: "bold" }}>
             {currencies[currency]}
             {(expense * convertRate).toFixed(2)}
           </Text>
@@ -132,7 +139,7 @@ export default function FinancialReport({ navigation }: Props) {
       )}
       {line && Income && (
         <View style={[styles.linechart, { flex: 0.4 }]}>
-          <Text style={[styles.typeText, { margin: 5, paddingLeft: 10, color: "black" }]}>
+          <Text style={{ margin: 5, paddingLeft: 10, color: "black", fontSize: 32, fontWeight: "bold" }}>
             {currencies[currency]} {(income * convertRate).toFixed(2)}
           </Text>
           <Linearchart data={GraphIncome} height={height} />
@@ -181,35 +188,16 @@ export default function FinancialReport({ navigation }: Props) {
         </View>
       </View>
       <View style={{ flex: 0.5, alignItems: "center" }}>
-        <View
-          style={{
-            flex: 0.2,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            margin: 10,
-            marginTop: 0,
-            width: "90%",
-          }}
-        >
-          <CustomD
-            name={"Transaction"}
-            data={["Transaction", "Category"]}
-            styleButton={styles.Trans}
-            styleItem={styles.dropdownItems}
-            styleArrow={styles.homeArrow}
-            onSelectItem={(item)=>setSelected(item)}
-          />
-          <TouchableOpacity>
-            <Image source={require("../../../../assets/sort.png")} style={styles.sortImage} />
-          </TouchableOpacity>
-        </View>
-        {line&&Expense&&<View style={{flex:1}}>
-        <TransactionList data={sortedExpense} />
-        </View>}
-        {line&&Income&&<View style={{flex:1}}>
-        <TransactionList data={sortedIncome} />
-        </View>}
+        {line && Expense && (
+          <View style={{ flex: 1 }}>
+            <TransactionList data={sortedExpense} />
+          </View>
+        )}
+        {line && Income && (
+          <View style={{ flex: 1 }}>
+            <TransactionList data={sortedIncome} />
+          </View>
+        )}
         {/* {line && Expense && <TransactionList data={sortedExpense} />}
         {line && Income && <TransactionList data={sortedIncome} />} */}
         {pie && Expense && <CategoryList category={categoryExpense} />}

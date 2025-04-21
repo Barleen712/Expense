@@ -80,11 +80,12 @@ export default function Tabscreens({ navigation }: Props) {
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate("Transfer", {
+                    from: "",
+                    to: "",
                     amount: 0,
-                    category: "Category",
+                    id: " ",
                     edit: false,
                     title: "",
-                    wallet: "Wallet",
                   })
                 }
                 style={{

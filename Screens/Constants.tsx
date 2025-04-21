@@ -1,8 +1,10 @@
 import { Platform } from "react-native";
 import { supabase } from "./SuperbaseConfig";
 import RNFS from "react-native-fs";
-import ReactNativeBiometrics, { FaceID } from 'react-native-biometrics';
-
+import ReactNativeBiometrics, { FaceID } from "react-native-biometrics";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { signInWithCredential, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "./FirebaseConfig";
 const rnBiometrics = new ReactNativeBiometrics();
 export const categoryMap = {
   Food: require("../assets/Food.png"),
@@ -94,7 +96,7 @@ export const uploadImage = async (imageUri: string) => {
     if (!urlData.publicUrl) {
       throw new Error("Failed to retrieve public URL");
     }
-    console.log("done")
+    console.log("done");
     return urlData.publicUrl;
   } catch (e) {
     console.error("Image upload error:", e);
@@ -115,7 +117,7 @@ export const StringConstants = {
   Planningahead: "Planning ahead",
   Becomeyourownmoneymanagerandmakeeverycentcount: "Become your own money manager and make every cent count",
   Trackyourtransactioneasilywithcategoriesandfinancialreport:
-    "Track your transaction easily,with categories and financial report ",
+    "Track your transaction easily,with categories and financial report",
   Setupyourbudgetforeachcategorysoyouincontrol: "Setup your budget for each category so you in control",
   SignUp: "Sign Up",
   Login: "Login",
@@ -207,25 +209,37 @@ export const handleBiometricAuth = async () => {
   const { available, biometryType } = await rnBiometrics.isSensorAvailable();
 
   if (available) {
-  
-
     rnBiometrics
-      .simplePrompt({ promptMessage: 'Confirm your identity' })
-      .then(resultObject => {
+      .simplePrompt({ promptMessage: "Confirm your identity" })
+      .then((resultObject) => {
         const { success } = resultObject;
 
         if (success) {
-          console.log('Biometric authentication successful');
+          console.log("Biometric authentication successful");
           // TODO: navigate to home screen or unlock content here
         } else {
-          console.log('Biometric authentication cancelled');
+          console.log("Biometric authentication cancelled");
           // Optional: Handle fallback silently
         }
       })
       .catch(() => {
-        console.log('Biometric authentication failed');
+        console.log("Biometric authentication failed");
       });
   } else {
-    console.log('Biometrics not supported on this device');
+    console.log("Biometrics not supported on this device");
+  }
+};
+
+export const handleGoogleSignIn = async () => {
+  try {
+    await GoogleSignin.hasPlayServices();
+    await GoogleSignin.signOut();
+    const userInfo = await GoogleSignin.signIn();
+    const tokens = await GoogleSignin.getTokens();
+    const googleCredential = GoogleAuthProvider.credential(tokens.idToken);
+    const creds = await signInWithCredential(auth, googleCredential);
+  } catch (error: any) {
+    console.error("Google Sign-In Error:", error);
+    Alert.alert("Error", error.message || "Google Sign-In failed");
   }
 };

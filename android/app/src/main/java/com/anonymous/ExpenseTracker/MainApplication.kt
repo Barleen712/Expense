@@ -1,4 +1,4 @@
-package com.anonymous.ExpenseTracker
+package com.anonymous.BarleenExpenseTracker
 
 import android.app.Application
 import android.content.res.Configuration
