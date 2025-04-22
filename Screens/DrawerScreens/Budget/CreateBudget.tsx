@@ -86,6 +86,7 @@ export default function CreateBudget({ navigation, route }: Props) {
       notification: Expense,
       userId: user.uid,
       Date: new Date().toISOString(),
+      notified: false,
     });
     navigation.goBack();
   }
@@ -97,6 +98,8 @@ export default function CreateBudget({ navigation, route }: Props) {
         percentage: sliderValue,
         amount: numericBudget,
         id: parameters.index,
+      notification:Expense,
+        notified: false
       })
     );
     updateBudgetDocument("Budgets",parameters.index,
@@ -104,7 +107,8 @@ export default function CreateBudget({ navigation, route }: Props) {
         category: selectedCategory,
         percentage: sliderValue,
         amount: numericBudget,
-        noti:Expense
+        noti:Expense,
+        notified:false
       }
     )
     navigation.goBack();

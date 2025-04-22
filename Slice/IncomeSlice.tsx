@@ -14,28 +14,28 @@ interface BudgetEntry {
   percentage: number;
   notification: boolean;
   id: string;
+  notified?:boolean
 }
-interface NotificationEntry {
-  id: string;
-  title: string;
-  body: string;
-  timestamp: string;
+interface notificationEntry{
+  title:string,
+  body:string,
+  date:string,
+  id:string
+
 }
 
 interface IncomeState {
   amount: IncomeEntry[];
   budget: BudgetEntry[];
   loading: boolean;
-  notification: NotificationEntry[];
-  shownAlerts: Record<string, boolean>[];
+  notification:notificationEntry[]
 }
 
 const initialState: IncomeState = {
   amount: [],
   budget: [],
   loading: false,
-  notification: [],
-  shownAlerts: [],
+  notification:[]
 };
 
 export const ExpenseTrackerSlice = createSlice({
@@ -76,26 +76,32 @@ export const ExpenseTrackerSlice = createSlice({
       state.budget = [...state.budget.slice(0, index), ...state.budget.slice(index + 1)];
     },
     updateBudget: (state, action) => {
-      const { id, amount, category, percentage, noti } = action.payload;
+      const { id, amount, category, percentage, notification, notified } = action.payload;
       const index = state.budget.findIndex((item) => item.id === id);
-      state.budget[index].amount = amount;
-      state.budget[index].category = category;
-      state.budget[index].notification = noti;
-      state.budget[index].percentage = percentage;
+      if (index !== -1) {
+        state.budget[index] = {
+          ...state.budget[index],
+          amount,
+          category,
+          percentage,
+          notification,
+          notified,
+        };
+      }
     },
-    addNotification: (state, action) => {
-      console.log(action.payload);
-      state.notification.unshift(action.payload);
-      console.log(state.notification, "wgfgeiwu");
+    addNotification:(state,action)=>
+    {
+      const existingTransaction = state.notification.find((transaction) => transaction.id === action.payload.id);
+      if (!existingTransaction) {
+      state.notification.unshift(action.payload)
+      }
     },
-    markAlertShown: (state, action: PayloadAction<string>) => {
-      state.shownAlerts[action.payload] = true;
-    },
+    
     clearData: (state) => {
       state.amount = [];
       state.budget = [];
       state.loading = false;
-      state.notification = [];
+      state.notification=[]
     },
   },
 });
@@ -109,7 +115,6 @@ export const {
   updateTransaction,
   loadingTransaction,
   addNotification,
-  markAlertShown,
   clearData,
 } = ExpenseTrackerSlice.actions;
 export default ExpenseTrackerSlice.reducer;

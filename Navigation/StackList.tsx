@@ -52,5 +52,6 @@ type StackParamList = {
   DetailAccount: {
     wallet: number;
   };
+  DisplayNotification:undefined
 };
 export default StackParamList;

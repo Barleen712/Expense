@@ -40,6 +40,7 @@ import DetailAccount from "../Screens/DrawerScreens/Profile/DetailAccount";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchRates } from "../Slice/CurrencySlice";
+import DisplayNotification from "../Screens/DrawerScreens/Home/DisplayNotification";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
@@ -61,7 +62,7 @@ export function TabScreens() {
   const dispatch = useDispatch();
   useEffect(() => {
     handleBiometricAuth();
-    dispatch(fetchRates());
+  //  dispatch(fetchRates());
   }, []);
   return (
     <Stack2.Navigator initialRouteName="MainScreen" screenOptions={{ headerShown: false }}>
@@ -92,6 +93,7 @@ export function TabScreens() {
       <Stack.Screen name="DetailTransaction_Transfer" component={DetailTransaction_Transfer} />
       <Stack.Screen name="DetailBudget" component={DetailedBudget} />
       <Stack.Screen name="DetailAccount" component={DetailAccount} />
+      <Stack.Screen name="DisplayNotification" component={DisplayNotification}/>
     </Stack2.Navigator>
   );
 }

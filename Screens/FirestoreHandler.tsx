@@ -16,7 +16,15 @@ export async function AddBudget(budgetData) {
     console.log(e);
   }
 }
-
+export async function AddNotification(notificationData)
+{
+  try{
+    await addDoc(collection(db,"Notification"),notificationData)
+  }catch(e)
+  {
+    console.log(e)
+  }
+}
 export const deleteDocument = async (collection:string,id:string)=> {
   await deleteDoc(doc(db, collection, id))
 };
@@ -37,7 +45,6 @@ export const updateBudgetDocument = async (collection:string,id:string,data) => 
     "category":data.category,
        "notification":data.noti,
     "percentage":data.percentage,
-
-   });
-  
-};
+    "notified":data.notified
+ })
+   };

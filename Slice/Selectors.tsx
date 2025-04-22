@@ -80,6 +80,7 @@ export const BudgetCategory = createSelector(
         amountSpent: spentAmount,
         alertPercent: item.percentage,
         notification: item.notification,
+        notified:item.notified
       };
     });
   }

@@ -24,11 +24,13 @@ import { StringConstants, currencies } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import useTransactionListener from "../../../Saga/TransactionSaga";
 import useBudgetListener from "../../../Saga/BudgetSaga";
+import useNotificationListener from "../../../Saga/NotificationSaga";
 
 export default function Home({ navigation }) {
   const index = new Date().getMonth();
   useTransactionListener();
   useBudgetListener();
+  useNotificationListener()
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [month, selectMonth] = useState(Month[index]);
   const height = Dimensions.get("window").height * 0.2;
@@ -59,8 +61,6 @@ export default function Home({ navigation }) {
     [transaction]
   );
   const loading = useSelector((state: RootState) => state.Money.loading);
-  const notification = useSelector((state) => state.Money.notification);
-  console.log(notification);
   if (loading)
     return (
       <View
@@ -77,7 +77,8 @@ export default function Home({ navigation }) {
   return (
     <SafeAreaView style={[styles.container]}>
       <LinearGradient colors={["rgb(229, 255, 243)", "rgba(205, 230, 200, 0.09)"]} style={styles.homeHeadgradient}>
-        <TouchableOpacity style={{ position: "absolute", right: "4%", top: "5%" }}>
+        <TouchableOpacity
+        onPress={()=>navigation.navigate("DisplayNotification")} style={{ position: "absolute", right: "4%", top: "5%" }}>
           <Ionicons name="notifications" size={24} color="rgb(56, 88, 85)" />
         </TouchableOpacity>
         <TouchableOpacity style={{ position: "absolute", left: "4%", top: "3%" }}>

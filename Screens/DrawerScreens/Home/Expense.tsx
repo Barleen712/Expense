@@ -20,7 +20,7 @@ import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
 import styles from "../../Stylesheet";
 import { CustomButton } from "../../../Components/CustomButton";
-import { updateDocument } from "../../FirestoreHandler";
+import { AddNotification, updateBudgetDocument, updateDocument } from "../../FirestoreHandler";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
@@ -28,15 +28,16 @@ import Entypo from "@expo/vector-icons/Entypo";
 import Input from "../../../Components/CustomTextInput";
 import CustomD from "../../../Components/Practice";
 import SelectImageWithDocumentPicker from "./Attachment";
-import { useDispatch } from "react-redux";
-import { addTransaction } from "../../../Slice/IncomeSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 import { uploadImage } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
-import { updateTransaction } from "../../../Slice/IncomeSlice";
+import { updateBudget, updateTransaction } from "../../../Slice/IncomeSlice";
 import { AddTransaction } from "../../FirestoreHandler";
 import { auth } from "../../FirebaseConfig";
-
+import { BudgetCategory } from "../../../Slice/Selectors";
+import { onDisplayNotification } from "../Budget/TestNotification";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -50,6 +51,7 @@ const modal = [
   require("../../../assets/DocumentRed.png"),
 ];
 export default function Expense({ navigation, route }: Props) {
+  const budget=useSelector(BudgetCategory)
   const parameters = route.params;
   const [Expense, setExpense] = useState(false);
   const [showAttach, setAttach] = useState(true);
@@ -121,8 +123,41 @@ export default function Expense({ navigation, route }: Props) {
               uri: supabaseImageUrl,
             },
     });
+    const Budget= budget.find((item)=>item.category===selectedCategory)
+ if(Budget.amountSpent+numericExpense >= (Budget.alertPercent/100)*Budget.budgetvalue && Budget.notification === true && Budget.notified===false )
+ {
+  updateBudgetDocument("Budgets",Budget.id,
+    {
+      "amount":Budget.budgetvalue,
+      "category":Budget.category,
+         "notification":Budget.notification,
+      "percentage":Budget.alertPercent,
+      "notified":true
+
+    }
+  )
+  dispatch(updateBudget(
+    {
+      "amount":Budget.budgetvalue,
+      "category":Budget.category,
+         "notification":Budget.notification,
+      "percentage":Budget.alertPercent,     
+      "notified":true,
+      "id":Budget.id
+    }
+  ))
+  onDisplayNotification({title:`${selectedCategory} budget has exceeded the limit`,
+    body:`Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`})
+    AddNotification({
+      title:`${selectedCategory} budget has exceeded the limit`,
+    body:`Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`,
+    date:new Date().toISOString(),
+    userId: user.uid,
+    })
+ }
     navigation.goBack();
   }
+ 
   const { t } = useTranslation();
   function editExpense() {
     const numericExpense = parseFloat(Expenses.replace("$", "") || "0");

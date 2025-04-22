@@ -47,6 +47,8 @@ interface Props {
 export default function Transaction({ navigation }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [month, setMonth] = useState(Month[new Date().getMonth()]);
+  const [sortBy,setSortBy]=useState("")
+  const [filter,setFilter]=useState("")
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -82,7 +84,14 @@ export default function Transaction({ navigation }: Props) {
             <View style={[styles.modalContainer, { height: "65%" }]}>
               <View style={styles.filter}>
                 <Text style={styles.notiTitle}>{t(StringConstants.FilterTransaction)}</Text>
-                <TouchableOpacity style={styles.reset}>
+                <TouchableOpacity 
+                onPress={()=>
+                {
+                  setSortBy("")
+                  setFilter("")
+                }
+                }
+                style={styles.reset}>
                   <Text style={[styles.homeTitle, { color: "rgb(42, 124, 118)" }]}>{t("Reset")}</Text>
                 </TouchableOpacity>
               </View>
@@ -93,8 +102,9 @@ export default function Transaction({ navigation }: Props) {
                   contentContainerStyle={styles.flatListContainer}
                   data={FilterBy}
                   renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.filterButton}>
-                      <Text style={styles.filterButtonText}>{t(item)}</Text>
+                    <TouchableOpacity 
+                    onPress={()=>setFilter(item)}style={[styles.filterButton,{backgroundColor:item===filter?"rgba(174, 225, 221, 0.6)":"white"}]}>
+                      <Text style={[styles.filterButtonText,{color:item===filter?"rgb(42, 124, 118)":"black"}]}>{t(item)}</Text>
                     </TouchableOpacity>
                   )}
                 />
@@ -105,11 +115,14 @@ export default function Transaction({ navigation }: Props) {
                   numColumns={3}
                   contentContainerStyle={styles.flatListContainer}
                   data={SortBy}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.filterButton}>
-                      <Text style={styles.filterButtonText}>{t(item)}</Text>
+                  renderItem={({ item }) => {
+                   
+                    return(
+                    <TouchableOpacity 
+                    onPress={()=>setSortBy(item)}style={[styles.filterButton,{backgroundColor:item===sortBy?"rgba(174, 225, 221, 0.6)":"white"}]}>
+                      <Text style={[styles.filterButtonText,{color:item===sortBy?"rgb(42, 124, 118)":"black"}]}>{t(item)}</Text>
                     </TouchableOpacity>
-                  )}
+                  )}}
                 />
               </View>
               <View style={styles.FilterCategory}>
