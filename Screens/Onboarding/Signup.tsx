@@ -70,11 +70,12 @@ export default function SignUp({ navigation }: Props) {
   const { t } = useTranslation();
 
   async function GoogleSignIn() {
-    const id = await handleGoogleSignIn();
+    const {id,name} = await handleGoogleSignIn();
     dispatch(
       addGoogleUser({
         id: id,
-        google:true
+        google:true,
+        username:name
       })
     );
     navigation.navigate("Setpin");

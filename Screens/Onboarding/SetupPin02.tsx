@@ -46,13 +46,13 @@ export default function Setpin02({ navigation, route }: Props) {
     } else if (route.params.FirstPin === pin && google===true) {
       const googleCredential = GoogleAuthProvider.credential(id);
       const creds = await signInWithCredential(auth, googleCredential);
-      const user = auth.currentUser;
+      const user = creds.user
       AddPin({
         Pin: pin,
         userId: user.uid,
       });
       AddUser({User:username,
-        userId: user.user?.uid,
+        userId: user.uid,
 
       })
       navigation.navigate("AllSet", { title: "All Set" });

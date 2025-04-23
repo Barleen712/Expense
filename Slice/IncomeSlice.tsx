@@ -125,9 +125,10 @@ export const ExpenseTrackerSlice = createSlice({
       state.signup.password = password;
     },
     addGoogleUser: (state, action) => {
-      const { id,google } = action.payload;
+      const { id,google,username } = action.payload;
       state.googleSign.id = id;
       state.googleSign.google = google;
+      state.googleSign.username=username
     },
     changeTheme: (state, action) => {
       state.preferences.theme = action.payload;
