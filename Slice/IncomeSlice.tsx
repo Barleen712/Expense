@@ -32,6 +32,7 @@ interface Signup {
 interface GoogleSign {
   id: string;
   google: boolean;
+  username:string
 }
 interface Preferences {
   currency: string;
@@ -56,7 +57,7 @@ const initialState: IncomeState = {
   loading: false,
   notification: [],
   signup: { name: "", email: "", password: "", google: false },
-  googleSign: { id: "", google: true },
+  googleSign: { id: "",username:"", google: false },
   preferences: { currency: "USD", language: "English", theme: "Light", security: "Fingerprint" },
 };
 

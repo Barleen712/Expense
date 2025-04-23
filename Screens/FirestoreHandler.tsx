@@ -23,6 +23,13 @@ export async function AddNotification(notificationData) {
     console.log(e);
   }
 }
+export async function AddUser(name) {
+  try {
+    await addDoc(collection(db, "Names"), name);
+  } catch (e) {
+    console.log(e);
+  }
+}
 export async function AddPin(pinData) {
   try {
     await addDoc(collection(db, "Pins"), pinData);

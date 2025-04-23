@@ -11,7 +11,6 @@ const BiometricAuth = () => {
         {
             console.log("supported")
         }
-        console.log("giugr")
         if (available) {
           let typeMessage = '';
           switch (biometryType) {

@@ -47,5 +47,25 @@ export const getUserDocument = async () => {
     throw error;
   }
 };
+export const getUseNamerDocument = async () => {
+  const user = auth.currentUser;
+  try {
+    if (!user) return;
+    const q = query(collection(db, "Names"), where("userId", "==", user.uid));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      console.log("No user");
+      return null;
+    }
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
+    return {
+      Name:userData.User
+    };
+  } catch (error) {
+    console.error("Error fetching PIN:", error);
+    throw error;
+  }
+};
 
 export default useBudgetListener;

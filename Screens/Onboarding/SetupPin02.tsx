@@ -14,32 +14,36 @@ import { useSelector } from "react-redux";
 import { AddPin } from "../FirestoreHandler";
 import { GoogleAuthProvider } from "firebase/auth";
 import { signInWithCredential } from "firebase/auth";
+import { AddUser } from "../FirestoreHandler";
 type PinProp = StackNavigationProp<StackParamList, "Setpin1">;
 
 interface Props {
   navigation: PinProp;
 }
 export default function Setpin02({ navigation, route }: Props) {
-  const { email, password } = useSelector((state) => state.Money.signup);
-  const { id, google } = useSelector((state) => state.Money.googleSign);
+  const { email, password,name } = useSelector((state) => state.Money.signup);
+  const { id, google,username } = useSelector((state) => state.Money.googleSign);
   const [pin, setpin] = useState("");
-
   const handleClear = () => {
     setpin("");
   };
   async function handlenext() {
-    if (route.params.FirstPin === pin && google === true) {
+    if (route.params.FirstPin === pin && google === false) {
       try {
         const user = await createUserWithEmailAndPassword(auth, email, password);
         AddPin({
           Pin: pin,
           userId: user.user?.uid,
         });
+        AddUser({User:name,
+          userId: user.user?.uid,
+
+        })
         navigation.navigate("AllSet", { title: "All Set" });
       } catch (error: any) {
         alert(error.message);
       }
-    } else if (route.params.FirstPin === pin) {
+    } else if (route.params.FirstPin === pin && google===true) {
       const googleCredential = GoogleAuthProvider.credential(id);
       const creds = await signInWithCredential(auth, googleCredential);
       const user = auth.currentUser;
@@ -47,6 +51,10 @@ export default function Setpin02({ navigation, route }: Props) {
         Pin: pin,
         userId: user.uid,
       });
+      AddUser({User:username,
+        userId: user.user?.uid,
+
+      })
       navigation.navigate("AllSet", { title: "All Set" });
     } else {
       alert("PINS don't match. \nPlease Re-Enter your Pin");

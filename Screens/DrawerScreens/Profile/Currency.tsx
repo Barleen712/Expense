@@ -27,7 +27,7 @@ export default function Currency({ navigation }: Props) {
   ];
   const dispatch = useDispatch();
   const currency = useSelector((state) => state.Money.preferences.currency);
-  const [selectedCurrency, setSelectedCurrency] = useState<string>(currency.theme);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>(currency);
   // useEffect(() => {
   //   dispatch(fetchRates());
   // }, []);
@@ -44,7 +44,7 @@ export default function Currency({ navigation }: Props) {
               onPress={() => {
                 setSelectedCurrency(item.code);
                 dispatch(setCurrencycode(item.code));
-                dispatch(changeCurrency({ theme: item.code }));
+                dispatch(changeCurrency(item.code));
               }}
               style={styles.items}
             >

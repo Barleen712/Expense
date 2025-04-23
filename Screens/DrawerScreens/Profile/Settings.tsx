@@ -24,7 +24,7 @@ export default function Settings({ navigation }: Props) {
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Currency")}>
           <Text style={styles.settingtitle}>{t(StringConstants.Currency)}</Text>
           <View style={styles.titleoption}>
-            <Text style={styles.settingtext}>{preferences.currency.theme}</Text>
+            <Text style={styles.settingtext}>{preferences.currency}</Text>
           </View>
           <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>

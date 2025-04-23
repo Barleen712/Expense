@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, Modal } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,12 +12,25 @@ import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { clearData } from "../../../Slice/IncomeSlice";
+import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
 type Profileprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
   navigation: Profileprop;
 }
 export default function Profile({ navigation }: Props) {
+  const [username,setuser]=useState("")
+  async function getData()
+  {
+    const user=await getUseNamerDocument()
+     setuser(user.Name)
+  }
+  useEffect(()=>
+  {
+    getData()
+    
+
+  },[])
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   function toggleModal() {
@@ -41,7 +54,7 @@ export default function Profile({ navigation }: Props) {
         </View>
         <View style={styles.details}>
           <Text style={styles.username}>Username</Text>
-          <Text style={styles.ForgotDes}>Iriana Saliha</Text>
+          <Text style={styles.ForgotDes}>{username}</Text>
         </View>
         <View style={styles.icon}>
           <TouchableOpacity>

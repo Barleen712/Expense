@@ -74,6 +74,7 @@ export default function SignUp({ navigation }: Props) {
     dispatch(
       addGoogleUser({
         id: id,
+        google:true
       })
     );
     navigation.navigate("Setpin");

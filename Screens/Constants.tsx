@@ -96,7 +96,6 @@ export const uploadImage = async (imageUri: string) => {
     if (!urlData.publicUrl) {
       throw new Error("Failed to retrieve public URL");
     }
-    console.log("done");
     return urlData.publicUrl;
   } catch (e) {
     console.error("Image upload error:", e);
@@ -240,7 +239,10 @@ export const handleGoogleSignIn = async () => {
     await GoogleSignin.signOut();
     const userInfo = await GoogleSignin.signIn();
     const tokens = await GoogleSignin.getTokens();
-    return tokens.idToken;
+    
+    return {
+      id:tokens.idToken,
+      name:userInfo.data.user.name}
     // const googleCredential = GoogleAuthProvider.credential(tokens.idToken);
     // const creds = await signInWithCredential(auth, googleCredential);
   } catch (error: any) {
