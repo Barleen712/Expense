@@ -89,6 +89,7 @@ export default function Budget({ navigation }: Props) {
               justifyContent: "flex-start",
               alignItems: "center",
               backgroundColor: "rgba(241, 241, 250, 1)",
+
               borderColor: "grey",
               alignSelf: "flex-start",
               paddingHorizontal: 10,
@@ -177,10 +178,12 @@ export default function Budget({ navigation }: Props) {
         </View>
         <View style={styles.budgetView}>
           {Budgetcat.length === 0 ? (
-            <Text style={styles.budgetText}>
-              {t(StringConstants.Youdonthaveabudget)}.{"\n"}
-              {t(StringConstants.Letmake)}.
-            </Text>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Text style={styles.budgetText}>
+                {t(StringConstants.Youdonthaveabudget)}.{"\n"}
+                {t(StringConstants.Letmake)}.
+              </Text>
+            </View>
           ) : (
             <View style={{ height: "75%" }}>
               <FlatList

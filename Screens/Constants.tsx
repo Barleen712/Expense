@@ -205,28 +205,32 @@ export const currencies: Record<string, string> = {
   AUD: "$",
   RUB: "₽",
 };
-export const handleBiometricAuth = async () => {
-  const { available, biometryType } = await rnBiometrics.isSensorAvailable();
+export const handleBiometricAuth = async (navigation: any) => {
+  // Accept navigation prop
+  try {
+    const { available } = await rnBiometrics.isSensorAvailable();
 
-  if (available) {
-    rnBiometrics
-      .simplePrompt({ promptMessage: "Confirm your identity" })
-      .then((resultObject) => {
-        const { success } = resultObject;
+    if (!available) {
+      navigation.navigate("SetPinScreen"); // No biometric support → PIN
+      return false;
+    }
 
-        if (success) {
-          console.log("Biometric authentication successful");
-          // TODO: navigate to home screen or unlock content here
-        } else {
-          console.log("Biometric authentication cancelled");
-          // Optional: Handle fallback silently
-        }
-      })
-      .catch(() => {
-        console.log("Biometric authentication failed");
-      });
-  } else {
-    console.log("Biometrics not supported on this device");
+    const { success } = await rnBiometrics.simplePrompt({
+      promptMessage: "Confirm your identity",
+      cancelButtonText: "Use PIN Instead",
+    });
+
+    if (success) {
+      navigation.navigate("MainScreen");
+      return true;
+    } else {
+      navigation.navigate("EnterPin"); // Explicit cancellation → PIN
+      return false;
+    }
+  } catch (error) {
+    console.error("Biometric error:", error);
+    navigation.navigate("SetPinScreen"); // Errors → PIN fallback
+    return false;
   }
 };
 
@@ -236,8 +240,9 @@ export const handleGoogleSignIn = async () => {
     await GoogleSignin.signOut();
     const userInfo = await GoogleSignin.signIn();
     const tokens = await GoogleSignin.getTokens();
-    const googleCredential = GoogleAuthProvider.credential(tokens.idToken);
-    const creds = await signInWithCredential(auth, googleCredential);
+    return tokens.idToken;
+    // const googleCredential = GoogleAuthProvider.credential(tokens.idToken);
+    // const creds = await signInWithCredential(auth, googleCredential);
   } catch (error: any) {
     console.error("Google Sign-In Error:", error);
     Alert.alert("Error", error.message || "Google Sign-In failed");

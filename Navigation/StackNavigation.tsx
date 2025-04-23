@@ -41,6 +41,9 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchRates } from "../Slice/CurrencySlice";
 import DisplayNotification from "../Screens/DrawerScreens/Home/DisplayNotification";
+import EnterPin from "../Screens/DrawerScreens/Home/EnterPin";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
@@ -52,23 +55,25 @@ export default function Screens() {
       <Stack.Screen name="ForgotPassword" component={ForgotPass} />
       <Stack.Screen name="EmailSent" component={EmailSent} />
       <Stack.Screen name="GetStarted" component={Getstarted} />
-      {/* <Stack.Screen name="Setpin" component={Setpin} /> */}
+      <Stack.Screen name="Setpin" component={Setpin} />
       <Stack.Screen name="AllSet" component={Success} />
+      <Stack.Screen name="Setpin1" component={Setpin02} />
     </Stack.Navigator>
   );
 }
 const Stack2 = createStackNavigator<StackParamList>();
 export function TabScreens() {
   const dispatch = useDispatch();
+  const navigation = useNavigation<StackNavigationProp<StackParamList>>();
   useEffect(() => {
-    handleBiometricAuth();
-  //  dispatch(fetchRates());
+    handleBiometricAuth(navigation);
+    dispatch(fetchRates());
   }, []);
   return (
-    <Stack2.Navigator initialRouteName="MainScreen" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Setpin" component={Setpin} />
+    <Stack2.Navigator initialRouteName="EnterPin" screenOptions={{ headerShown: false }}>
+      {/* <Stack.Screen name="Setpin" component={Setpin} /> */}
       <Stack.Screen name="AllSet" component={Success} />
-      <Stack.Screen name="Setpin1" component={Setpin02} />
+      <Stack.Screen name="EnterPin" component={EnterPin} />
       <Stack.Screen name="MainScreen" component={Tabscreens} />
       <Stack.Screen name="Settings" component={Settings} />
       <Stack.Screen name="Account" component={Account} />
@@ -93,7 +98,7 @@ export function TabScreens() {
       <Stack.Screen name="DetailTransaction_Transfer" component={DetailTransaction_Transfer} />
       <Stack.Screen name="DetailBudget" component={DetailedBudget} />
       <Stack.Screen name="DetailAccount" component={DetailAccount} />
-      <Stack.Screen name="DisplayNotification" component={DisplayNotification}/>
+      <Stack.Screen name="DisplayNotification" component={DisplayNotification} />
     </Stack2.Navigator>
   );
 }

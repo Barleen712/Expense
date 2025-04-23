@@ -12,6 +12,8 @@ import { useTranslation } from "react-i18next";
 import { StringConstants, handleGoogleSignIn } from "../Constants";
 import { signOut } from "firebase/auth";
 import Success from "./SignUp_success";
+import { addUser, addGoogleUser } from "../../Slice/IncomeSlice";
+import { useDispatch } from "react-redux";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 type SignupProp = StackNavigationProp<StackParamList, "SignUp">;
 
@@ -19,6 +21,7 @@ interface Props {
   navigation: SignupProp;
 }
 export default function SignUp({ navigation }: Props) {
+  const dispatch = useDispatch();
   useEffect(() => {
     GoogleSignin.configure({
       webClientId: "26672937768-d1b1daba6ovl6md8bkrfaaffpiugeihh.apps.googleusercontent.com",
@@ -27,34 +30,61 @@ export default function SignUp({ navigation }: Props) {
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
   const [password, setpass] = useState("");
-  const [loading, setLoading] = useState(false);
   const [isSelected, changeSelection] = useState(false);
   async function handleSignUp() {
-    setLoading(true);
-    try {
-      const user = await createUserWithEmailAndPassword(auth, email, password);
-      setLoading(false);
-    } catch (error: any) {
-      alert(error.message);
+    // try {
+    //   const user = await createUserWithEmailAndPassword(auth, email, password);
+    //   setLoading(false);
+    // } catch (error: any) {
+    //   alert(error.message);
+    // }
+    if (name === "") {
+      alert("Enter Name");
+      return;
     }
+    if (email === "") {
+      alert("Enter Email");
+      return;
+    }
+    if (password === "") {
+      alert("Enter Password");
+      return;
+    }
+    if (password.length < 6) {
+      alert("Enter Password of atleast length 6");
+      return;
+    }
+    dispatch(
+      addUser({
+        name: name,
+        email: email,
+        password: password,
+        google: false,
+      })
+    );
     setname("");
     setemail("");
     setemail("");
+    navigation.navigate("Setpin");
   }
   const { t } = useTranslation();
 
-  function GoogleSignIn() {
-    setLoading(true);
-    handleGoogleSignIn();
-    setLoading(false);
-  }
-  if (loading) {
-    return (
-      <View style={{ height: "100%", alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
-      </View>
+  async function GoogleSignIn() {
+    const id = await handleGoogleSignIn();
+    dispatch(
+      addGoogleUser({
+        id: id,
+      })
     );
+    navigation.navigate("Setpin");
   }
+  // if (loading) {
+  //   return (
+  //     <View style={{ height: "100%", alignItems: "center", justifyContent: "center" }}>
+  //       <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
+  //     </View>
+  //   );
+  // }
   return (
     <View style={{ alignItems: "center", backgroundColor: "white", flex: 1 }}>
       <Header title={t(StringConstants.SignUp)} press={() => navigation.goBack()}></Header>

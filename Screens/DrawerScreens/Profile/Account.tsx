@@ -60,7 +60,7 @@ export default function Account({ navigation }: Props) {
                   </View>
                   <Text style={styles.optionsText}>{t(item)}</Text>
                 </View>
-                <Text style={[styles.optionsText, { flex: 0 }]}>$400</Text>
+                <Text style={[styles.optionsText, { flex: 0 }]}>$2400</Text>
               </TouchableOpacity>
               <View style={styles.Line}></View>
             </View>

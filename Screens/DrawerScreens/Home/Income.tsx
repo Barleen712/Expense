@@ -60,7 +60,7 @@ export default function Income({ navigation, route }: Props) {
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
-  const[loading,setLoading]=useState(false)
+  const [loading, setLoading] = useState(false);
   const modal = [
     require("../../../assets/Camera.png"),
     require("../../../assets/Image.png"),
@@ -99,9 +99,9 @@ export default function Income({ navigation, route }: Props) {
 
     if (image) {
       // Upload to Supabase
-      setLoading(true)
+      setLoading(true);
       supabaseImageUrl = await uploadImage(image);
-      setLoading(false)
+      setLoading(false);
     }
     // dispatch(
     //   addTransaction({
@@ -125,9 +125,9 @@ export default function Income({ navigation, route }: Props) {
       Date: new Date().toISOString(),
       userId: user.uid,
       attachment: {
-              type: "image",
-              uri: supabaseImageUrl,
-            },
+        type: "image",
+        uri: supabaseImageUrl,
+      },
     });
     navigation.goBack();
   }
@@ -141,15 +141,14 @@ export default function Income({ navigation, route }: Props) {
         wallet: selectedWallet,
         id: parameters.id,
         moneyCategory: "Income",
-      }))
-            updateDocument("Transactions",parameters.id,{
-                  amount: numericIncome,
-                  description: Description,
-                  category: selectedCategory,
-                  wallet: selectedWallet,
-      
-                }
+      })
     );
+    updateDocument("Transactions", parameters.id, {
+      amount: numericIncome,
+      description: Description,
+      category: selectedCategory,
+      wallet: selectedWallet,
+    });
     navigation.goBack();
     navigation.goBack();
   }
@@ -247,7 +246,7 @@ export default function Income({ navigation, route }: Props) {
                     </TouchableOpacity>
                   </View>
                 )}
-                <View style={styles.notiView}>
+                {/* <View style={styles.notiView}>
                   <View style={styles.noti}>
                     <Text style={styles.notiTitle}>{t("Repeat")}</Text>
                     <Text style={styles.notiDes}>{t(StringConstants.RepeatTransaction)}</Text>
@@ -260,7 +259,7 @@ export default function Income({ navigation, route }: Props) {
                       onValueChange={setExpense}
                     />
                   </View>
-                </View>
+                </View> */}
                 <CustomButton
                   title={t(StringConstants.Continue)}
                   bg="rgba(173, 210, 189, 0.6)"

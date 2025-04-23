@@ -51,7 +51,7 @@ const modal = [
   require("../../../assets/DocumentRed.png"),
 ];
 export default function Expense({ navigation, route }: Props) {
-  const budget=useSelector(BudgetCategory)
+  const budget = useSelector(BudgetCategory);
   const parameters = route.params;
   const [Expense, setExpense] = useState(false);
   const [showAttach, setAttach] = useState(true);
@@ -119,45 +119,50 @@ export default function Expense({ navigation, route }: Props) {
       Date: new Date().toISOString(),
       userId: user.uid,
       attachment: {
-              type: "image",
-              uri: supabaseImageUrl,
-            },
+        type: "image",
+        uri: supabaseImageUrl,
+      },
     });
-    const Budget= budget.find((item)=>item.category===selectedCategory)
- if(Budget.amountSpent+numericExpense >= (Budget.alertPercent/100)*Budget.budgetvalue && Budget.notification === true && Budget.notified===false )
- {
-  updateBudgetDocument("Budgets",Budget.id,
-    {
-      "amount":Budget.budgetvalue,
-      "category":Budget.category,
-         "notification":Budget.notification,
-      "percentage":Budget.alertPercent,
-      "notified":true
-
+    const Budget = budget.some((item) => item.category === selectedCategory);
+    if (Budget) {
+      const Budget = budget.find((item) => item.category === selectedCategory);
+      if (
+        Budget.amountSpent + numericExpense >= (Budget.alertPercent / 100) * Budget.budgetvalue &&
+        Budget.notification === true &&
+        Budget.notified === false
+      ) {
+        updateBudgetDocument("Budgets", Budget.id, {
+          amount: Budget.budgetvalue,
+          category: Budget.category,
+          notification: Budget.notification,
+          percentage: Budget.alertPercent,
+          notified: true,
+        });
+        dispatch(
+          updateBudget({
+            amount: Budget.budgetvalue,
+            category: Budget.category,
+            notification: Budget.notification,
+            percentage: Budget.alertPercent,
+            notified: true,
+            id: Budget.id,
+          })
+        );
+        onDisplayNotification({
+          title: `${selectedCategory} budget has exceeded the limit`,
+          body: `Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`,
+        });
+        AddNotification({
+          title: `${selectedCategory} budget has exceeded the limit`,
+          body: `Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`,
+          date: new Date().toISOString(),
+          userId: user.uid,
+        });
+      }
     }
-  )
-  dispatch(updateBudget(
-    {
-      "amount":Budget.budgetvalue,
-      "category":Budget.category,
-         "notification":Budget.notification,
-      "percentage":Budget.alertPercent,     
-      "notified":true,
-      "id":Budget.id
-    }
-  ))
-  onDisplayNotification({title:`${selectedCategory} budget has exceeded the limit`,
-    body:`Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`})
-    AddNotification({
-      title:`${selectedCategory} budget has exceeded the limit`,
-    body:`Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`,
-    date:new Date().toISOString(),
-    userId: user.uid,
-    })
- }
     navigation.goBack();
   }
- 
+
   const { t } = useTranslation();
   function editExpense() {
     const numericExpense = parseFloat(Expenses.replace("$", "") || "0");
@@ -169,15 +174,14 @@ export default function Expense({ navigation, route }: Props) {
         wallet: selectedWallet,
         id: parameters.id,
         moneyCategory: "Expense",
-      }))
-        updateDocument("Transactions",parameters.id,{
-            amount: numericExpense,
-            description: Description,
-            category: selectedCategory,
-            wallet: selectedWallet,
-
-          }
-        );
+      })
+    );
+    updateDocument("Transactions", parameters.id, {
+      amount: numericExpense,
+      description: Description,
+      category: selectedCategory,
+      wallet: selectedWallet,
+    });
     navigation.goBack();
     navigation.goBack();
   }
@@ -269,7 +273,7 @@ export default function Expense({ navigation, route }: Props) {
                     </TouchableOpacity>
                   </View>
                 )}
-                <View style={styles.notiView}>
+                {/* <View style={styles.notiView}>
                   <View style={styles.noti}>
                     <Text style={styles.notiTitle}>{t("Repeat")}</Text>
                     <Text style={styles.notiDes}>{t(StringConstants.RecentTransaction)}</Text>
@@ -282,7 +286,7 @@ export default function Expense({ navigation, route }: Props) {
                       onValueChange={setExpense}
                     />
                   </View>
-                </View>
+                </View> */}
                 <CustomButton
                   title={t(StringConstants.Continue)}
                   bg="rgba(205, 153, 141, 0.13)"

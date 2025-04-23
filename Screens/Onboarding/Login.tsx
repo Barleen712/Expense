@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Platform, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import Input from "../../Components/CustomTextInput";
 import GradientButton from "../../Components/CustomButton";
@@ -21,6 +31,14 @@ export default function Login({ navigation }: Props) {
   const [password, setpass] = useState("");
   const [loading, setLoading] = useState(false);
   async function handlesLogin() {
+    if (email === "") {
+      alert("Enter Email");
+      return;
+    }
+    if (password === "") {
+      alert("Enter Password");
+      return;
+    }
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
@@ -84,7 +102,7 @@ const styles = StyleSheet.create({
   },
   input: {
     alignItems: "center",
-    marginTop: Platform.OS === "ios" ? 30 : 40,
+    marginTop: Platform.OS === "ios" ? 30 : 80,
   },
 
   forgot: {

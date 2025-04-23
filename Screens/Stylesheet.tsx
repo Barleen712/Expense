@@ -37,11 +37,14 @@ const styles = StyleSheet.create({
   },
   arrow: {
     position: "absolute",
-    height: 40,
-    width: 50,
+    // backgroundColor: "red",
+    height: 70,
+    width: 100,
     resizeMode: "contain",
     bottom: Platform.OS === "ios" ? 20 : 35,
-    right: 35,
+    paddingLeft: 40,
+    paddingTop: 25,
+    right: 25,
   },
   dot: {
     width: "10%",

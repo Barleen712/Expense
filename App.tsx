@@ -15,6 +15,9 @@ import BiometricAuth from "./Screens/DrawerScreens/Profile/Biometrics";
 import styles from "./Screens/Stylesheet";
 import MyComponent from "./Component";
 import { FinancialReportIncome } from "./Screens/DrawerScreens/Transaction/FinancialReport/Report";
+import Setpin from "./Screens/Onboarding/SetupPin01";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSelector } from "react-redux";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -61,6 +64,7 @@ export default function App() {
       <NavigationContainer>
         {user ? <TabScreens /> : <Screens />}
         {/* <BiometricAuth/> */}
+        {/* <Setpin /> */}
       </NavigationContainer>
     </Provider>
   );

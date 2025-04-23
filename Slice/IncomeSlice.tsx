@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { changeLanguage } from "i18next";
 interface IncomeEntry {
   amount: number;
   description: string;
@@ -14,28 +15,49 @@ interface BudgetEntry {
   percentage: number;
   notification: boolean;
   id: string;
-  notified?:boolean
+  notified?: boolean;
 }
-interface notificationEntry{
-  title:string,
-  body:string,
-  date:string,
-  id:string
-
+interface notificationEntry {
+  title: string;
+  body: string;
+  date: string;
+  id: string;
+}
+interface Signup {
+  name: string;
+  email: string;
+  password: string;
+  google: boolean;
+}
+interface GoogleSign {
+  id: string;
+  google: boolean;
+}
+interface Preferences {
+  currency: string;
+  language: string;
+  theme: string;
+  security: string;
 }
 
 interface IncomeState {
   amount: IncomeEntry[];
   budget: BudgetEntry[];
   loading: boolean;
-  notification:notificationEntry[]
+  notification: notificationEntry[];
+  signup: Signup;
+  googleSign: GoogleSign;
+  preferences: Preferences;
 }
 
 const initialState: IncomeState = {
   amount: [],
   budget: [],
   loading: false,
-  notification:[]
+  notification: [],
+  signup: { name: "", email: "", password: "", google: false },
+  googleSign: { id: "", google: true },
+  preferences: { currency: "USD", language: "English", theme: "Light", security: "Fingerprint" },
 };
 
 export const ExpenseTrackerSlice = createSlice({
@@ -89,19 +111,42 @@ export const ExpenseTrackerSlice = createSlice({
         };
       }
     },
-    addNotification:(state,action)=>
-    {
+    addNotification: (state, action) => {
       const existingTransaction = state.notification.find((transaction) => transaction.id === action.payload.id);
       if (!existingTransaction) {
-      state.notification.unshift(action.payload)
+        state.notification.unshift(action.payload);
       }
     },
-    
+    addUser: (state, action) => {
+      const { name, email, password } = action.payload;
+      state.signup.name = name;
+      state.signup.email = email;
+      state.signup.password = password;
+    },
+    addGoogleUser: (state, action) => {
+      const { id } = action.payload;
+      state.googleSign.id = id;
+    },
+    changeTheme: (state, action) => {
+      state.preferences.theme = action.payload;
+    },
+    changeLanguages: (state, action) => {
+      state.preferences.language = action.payload;
+    },
+    changeCurrency: (state, action) => {
+      state.preferences.currency = action.payload;
+    },
+    changeSecurity: (state, action) => {
+      state.preferences.security = action.payload;
+    },
     clearData: (state) => {
       state.amount = [];
       state.budget = [];
       state.loading = false;
-      state.notification=[]
+      state.notification = [];
+      state.signup.name = "";
+      state.signup.email = "";
+      state.signup.password = "";
     },
   },
 });
@@ -115,6 +160,12 @@ export const {
   updateTransaction,
   loadingTransaction,
   addNotification,
+  addUser,
   clearData,
+  changeTheme,
+  changeCurrency,
+  changeLanguages,
+  changeSecurity,
+  addGoogleUser,
 } = ExpenseTrackerSlice.actions;
 export default ExpenseTrackerSlice.reducer;

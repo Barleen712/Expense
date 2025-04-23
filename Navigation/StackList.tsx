@@ -7,7 +7,7 @@ type StackParamList = {
   SignUp: undefined;
   GetStarted: undefined;
   Setpin: undefined;
-  Setpin1: undefined;
+  Setpin1: { FirstPin: number };
   AllSet: undefined;
   MainScreen: undefined;
   Settings: undefined;
@@ -52,6 +52,7 @@ type StackParamList = {
   DetailAccount: {
     wallet: number;
   };
-  DisplayNotification:undefined
+  DisplayNotification: undefined;
+  EnterPin: undefined;
 };
 export default StackParamList;

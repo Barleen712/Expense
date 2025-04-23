@@ -6,10 +6,7 @@ export const selectTransactions = createSelector([selectMoney], (money) => money
 export const selectBudget = createSelector([selectMoney], (money) => money.budget);
 
 export const selectIncomeTotal = createSelector([selectTransactions], (transactions) =>
-  transactions.reduce(
-    (acc, item) => (item.moneyCategory === "Income"?acc + item.amount : acc),
-    0
-  )
+  transactions.reduce((acc, item) => (item.moneyCategory === "Income" ? acc + item.amount : acc), 0)
 );
 
 export const selectExpenseTotal = createSelector([selectTransactions], (transactions) =>
@@ -74,13 +71,13 @@ export const BudgetCategory = createSelector(
       const spentAmount = categorySpent ? categorySpent.amount : 0;
 
       return {
-        id:item.id,
+        id: item.id,
         category: item.category,
         budgetvalue: item.amount,
         amountSpent: spentAmount,
         alertPercent: item.percentage,
         notification: item.notification,
-        notified:item.notified
+        notified: item.notified,
       };
     });
   }

@@ -2,15 +2,27 @@ import SelectDropdown from "react-native-select-dropdown";
 import { View, Text, Image } from "react-native";
 import styles from "../Screens/Stylesheet";
 import { useTranslation } from "react-i18next";
+import { styleText } from "util";
 interface dropdown {
   data: Array<string>;
   name: string;
   styleButton: object;
   styleItem: object;
   styleArrow: object;
+  styleText?: object;
+  onReset?: boolean;
   onSelectItem: (selectedItem: string, index: number) => void;
 }
-export default function CustomD({ name, data, styleButton, styleItem, styleArrow, onSelectItem }: dropdown) {
+export default function CustomD({
+  name,
+  data,
+  styleButton,
+  styleItem,
+  styleArrow,
+  styleText,
+  onSelectItem,
+  onReset,
+}: dropdown) {
   const { t } = useTranslation();
   const translatedData = data.map((item) => t(item));
   return (
@@ -24,7 +36,7 @@ export default function CustomD({ name, data, styleButton, styleItem, styleArrow
       renderButton={(selectedItem) => {
         return (
           <View style={styleButton}>
-            <Text>{selectedItem || name}</Text>
+            <Text style={styleText}>{selectedItem || name}</Text>
             <Image style={styleArrow} source={require("../assets/arrowDown.png")} />
           </View>
         );

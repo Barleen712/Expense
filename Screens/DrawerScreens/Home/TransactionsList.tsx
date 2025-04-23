@@ -22,9 +22,6 @@ interface TransactionListProps {
 }
 
 export default function TransactionList({ data }: TransactionListProps) {
-  const sortedTransactions = [...data].sort((a, b) => {
-    return new Date(b.Date) - new Date(a.Date);
-  });
   const Rates = useSelector((state) => state.Rates);
   const currency = Rates.selectedCurrencyCode;
   const convertRate = Rates.Rate[currency];
@@ -54,7 +51,7 @@ export default function TransactionList({ data }: TransactionListProps) {
     else return format(new Date(date), "MMM dd, yyyy");
   };
 
-  const groupedData = sortedTransactions.reduce((acc, item) => {
+  const groupedData = data.reduce((acc, item) => {
     const formattedDate = formatDate(item.Date);
     if (!acc[formattedDate]) acc[formattedDate] = [];
     acc[formattedDate].push(item);

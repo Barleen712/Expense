@@ -243,7 +243,7 @@ export default function Income({ navigation, route }: Props) {
                     </TouchableOpacity>
                   </View>
                 )}
-                <View style={styles.notiView}>
+                {/* <View style={styles.notiView}>
                   <View style={styles.noti}>
                     <Text style={styles.notiTitle}>{t("Repeat")}</Text>
                     <Text style={styles.notiDes}>{t(StringConstants.RecentTransaction)}</Text>
@@ -256,7 +256,7 @@ export default function Income({ navigation, route }: Props) {
                       onValueChange={setExpense}
                     />
                   </View>
-                </View>
+                </View> */}
                 <CustomButton
                   title={t(StringConstants.Continue)}
                   bg="rgba(115, 116, 119, 0.14)"

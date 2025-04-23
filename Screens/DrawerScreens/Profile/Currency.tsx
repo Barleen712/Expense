@@ -7,8 +7,10 @@ import Header from "../../../Components/Header";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { fetchRates } from "../../../Slice/CurrencySlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCurrencycode } from "../../../Slice/CurrencySlice";
+import { changeCurrency } from "../../../Slice/IncomeSlice";
+
 type CurrencyProp = StackNavigationProp<StackParamList, "Currency">;
 
 interface Props {
@@ -24,8 +26,8 @@ export default function Currency({ navigation }: Props) {
     { name: "United Stated", code: "USD" },
   ];
   const dispatch = useDispatch();
-  const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
-  console.log("currency", selectedCurrency);
+  const currency = useSelector((state) => state.Money.preferences.currency);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>(currency.theme);
   // useEffect(() => {
   //   dispatch(fetchRates());
   // }, []);
@@ -42,6 +44,7 @@ export default function Currency({ navigation }: Props) {
               onPress={() => {
                 setSelectedCurrency(item.code);
                 dispatch(setCurrencycode(item.code));
+                dispatch(changeCurrency({ theme: item.code }));
               }}
               style={styles.items}
             >

@@ -8,6 +8,8 @@ import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
 import i18n from "../../../i18n/i18next";
 import { useTranslation } from "react-i18next";
+import { useSelector, useDispatch } from "react-redux";
+import { changeLanguages } from "../../../Slice/IncomeSlice";
 
 type LanguageProp = StackNavigationProp<StackParamList, "Account">;
 
@@ -27,7 +29,11 @@ export default function Language({ navigation }: Props) {
     { name: "Spanish", code: "ES", tc: "es" },
     { name: "Hindi", code: "HI", tc: "hi" },
   ];
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
+
+  const dispatch = useDispatch();
+  const language = useSelector((state) => state.Money.preferences.language);
+  const index = currencies.findIndex((item) => item.name == language);
+  const [selectedLanguage, setSelectedLanguage] = useState(currencies[index].tc);
   return (
     <View style={styles.container}>
       <Header title={t("Language")} press={() => navigation.goBack()} />
@@ -42,6 +48,7 @@ export default function Language({ navigation }: Props) {
               onPress={() => {
                 changeLanguage(item.tc);
                 setSelectedLanguage(item.tc);
+                dispatch(changeLanguages(item.name));
               }}
               style={styles.items}
             >

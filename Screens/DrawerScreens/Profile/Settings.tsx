@@ -7,7 +7,7 @@ import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
-
+import { useSelector } from "react-redux";
 type SettingsProp = StackNavigationProp<StackParamList, "Settings">;
 
 interface Props {
@@ -15,6 +15,7 @@ interface Props {
 }
 export default function Settings({ navigation }: Props) {
   const { t } = useTranslation();
+  const preferences = useSelector((state) => state.Money.preferences);
   return (
     <View style={styles.container}>
       <Header title={t(StringConstants.Settings)} press={() => navigation.goBack()} />
@@ -23,7 +24,7 @@ export default function Settings({ navigation }: Props) {
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Currency")}>
           <Text style={styles.settingtitle}>{t(StringConstants.Currency)}</Text>
           <View style={styles.titleoption}>
-            <Text style={styles.settingtext}>USD</Text>
+            <Text style={styles.settingtext}>{preferences.currency.theme}</Text>
           </View>
           <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>
@@ -31,7 +32,7 @@ export default function Settings({ navigation }: Props) {
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Language")}>
           <Text style={styles.settingtitle}>{t(StringConstants.Language)}</Text>
           <View style={styles.titleoption}>
-            <Text style={styles.settingtext}>English</Text>
+            <Text style={styles.settingtext}>{preferences.language}</Text>
           </View>
           <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>
@@ -39,7 +40,7 @@ export default function Settings({ navigation }: Props) {
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Theme")}>
           <Text style={styles.settingtitle}>{t(StringConstants.Theme)}</Text>
           <View style={styles.titleoption}>
-            <Text style={styles.settingtext}>Light</Text>
+            <Text style={styles.settingtext}>{preferences.theme}</Text>
           </View>
           <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>
@@ -47,7 +48,7 @@ export default function Settings({ navigation }: Props) {
         <TouchableOpacity style={styles.settingsOptions} onPress={() => navigation.navigate("Security")}>
           <Text style={styles.settingtitle}>{t(StringConstants.Security)}</Text>
           <View style={styles.titleoption}>
-            <Text style={styles.settingtext}>Pin</Text>
+            <Text style={styles.settingtext}>{preferences.security}</Text>
           </View>
           <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>

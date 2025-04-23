@@ -7,14 +7,18 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
 import { useTranslation } from "react-i18next";
+import { useSelector, useDispatch } from "react-redux";
+import { changeSecurity } from "../../../Slice/IncomeSlice";
 type SecurityProp = StackNavigationProp<StackParamList, "Account">;
 
 interface Props {
   navigation: SecurityProp;
 }
 export default function Security({ navigation }: Props) {
+  const dispatch = useDispatch();
+  const security = useSelector((state) => state.Money.preferences.security);
   const currencies = ["PIN", "Fingerprint", "Face ID"];
-  const [selected, setSelected] = useState("PIN");
+  const [selected, setSelected] = useState(security);
   const { t } = useTranslation();
   return (
     <View style={styles.container}>
@@ -25,7 +29,13 @@ export default function Security({ navigation }: Props) {
         data={currencies}
         renderItem={({ item }) => (
           <View>
-            <TouchableOpacity onPress={() => setSelected(item)} style={styles.items}>
+            <TouchableOpacity
+              onPress={() => {
+                setSelected(item);
+                dispatch(changeSecurity(item));
+              }}
+              style={styles.items}
+            >
               <Text style={styles.itemTitle}>{t(item)}</Text>
               {selected === item && (
                 <View style={styles.itemSelected}>
