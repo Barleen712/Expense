@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
   ForgotDes: {
     fontFamily: "Inter",
-    fontWeight: Platform.OS === "ios" ? 500 : 600,
+    fontWeight: "bold",
     fontSize: Platform.OS === "ios" ? 24 : 28,
     color: "black",
     textAlign: "center",
@@ -207,8 +207,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "rgba(252, 252, 255, 0.45)",
+    padding: 10,
 
-    margin: 10,
+    //marginTop: 10,
   },
   userphoto: {
     flex: 0.3,
@@ -216,7 +218,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   details: {
-    flex: 0.7,
+    flex: 0.5,
     justifyContent: "center",
     alignItems: "flex-start",
   },
@@ -227,7 +229,7 @@ const styles = StyleSheet.create({
   },
   username: {
     fontFamily: "Inter",
-    fontWeight: Platform.OS === "ios" ? 500 : 600,
+    fontWeight: "bold",
     fontSize: Platform.OS === "ios" ? 14 : 14,
     color: "rgba(145, 145, 159, 1)",
   },
