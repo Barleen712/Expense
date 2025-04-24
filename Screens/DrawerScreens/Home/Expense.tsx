@@ -93,7 +93,22 @@ export default function Expense({ navigation, route }: Props) {
   async function add() {
     const numericExpense = parseFloat(Expenses.replace("$", "") || "0");
     let supabaseImageUrl = null;
-
+    if (numericExpense === 0) {
+      alert("Add amount");
+      return;
+    }
+    if (selectedCategory === "Category") {
+      alert("Select Category");
+      return;
+    }
+    if (Description === "") {
+      alert("Add Description");
+      return;
+    }
+    if (selectedWallet === "Wallet") {
+      alert("Select Wallet");
+      return;
+    }
     if (image) {
       supabaseImageUrl = await uploadImage(image);
     }

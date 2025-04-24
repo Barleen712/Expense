@@ -96,7 +96,22 @@ export default function Income({ navigation, route }: Props) {
   async function add() {
     const numericIncome = parseFloat(Income.replace("$", "") || "0");
     let supabaseImageUrl = null;
-
+    if (numericIncome === 0) {
+      alert("Add amount");
+      return;
+    }
+    if (selectedCategory === "Category") {
+      alert("Select Category");
+      return;
+    }
+    if (Description === "") {
+      alert("Add Description");
+      return;
+    }
+    if (selectedWallet === "Wallet") {
+      alert("Select Wallet");
+      return;
+    }
     if (image) {
       // Upload to Supabase
       setLoading(true);

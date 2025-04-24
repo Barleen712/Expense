@@ -87,6 +87,22 @@ export default function Income({ navigation, route }: Props) {
   async function add() {
     const numericIncome = parseFloat(Transfer.replace("$", "") || "0");
     let supabaseImageUrl = null;
+    if (numericIncome === 0) {
+      alert("Add amount");
+      return;
+    }
+    if (From === "") {
+      alert("Add From");
+      return;
+    }
+    if (To === "") {
+      alert("Add To");
+      return;
+    }
+    if (Description === "") {
+      alert("Add description");
+      return;
+    }
 
     if (image) {
       supabaseImageUrl = await uploadImage(image);
