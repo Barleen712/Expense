@@ -33,6 +33,7 @@ interface GoogleSign {
   id: string;
   google: boolean;
   username: string;
+  photo: string;
 }
 interface Preferences {
   currency: string;
@@ -58,7 +59,7 @@ const initialState: IncomeState = {
   loading: false,
   notification: [],
   signup: { name: "", email: "", password: "", google: false },
-  googleSign: { id: "", username: "", google: false },
+  googleSign: { id: "", username: "", google: false, photo: "" },
   preferences: { currency: "USD", language: "English", theme: "Light", security: "Fingerprint" },
   exceedNotification: false,
   expenseAlert: false,
@@ -134,10 +135,11 @@ export const ExpenseTrackerSlice = createSlice({
       state.signup.password = password;
     },
     addGoogleUser: (state, action) => {
-      const { id, google, username } = action.payload;
+      const { id, google, username, photo } = action.payload;
       state.googleSign.id = id;
       state.googleSign.google = google;
       state.googleSign.username = username;
+      state.googleSign.photo = photo;
     },
     changeTheme: (state, action) => {
       state.preferences.theme = action.payload;
@@ -159,6 +161,9 @@ export const ExpenseTrackerSlice = createSlice({
       state.signup.name = "";
       state.signup.email = "";
       state.signup.password = "";
+      state.googleSign.google = false;
+      (state.googleSign.id = ""), (state.googleSign.photo = "");
+      state.googleSign.username = "";
     },
   },
 });

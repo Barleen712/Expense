@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
 
-    margin: 20,
+    margin: 10,
   },
   userphoto: {
     flex: 0.3,
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   details: {
-    flex: 0.5,
+    flex: 0.7,
     justifyContent: "center",
     alignItems: "flex-start",
   },
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   username: {
     fontFamily: "Inter",
     fontWeight: Platform.OS === "ios" ? 500 : 600,
-    fontSize: Platform.OS === "ios" ? 14 : 16,
+    fontSize: Platform.OS === "ios" ? 14 : 14,
     color: "rgba(145, 145, 159, 1)",
   },
   manageProfile: {

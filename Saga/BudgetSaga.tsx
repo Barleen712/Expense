@@ -60,7 +60,8 @@ export const getUseNamerDocument = async () => {
     const userDoc = querySnapshot.docs[0];
     const userData = userDoc.data();
     return {
-      Name:userData.User
+      Name: userData.User,
+      Photo: userData.photo,
     };
   } catch (error) {
     console.error("Error fetching PIN:", error);

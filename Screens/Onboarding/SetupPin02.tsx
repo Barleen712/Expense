@@ -21,8 +21,8 @@ interface Props {
   navigation: PinProp;
 }
 export default function Setpin02({ navigation, route }: Props) {
-  const { email, password,name } = useSelector((state) => state.Money.signup);
-  const { id, google,username } = useSelector((state) => state.Money.googleSign);
+  const { email, password, name } = useSelector((state) => state.Money.signup);
+  const { id, google, username, photo } = useSelector((state) => state.Money.googleSign);
   const [pin, setpin] = useState("");
   const handleClear = () => {
     setpin("");
@@ -35,26 +35,20 @@ export default function Setpin02({ navigation, route }: Props) {
           Pin: pin,
           userId: user.user?.uid,
         });
-        AddUser({User:name,
-          userId: user.user?.uid,
-
-        })
+        AddUser({ User: name, userId: user.user?.uid });
         navigation.navigate("AllSet", { title: "All Set" });
       } catch (error: any) {
         alert(error.message);
       }
-    } else if (route.params.FirstPin === pin && google===true) {
+    } else if (route.params.FirstPin === pin && google === true) {
       const googleCredential = GoogleAuthProvider.credential(id);
       const creds = await signInWithCredential(auth, googleCredential);
-      const user = creds.user
+      const user = creds.user;
       AddPin({
         Pin: pin,
         userId: user.uid,
       });
-      AddUser({User:username,
-        userId: user.uid,
-
-      })
+      AddUser({ User: username, photo: photo, userId: user.uid });
       navigation.navigate("AllSet", { title: "All Set" });
     } else {
       alert("PINS don't match. \nPlease Re-Enter your Pin");

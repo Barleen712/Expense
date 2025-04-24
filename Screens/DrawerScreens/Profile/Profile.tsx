@@ -20,9 +20,14 @@ interface Props {
 }
 export default function Profile({ navigation }: Props) {
   const [username, setuser] = useState("");
+  const [photo, setPhoto] = useState("");
   async function getData() {
     const user = await getUseNamerDocument();
-    setuser(user.Name);
+    setuser(user?.Name);
+    setPhoto(user?.Photo);
+    if (!user?.Photo) {
+      setPhoto("https://img.freepik.com/free-vector/man-profile-account-picture_24908-81754.jpg?semt=ais_hybrid");
+    }
   }
   useEffect(() => {
     getData();
@@ -41,22 +46,23 @@ export default function Profile({ navigation }: Props) {
       alert("Their was some error");
     }
   }
+  console.log(photo, "jhg");
   const { t } = useTranslation();
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: "rgba(246, 246, 246, 1)" }]}>
       <View style={styles.profile}>
         <View style={styles.userphoto}>
-          <Image source={require("../../../assets/Profile.png")} />
+          <Image style={{ width: 80, height: 80, borderRadius: 50, borderWidth: 3 }} source={{ uri: photo }} />
         </View>
         <View style={styles.details}>
           <Text style={styles.username}>Username</Text>
           <Text style={styles.ForgotDes}>{username}</Text>
         </View>
-        <View style={styles.icon}>
-          {/* <TouchableOpacity>
+        {/* <View style={styles.icon}>
+          <TouchableOpacity>
             <Image source={require("../../../assets/Button Icon.png")} />
-          </TouchableOpacity> */}
-        </View>
+          </TouchableOpacity>
+        </View> */}
       </View>
       <View style={styles.manageProfile}>
         <View style={styles.options}>

@@ -240,10 +240,10 @@ export const handleGoogleSignIn = async () => {
     await GoogleSignin.signOut();
     const userInfo = await GoogleSignin.signIn();
     const tokens = await GoogleSignin.getTokens();
-
     return {
       id: tokens.idToken,
-      name: userInfo.data.user.name,
+      name: userInfo.data?.user.name,
+      photo: userInfo.data?.user.photo,
     };
     // const googleCredential = GoogleAuthProvider.credential(tokens.idToken);
     // const creds = await signInWithCredential(auth, googleCredential);
