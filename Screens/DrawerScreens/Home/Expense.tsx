@@ -52,6 +52,8 @@ const modal = [
 ];
 export default function Expense({ navigation, route }: Props) {
   const budget = useSelector(BudgetCategory);
+  const exceeded = useSelector((state) => state.Money.exceedNotification);
+  const expenseAlert = useSelector((state) => state.Money.expenseAlert);
   const parameters = route.params;
   const [Expense, setExpense] = useState(false);
   const [showAttach, setAttach] = useState(true);
@@ -164,12 +166,39 @@ export default function Expense({ navigation, route }: Props) {
           })
         );
         onDisplayNotification({
-          title: `${selectedCategory} budget has exceeded the limit`,
+          title: `${selectedCategory} budget has exceeded the percentage`,
           body: `Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`,
         });
         AddNotification({
-          title: `${selectedCategory} budget has exceeded the limit`,
+          title: `${selectedCategory} budget has exceeded the percentage`,
           body: `Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`,
+          date: new Date().toISOString(),
+          userId: user.uid,
+        });
+      }
+      if (Budget) {
+        const Budget = budget.find((item) => item.category === selectedCategory);
+        if (Budget.amountSpent + numericExpense >= Budget.budgetvalue && exceeded === true) {
+          onDisplayNotification({
+            title: `${selectedCategory} budget has exceeded the limit`,
+            body: `Your ${selectedCategory} budget has exceeded the limit i.e 100%`,
+          });
+          AddNotification({
+            title: `${selectedCategory} budget has exceeded the limit`,
+            body: `Your ${selectedCategory} budget has exceeded the limit i.e 100%`,
+            date: new Date().toISOString(),
+            userId: user.uid,
+          });
+        }
+      }
+      if (expenseAlert) {
+        onDisplayNotification({
+          title: `Added Expense`,
+          body: `You added an expense of ${selectedCategory} of amount ${Expenses}`,
+        });
+        AddNotification({
+          title: `Added Expense`,
+          body: `You added an expense of ${selectedCategory} of amount ${Expenses}`,
           date: new Date().toISOString(),
           userId: user.uid,
         });
@@ -200,6 +229,7 @@ export default function Expense({ navigation, route }: Props) {
     navigation.goBack();
     navigation.goBack();
   }
+  console.log(expenseAlert);
   return (
     <View style={styles.container}>
       <Header title={t("Expense")} press={() => navigation.goBack()} bgcolor="rgba(253, 60, 74, 1)" color="white" />

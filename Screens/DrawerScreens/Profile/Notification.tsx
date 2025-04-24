@@ -6,15 +6,30 @@ import { Ionicons } from "@expo/vector-icons";
 import Header from "../../../Components/Header";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
+import { useSelector, useDispatch } from "react-redux";
+import { updateEmail } from "firebase/auth";
+import { updateExceed, updateExpenseAlert } from "../../../Slice/IncomeSlice";
 type NotificationProp = StackNavigationProp<StackParamList, "Account">;
 
 interface Props {
   navigation: NotificationProp;
 }
 export default function Notification({ navigation }: Props) {
+  const dispatch = useDispatch();
+  const exceed = useSelector((state) => state.Money.exceedNotification);
+  const expenseAlert = useSelector((state) => state.Money.expenseAlert);
   const [Tips, setTips] = useState(false);
-  const [Budget, setBudget] = useState(false);
-  const [Expense, setExpense] = useState(false);
+  const [Budget, setBudget] = useState(exceed);
+  const [Expense, setExpense] = useState(expenseAlert);
+  console.log;
+  function exceedFunc() {
+    setBudget(!Budget);
+    dispatch(updateExceed(!Budget));
+  }
+  function expenseAlertFunc() {
+    setExpense(!Expense);
+    dispatch(updateExpenseAlert(!Expense));
+  }
   return (
     <View style={styles.container}>
       <Header title="Notification" press={() => navigation.goBack()} />
@@ -29,7 +44,7 @@ export default function Notification({ navigation }: Props) {
             trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgb(42, 124, 118)" }}
             value={Expense}
             thumbColor={"white"}
-            onValueChange={setExpense}
+            onValueChange={expenseAlertFunc}
           />
         </View>
       </View>
@@ -44,7 +59,7 @@ export default function Notification({ navigation }: Props) {
             trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgb(42, 124, 118)" }}
             value={Budget}
             thumbColor={"white"}
-            onValueChange={setBudget}
+            onValueChange={exceedFunc}
           />
         </View>
       </View>

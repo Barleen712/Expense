@@ -32,7 +32,7 @@ interface Signup {
 interface GoogleSign {
   id: string;
   google: boolean;
-  username:string
+  username: string;
 }
 interface Preferences {
   currency: string;
@@ -40,7 +40,6 @@ interface Preferences {
   theme: string;
   security: string;
 }
-
 interface IncomeState {
   amount: IncomeEntry[];
   budget: BudgetEntry[];
@@ -49,6 +48,8 @@ interface IncomeState {
   signup: Signup;
   googleSign: GoogleSign;
   preferences: Preferences;
+  exceedNotification: boolean;
+  expenseAlert: boolean;
 }
 
 const initialState: IncomeState = {
@@ -57,8 +58,10 @@ const initialState: IncomeState = {
   loading: false,
   notification: [],
   signup: { name: "", email: "", password: "", google: false },
-  googleSign: { id: "",username:"", google: false },
+  googleSign: { id: "", username: "", google: false },
   preferences: { currency: "USD", language: "English", theme: "Light", security: "Fingerprint" },
+  exceedNotification: false,
+  expenseAlert: false,
 };
 
 export const ExpenseTrackerSlice = createSlice({
@@ -86,6 +89,12 @@ export const ExpenseTrackerSlice = createSlice({
       state.amount[index].category = category;
       state.amount[index].description = description;
       state.amount[index].wallet = wallet;
+    },
+    updateExceed: (state, action) => {
+      state.exceedNotification = action.payload;
+    },
+    updateExpenseAlert: (state, action) => {
+      state.expenseAlert = action.payload;
     },
     addBudget: (state, action) => {
       const existingTransaction = state.budget.find((transaction) => transaction.id === action.payload.id);
@@ -125,10 +134,10 @@ export const ExpenseTrackerSlice = createSlice({
       state.signup.password = password;
     },
     addGoogleUser: (state, action) => {
-      const { id,google,username } = action.payload;
+      const { id, google, username } = action.payload;
       state.googleSign.id = id;
       state.googleSign.google = google;
-      state.googleSign.username=username
+      state.googleSign.username = username;
     },
     changeTheme: (state, action) => {
       state.preferences.theme = action.payload;
@@ -170,5 +179,7 @@ export const {
   changeLanguages,
   changeSecurity,
   addGoogleUser,
+  updateExceed,
+  updateExpenseAlert,
 } = ExpenseTrackerSlice.actions;
 export default ExpenseTrackerSlice.reducer;
