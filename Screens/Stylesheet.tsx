@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, Dimensions } from "react-native";
+import { Platform, StyleSheet, Dimensions, StatusBar } from "react-native";
 import Budget from "./DrawerScreens/Budget/Budget";
 const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   headView: {
     flex: 0.2,
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderColor: "rgba(133, 126, 126, 0.89)",
     borderWidth: 1,
-    margin: 10,
+    margin: 20,
     padding: 15,
     justifyContent: "center",
   },
@@ -372,7 +373,6 @@ const styles = StyleSheet.create({
   },
   export: {
     width: "100%",
-    margin: 10,
     marginTop: 30,
   },
   exportText: {
@@ -866,7 +866,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     flexDirection: "row",
     position: "absolute",
-    top: "28%",
+    top: "30%",
     height: "9%",
     left: "5%",
     alignItems: "center",
@@ -889,7 +889,7 @@ const styles = StyleSheet.create({
     flex: 0.05,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: Platform.OS === "ios" ? 38 : 43,
+    marginTop: Platform.OS === "ios" ? 38 : 30,
   },
   Description: {
     flex: 0.2,
@@ -905,14 +905,15 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 10,
     borderRadius: 10,
-    height: 116,
+    height: 150,
   },
   Trash: {
     position: "absolute",
     right: "3%",
-    top: "4%",
+    top: "8%",
     width: 32,
     height: 32,
+    // backgroundColor: "red",
   },
   modalContainerTransaction: {
     width: "80%",

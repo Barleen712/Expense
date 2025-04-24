@@ -28,7 +28,7 @@ export default function CustomD({
   return (
     <SelectDropdown
       data={translatedData}
-      dropdownStyle={{ height: data.length * 50 }}
+      dropdownStyle={{ height: data.length * 55, borderRadius: 20 }}
       onSelect={(selectedItem, index) => {
         const originalItem = data[index];
         onSelectItem(originalItem, index);
@@ -41,13 +41,16 @@ export default function CustomD({
           </View>
         );
       }}
+      showsVerticalScrollIndicator={false}
       renderItem={(item) => {
         return (
           <View style={styleItem}>
-            <View>
+            <View style={{ flex: 1, justifyContent: "center" }}>
               <Text style={{ paddingLeft: 20 }}>{item}</Text>
             </View>
-            <View style={styles.Line}></View>
+            <View>
+              <View style={styles.Line}></View>
+            </View>
           </View>
         );
       }}

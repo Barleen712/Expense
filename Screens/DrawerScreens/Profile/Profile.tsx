@@ -19,18 +19,14 @@ interface Props {
   navigation: Profileprop;
 }
 export default function Profile({ navigation }: Props) {
-  const [username,setuser]=useState("")
-  async function getData()
-  {
-    const user=await getUseNamerDocument()
-     setuser(user.Name)
+  const [username, setuser] = useState("");
+  async function getData() {
+    const user = await getUseNamerDocument();
+    setuser(user.Name);
   }
-  useEffect(()=>
-  {
-    getData()
-    
-
-  },[])
+  useEffect(() => {
+    getData();
+  }, []);
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   function toggleModal() {
@@ -47,7 +43,7 @@ export default function Profile({ navigation }: Props) {
   }
   const { t } = useTranslation();
   return (
-    <View>
+    <SafeAreaView style={[styles.container, { backgroundColor: "rgba(246, 246, 246, 1)" }]}>
       <View style={styles.profile}>
         <View style={styles.userphoto}>
           <Image source={require("../../../assets/Profile.png")} />
@@ -57,9 +53,9 @@ export default function Profile({ navigation }: Props) {
           <Text style={styles.ForgotDes}>{username}</Text>
         </View>
         <View style={styles.icon}>
-          <TouchableOpacity>
+          {/* <TouchableOpacity>
             <Image source={require("../../../assets/Button Icon.png")} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
       <View style={styles.manageProfile}>
@@ -114,6 +110,6 @@ export default function Profile({ navigation }: Props) {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }

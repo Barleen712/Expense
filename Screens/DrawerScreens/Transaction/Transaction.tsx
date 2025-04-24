@@ -73,7 +73,9 @@ export default function Transaction({ navigation }: Props) {
   const containIncome = sortedTransactions.some((item) => item.moneyCategory === "Income");
   const containExpense = sortedTransactions.some((item) => item.moneyCategory === "Expense");
   const [FilterTrans, setFilterTrans] = useState(transactions);
-
+  useEffect(() => {
+    setFilterTrans(sortedTransactions);
+  }, [transactions]);
   const handleSort = () => {
     try {
       toggleModal();
@@ -146,6 +148,14 @@ export default function Transaction({ navigation }: Props) {
           <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
         </TouchableOpacity>
       </View> */}
+      {transactions.length === 0 && (
+        <View style={{ flex: 0.75, justifyContent: "center", alignItems: "center", marginTop: 200 }}>
+          <Text style={styles.budgetText}>
+            You have not made any transaction.{"\n"}
+            {t(StringConstants.Letmake)}.
+          </Text>
+        </View>
+      )}
       <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
         <TouchableWithoutFeedback onPress={toggleModal}>
           <View style={styles.modalOverlay}>

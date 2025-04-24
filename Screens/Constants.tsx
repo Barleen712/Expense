@@ -33,6 +33,7 @@ export const Month = [
   "November",
   "December",
 ];
+export const Weeks = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export const CATEGORY_COLORS: Record<string, string> = {
   Food: "rgba(253, 60, 74, 1)",
@@ -239,10 +240,11 @@ export const handleGoogleSignIn = async () => {
     await GoogleSignin.signOut();
     const userInfo = await GoogleSignin.signIn();
     const tokens = await GoogleSignin.getTokens();
-    
+
     return {
-      id:tokens.idToken,
-      name:userInfo.data.user.name}
+      id: tokens.idToken,
+      name: userInfo.data.user.name,
+    };
     // const googleCredential = GoogleAuthProvider.credential(tokens.idToken);
     // const creds = await signInWithCredential(auth, googleCredential);
   } catch (error: any) {

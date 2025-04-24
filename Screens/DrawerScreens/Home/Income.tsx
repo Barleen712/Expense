@@ -116,7 +116,6 @@ export default function Income({ navigation, route }: Props) {
       // Upload to Supabase
       setLoading(true);
       supabaseImageUrl = await uploadImage(image);
-      setLoading(false);
     }
     // dispatch(
     //   addTransaction({
@@ -144,6 +143,7 @@ export default function Income({ navigation, route }: Props) {
         uri: supabaseImageUrl,
       },
     });
+    setLoading(false);
     navigation.goBack();
   }
   function editIncome() {
@@ -166,6 +166,15 @@ export default function Income({ navigation, route }: Props) {
     });
     navigation.goBack();
     navigation.goBack();
+  }
+  if (loading) {
+    return (
+      <View
+        style={{ flex: 1, backgroundColor: "rgba(228, 225, 225, 0.5)", alignItems: "center", justifyContent: "center" }}
+      >
+        <ActivityIndicator size="large" color="rgba(0, 168, 107, 1)" />
+      </View>
+    );
   }
 
   return (
@@ -277,8 +286,8 @@ export default function Income({ navigation, route }: Props) {
                 </View> */}
                 <CustomButton
                   title={t(StringConstants.Continue)}
-                  bg="rgba(173, 210, 189, 0.6)"
-                  color="rgb(42, 124, 118)"
+                  bg="rgba(0, 168, 107, 1)"
+                  color="white"
                   press={parameters.edit ? editIncome : add}
                 />
               </View>
@@ -305,7 +314,7 @@ export default function Income({ navigation, route }: Props) {
               <>
                 {(image || photo) && (
                   <TouchableOpacity
-                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "35%" : "31%", left: "28%" }}
+                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "25%" : "21%", left: "26%" }}
                     onPress={() => {
                       setImage(null);
                       setPhoto(null);

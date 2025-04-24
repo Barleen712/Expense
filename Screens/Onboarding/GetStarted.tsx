@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Carousel from "react-native-reanimated-carousel";
-import { View, Text, Image, Dimensions, StyleSheet, Platform, TouchableOpacity } from "react-native";
+import { View, Text, Image, Dimensions, StyleSheet, Platform, TouchableOpacity, StatusBar } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { CustomButton } from "../../Components/CustomButton";
 const { width: screenWidth } = Dimensions.get("window");
@@ -58,7 +58,8 @@ export default function Getstarted({ navigation }: Props) {
     );
   };
   return (
-    <View style={{ alignItems: "center", backgroundColor: "white", flex: 1, paddingTop: 20 }}>
+    <SafeAreaView style={{ alignItems: "center", backgroundColor: "white", flex: 1, paddingTop: 20 }}>
+      <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
       <Carousel
         data={data}
         renderItem={render}
@@ -83,7 +84,7 @@ export default function Getstarted({ navigation }: Props) {
           press={login}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({

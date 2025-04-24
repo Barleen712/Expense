@@ -21,6 +21,7 @@ import Header from "../../Components/Header";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../Constants";
 import Success from "./SignUp_success";
+import styles from "../Stylesheet";
 type LoginProp = StackNavigationProp<StackParamList, "Login">;
 
 interface Props {
@@ -46,6 +47,7 @@ export default function Login({ navigation }: Props) {
       navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
     } catch (error: any) {
       alert(error.message);
+      setLoading(false);
     }
   }
   const { t } = useTranslation();
@@ -57,13 +59,13 @@ export default function Login({ navigation }: Props) {
     );
   }
   return (
-    <View style={{ alignItems: "center", backgroundColor: "white", flex: 1 }}>
+    <SafeAreaView style={{ alignItems: "center", backgroundColor: "white", flex: 1 }}>
       <Header title={t(StringConstants.Login)} press={() => navigation.goBack()} />
-      <View style={styles.input}>
+      <View style={style.input}>
         <Input
           title={t(StringConstants.Email)}
           color="rgb(56, 88, 85)"
-          css={styles.textinput}
+          css={style.textinput}
           name={email}
           onchange={setemail}
           isPass={false}
@@ -71,7 +73,7 @@ export default function Login({ navigation }: Props) {
         <Input
           title={t(StringConstants.Password)}
           color="rgb(56, 88, 85)"
-          css={styles.textinput}
+          css={style.textinput}
           isPass={true}
           name={password}
           onchange={setpass}
@@ -79,17 +81,17 @@ export default function Login({ navigation }: Props) {
       </View>
       <GradientButton title={t(StringConstants.Login)} handles={handlesLogin} />
       <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-        <Text style={styles.forgot}>{t(StringConstants.ForgotPassword)}</Text>
+        <Text style={style.forgot}>{t(StringConstants.ForgotPassword)}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.replace("SignUp")}>
-        <Text style={styles.account}>
-          {t(StringConstants.Donthaveanaccountyet)} <Text style={styles.span}>{t(StringConstants.SignUp)}</Text>
+        <Text style={style.account}>
+          {t(StringConstants.Donthaveanaccountyet)} <Text style={style.span}>{t(StringConstants.SignUp)}</Text>
         </Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
-const styles = StyleSheet.create({
+const style = StyleSheet.create({
   textinput: {
     width: 343,
     height: 56,

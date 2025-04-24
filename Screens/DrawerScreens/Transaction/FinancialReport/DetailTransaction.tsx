@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import CustomModal from "../../Budget/Modal";
 import { useTranslation } from "react-i18next";
 import { deleteDocument } from "../../../FirestoreHandler";
-import { StringConstants, currencies } from "../../../Constants";
+import { StringConstants, currencies, Month, Weeks } from "../../../Constants";
 interface DetailTransactionProps {
   navigation: any;
   bg: string;
@@ -43,6 +43,7 @@ function DetailTransaction({
   const [image, showImage] = useState(false);
   const [succes, setsuccess] = useState(false);
   const dispatch = useDispatch();
+
   function toggleSuccess() {
     setsuccess(!succes);
   }
@@ -66,6 +67,16 @@ function DetailTransaction({
       navigation.navigate("Transfer", { amount, to: category, from: type, title: des, edit: true, id });
     }
   }
+  const DisplayDate = new Date(time);
+  const year = DisplayDate.getFullYear();
+  const indexMnonth = DisplayDate.getMonth();
+  const indexDay = DisplayDate.getDay();
+  const day = Weeks[indexDay];
+  const month = Month[indexMnonth];
+  const getDate = DisplayDate.getDate() + 1;
+  const getHours = DisplayDate.getHours();
+  const getMinute = DisplayDate.getMinutes();
+  const DisplayTime = `${day} ${getDate} ${month} ${year} ${getHours}:${getMinute}`;
   return (
     <View style={styles.container}>
       <Header title={t("Detail Transaction")} press={() => navigation.goBack()} bgcolor={bg} color="white" />
@@ -74,8 +85,7 @@ function DetailTransaction({
           {currencies[currency]}
           {(amount * convertRate).toFixed(2)}
         </Text>
-        {title && <Text style={[styles.notiTitle, { color: "white" }]}>{title}</Text>}
-        <Text style={[styles.MonthText, { fontSize: 12 }]}>{time}</Text>
+        <Text style={[styles.MonthText, { fontSize: 12 }]}>{DisplayTime}</Text>
       </View>
       <View style={styles.TypeContainer}>
         <View style={styles.type}>
@@ -99,13 +109,22 @@ function DetailTransaction({
         <Text style={[styles.exportText, { paddingLeft: 0 }]}>{des}</Text>
       </View>
       <View style={styles.attachView}>
-        <Text style={styles.username}>{t("Attachment")}</Text>
-        <TouchableOpacity onPress={() => showImage(true)}>
-          <Image style={styles.attachImg} source={{ uri: uri }} onError={() => console.log("Failed to load image")} />
-        </TouchableOpacity>
+        {uri && (
+          <View>
+            <Text style={styles.username}>{t("Attachment")}</Text>
+
+            <TouchableOpacity onPress={() => showImage(true)}>
+              <Image
+                style={styles.attachImg}
+                source={{ uri: uri }}
+                onError={() => console.log("Failed to load image")}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
       <View style={[styles.Apply, { flex: 0.1 }]}>
-        <CustomButton title={t("Edit")} bg={color} color={bg} press={EditTransaction} />
+        <CustomButton title={t("Edit")} bg={bg} color="white" press={EditTransaction} />
       </View>
       <TouchableOpacity style={styles.Trash} onPress={toggleModal}>
         <Image source={require("../../../../assets/trash.png")} />
@@ -147,14 +166,12 @@ export default function DetailTransaction_Expense({ navigation, route }) {
       bg="rgba(253, 60, 74, 1)"
       color="rgba(205, 153, 141, 0.13)"
       amount={value.amount}
-      title={value.description}
-      time="Saturday 4 June 2021 16:20"
+      time={value.Date}
       type="Expense"
       category={value.category}
       wallet={value.wallet}
       id={value.id}
-      des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
-            velit mollit. Exercitation veniam consequat sunt nostrud amet."
+      des={value.description}
       uri={value.attachment.uri}
     />
   );
@@ -168,13 +185,12 @@ export function DetailTransaction_Income({ navigation, route }) {
       color="rgba(173, 210, 189, 0.6)"
       amount={value.amount}
       title={value.description}
-      time="Saturday 4 June 2021 16:20"
+      time={value.Date}
       type="Income"
       category={value.category}
       wallet={value.wallet}
       id={value.id}
-      des="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim
-            velit mollit. Exercitation veniam consequat sunt nostrud amet."
+      des={value.description}
       uri={value.attachment.uri}
     />
   );
@@ -190,13 +206,12 @@ export function DetailTransaction_Transfer({ navigation, route }) {
       bg="rgba(0, 119, 255, 1)"
       color="rgba(115, 116, 119, 0.14)"
       amount={value.amount}
-      time="Saturday 4 June 2021 16:20"
+      time={value.Date}
       type={From}
       category={To}
       wallet="Transfer"
       des={value.description}
       id={value.id}
-      // keyVal={value.key}
       uri={value.attachment.uri}
     />
   );

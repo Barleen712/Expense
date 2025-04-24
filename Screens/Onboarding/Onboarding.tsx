@@ -1,10 +1,22 @@
 import React from "react";
-import { View, Text, Button, Image, StyleSheet, ImageBackground, Platform, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  Image,
+  StyleSheet,
+  ImageBackground,
+  Platform,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
 import { StringConstants } from "../Constants";
 import { useTranslation } from "react-i18next";
+import styles from "../Stylesheet";
 type Homeprop = StackNavigationProp<StackParamList, "Home">;
 
 interface Props {
@@ -16,37 +28,38 @@ export default function Onboarding({ navigation }: Props) {
   }
   const { t } = useTranslation();
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <View style={styles.image}>
-        <Image source={require("../../assets/Group 2.png")} style={styles.group2} />
-        <Image source={require("../../assets/Group 1.png")} style={styles.group1} />
-        <Image source={require("../../assets/Coint.png")} style={styles.coint} />
-        <Image source={require("../../assets/Donut.png")} style={styles.donut} />
+    <SafeAreaView style={styles.container}>
+      <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
+      <View style={style.image}>
+        <Image source={require("../../assets/Group 2.png")} style={style.group2} />
+        <Image source={require("../../assets/Group 1.png")} style={style.group1} />
+        <Image source={require("../../assets/Coint.png")} style={style.coint} />
+        <Image source={require("../../assets/Donut.png")} style={style.donut} />
       </View>
-      <View style={styles.getstarted}>
-        <View style={styles.title}>
-          <Text style={styles.save}>{t(StringConstants.SpendSmarter)}</Text>
+      <View style={style.getstarted}>
+        <View style={style.title}>
+          <Text style={style.save}>{t(StringConstants.SpendSmarter)}</Text>
         </View>
-        <View style={styles.button}>
-          <LinearGradient colors={["#69AEA9", "#3F8782"]} style={styles.gradient}>
+        <View style={style.button}>
+          <LinearGradient colors={["#69AEA9", "#3F8782"]} style={style.gradient}>
             <TouchableOpacity onPress={() => navigation.replace("GetStarted")}>
-              <Text style={styles.start}>{t(StringConstants.GetStarted)}</Text>
+              <Text style={style.start}>{t(StringConstants.GetStarted)}</Text>
             </TouchableOpacity>
           </LinearGradient>
         </View>
-        <View style={styles.text}>
+        <View style={style.text}>
           <TouchableOpacity onPress={handlePress}>
             <Text>
               {t(StringConstants.Alreadyhaveanaccount)}
-              <Text style={styles.login}>{t(StringConstants.Login)}</Text>
+              <Text style={style.login}>{t(StringConstants.Login)}</Text>
             </Text>
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
-const styles = StyleSheet.create({
+const style = StyleSheet.create({
   image: {
     flex: 0.65,
     alignItems: "center",

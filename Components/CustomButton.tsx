@@ -34,7 +34,7 @@ export function CustomButton({ title, bg, color, press }: CustomButton) {
       }}
       onPress={press}
     >
-      <Text style={{ color: color, fontSize: 20, paddingTop: 5 }}>{title}</Text>
+      <Text style={{ color: color, fontSize: 20 }}>{title}</Text>
     </TouchableOpacity>
   );
 }

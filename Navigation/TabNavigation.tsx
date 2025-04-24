@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Alert, Animated, StyleSheet, TouchableOpacity, Text, View, Image } from "react-native";
 import { CurvedBottomBarExpo } from "react-native-curved-bottom-bar";
 import { Ionicons } from "@expo/vector-icons";
@@ -10,12 +10,21 @@ import Budget from "../Screens/DrawerScreens/Budget/Budget";
 import Profile from "../Screens/DrawerScreens/Profile/Profile";
 import { StringConstants } from "../Screens/Constants";
 import { useTranslation } from "react-i18next";
+import { useFocusEffect } from "@react-navigation/native";
 type BottomTabprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
   navigation: BottomTabprop;
 }
 export default function Tabscreens({ navigation }: Props) {
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("state", () => {
+      setplus(true);
+      setcross(false);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
   const _renderIcon = (routeName: string, selectedTab: string): JSX.Element => {
     let icon = "";
 

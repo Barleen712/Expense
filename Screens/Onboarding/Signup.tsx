@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform, Image, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  Platform,
+  Image,
+  ActivityIndicator,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import GradientButton from "../../Components/CustomButton";
 import Input from "../../Components/CustomTextInput";
 import { Checkbox } from "react-native-paper";
@@ -15,6 +26,7 @@ import Success from "./SignUp_success";
 import { addUser, addGoogleUser } from "../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import styles from "../Stylesheet";
 type SignupProp = StackNavigationProp<StackParamList, "SignUp">;
 
 interface Props {
@@ -46,6 +58,12 @@ export default function SignUp({ navigation }: Props) {
       alert("Enter Email");
       return;
     }
+    const emailRegex =
+      /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailRegex.test(email)) {
+      alert("Please Enter Valid Email");
+      return;
+    }
     if (password === "") {
       alert("Enter Password");
       return;
@@ -64,18 +82,18 @@ export default function SignUp({ navigation }: Props) {
     );
     setname("");
     setemail("");
-    setemail("");
+    setpass("");
     navigation.navigate("Setpin");
   }
   const { t } = useTranslation();
 
   async function GoogleSignIn() {
-    const {id,name} = await handleGoogleSignIn();
+    const { id, name } = await handleGoogleSignIn();
     dispatch(
       addGoogleUser({
         id: id,
-        google:true,
-        username:name
+        google: true,
+        username: name,
       })
     );
     navigation.navigate("Setpin");
@@ -88,13 +106,14 @@ export default function SignUp({ navigation }: Props) {
   //   );
   // }
   return (
-    <View style={{ alignItems: "center", backgroundColor: "white", flex: 1 }}>
+    <SafeAreaView style={[styles.container, { alignItems: "center" }]}>
+      <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
       <Header title={t(StringConstants.SignUp)} press={() => navigation.goBack()}></Header>
-      <View style={styles.input}>
+      <View style={style.input}>
         <Input
           title={t(StringConstants.Name)}
           color="rgb(56, 88, 85)"
-          css={styles.textinput}
+          css={style.textinput}
           name={name}
           onchange={setname}
           isPass={false}
@@ -102,7 +121,7 @@ export default function SignUp({ navigation }: Props) {
         <Input
           title={t(StringConstants.Email)}
           color="rgb(56, 88, 85)"
-          css={styles.textinput}
+          css={style.textinput}
           name={email}
           onchange={setemail}
           isPass={false}
@@ -110,7 +129,7 @@ export default function SignUp({ navigation }: Props) {
         <Input
           title={t(StringConstants.Password)}
           color="rgb(56, 88, 85)"
-          css={styles.textinput}
+          css={style.textinput}
           isPass={true}
           name={password}
           onchange={setpass}
@@ -124,20 +143,20 @@ export default function SignUp({ navigation }: Props) {
         </Text>
       </View>
       <GradientButton title="Sign Up" handles={handleSignUp} />
-      <Text style={styles.or}>{t(StringConstants.orwith)}</Text>
-      <TouchableOpacity style={styles.GoogleView} onPress={GoogleSignIn}>
-        <Image style={styles.Google} source={require("../../assets/Google.png")} />
-        <Text style={styles.textGoogle}>{t(StringConstants.SignUpwithGoogle)}</Text>
+      <Text style={style.or}>{t(StringConstants.orwith)}</Text>
+      <TouchableOpacity style={style.GoogleView} onPress={GoogleSignIn}>
+        <Image style={style.Google} source={require("../../assets/Google.png")} />
+        <Text style={style.textGoogle}>{t(StringConstants.SignUpwithGoogle)}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.replace("Login")}>
-        <Text style={styles.account}>
-          {t(StringConstants.Alreadyhaveanaccount)} <Text style={styles.span}>{t(StringConstants.Login)}</Text>
+        <Text style={style.account}>
+          {t(StringConstants.Alreadyhaveanaccount)} <Text style={style.span}>{t(StringConstants.Login)}</Text>
         </Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
-const styles = StyleSheet.create({
+const style = StyleSheet.create({
   textinput: {
     width: 343,
     height: 56,

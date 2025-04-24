@@ -38,6 +38,7 @@ import { AddTransaction } from "../../FirestoreHandler";
 import { auth } from "../../FirebaseConfig";
 import { BudgetCategory } from "../../../Slice/Selectors";
 import { onDisplayNotification } from "../Budget/TestNotification";
+import { ActivityIndicator } from "react-native-paper";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -66,6 +67,7 @@ export default function Expense({ navigation, route }: Props) {
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
+  const [loading, setLoading] = useState(false);
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -112,6 +114,7 @@ export default function Expense({ navigation, route }: Props) {
       return;
     }
     if (image) {
+      setLoading(true);
       supabaseImageUrl = await uploadImage(image);
     }
     // dispatch(
@@ -204,6 +207,7 @@ export default function Expense({ navigation, route }: Props) {
         });
       }
     }
+    setLoading(false);
     navigation.goBack();
   }
 
@@ -229,7 +233,15 @@ export default function Expense({ navigation, route }: Props) {
     navigation.goBack();
     navigation.goBack();
   }
-  console.log(expenseAlert);
+  if (loading) {
+    return (
+      <View
+        style={{ flex: 1, backgroundColor: "rgba(228, 225, 225, 0.5)", alignItems: "center", justifyContent: "center" }}
+      >
+        <ActivityIndicator size="large" color="rgba(253, 60, 74, 1)" />
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <Header title={t("Expense")} press={() => navigation.goBack()} bgcolor="rgba(253, 60, 74, 1)" color="white" />
@@ -334,8 +346,8 @@ export default function Expense({ navigation, route }: Props) {
                 </View> */}
                 <CustomButton
                   title={t(StringConstants.Continue)}
-                  bg="rgba(205, 153, 141, 0.13)"
-                  color="rgba(253, 60, 74, 1)"
+                  bg="rgba(253, 60, 74, 1)"
+                  color="white"
                   press={parameters.edit ? editExpense : add}
                 />
               </View>
@@ -362,7 +374,7 @@ export default function Expense({ navigation, route }: Props) {
               <>
                 {(image || photo) && (
                   <TouchableOpacity
-                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "35%" : "31%", left: "28%" }}
+                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "25%" : "21%", left: "26%" }}
                     onPress={() => {
                       setImage(null);
                       setPhoto(null);

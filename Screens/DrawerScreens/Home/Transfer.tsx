@@ -12,6 +12,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
 import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
@@ -56,6 +57,7 @@ export default function Income({ navigation, route }: Props) {
   const [From, setFrom] = useState(`${from}`);
   const [To, setTo] = useState(`${to}`);
   const [Description, setDescription] = useState(`${title}`);
+  const [loading, setLoading] = useState(false);
 
   function toggleModal() {
     setModalVisible(!modalVisible);
@@ -105,6 +107,7 @@ export default function Income({ navigation, route }: Props) {
     }
 
     if (image) {
+      setLoading(true);
       supabaseImageUrl = await uploadImage(image);
     }
     // dispatch(
@@ -132,6 +135,7 @@ export default function Income({ navigation, route }: Props) {
         uri: supabaseImageUrl,
       },
     });
+    setLoading(false);
     navigation.goBack();
   }
   function editTransfer() {
@@ -153,6 +157,15 @@ export default function Income({ navigation, route }: Props) {
     });
     navigation.goBack();
     navigation.goBack();
+  }
+  if (loading) {
+    return (
+      <View
+        style={{ flex: 1, backgroundColor: "rgba(228, 225, 225, 0.5)", alignItems: "center", justifyContent: "center" }}
+      >
+        <ActivityIndicator size="large" color="rgba(0, 119, 255, 1)" />
+      </View>
+    );
   }
 
   return (
@@ -275,8 +288,8 @@ export default function Income({ navigation, route }: Props) {
                 </View> */}
                 <CustomButton
                   title={t(StringConstants.Continue)}
-                  bg="rgba(115, 116, 119, 0.14)"
-                  color="rgba(0, 119, 255, 1)"
+                  bg="rgba(0, 119, 255, 1)"
+                  color="white"
                   press={edit ? editTransfer : add}
                 />
               </View>
@@ -303,7 +316,7 @@ export default function Income({ navigation, route }: Props) {
               <>
                 {(image || photo) && (
                   <TouchableOpacity
-                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "35%" : "31%", left: "28%" }}
+                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "25%" : "21%", left: "25%" }}
                     onPress={() => {
                       setImage(null);
                       setPhoto(null);
