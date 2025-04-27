@@ -62,6 +62,7 @@ export const getUseNamerDocument = async () => {
     return {
       Name: userData.User,
       Photo: userData.photo,
+      ID:userDoc.id
     };
   } catch (error) {
     console.error("Error fetching PIN:", error);

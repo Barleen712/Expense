@@ -38,7 +38,7 @@ import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
 import { updateTransaction } from "../../../Slice/IncomeSlice";
 import { AddTransaction } from "../../FirestoreHandler";
-
+import FrequencyModal from "../../../Components/FrequencyModal";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -47,9 +47,10 @@ interface Props {
 
 const category = ["Salary", "Passive Income"];
 const wallet = ["PayPal", "Google Pay", "Paytm", "PhonePe", "Apple Pay", "Razorpay", "Mobikwik"];
+
 export default function Income({ navigation, route }: Props) {
   const parameters = route.params;
-  const [Expense, setExpense] = useState(false);
+  const [Switchs, setSwitch] = useState(false);
   const [showAttach, setAttach] = useState(true);
   const [image, setImage] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -61,6 +62,7 @@ export default function Income({ navigation, route }: Props) {
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
   const [loading, setLoading] = useState(false);
+  const [frequency,setFrequency]=useState("")
   const modal = [
     require("../../../assets/Camera.png"),
     require("../../../assets/Image.png"),
@@ -176,7 +178,6 @@ export default function Income({ navigation, route }: Props) {
       </View>
     );
   }
-
   return (
     <View style={styles.container}>
       <Header
@@ -270,7 +271,7 @@ export default function Income({ navigation, route }: Props) {
                     </TouchableOpacity>
                   </View>
                 )}
-                {/* <View style={styles.notiView}>
+                <View style={styles.notiView}>
                   <View style={styles.noti}>
                     <Text style={styles.notiTitle}>{t("Repeat")}</Text>
                     <Text style={styles.notiDes}>{t(StringConstants.RepeatTransaction)}</Text>
@@ -278,12 +279,16 @@ export default function Income({ navigation, route }: Props) {
                   <View style={styles.switch}>
                     <Switch
                       trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgb(42, 124, 118)" }}
-                      value={Expense}
+                      value={Switchs}
                       thumbColor={"white"}
-                      onValueChange={setExpense}
+                      onValueChange={setSwitch}
                     />
                   </View>
-                </View> */}
+                </View>
+                {Switchs &&(
+                  <FrequencyModal frequency={frequency} setFrequency={()=>setFrequency("")} />
+                )
+                }
                 <CustomButton
                   title={t(StringConstants.Continue)}
                   bg="rgba(0, 168, 107, 1)"

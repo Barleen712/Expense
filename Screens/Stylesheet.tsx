@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderColor: "rgba(133, 126, 126, 0.89)",
     borderWidth: 1,
-    margin: 20,
+    margin: 10,
     padding: 15,
     justifyContent: "center",
   },
@@ -213,17 +213,19 @@ const styles = StyleSheet.create({
     //marginTop: 10,
   },
   userphoto: {
-    flex: 0.3,
+    flex: 0.25,
     alignItems: "center",
     justifyContent: "center",
+
   },
   details: {
-    flex: 0.5,
+    flex: 0.6,
     justifyContent: "center",
     alignItems: "flex-start",
+    padding:10,
   },
   icon: {
-    flex: 0.2,
+    flex: 0.15,
     justifyContent: "center",
     alignItems: "center",
   },

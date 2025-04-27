@@ -59,3 +59,12 @@ export const updateBudgetDocument = async (collection: string, id: string, data)
     notified: data.notified,
   });
 };
+export const updateUserDoc=async(id:string,data)=>
+{
+  console.log(data.photo,"okinj")
+  const userRef=doc(db,"Names",id)
+ const d= await updateDoc(userRef,{
+    User:data.User,
+   //photo:data.photo
+  })
+}
