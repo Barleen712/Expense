@@ -272,7 +272,7 @@ export default function Income({ navigation, route }: Props) {
                     </TouchableOpacity>
                   </View>
                 )}
-                {/* <View style={styles.notiView}>
+                <View style={styles.notiView}>
                   <View style={styles.noti}>
                     <Text style={styles.notiTitle}>{t("Repeat")}</Text>
                     <Text style={styles.notiDes}>{t(StringConstants.RepeatTransaction)}</Text>
@@ -285,15 +285,35 @@ export default function Income({ navigation, route }: Props) {
                       onValueChange={setSwitch}
                     />
                   </View>
-                </View> */}
-                {/* {Switchs && (
+                </View>
+                {Switchs && (
                   <FrequencyModal
                     frequency={frequency}
-                    setFrequency={() => setFrequency("")}
+                    setFrequency={setFrequency}
                     endAfter={endAfter}
-                    setendAfter={() => setendAfter("")}
+                    setendAfter={setendAfter}
                   />
-                )} */}
+                )}
+                {frequency && (
+                  <View
+                    style={{
+                      backgroundColor: "pink",
+                      width: "95%",
+                      flexDirection: "row",
+                      justifyContent: "space-evenly",
+                    }}
+                  >
+                    <View>
+                      <Text>Frequency</Text>
+                    </View>
+                    <View>
+                      <Text>End After</Text>
+                    </View>
+                    <TouchableOpacity>
+                      <Text>Edit</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
                 <CustomButton
                   title={t(StringConstants.Continue)}
                   bg="rgba(0, 168, 107, 1)"

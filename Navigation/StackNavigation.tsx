@@ -67,7 +67,7 @@ export function TabScreens() {
   const navigation = useNavigation<StackNavigationProp<StackParamList>>();
   useEffect(() => {
     handleBiometricAuth(navigation);
-    dispatch(fetchRates());
+    //  dispatch(fetchRates());
   }, []);
   return (
     <Stack2.Navigator initialRouteName="EnterPin" screenOptions={{ headerShown: false }}>

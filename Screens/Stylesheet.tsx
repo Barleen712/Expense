@@ -216,13 +216,12 @@ const styles = StyleSheet.create({
     flex: 0.25,
     alignItems: "center",
     justifyContent: "center",
-
   },
   details: {
     flex: 0.6,
     justifyContent: "center",
     alignItems: "flex-start",
-    padding:10,
+    padding: 10,
   },
   icon: {
     flex: 0.15,
