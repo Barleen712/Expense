@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   view: {
     flex: 1,
     alignItems: "center",
-    padding: 10,
+    padding: 40,
   },
   image: {
     height: Platform.OS === "ios" ? 220 : 300,

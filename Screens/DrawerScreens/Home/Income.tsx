@@ -62,7 +62,8 @@ export default function Income({ navigation, route }: Props) {
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
   const [loading, setLoading] = useState(false);
-  const [frequency,setFrequency]=useState("")
+  const [frequency, setFrequency] = useState("");
+  const [endAfter, setendAfter] = useState("");
   const modal = [
     require("../../../assets/Camera.png"),
     require("../../../assets/Image.png"),
@@ -271,7 +272,7 @@ export default function Income({ navigation, route }: Props) {
                     </TouchableOpacity>
                   </View>
                 )}
-                <View style={styles.notiView}>
+                {/* <View style={styles.notiView}>
                   <View style={styles.noti}>
                     <Text style={styles.notiTitle}>{t("Repeat")}</Text>
                     <Text style={styles.notiDes}>{t(StringConstants.RepeatTransaction)}</Text>
@@ -284,11 +285,15 @@ export default function Income({ navigation, route }: Props) {
                       onValueChange={setSwitch}
                     />
                   </View>
-                </View>
-                {Switchs &&(
-                  <FrequencyModal frequency={frequency} setFrequency={()=>setFrequency("")} />
-                )
-                }
+                </View> */}
+                {/* {Switchs && (
+                  <FrequencyModal
+                    frequency={frequency}
+                    setFrequency={() => setFrequency("")}
+                    endAfter={endAfter}
+                    setendAfter={() => setendAfter("")}
+                  />
+                )} */}
                 <CustomButton
                   title={t(StringConstants.Continue)}
                   bg="rgba(0, 168, 107, 1)"

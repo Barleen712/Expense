@@ -3,7 +3,6 @@ import { addBudget, loadingTransaction } from "../Slice/IncomeSlice";
 import { useEffect } from "react";
 import { collection, query, where, onSnapshot, getDocs } from "firebase/firestore";
 import { db, auth } from "../Screens/FirebaseConfig";
-
 const useBudgetListener = () => {
   const dispatch = useDispatch();
 
@@ -62,7 +61,8 @@ export const getUseNamerDocument = async () => {
     return {
       Name: userData.User,
       Photo: userData.photo,
-      ID:userDoc.id
+      ID: userDoc.id,
+      Index: userData.index,
     };
   } catch (error) {
     console.error("Error fetching PIN:", error);

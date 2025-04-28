@@ -211,7 +211,7 @@ export const handleBiometricAuth = async (navigation: any) => {
     const { available } = await rnBiometrics.isSensorAvailable();
 
     if (!available) {
-      navigation.navigate("SetPinScreen"); // No biometric support → PIN
+      navigation.navigate("EnterPin"); // No biometric support → PIN
       return false;
     }
 
@@ -224,12 +224,12 @@ export const handleBiometricAuth = async (navigation: any) => {
       navigation.navigate("MainScreen");
       return true;
     } else {
-      navigation.navigate("EnterPin"); // Explicit cancellation → PIN
+      navigation.navigate("EnterPin");
       return false;
     }
   } catch (error) {
     console.error("Biometric error:", error);
-    navigation.navigate("SetPinScreen"); // Errors → PIN fallback
+    navigation.navigate("SetPinScreen");
     return false;
   }
 };

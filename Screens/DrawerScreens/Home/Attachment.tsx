@@ -12,7 +12,33 @@ interface Images {
   modalItems: Array<any>;
   setPhoto: (uri: string) => void;
 }
+export const pickImageFromGallery = async (
+  setImage?: () => void,
+  setAttach?: () => void,
+  setclose?: () => void,
+  toggle?: () => void
+) => {
+  try {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: "image/*",
+      multiple: false,
+      copyToCacheDirectory: true,
+    });
 
+    if (!result.canceled) {
+      console.log("Image selected:", result.assets[0].uri);
+      setImage(result.assets[0].uri);
+    } else {
+      console.log("User cancelled image selection.");
+    }
+
+    setAttach();
+    setclose();
+    toggle();
+  } catch (err) {
+    console.error("Error while picking image:", err);
+  }
+};
 const SelectImageWithDocumentPicker = ({
   toggle,
   setAttach,
@@ -23,28 +49,6 @@ const SelectImageWithDocumentPicker = ({
   modalItems,
 }: // setPhoto,
 Images) => {
-  const pickImageFromGallery = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: "image/*",
-        multiple: false,
-        copyToCacheDirectory: true,
-      });
-
-      if (!result.canceled) {
-        console.log("Image selected:", result.assets[0].uri);
-        setImage(result.assets[0].uri);
-      } else {
-        console.log("User cancelled image selection.");
-      }
-
-      setAttach();
-      setclose();
-      toggle();
-    } catch (err) {
-      console.error("Error while picking image:", err);
-    }
-  };
   const pickDocument = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
@@ -103,7 +107,7 @@ Images) => {
       <TouchableOpacity onPress={openCamera}>
         <Image source={modalItems[0]}></Image>
       </TouchableOpacity>
-      <TouchableOpacity onPress={pickImageFromGallery}>
+      <TouchableOpacity onPress={pickImageFromGallery(setImage, setAttach, setclose, toggle)}>
         <Image source={modalItems[1]}></Image>
       </TouchableOpacity>
       <TouchableOpacity onPress={pickDocument}>

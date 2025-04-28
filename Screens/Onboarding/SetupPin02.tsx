@@ -34,6 +34,7 @@ export default function Setpin02({ navigation, route }: Props) {
         AddPin({
           Pin: pin,
           userId: user.user?.uid,
+          index: null,
         });
         AddUser({ User: name, userId: user.user?.uid });
         navigation.navigate("AllSet", { title: "All Set" });
@@ -48,7 +49,7 @@ export default function Setpin02({ navigation, route }: Props) {
         Pin: pin,
         userId: user.uid,
       });
-      AddUser({ User: username, photo: photo, userId: user.uid });
+      AddUser({ User: username, photo: { uri: photo }, userId: user.uid, index: null });
       navigation.navigate("AllSet", { title: "All Set" });
     } else {
       alert("PINS don't match. \nPlease Re-Enter your Pin");

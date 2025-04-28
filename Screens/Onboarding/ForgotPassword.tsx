@@ -9,6 +9,8 @@ import StackParamList from "../../Navigation/StackList";
 import Header from "../../Components/Header";
 import { StringConstants } from "../Constants";
 import { useTranslation } from "react-i18next";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "./../FirebaseConfig";
 type ForgotPasswordProp = StackNavigationProp<StackParamList, "ForgotPassword">;
 
 interface Props {
@@ -17,6 +19,24 @@ interface Props {
 
 export default function ForgotPass({ navigation }: Props) {
   const { t } = useTranslation();
+  const [email, setEmail] = useState("");
+  const handleReset = async () => {
+    if (!email) {
+      alert("Please enter your email address.");
+      return;
+    }
+    const emailRegex =
+      /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailRegex.test(email)) {
+      alert("Please Enter Valid Email");
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+    } catch (error) {
+      alert(error);
+    }
+  };
   return (
     <View style={styles.container}>
       <Header title={t(StringConstants.ForgotPassword)} press={() => navigation.goBack()} />
@@ -28,12 +48,21 @@ export default function ForgotPass({ navigation }: Props) {
         </Text>
       </View>
       <View style={styles.email}>
-        <Input title={t(StringConstants.Email)} color="rgb(56, 88, 85)" css={styles.textinput} />
+        <Input
+          title={t(StringConstants.Email)}
+          color="rgb(56, 88, 85)"
+          css={styles.textinput}
+          name={email}
+          onchange={setEmail}
+        />
         <CustomButton
           title={t(StringConstants.Continue)}
           bg="rgb(42, 124, 118)"
           color="white"
-          press={() => navigation.navigate("EmailSent")}
+          press={() => {
+            handleReset();
+            navigation.navigate("EmailSent", { email: email });
+          }}
         />
       </View>
     </View>

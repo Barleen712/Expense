@@ -11,9 +11,15 @@ type EmailSentProp = StackNavigationProp<StackParamList, "EmailSent">;
 
 interface Props {
   navigation: EmailSentProp;
+  route: {
+    params: {
+      email: string;
+    };
+  };
 }
-export default function EmailSent({ navigation }: Props) {
+export default function EmailSent({ navigation, route }: Props) {
   const { t } = useTranslation();
+  const { email } = route.params;
   return (
     <View style={styles.container}>
       <View style={styles.emailImgView}>
@@ -21,7 +27,9 @@ export default function EmailSent({ navigation }: Props) {
       </View>
       <View style={styles.emailDes}>
         <Text style={styles.ForgotDes}>{t(StringConstants.Youremailisontheway)}</Text>
-        <Text style={styles.emailDesText}>{t(StringConstants.Checkyouremail)}</Text>
+        <Text style={styles.emailDesText}>
+          "Check your email {email} and follow the instructions to reset your password
+        </Text>
         <View style={styles.backToLogin}>
           <CustomButton
             title={t(StringConstants.BacktoLogin)}

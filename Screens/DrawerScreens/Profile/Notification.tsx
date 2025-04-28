@@ -21,7 +21,6 @@ export default function Notification({ navigation }: Props) {
   const [Tips, setTips] = useState(false);
   const [Budget, setBudget] = useState(exceed);
   const [Expense, setExpense] = useState(expenseAlert);
-  console.log;
   function exceedFunc() {
     setBudget(!Budget);
     dispatch(updateExceed(!Budget));

@@ -3,7 +3,7 @@ type StackParamList = {
   Home: undefined;
   Login: undefined;
   ForgotPassword: undefined;
-  EmailSent: undefined;
+  EmailSent: { email: string };
   SignUp: undefined;
   GetStarted: undefined;
   Setpin: undefined;
