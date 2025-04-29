@@ -53,6 +53,7 @@ const modal = [
 ];
 const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 export default function Expense({ navigation, route }: Props) {
+  console.log(route.params)
   const budget = useSelector(BudgetCategory);
   const exceeded = useSelector((state) => state.Money.exceedNotification);
   const expenseAlert = useSelector((state) => state.Money.expenseAlert);
@@ -66,7 +67,7 @@ export default function Expense({ navigation, route }: Props) {
   const [Expenses, setExpenses] = useState<string>(`$${parameters.amount}`);
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
-  const [Description, setDescription] = useState(`${parameters.title}`);
+  const [Description, setDescription] = useState(`${parameters.des}`);
   const [loading, setLoading] = useState(false);
   const [frequency, setFrequency] = useState("");
   const [endAfter, setendAfter] = useState("");

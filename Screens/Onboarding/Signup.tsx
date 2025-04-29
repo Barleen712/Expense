@@ -42,7 +42,7 @@ export default function SignUp({ navigation }: Props) {
   const [name, setname] = useState("");
   const [email, setemail] = useState("");
   const [password, setpass] = useState("");
-  const [isSelected, changeSelection] = useState(false);
+  const [checked, setChecked] = useState(false);
   async function handleSignUp() {
     // try {
     //   const user = await createUserWithEmailAndPassword(auth, email, password);
@@ -70,6 +70,11 @@ export default function SignUp({ navigation }: Props) {
     }
     if (password.length < 6) {
       alert("Enter Password of atleast length 6");
+      return;
+    }
+    if(checked===false)
+    {
+      alert("Kindly agree to the Terms and Policy")
       return;
     }
     dispatch(
@@ -136,9 +141,15 @@ export default function SignUp({ navigation }: Props) {
           onchange={setpass}
         />
       </View>
-      <View style={{ flexDirection: "row", margin: 20 }}>
-        <View style={{ borderWidth: Platform.OS === "ios" ? 1 : 0 }}></View>
-        <Text>
+      <View style={{ flexDirection: "row", margin: 20 ,width:"90%",justifyContent:"space-evenly"}}>
+        <View style={{ borderWidth: Platform.OS === "ios" ? 1 : 0 ,flex:0.1}}>
+        <Checkbox
+        status={checked ? 'checked' : 'unchecked'}
+        onPress={() => setChecked(!checked)}
+        color="rgb(57, 112, 109)"
+      />
+        </View>
+        <Text style={{flex:0.9}}>
           {t(StringConstants.Bysigningupyouagreetothe)}{" "}
           <Text style={{ color: "rgb(57, 112, 109)" }}>{t(StringConstants.TermsofServiceandPrivacyPolicy)}</Text>
         </Text>

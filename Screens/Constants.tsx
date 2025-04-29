@@ -252,3 +252,10 @@ export const handleGoogleSignIn = async () => {
     Alert.alert("Error", error.message || "Google Sign-In failed");
   }
 };
+export const profilepics = [
+  require("../assets/women3.jpg"),
+  require("../assets/man1.jpg"),
+  require("../assets/Women2.jpg"),
+  require("../assets/man2.jpg"),
+  require("../assets/women1.jpg"),
+];

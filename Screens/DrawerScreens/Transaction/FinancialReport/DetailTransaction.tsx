@@ -62,7 +62,7 @@ function DetailTransaction({
     if (type === "Income") {
       navigation.navigate("Income", { amount, title, category, wallet, edit: true, id });
     } else if (type === "Expense") {
-      navigation.navigate("Expense", { amount, title, category, wallet, edit: true, id });
+      navigation.navigate("Expense", { amount, des, category, wallet, edit: true, id });
     } else {
       navigation.navigate("Transfer", { amount, to: category, from: type, title: des, edit: true, id });
     }
