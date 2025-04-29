@@ -29,7 +29,7 @@ import Input from "../../../Components/CustomTextInput";
 import CustomD from "../../../Components/Practice";
 import SelectImageWithDocumentPicker from "./Attachment";
 import { useDispatch, useSelector } from "react-redux";
-
+import FrequencyModal from "../../../Components/FrequencyModal";
 import { uploadImage } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
@@ -51,12 +51,12 @@ const modal = [
   require("../../../assets/ImageRed.png"),
   require("../../../assets/DocumentRed.png"),
 ];
+const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 export default function Expense({ navigation, route }: Props) {
   const budget = useSelector(BudgetCategory);
   const exceeded = useSelector((state) => state.Money.exceedNotification);
   const expenseAlert = useSelector((state) => state.Money.expenseAlert);
   const parameters = route.params;
-  const [Expense, setExpense] = useState(false);
   const [showAttach, setAttach] = useState(true);
   const [image, setImage] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -68,6 +68,14 @@ export default function Expense({ navigation, route }: Props) {
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
   const [loading, setLoading] = useState(false);
+  const [frequency, setFrequency] = useState("");
+  const [endAfter, setendAfter] = useState("");
+  const [month, setMonth] = useState(new Date().getMonth());
+  const [week, setWeek] = useState(new Date().getDay());
+  const [startDate, setStartDate] = useState(new Date().getDate());
+  const [endDate, setEndDate] = useState(new Date());
+  const [Switchs, setSwitch] = useState(false);
+  const [Frequencymodal, setFrequencyModal] = useState(false);
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -210,7 +218,17 @@ export default function Expense({ navigation, route }: Props) {
     setLoading(false);
     navigation.goBack();
   }
-
+  function opensModal() {
+    setSwitch(!Switchs);
+    if (Switchs === false) {
+      setFrequencyModal(!Frequencymodal);
+    }
+    setFrequency(""), setMonth(new Date().getMonth());
+    setStartDate(new Date().getDate());
+    setWeek(new Date().getDay());
+    setEndDate(new Date());
+    setendAfter("");
+  }
   const { t } = useTranslation();
   function editExpense() {
     const numericExpense = parseFloat(Expenses.replace("$", "") || "0");
@@ -344,6 +362,83 @@ export default function Expense({ navigation, route }: Props) {
                     />
                   </View>
                 </View> */}
+                <View style={styles.notiView}>
+                  <View style={styles.noti}>
+                    <Text style={styles.notiTitle}>{t("Repeat")}</Text>
+                    <Text style={styles.notiDes}>{t(StringConstants.RepeatTransaction)}</Text>
+                  </View>
+                  <View style={styles.switch}>
+                    <Switch
+                      trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgba(253, 60, 74, 1)" }}
+                      value={Switchs}
+                      thumbColor={"white"}
+                      onValueChange={opensModal}
+                    />
+                  </View>
+                </View>
+                {Switchs && (
+                  <FrequencyModal
+                    frequency={frequency}
+                    setFrequency={setFrequency}
+                    endAfter={endAfter}
+                    setendAfter={setendAfter}
+                    color="rgba(253, 60, 74, 1)"
+                    month={month}
+                    setMonth={setMonth}
+                    week={week}
+                    setWeek={setWeek}
+                    startDate={startDate}
+                    setStartDate={setStartDate}
+                    endDate={endDate}
+                    setEndDate={setEndDate}
+                    Frequencymodal={Frequencymodal}
+                    setFrequencyModal={setFrequencyModal}
+                  />
+                )}
+                {Switchs && (
+                  <View
+                    style={{
+                      width: "100%",
+                      padding: 10,
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 16, fontWeight: "bold" }}>Frequency</Text>
+                      <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
+                        {frequency}
+                        {frequency === "Yearly" && ` - ${Month[month]} ${startDate} ` + new Date().getFullYear()}
+                        {frequency === "Monthly" &&
+                          " - " + Month[new Date().getMonth()] + ` ${startDate} ` + new Date().getFullYear()}
+                        {frequency === "Weekly" && ` - ${week}`}
+                      </Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 16, fontWeight: "bold" }}>End After</Text>
+                      <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
+                        {endAfter === "Never" && endAfter}
+                        {endAfter === "Date" && `${new Date(endDate).toDateString()}`}
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: "rgba(56, 184, 176, 0.23)",
+                        padding: 10,
+                        borderRadius: 20,
+                        //paddingLeft: 10,
+                        //  paddingRight: 10,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        //width: "18%",
+                        //height: "20%",
+                        flex: 0.4,
+                      }}
+                    >
+                      <Text style={{ color: "rgb(42, 124, 118)", fontSize: 16, fontWeight: "bold" }}>Edit</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
                 <CustomButton
                   title={t(StringConstants.Continue)}
                   bg="rgba(253, 60, 74, 1)"

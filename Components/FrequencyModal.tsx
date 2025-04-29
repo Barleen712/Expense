@@ -6,8 +6,11 @@ import { useTranslation } from "react-i18next";
 import { StringConstants } from "../Screens/Constants";
 import { CustomButton } from "./CustomButton";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 const Frequency = ["Yearly", "Monthly", "Weekly", "Daily"];
 const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+const EndAfter = ["Date", "Never"];
+import { Weeks } from "../Screens/Constants";
 const date = [];
 for (let i = 1; i <= 31; i++) {
   date.push(i);
@@ -17,32 +20,44 @@ for (let i = 0; i <= 31; i++) {
   year.push(new Date().getFullYear() + i);
 }
 
-export default function FrequencyModal({ frequency, setFrequency, endAfter, setendAfter }) {
-  const [modalVisible, setModalVisible] = useState(true);
-  function toggleModal() {
-    setModalVisible(!modalVisible);
-  }
+export default function FrequencyModal({
+  frequency,
+  setFrequency,
+  endAfter,
+  setendAfter,
+  color,
+  month,
+  setMonth,
+  week,
+  setWeek,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
+  Frequencymodal,
+  setFrequencyModal,
+}) {
   const { t } = useTranslation();
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-  const [month, setMonth] = useState(Month[new Date().getMonth()]);
-  const [startDate, setStartDate] = useState(date[new Date().getMonth()]);
-  const [endDate, setEndDate] = useState(new Date());
-  function handleEndDateChange(event, selectedDate) {
+  const onChange = (event, selectedDate) => {
     if (Platform.OS === "android") {
       setShowEndDatePicker(false);
     }
     if (selectedDate) {
       setEndDate(selectedDate);
-      setendAfter(selectedDate);
     }
-  }
-  console.log(frequency, month, startDate);
+  };
   return (
-    <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={Frequencymodal}
+      onRequestClose={() => setFrequencyModal(!Frequencymodal)}
+    >
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContainer, { height: "35%" }]}>
           <View style={{ width: "100%", alignItems: "center", flexDirection: "row", justifyContent: "space-evenly" }}>
-            <View style={{ width: frequency ? "30%" : "100%", alignItems: "center" }}>
+            <View style={{ flex: 1, alignItems: "center" }}>
               <CustomD
                 name={"Frequency"}
                 data={Frequency}
@@ -54,10 +69,10 @@ export default function FrequencyModal({ frequency, setFrequency, endAfter, sete
                 }}
               />
             </View>
-            {frequency && (
-              <View style={{ width: "30%", flexDirection: "row" }}>
+            {frequency === "Yearly" && (
+              <View style={{ flexDirection: "row", flex: 1 }}>
                 <CustomD
-                  name={month}
+                  name={Month[month]}
                   data={Month}
                   styleButton={styles.textinput}
                   styleItem={styles.dropdownItems}
@@ -68,8 +83,22 @@ export default function FrequencyModal({ frequency, setFrequency, endAfter, sete
                 />
               </View>
             )}
-            {frequency && (
-              <View style={{ width: "30%", flexDirection: "row" }}>
+            {frequency === "Weekly" && (
+              <View style={{ flexDirection: "row", flex: 1 }}>
+                <CustomD
+                  name={Weeks[week]}
+                  data={Weeks}
+                  styleButton={styles.textinput}
+                  styleItem={styles.dropdownItems}
+                  styleArrow={styles.arrowDown}
+                  onSelectItem={(item) => {
+                    setWeek(item);
+                  }}
+                />
+              </View>
+            )}
+            {(frequency === "Yearly" || frequency === "Monthly") && (
+              <View style={{ flexDirection: "row", flex: 1 }}>
                 <CustomD
                   name={startDate}
                   data={date}
@@ -83,20 +112,44 @@ export default function FrequencyModal({ frequency, setFrequency, endAfter, sete
               </View>
             )}
           </View>
-          <TouchableOpacity
-            style={[styles.textinput, { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}
-            onPress={() => setShowEndDatePicker(true)}
+          <View
+            style={{
+              width: "100%",
+              alignItems: "center",
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+            }}
           >
-            <Text>{endAfter ? `End After: ${new Date(endDate).toDateString()}` : "Select End Date :"}</Text>
-            {endAfter === "" && (
-              <DateTimePicker value={endDate} mode="date" display="default" onChange={handleEndDateChange} />
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <CustomD
+                name={"End After"}
+                data={EndAfter}
+                styleButton={styles.textinput}
+                styleItem={styles.dropdownItems}
+                styleArrow={styles.arrowDown}
+                onSelectItem={(item) => {
+                  setendAfter(item);
+                }}
+              />
+            </View>
+            {endAfter === "Date" && (
+              <TouchableOpacity
+                onPress={() => setShowEndDatePicker(true)}
+                style={[styles.textinput, { flex: 1, flexDirection: "row", justifyContent: "space-between" }]}
+              >
+                <Text>{endAfter ? ` ${new Date(endDate).toDateString()}` : "Select End Date :"}</Text>
+                {showEndDatePicker && (
+                  <DateTimePicker value={endDate} mode="date" display="default" onChange={onChange} />
+                )}
+                <FontAwesome name="calendar" size={24} color="grey" />
+              </TouchableOpacity>
             )}
-          </TouchableOpacity>
+          </View>
           <CustomButton
             title={t(StringConstants.Continue)}
-            bg="rgba(0, 168, 107, 1)"
+            bg={color}
             color="white"
-            press={() => setModalVisible(!modalVisible)}
+            press={() => setFrequencyModal(false)}
           />
         </View>
       </View>

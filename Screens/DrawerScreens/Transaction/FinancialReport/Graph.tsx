@@ -66,7 +66,30 @@ interface lineData {
   data: { value: number }[];
   height: number;
 }
+
 export const Linearchart = ({ data, height }: lineData) => {
+  const renderPointerLabel = (items, secondaryItem, pointerIndex) => {
+    if (!items || items.length === 0 || pointerIndex === -1) return null;
+    const { value, category } = items[0];
+    const y = value;
+    return (
+      <View
+        style={{
+          marginTop: 20,
+          backgroundColor: "rgb(42, 124, 118)",
+          paddingLeft: 10,
+          paddingRight: 10,
+
+          borderRadius: 4,
+          width: 56,
+        }}
+        pointerEvents="auto"
+      >
+        <Text style={{ color: "white", fontSize: 10 }}>${value}</Text>
+        <Text style={{ color: "black", fontSize: 10 }}>date</Text>
+      </View>
+    );
+  };
   return (
     <LineChart
       data={data}
@@ -75,20 +98,33 @@ export const Linearchart = ({ data, height }: lineData) => {
       disableScroll
       yAxisLabelWidth={0}
       height={height}
-      startFillColor="rgb(78, 144, 114)"
+      startFillColor="rgb(61, 122, 95)"
       endFillColor="white"
       initialSpacing={0}
-      endSpacing={0}
+      endSpacing={70}
       color="rgb(42, 124, 118)"
       thickness={8}
       hideDataPoints
+      animateOnDataChange={true}
+      renderDataPointsAfterAnimationEnds={true}
       hideRules
       showVerticalLines={false}
       areaChart
       hideYAxisText
       hideAxesAndRules
-      focusEnabled={false}
+      focusEnabled={true}
+      onlyPositive={true}
+      yAxisOffset={-200}
+      // yAxisExtraHeight={40}
       curved
+      curveType={1}
+      pointerConfig={{
+        pointerColor: "rgb(42, 144, 114)",
+        pointerStripUptoDataPoint: true,
+        pointerStripHeight: 100,
+        radius: 8,
+        pointerLabelComponent: renderPointerLabel,
+      }}
     />
   );
 };

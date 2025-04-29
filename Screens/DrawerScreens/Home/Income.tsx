@@ -33,12 +33,13 @@ import CustomD from "../../../Components/Practice";
 import { useSelector, useDispatch } from "react-redux";
 import SelectImageWithDocumentPicker from "./Attachment";
 import { addTransaction } from "../../../Slice/IncomeSlice";
-import { uploadImage } from "../../Constants";
+import { uploadImage, Weeks } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
 import { updateTransaction } from "../../../Slice/IncomeSlice";
 import { AddTransaction } from "../../FirestoreHandler";
 import FrequencyModal from "../../../Components/FrequencyModal";
+import { setDate } from "date-fns";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -47,7 +48,16 @@ interface Props {
 
 const category = ["Salary", "Passive Income"];
 const wallet = ["PayPal", "Google Pay", "Paytm", "PhonePe", "Apple Pay", "Razorpay", "Mobikwik"];
+const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
+const date = [];
+for (let i = 1; i <= 31; i++) {
+  date.push(i);
+}
+const year = [];
+for (let i = 0; i <= 31; i++) {
+  year.push(new Date().getFullYear() + i);
+}
 export default function Income({ navigation, route }: Props) {
   const parameters = route.params;
   const [Switchs, setSwitch] = useState(false);
@@ -64,6 +74,11 @@ export default function Income({ navigation, route }: Props) {
   const [loading, setLoading] = useState(false);
   const [frequency, setFrequency] = useState("");
   const [endAfter, setendAfter] = useState("");
+  const [month, setMonth] = useState(new Date().getMonth());
+  const [week, setWeek] = useState(new Date().getDay());
+  const [startDate, setStartDate] = useState(new Date().getDate());
+  const [endDate, setEndDate] = useState(new Date());
+  const [Frequencymodal, setFrequencyModal] = useState(false);
   const modal = [
     require("../../../assets/Camera.png"),
     require("../../../assets/Image.png"),
@@ -179,6 +194,17 @@ export default function Income({ navigation, route }: Props) {
       </View>
     );
   }
+  function opensModal() {
+    setSwitch(!Switchs);
+    if (Switchs === false) {
+      setFrequencyModal(!Frequencymodal);
+    }
+    setFrequency(""), setMonth(new Date().getMonth());
+    setStartDate(new Date().getDate());
+    setWeek(new Date().getDay());
+    setEndDate(new Date());
+    setendAfter("");
+  }
   return (
     <View style={styles.container}>
       <Header
@@ -194,7 +220,7 @@ export default function Income({ navigation, route }: Props) {
             contentContainerStyle={{ flexGrow: 1 }}
             keyboardShouldPersistTaps="handled"
           >
-            <View style={[styles.add, { backgroundColor: "rgba(0, 168, 107, 1))" }]}>
+            <View style={[styles.add, { backgroundColor: "rgba(0, 168, 107, 1)" }]}>
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
                 <TouchableOpacity activeOpacity={1}>
@@ -279,38 +305,72 @@ export default function Income({ navigation, route }: Props) {
                   </View>
                   <View style={styles.switch}>
                     <Switch
-                      trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgb(42, 124, 118)" }}
+                      trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgba(0, 168, 107, 1)" }}
                       value={Switchs}
                       thumbColor={"white"}
-                      onValueChange={setSwitch}
+                      onValueChange={opensModal}
                     />
                   </View>
                 </View>
+                <FrequencyModal
+                  frequency={frequency}
+                  setFrequency={setFrequency}
+                  endAfter={endAfter}
+                  setendAfter={setendAfter}
+                  color="rgba(0, 168, 107, 1)"
+                  month={month}
+                  setMonth={setMonth}
+                  week={week}
+                  setWeek={setWeek}
+                  startDate={startDate}
+                  setStartDate={setStartDate}
+                  endDate={endDate}
+                  setEndDate={setEndDate}
+                  Frequencymodal={Frequencymodal}
+                  setFrequencyModal={setFrequencyModal}
+                />
+
                 {Switchs && (
-                  <FrequencyModal
-                    frequency={frequency}
-                    setFrequency={setFrequency}
-                    endAfter={endAfter}
-                    setendAfter={setendAfter}
-                  />
-                )}
-                {frequency && (
                   <View
                     style={{
-                      backgroundColor: "pink",
-                      width: "95%",
+                      width: "100%",
+                      padding: 10,
                       flexDirection: "row",
-                      justifyContent: "space-evenly",
+                      alignItems: "center",
                     }}
                   >
-                    <View>
-                      <Text>Frequency</Text>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 16, fontWeight: "bold" }}>Frequency</Text>
+                      <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
+                        {frequency}
+                        {frequency === "Yearly" && ` - ${Month[month]} ${startDate} ` + new Date().getFullYear()}
+                        {frequency === "Monthly" &&
+                          " - " + Month[new Date().getMonth()] + ` ${startDate} ` + new Date().getFullYear()}
+                        {frequency === "Weekly" && ` - ${week}`}
+                      </Text>
                     </View>
-                    <View>
-                      <Text>End After</Text>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 16, fontWeight: "bold" }}>End After</Text>
+                      <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
+                        {endAfter === "Never" && endAfter}
+                        {endAfter === "Date" && `${new Date(endDate).toDateString()}`}
+                      </Text>
                     </View>
-                    <TouchableOpacity>
-                      <Text>Edit</Text>
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: "rgba(56, 184, 176, 0.23)",
+                        padding: 10,
+                        borderRadius: 20,
+                        //paddingLeft: 10,
+                        //  paddingRight: 10,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        //width: "18%",
+                        //height: "20%",
+                        flex: 0.4,
+                      }}
+                    >
+                      <Text style={{ color: "rgb(42, 124, 118)", fontSize: 16, fontWeight: "bold" }}>Edit</Text>
                     </TouchableOpacity>
                   </View>
                 )}

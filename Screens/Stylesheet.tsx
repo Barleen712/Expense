@@ -505,8 +505,8 @@ const styles = StyleSheet.create({
     borderColor: "grey",
     height: 56,
     justifyContent: "center",
-    padding: 10,
-    marginBottom: 10,
+    // padding: 10,
+    //  marginBottom: 10,
   },
   dropdownItems: {
     justifyContent: "center",

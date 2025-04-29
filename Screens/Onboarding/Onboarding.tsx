@@ -41,17 +41,26 @@ export default function Onboarding({ navigation }: Props) {
           <Text style={style.save}>{t(StringConstants.SpendSmarter)}</Text>
         </View>
         <View style={style.button}>
-          <LinearGradient colors={["#69AEA9", "#3F8782"]} style={style.gradient}>
-            <TouchableOpacity onPress={() => navigation.replace("GetStarted")}>
+          <TouchableOpacity style={style.gradient} onPress={() => navigation.replace("GetStarted")}>
+            <LinearGradient
+              colors={["#69AEA9", "#3F8782"]}
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: 30,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <Text style={style.start}>{t(StringConstants.GetStarted)}</Text>
-            </TouchableOpacity>
-          </LinearGradient>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
         <View style={style.text}>
           <TouchableOpacity onPress={handlePress}>
             <Text>
               {t(StringConstants.Alreadyhaveanaccount)}
-              <Text style={style.login}>{t(StringConstants.Login)}</Text>
+              <Text style={style.login}> {t(StringConstants.Login)}</Text>
             </Text>
           </TouchableOpacity>
         </View>

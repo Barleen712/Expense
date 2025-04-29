@@ -28,7 +28,7 @@ export default function CustomD({
   return (
     <SelectDropdown
       data={translatedData}
-      dropdownStyle={{ height: data.length * 55, borderRadius: 20 }}
+      dropdownStyle={{ height: data.length * 56, borderRadius: 20 }}
       onSelect={(selectedItem, index) => {
         const originalItem = data[index];
         onSelectItem(originalItem, index);

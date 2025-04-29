@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useTransition } from "react";
+import React, { useEffect, useMemo, useState, useTransition } from "react";
 import {
   View,
   TouchableOpacity,
@@ -26,13 +26,36 @@ import { useTranslation } from "react-i18next";
 import useTransactionListener from "../../../Saga/TransactionSaga";
 import useBudgetListener from "../../../Saga/BudgetSaga";
 import useNotificationListener from "../../../Saga/NotificationSaga";
+import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
+const profilepics = [
+  require("../../../assets/women3.jpg"),
+  require("../../../assets/man1.jpg"),
+  require("../../../assets/Women2.jpg"),
+  require("../../../assets/man2.jpg"),
+  require("../../../assets/women1.jpg"),
+];
 
 export default function Home({ navigation }) {
+  async function getData() {
+    const user = await getUseNamerDocument();
+    if (typeof user?.Photo.uri === "number") {
+      setPhoto(profilepics[user?.Index]);
+    } else {
+      setPhoto(user?.Photo);
+    }
+    if (!user?.Photo) {
+      setPhoto(profilepics[1]);
+    }
+  }
+  useEffect(() => {
+    getData();
+  });
   const index = new Date().getMonth();
   useTransactionListener();
   useBudgetListener();
   useNotificationListener();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
+  const [photo, setPhoto] = useState("");
   const [month, selectMonth] = useState(Month[index]);
   const height = Dimensions.get("window").height * 0.2;
   const { t } = useTranslation();
@@ -75,6 +98,24 @@ export default function Home({ navigation }) {
         <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
       </View>
     );
+  const chartData = [
+    {
+      value: 100,
+      // //label: "Jan",
+      category: "Expense",
+    },
+    {
+      value: 150,
+      // label: "Feb",
+      category: "Expense",
+    },
+    {
+      value: 750,
+      // label: "Feb",
+      dataPointText: "150",
+      onPress: () => alert("Pressed Feb: 150"),
+    },
+  ];
   return (
     <View style={{ flex: 1 }}>
       <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
@@ -86,8 +127,11 @@ export default function Home({ navigation }) {
           >
             <Ionicons name="notifications" size={24} color="rgb(56, 88, 85)" />
           </TouchableOpacity>
-          <TouchableOpacity style={{ position: "absolute", left: "4%", top: "3%" }}>
-            <Image style={{ height: 30, width: 30 }} source={require("../../../assets/Avatar.png")} />
+          <TouchableOpacity
+            style={{ position: "absolute", left: "4%", top: "3%" }}
+            onPress={() => navigation.navigate("Profile")}
+          >
+            <Image style={{ height: 30, width: 30, borderRadius: 50, borderWidth: 1 }} source={photo} />
           </TouchableOpacity>
           <CustomD
             name={t(month)}

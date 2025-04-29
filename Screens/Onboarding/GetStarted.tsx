@@ -89,9 +89,10 @@ export default function Getstarted({ navigation }: Props) {
 }
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
     alignItems: "center",
-    padding: 40,
+    justifyContent: "center",
+    marginTop: 10,
+    //  padding: 40,
   },
   image: {
     height: Platform.OS === "ios" ? 220 : 300,
@@ -105,6 +106,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   des: {
+    width: "95%",
     paddingTop: 10,
     fontFamily: "Inter",
     fontWeight: 500,
@@ -114,6 +116,7 @@ const styles = StyleSheet.create({
   },
   paginationContainer: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "center",
     margin: 15,
   },

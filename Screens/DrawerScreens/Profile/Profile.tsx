@@ -59,7 +59,7 @@ export default function Profile({ navigation }: Props) {
     setModalUser(user?.Name);
     setmodalPhoto(user?.Photo);
     setUserId(user?.ID);
-    if (typeof user?.Photo === "number") {
+    if (typeof user?.Photo.uri === "number") {
       setPhoto(profilepics[user?.Index]);
       setmodalPhoto(profilepics[user?.Index]);
     } else {

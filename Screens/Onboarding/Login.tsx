@@ -85,7 +85,7 @@ export default function Login({ navigation }: Props) {
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.replace("SignUp")}>
         <Text style={style.account}>
-          {t(StringConstants.Donthaveanaccountyet)} <Text style={style.span}>{t(StringConstants.SignUp)}</Text>
+          {t(StringConstants.Donthaveanaccountyet)} <Text style={style.span}> {t(StringConstants.SignUp)}</Text>
         </Text>
       </TouchableOpacity>
     </SafeAreaView>
