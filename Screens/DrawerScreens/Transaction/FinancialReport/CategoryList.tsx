@@ -71,7 +71,7 @@ export default function CategoryList({ category, totalExpense }: CategoryListPro
               <Text style={{ fontSize: 10, color: "white", fontWeight: "bold" }}>
                 {item.amount}/{totalExpense}
               </Text>
-              <Text style={{ fontSize: 10, color: "white", fontWeight: "bold" }}>{item.total}%</Text>
+              <Text style={{ fontSize: 10, color: "white", fontWeight: "bold" }}>{item.total.toFixed(2)}%</Text>
             </View>
           </View>
           <ProgressBar

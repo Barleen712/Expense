@@ -17,6 +17,7 @@ interface IncomeEntry {
   startYear?: string;
 }
 interface BudgetEntry {
+  Date:string
   amount: number;
   category: number;
   percentage: number;

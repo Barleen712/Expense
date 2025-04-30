@@ -7,7 +7,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { currencies, Month } from "../../Constants";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { selectBudget, CategoryExpense, BudgetCategory } from "../../../Slice/Selectors";
+import { selectBudget, CategoryExpense, BudgetCategory, } from "../../../Slice/Selectors";
 import { useSelector } from "react-redux";
 import { CATEGORY_COLORS } from "../../Constants";
 import { ProgressBar } from "react-native-paper";
@@ -55,7 +55,8 @@ export default function Budget({ navigation }: Props) {
   const convertRate = Rates.Rate[currency];
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
-  const budget = useSelector(selectBudget);
+  const selectedMonthKey = `${date.getFullYear()}-${String(month + 1).padStart(2, '0')}`;
+const budgetDataForMonth = Budgetcat[selectedMonthKey] || [];
   const renderBudgetItems = useCallback(
     ({ item, index }) => {
       let remaining = item.budgetvalue - item.amountSpent;
@@ -76,6 +77,8 @@ export default function Budget({ navigation }: Props) {
               exceeded: exceeded,
               total: item.budgetvalue,
               percentage: item.alertPercent,
+              alert:item.notification
+
             })
           }
           style={{ margin: 10, backgroundColor: "rgba(255, 255, 255, 1)", padding: 10, borderRadius: 15 }}
@@ -177,11 +180,11 @@ export default function Budget({ navigation }: Props) {
           </TouchableOpacity>
         </View>
         <View style={styles.budgetView}>
-          {Budgetcat.length === 0 ? (
+          {budgetDataForMonth.length === 0 ? (
             <View style={{ flex: 1, justifyContent: "center" }}>
               <Text style={styles.budgetText}>
                 {t(StringConstants.Youdonthaveabudget)}.{"\n"}
-                {t(StringConstants.Letmake)}.
+                {/* {t(StringConstants.Letmake)}. */}
               </Text>
             </View>
           ) : (
@@ -191,7 +194,7 @@ export default function Budget({ navigation }: Props) {
                   paddingBottom: 30,
                 }}
                 style={{ width: "90%", flex: 6 }}
-                data={Budgetcat}
+                data={budgetDataForMonth}
                 showsVerticalScrollIndicator={false}
                 renderItem={renderBudgetItems}
               />

@@ -46,6 +46,7 @@ const category = ["Shopping", "Food", "Entertainment", "Subscription", "Transpor
 
 export default function CreateBudget({ navigation, route }: Props) {
   const parameters = route.params;
+  
   const [Expense, setExpense] = useState(parameters.alert);
   const [sliderValue, setSliderValue] = useState(parameters.percentage);
   const [Budget, setBudget] = useState<string>(`$${parameters.value}`);
@@ -58,7 +59,6 @@ export default function CreateBudget({ navigation, route }: Props) {
       setBudget("$");
     }
   };
-
   const handleIncomeChange = (text: string) => {
     const numericValue = text.replace(/[^0-9.]/g, "");
     setBudget(`$${numericValue}`);

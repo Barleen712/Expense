@@ -67,7 +67,7 @@ export default function FinancialReport({ navigation }: Props) {
         .sort((a, b) => {
           return new Date(a.Date) - new Date(b.Date);
         })
-        .map((expense) => ({ value: expense.amount })),
+        .map((expense) => ({ value: expense.amount,date:expense.Date })),
     [sortedTrans]
   );
   const GraphIncome = useMemo(
@@ -77,16 +77,23 @@ export default function FinancialReport({ navigation }: Props) {
         .sort((a, b) => {
           return new Date(a.Date) - new Date(b.Date);
         })
-        .map((income) => ({ value: income.amount })),
+        .map((income) => ({ value: income.amount ,       date: income.Date})),
     [sortedTrans]
   );
   const categoryExpense = useSelector(CategoryExpense);
-  const pieDataExpense = categoryExpense.map((item) => ({
+  const monthIndex = Month.indexOf(month); 
+  const selectedMonthKey = `${new Date().getFullYear()}-${String(monthIndex + 1).padStart(2, '0')}`;
+  
+
+  const CategorytDataForMonthExpense = categoryExpense[selectedMonthKey] || [];
+
+  const pieDataExpense = CategorytDataForMonthExpense.map((item) => ({
     percentage: item.total,
     color: CATEGORY_COLORS[item.category],
   }));
   const categoryIncome = useSelector(CategoryIncome);
-  const pieDataIncome = categoryIncome.map((item) => ({
+  const CategorytDataForMonthIncome = categoryIncome[selectedMonthKey] || [];
+  const pieDataIncome = CategorytDataForMonthIncome.map((item) => ({
     percentage: item.total,
     color: CATEGORY_COLORS[item.category],
   }));
@@ -142,7 +149,7 @@ export default function FinancialReport({ navigation }: Props) {
             {currencies[currency]}
             {(expense * convertRate).toFixed(2)}
           </Text>
-          {/* <Linearchart data={GraphExpenses} height={height} /> */}
+          <Linearchart data={GraphExpenses} height={height} />
         </View>
       )}
       {line && Income && (
@@ -150,17 +157,17 @@ export default function FinancialReport({ navigation }: Props) {
           <Text style={{ margin: 5, paddingLeft: 10, color: "black", fontSize: 32, fontWeight: "bold" }}>
             {currencies[currency]} {(income * convertRate).toFixed(2)}
           </Text>
-          {/* <Linearchart data={GraphIncome} height={height} /> */}
+          <Linearchart data={GraphIncome} height={height} />
         </View>
       )}
       {pie && Expense && (
         <View style={[styles.linechart, { flex: 0.4 }]}>
-          {/* <DonutChart data={pieDataExpense} value={expense} /> */}
+          <DonutChart data={pieDataExpense} value={expense} />
         </View>
       )}
       {pie && Income && (
         <View style={[styles.linechart, { flex: 0.4 }]}>
-          {/* <DonutChart data={pieDataIncome} value={income} /> */}
+          <DonutChart data={pieDataIncome} value={income} />
         </View>
       )}
       <View style={styles.ExpenseIncomeSelect}>
@@ -196,18 +203,82 @@ export default function FinancialReport({ navigation }: Props) {
         </View>
       </View>
       <View style={{ flex: 0.5, alignItems: "center" }}>
-        {/* {line && Expense && (
+        {line && Expense && (
           <View style={{ flex: 1 }}>
+            {sortedExpense.length===0 &&(
+            
+                 <View
+                 style={{
+                  height:"100%",
+                  width:"100%",
+                   justifyContent: "center",
+                   alignItems: "center",
+                   
+                 }}
+               >
+                 <Text style={styles.budgetText}>No transaction occured</Text>
+               </View>
+            )}
             <TransactionList data={sortedExpense} />
           </View>
         )}
         {line && Income && (
           <View style={{ flex: 1 }}>
+            {sortedIncome.length===0 &&(
+            
+                 <View
+                 style={{
+                  height:"100%",
+                  width:"100%",
+                   justifyContent: "center",
+                   alignItems: "center",
+                   
+                 }}
+               >
+                 <Text style={styles.budgetText}>No transaction occured.</Text>
+               </View>
+            )}
             <TransactionList data={sortedIncome} />
           </View>
-        )} */}
-        {/* {pie && Expense && <CategoryList category={categoryExpense} totalExpense={expense} />}
-        {pie && Income && <CategoryList category={categoryIncome} totalExpense={income} />} */}
+        )}
+        {pie && Expense && (
+  <>
+    {CategorytDataForMonthExpense.length > 0 ? (
+      <CategoryList category={CategorytDataForMonthExpense} totalExpense={expense} />
+    ) : (
+      <View
+        style={{
+          height: "100%",
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text style={styles.budgetText}>No transaction occurred.</Text>
+      </View>
+    )}
+  </>
+)}
+
+{pie && Income && (
+  <>
+    {CategorytDataForMonthIncome.length > 0 ? (
+      <CategoryList category={CategorytDataForMonthIncome} totalExpense={income} />
+    ) : (
+      <View
+        style={{
+          height: "100%",
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text style={styles.budgetText}>No income transaction occurred.</Text>
+      </View>
+    )}
+  </>
+)}
+
       </View>
     </View>
   );

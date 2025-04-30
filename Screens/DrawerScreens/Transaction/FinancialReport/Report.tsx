@@ -122,9 +122,12 @@ export function FinancialReportBudget({ navigation }: Props) {
     }
   };
   const { t } = useTranslation();
-  const budgets = useSelector(BudgetCategory);
-  const exceed = budgets.filter((item) => item.amountSpent > item.budgetvalue);
-  const totalBudgets = budgets.length;
+  const budgets = useSelector(BudgetCategory)
+ 
+  const selectedMonthKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+  const monthBudgets = budgets[selectedMonthKey] || [];
+  const exceed = monthBudgets.filter((item) => item.amountSpent > item.budgetvalue)|| []
+  const totalBudgets = monthBudgets.length;
   const exceedBudgets = exceed.length;
   return (
     <View onStartShouldSetResponder={() => true} onResponderRelease={handleSwipe} style={{ flex: 1 }}>
@@ -142,10 +145,10 @@ export function FinancialReportBudget({ navigation }: Props) {
           <Text style={styles.MonthText}>{t("This Month")}</Text>
         </View>
         <View style={styles.budgetReport}>
-          <Text style={[styles.detailText, { fontSize: 32, color: "white" }]}>
+           <Text style={[styles.detailText, { fontSize: 32, color: "white" }]}>
             {exceedBudgets} of {totalBudgets} {t(StringConstants.Budgetisexceedsthelimit)}
-          </Text>
-          <FlatList
+           </Text> 
+            <FlatList
             data={exceed}
             numColumns={2}
             contentContainerStyle={{
@@ -182,7 +185,7 @@ export function FinancialReportBudget({ navigation }: Props) {
                 </Text>
               </View>
             )}
-          />
+          /> 
         </View>
       </View>
     </View>

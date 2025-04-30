@@ -28,12 +28,13 @@ interface Props {
       index: string;
       total: number;
       percentage: number;
+      alert:boolean
     };
   };
 }
 const width = Dimensions.get("window").width - 60;
 export default function DetailedBudget({ navigation, route }: Props) {
-  const { category, remaining, progress, exceeded, index, total, percentage } = route.params;
+  const { category, remaining, progress, exceeded, index, total, percentage,alert } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   function deleteBudgetFunction() {
@@ -129,7 +130,7 @@ export default function DetailedBudget({ navigation, route }: Props) {
               navigation.navigate("CreateBudget", {
                 value: total,
                 category: category,
-                alert: true,
+                alert: alert,
                 percentage: percentage,
                 index: index,
                 edit: true,

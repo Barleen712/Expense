@@ -451,6 +451,7 @@ export default function Income({ navigation, route }: Props) {
                       </Text>
                     </View>
                     <TouchableOpacity
+                    onPress={()=>setFrequencyModal(!Frequencymodal)}
                       style={{
                         backgroundColor: "rgba(56, 184, 176, 0.23)",
                         padding: 10,

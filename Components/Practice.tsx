@@ -10,7 +10,7 @@ interface dropdown {
   styleItem: object;
   styleArrow: object;
   styleText?: object;
-  onReset?: boolean;
+
   onSelectItem: (selectedItem: string, index: number) => void;
 }
 export default function CustomD({
@@ -21,14 +21,17 @@ export default function CustomD({
   styleArrow,
   styleText,
   onSelectItem,
-  onReset,
 }: dropdown) {
   const { t } = useTranslation();
   const translatedData = data.map((item) => t(item));
   return (
     <SelectDropdown
       data={translatedData}
-      dropdownStyle={{ height: data.length * 56, borderRadius: 20 }}
+      dropdownStyle={{height: 'auto', borderRadius: 20,
+        overflow: 'hidden', // Prevent overflow if the dropdown is too large
+        zIndex: 10,
+      //  backgroundColor:"red"
+       }}
       onSelect={(selectedItem, index) => {
         const originalItem = data[index];
         onSelectItem(originalItem, index);
@@ -44,7 +47,7 @@ export default function CustomD({
       showsVerticalScrollIndicator={false}
       renderItem={(item) => {
         return (
-          <View style={styleItem}>
+          <View style={[styleItem,{}]}>
             <View style={{ flex: 1, justifyContent: "center" }}>
               <Text style={{ paddingLeft: 20 }}>{item}</Text>
             </View>
