@@ -91,7 +91,9 @@ export default function TransactionList({ data }: TransactionListProps) {
         </View>
         <View style={{ width: "52%", justifyContent: "space-between", height: "70%" }}>
           <Text style={[styles.balance, { color: "black" }]}>{t(item.category)}</Text>
-          <Text style={[styles.categoryText, { color: "rgba(145, 145, 159, 1)" }]}>{item.description}</Text>
+          <Text style={[styles.categoryText, { color: "rgba(145, 145, 159, 1)" }]} numberOfLines={1}>
+            {item.description}
+          </Text>
         </View>
         <View style={{ alignItems: "flex-end", width: "20%" }}>
           <Text

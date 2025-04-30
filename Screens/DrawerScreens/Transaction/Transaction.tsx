@@ -65,57 +65,74 @@ export default function Transaction({ navigation }: Props) {
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
+
   const transactions = useSelector(selectTransactions);
   const sortedTransactions = [...transactions].sort((a, b) => {
     return new Date(b.Date) - new Date(a.Date);
   });
   const { t } = useTranslation();
-  const containIncome = sortedTransactions.some((item) => item.moneyCategory === "Income");
-  const containExpense = sortedTransactions.some((item) => item.moneyCategory === "Expense");
   const [FilterTrans, setFilterTrans] = useState(transactions);
   useEffect(() => {
-    setFilterTrans(sortedTransactions);
-  }, [transactions]);
+    let filteredResult = [...sortedTransactions];
+
+    if (month) {
+      filteredResult = filteredResult.filter((item) => {
+        const transactionMonth = new Date(item.Date).getMonth();
+        return transactionMonth === Month.indexOf(month);
+      });
+    }
+    setFilterTrans(filteredResult);
+  }, [month, transactions, filteritem, selectedCategory, sortBy]);
   const handleSort = () => {
     try {
       toggleModal();
 
-      const normalizedFilter = filteritem?.toLowerCase() || "";
-      const normalizedCategory = selectedCategory?.toLowerCase() || "";
+      let filteredResult = [...transactions];
 
-      const filteredResult = transactions.filter((item) => {
-        if (!item.moneyCategory || !item.category) return false;
+      if (month) {
+        filteredResult = filteredResult.filter((item) => {
+          const transactionMonth = new Date(item.Date).getMonth();
+          return transactionMonth === Month.indexOf(month);
+        });
+      }
 
-        return (
-          item.moneyCategory.toLowerCase() === normalizedFilter && item.category.toLowerCase() === normalizedCategory
+      if (filteritem) {
+        filteredResult = filteredResult.filter(
+          (item) => item.moneyCategory?.toLowerCase() === filteritem.toLowerCase()
         );
-      });
+      }
+      if (selectedCategory) {
+        filteredResult = filteredResult.filter(
+          (item) => item.category?.toLowerCase() === selectedCategory.toLowerCase()
+        );
+      }
+      if (sortBy) {
+        filteredResult.sort((a, b) => {
+          const dateA = new Date(a.Date || 0);
+          const dateB = new Date(b.Date || 0);
+          switch (sortBy) {
+            case "Highest":
+              return b.amount - a.amount;
+            case "Lowest":
+              return a.amount - b.amount;
+            case "Newest":
+              return dateB - dateA;
+            case "Oldest":
+              return dateA - dateB;
+            default:
+              return 0;
+          }
+        });
+      }
 
-      const sorted = [...filteredResult].sort((a, b) => {
-        const dateA = new Date(a.Date || 0);
-        const dateB = new Date(b.Date || 0);
-
-        switch (sortBy) {
-          case "Highest":
-            return b.amount - a.amount;
-          case "Lowest":
-            return a.amount - b.amount;
-          case "Newest":
-            return dateB - dateA;
-          case "Oldest":
-            return dateA - dateB;
-          default:
-            return 0;
-        }
-      });
-      setFilterTrans(sorted);
+      setFilterTrans(filteredResult);
     } catch (error) {
       console.error("Sorting failed:", error);
-
       alert("Sorting failed. Please try again.");
     }
   };
-
+  const containIncome = FilterTrans.some((item) => item.moneyCategory === "Income");
+  const containExpense = FilterTrans.some((item) => item.moneyCategory === "Expense");
   return (
     <View style={styles.container}>
       <View style={styles.transactionHead}>
@@ -154,6 +171,11 @@ export default function Transaction({ navigation }: Props) {
             You have not made any transaction.{"\n"}
             Start your first transaction
           </Text>
+        </View>
+      )}
+      {FilterTrans.length === 0 && (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", marginTop: 200 }}>
+          <Text style={styles.budgetText}>No record of transactions</Text>
         </View>
       )}
       <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>

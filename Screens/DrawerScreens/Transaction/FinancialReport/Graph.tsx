@@ -70,20 +70,18 @@ interface lineData {
 export const Linearchart = ({ data, height }: lineData) => {
   const renderPointerLabel = (items, secondaryItem, pointerIndex) => {
     if (!items || items.length === 0 || pointerIndex === -1) return null;
-    const { value, date} = items[0];
-    const data_date= new Date(date);
+    const { value, date } = items[0];
+    const data_date = new Date(date);
     let hours = data_date.getHours();
     const minutes = data_date.getMinutes().toString().padStart(2, "0");
-    const meridiem = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12 || 12;
-    const formattedTime = `${hours}:${minutes} ${meridiem}`;
+    const formattedTime = `${hours}:${minutes}`;
     return (
       <View
         style={{
           marginTop: 20,
           backgroundColor: "rgb(42, 124, 118)",
           paddingLeft: 10,
-         // paddingRight: 10,
+          // paddingRight: 10,
 
           borderRadius: 4,
           width: 56,
@@ -91,19 +89,18 @@ export const Linearchart = ({ data, height }: lineData) => {
         pointerEvents="auto"
       >
         <Text style={{ color: "white", fontSize: 10 }}>${value}</Text>
-        <Text style={{ color: "white", fontSize: 10 }}>{formattedTime}</Text>
+        <Text style={{ color: "white", fontSize: 10 }}>
+          {data_date.getDate()}/{formattedTime}
+        </Text>
       </View>
     );
   };
-  if(data.length<=1)
-  {
-    return(
-      <View style={{ flex: 1, justifyContent: "center",alignItems:"center" }}>
-                    <Text style={styles.budgetText}>
-                      Not Enough Expenses
-                    </Text>
-                  </View>
-    )
+  if (data.length <= 1) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={styles.budgetText}>Not Enough Expenses</Text>
+      </View>
+    );
   }
   return (
     <LineChart

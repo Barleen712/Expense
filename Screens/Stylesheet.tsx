@@ -610,7 +610,7 @@ const styles = StyleSheet.create({
     borderColor: "grey",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     padding: 2,
     marginTop: 5,
     //width: "28%",
