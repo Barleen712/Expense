@@ -120,3 +120,82 @@ export default function App() {
 // };
 
 // export default App;
+// import React, { useState, useCallback } from "react";
+// import { View, SafeAreaView, Text, TouchableOpacity, Platform, StyleSheet } from "react-native";
+// import MonthPicker from "react-native-month-year-picker";
+
+// const App = () => {
+//   const [date, setDate] = useState(new Date());
+//   const [show, setShow] = useState(false);
+
+//   const showPicker = useCallback((value) => setShow(value), []);
+
+//   const onValueChange = useCallback(
+//     (event, newDate) => {
+//       if (Platform.OS === "android") {
+//         showPicker(false); // Dismiss the picker immediately on Android
+//       }
+
+//       if (event === "dateSetAction" && newDate) {
+//         setDate(newDate);
+//         console.log("Selected Date:", newDate);
+//       } else if (event === "dismissedAction") {
+//         console.log("Picker dismissed");
+//       }
+//     },
+//     []
+//   );
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <Text style={styles.title}>Month-Year Picker Example</Text>
+
+//       <TouchableOpacity onPress={() => showPicker(true)} style={styles.button}>
+//         <Text style={styles.buttonText}>Open Picker</Text>
+//       </TouchableOpacity>
+
+//       <Text style={styles.selectedDate}>
+//         Selected: {date.getMonth() + 1}/{date.getFullYear()}
+//       </Text>
+
+//       {show && (
+//         <MonthPicker
+//           onChange={onValueChange}
+//           value={date}
+//           minimumDate={new Date(2022, 5)}
+//           maximumDate={new Date(2040, 5)}
+//           locale="en"
+//         />
+//       )}
+//     </SafeAreaView>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: "pink",
+//     justifyContent: "center",
+//     alignItems: "center",
+//   },
+//   title: {
+//     fontSize: 20,
+//     marginBottom: 20,
+//   },
+//   button: {
+//     backgroundColor: "#fff",
+//     padding: 12,
+//     borderRadius: 8,
+//     elevation: 3,
+//   },
+//   buttonText: {
+//     color: "black",
+//     fontSize: 16,
+//   },
+//   selectedDate: {
+//     marginTop: 20,
+//     fontSize: 16,
+//   },
+// });
+
+// export default App;

@@ -62,7 +62,7 @@ function DetailTransaction({
     if (type === "Income") {
       navigation.navigate("Income", { amount, title, category, wallet, edit: true, id });
     } else if (type === "Expense") {
-      navigation.navigate("Expense", { amount, des, category, wallet, edit: true, id });
+      navigation.navigate("Expense", { amount, title, category, wallet, edit: true, id });
     } else {
       navigation.navigate("Transfer", { amount, to: category, from: type, title: des, edit: true, id });
     }
@@ -106,7 +106,7 @@ function DetailTransaction({
       </View>
       <View style={styles.Description}>
         <Text style={styles.username}>{t("Description")}</Text>
-        <Text style={[styles.exportText, { paddingLeft: 0 }]}>{des}</Text>
+        <Text style={[styles.exportText, { paddingLeft: 0 }]}>{title}</Text>
       </View>
       <View style={styles.attachView}>
         {uri && (
@@ -171,7 +171,7 @@ export default function DetailTransaction_Expense({ navigation, route }) {
       category={value.category}
       wallet={value.wallet}
       id={value.id}
-      des={value.description}
+      title={value.description}
       uri={value.attachment.uri}
     />
   );
@@ -190,7 +190,6 @@ export function DetailTransaction_Income({ navigation, route }) {
       category={value.category}
       wallet={value.wallet}
       id={value.id}
-      des={value.description}
       uri={value.attachment.uri}
     />
   );

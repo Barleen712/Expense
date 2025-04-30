@@ -8,6 +8,13 @@ interface IncomeEntry {
   moneyCategory: string;
   Date: string;
   id: string;
+  repeat: boolean;
+  Frequency?: string;
+  endAfter?: string;
+  endDate?: Date;
+  startDate?: number;
+  startMonth?: string;
+  startYear?: string;
 }
 interface BudgetEntry {
   amount: number;
@@ -51,6 +58,7 @@ interface IncomeState {
   preferences: Preferences;
   exceedNotification: boolean;
   expenseAlert: boolean;
+  badgeCount: number;
 }
 
 const initialState: IncomeState = {
@@ -63,6 +71,7 @@ const initialState: IncomeState = {
   preferences: { currency: "USD", language: "English", theme: "Light", security: "Fingerprint" },
   exceedNotification: false,
   expenseAlert: false,
+  badgeCount: 0,
 };
 
 export const ExpenseTrackerSlice = createSlice({
@@ -122,11 +131,15 @@ export const ExpenseTrackerSlice = createSlice({
         };
       }
     },
+    updateBadge: (state, action) => {
+      state.badgeCount = action.payload;
+    },
     addNotification: (state, action) => {
       const existingTransaction = state.notification.find((transaction) => transaction.id === action.payload.id);
       if (!existingTransaction) {
         state.notification.unshift(action.payload);
       }
+      state.badgeCount += 1;
     },
     addUser: (state, action) => {
       const { name, email, password } = action.payload;
@@ -152,6 +165,9 @@ export const ExpenseTrackerSlice = createSlice({
     },
     changeSecurity: (state, action) => {
       state.preferences.security = action.payload;
+    },
+    removeNotification: (state) => {
+      state.notification = [];
     },
     clearData: (state) => {
       state.amount = [];
@@ -186,5 +202,7 @@ export const {
   addGoogleUser,
   updateExceed,
   updateExpenseAlert,
+  removeNotification,
+  updateBadge,
 } = ExpenseTrackerSlice.actions;
 export default ExpenseTrackerSlice.reducer;

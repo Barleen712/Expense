@@ -53,7 +53,6 @@ const modal = [
 ];
 const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 export default function Expense({ navigation, route }: Props) {
-  console.log(route.params)
   const budget = useSelector(BudgetCategory);
   const exceeded = useSelector((state) => state.Money.exceedNotification);
   const expenseAlert = useSelector((state) => state.Money.expenseAlert);
@@ -67,7 +66,7 @@ export default function Expense({ navigation, route }: Props) {
   const [Expenses, setExpenses] = useState<string>(`$${parameters.amount}`);
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
-  const [Description, setDescription] = useState(`${parameters.des}`);
+  const [Description, setDescription] = useState(`${parameters.title}`);
   const [loading, setLoading] = useState(false);
   const [frequency, setFrequency] = useState("");
   const [endAfter, setendAfter] = useState("");
@@ -77,6 +76,10 @@ export default function Expense({ navigation, route }: Props) {
   const [endDate, setEndDate] = useState(new Date());
   const [Switchs, setSwitch] = useState(false);
   const [Frequencymodal, setFrequencyModal] = useState(false);
+  const [expenseError, setExpenseError] = useState("");
+  const [categoryError, setcategoryError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
+  const [walletError, setwalletError] = useState("");
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -93,9 +96,34 @@ export default function Expense({ navigation, route }: Props) {
     }
   };
   const handleExpenseChange = (text: string) => {
-    const numericValue = text.replace(/[^0-9.]/g, "");
-    setExpenses(`$${numericValue}`);
+    if (text.includes(",")) {
+      setExpenseError("Commas are not allowed");
+      return;
+    }
+    const cleaned = text.replace(/[^0-9.]/g, "");
+
+    const decimalCount = (cleaned.match(/\./g) || []).length;
+    if (decimalCount > 1) {
+      setExpenseError("Enter a valid number with only one decimal point");
+      return;
+    }
+    if (!/^\d*\.?\d*$/.test(cleaned)) {
+      setExpenseError("Enter a valid number");
+      return;
+    }
+
+    if (cleaned.length > 7) {
+      setExpenseError("Maximum 7 digits allowed");
+      return;
+    }
+    setExpenseError("");
+    setExpenses(`$${cleaned}`);
   };
+  function handleDescriptionChange() {
+    if (descriptionError) {
+      setDescriptionError("");
+    }
+  }
   const handleFocus = () => {
     if (Expenses === "" || Expenses === "$0" || Expenses === "$") {
       setExpenses("$");
@@ -107,19 +135,19 @@ export default function Expense({ navigation, route }: Props) {
     const numericExpense = parseFloat(Expenses.replace("$", "") || "0");
     let supabaseImageUrl = null;
     if (numericExpense === 0) {
-      alert("Add amount");
+      setExpenseError("Add amount");
       return;
     }
     if (selectedCategory === "Category") {
-      alert("Select Category");
+      setcategoryError("Select Category");
       return;
     }
     if (Description === "") {
-      alert("Add Description");
+      setDescriptionError("Add Description");
       return;
     }
     if (selectedWallet === "Wallet") {
-      alert("Select Wallet");
+      setwalletError("Select Wallet");
       return;
     }
     if (image) {
@@ -151,7 +179,15 @@ export default function Expense({ navigation, route }: Props) {
         type: "image",
         uri: supabaseImageUrl,
       },
+      Frequency: frequency,
+      endAfter: endAfter,
+      weekly: week,
+      endDate: endDate.toISOString(),
+      startDate: startDate,
+      startMonth: month,
+      startYear: new Date().getFullYear(),
     });
+
     const Budget = budget.some((item) => item.category === selectedCategory);
     if (Budget) {
       const Budget = budget.find((item) => item.category === selectedCategory);
@@ -283,6 +319,18 @@ export default function Expense({ navigation, route }: Props) {
                     onFocus={handleFocus}
                   ></TextInput>
                 </TouchableOpacity>
+                {expenseError !== "" && (
+                  <Text
+                    style={{
+                      color: "rgb(246, 246, 246)",
+                      marginTop: 4,
+                      marginLeft: 10,
+                      fontFamily: "Inter",
+                    }}
+                  >
+                    *{expenseError}
+                  </Text>
+                )}
               </View>
               <View style={[styles.selection]}>
                 <CustomD
@@ -291,8 +339,24 @@ export default function Expense({ navigation, route }: Props) {
                   styleButton={styles.textinput}
                   styleItem={styles.dropdownItems}
                   styleArrow={styles.arrowDown}
-                  onSelectItem={(item) => setSelectedCategory(item)}
+                  onSelectItem={(item) => {
+                    setSelectedCategory(item);
+                    setcategoryError("");
+                  }}
                 />
+                {categoryError !== "" && (
+                  <Text
+                    style={{
+                      color: "rgb(255, 0, 17)",
+                      marginTop: 4,
+                      marginLeft: 10,
+                      fontFamily: "Inter",
+                      width: "90%",
+                    }}
+                  >
+                    *{categoryError}
+                  </Text>
+                )}
                 <Input
                   title={t(StringConstants.Description)}
                   color="rgb(56, 88, 85)"
@@ -300,15 +364,45 @@ export default function Expense({ navigation, route }: Props) {
                   isPass={false}
                   name={Description}
                   onchange={setDescription}
+                  handleFocus={handleDescriptionChange}
                 />
+                {descriptionError !== "" && (
+                  <Text
+                    style={{
+                      color: "rgb(255, 0, 17)",
+                      marginTop: 4,
+                      marginLeft: 10,
+                      fontFamily: "Inter",
+                      width: "90%",
+                    }}
+                  >
+                    *{descriptionError}
+                  </Text>
+                )}
                 <CustomD
                   name={t(parameters.wallet)}
                   data={wallet}
                   styleButton={styles.textinput}
                   styleItem={styles.dropdownItems}
                   styleArrow={styles.arrowDown}
-                  onSelectItem={(item) => setSelectedWallet(item)}
+                  onSelectItem={(item) => {
+                    setSelectedWallet(item);
+                    setwalletError("");
+                  }}
                 />
+                {walletError !== "" && (
+                  <Text
+                    style={{
+                      color: "rgb(255, 0, 17)",
+                      marginTop: 4,
+                      marginLeft: 10,
+                      fontFamily: "Inter",
+                      width: "90%",
+                    }}
+                  >
+                    *{walletError}
+                  </Text>
+                )}
                 {showAttach && (
                   <TouchableOpacity
                     onPress={toggleModal}

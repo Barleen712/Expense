@@ -89,13 +89,11 @@ export default function TransactionList({ data }: TransactionListProps) {
             source={categoryMap[item.moneyCategory === "Transfer" ? item.moneyCategory : item.category]}
           />
         </View>
-        <View style={{ width: "52%", padding: 5 }}>
-          <Text style={[styles.balance, { color: "black", marginTop: 15 }]}>{t(item.category)}</Text>
-          <Text style={[styles.categoryText, { color: "rgba(145, 145, 159, 1)", marginTop: 10 }]}>
-            {item.description}
-          </Text>
+        <View style={{ width: "52%", justifyContent: "space-between", height: "70%" }}>
+          <Text style={[styles.balance, { color: "black" }]}>{t(item.category)}</Text>
+          <Text style={[styles.categoryText, { color: "rgba(145, 145, 159, 1)" }]}>{item.description}</Text>
         </View>
-        <View style={{ alignItems: "flex-end" }}>
+        <View style={{ alignItems: "flex-end", width: "20%" }}>
           <Text
             style={[
               styles.categoryText,
@@ -113,12 +111,11 @@ export default function TransactionList({ data }: TransactionListProps) {
             {currencies[currency]}
             {(item.amount * convertRate).toFixed(2)}
           </Text>
-          <Text>{formattedTime}</Text>
+          <Text style={{ color: "rgba(145, 145, 159, 1)" }}>{formattedTime}</Text>
         </View>
       </TouchableOpacity>
     );
   };
-
   return (
     <SectionList
       sections={sections}

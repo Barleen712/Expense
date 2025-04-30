@@ -8,8 +8,9 @@ interface InputProps {
   isPass?: boolean;
   name?: string;
   onchange?: (text: string) => void;
+  handleFocus?: () => void;
 }
-export default function Input({ title, color, css, isPass, name, onchange }: InputProps) {
+export default function Input({ title, color, css, isPass, name, onchange, handleFocus }: InputProps) {
   const icon = isPass;
   function handlesvisible() {
     setVisible((prev) => !prev);
@@ -24,6 +25,7 @@ export default function Input({ title, color, css, isPass, name, onchange }: Inp
         secureTextEntry={Visible}
         value={name}
         onChangeText={onchange}
+        onFocus={handleFocus}
       />
       {icon && (
         <TouchableOpacity style={styles.icon} onPress={handlesvisible}>

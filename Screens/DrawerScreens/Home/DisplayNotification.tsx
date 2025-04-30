@@ -1,19 +1,68 @@
-import React from "react";
-import { View, FlatList, Text } from "react-native";
+import React, { useState } from "react";
+import { View, FlatList, Text, TouchableOpacity } from "react-native";
 import Header from "../../../Components/Header";
 import styles from "../../Stylesheet";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Entypo from "@expo/vector-icons/Entypo";
+import { removeNotification } from "../../../Slice/IncomeSlice";
+import { deleteAllUserNotifications } from "../../FirestoreHandler";
+import { auth } from "../../FirebaseConfig";
+import { updateBadge } from "../../../Slice/IncomeSlice";
 export default function DisplayNotification({ navigation }) {
   const NotificationData = useSelector((state) => state.Money.notification);
   const sortedNotification = [...NotificationData].sort((a, b) => {
     return new Date(b.date) - new Date(a.date);
   });
+  const [show, setShow] = useState(false);
+  const dispatch = useDispatch();
   return (
     <View style={styles.container}>
       <Header title="Notification" press={() => navigation.goBack()} />
+      <TouchableOpacity onPress={() => setShow(!show)} style={{ position: "absolute", right: "5%", top: "8%" }}>
+        <Entypo name="dots-three-horizontal" size={24} color="black" />
+      </TouchableOpacity>
+      {show && (
+        <View
+          style={{
+            position: "absolute",
+            right: "5%",
+            top: "12%",
+            height: 94,
+            width: 134,
+            backgroundColor: "white", // ✅ Add this line
+            alignItems: "center",
+            justifyContent: "space-evenly",
+            elevation: 3,
+            shadowColor: "#000", // optional: adds shadow for iOS
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
+            zIndex: 100,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              dispatch(updateBadge(0));
+
+              setShow(false);
+            }}
+          >
+            <Text>Mark all read</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              dispatch(removeNotification());
+              deleteAllUserNotifications(auth.currentUser?.uid);
+              setShow(false);
+            }}
+          >
+            <Text>Remove all</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <View style={{ flex: 1, alignItems: "center", width: "100%" }}>
         {sortedNotification.length === 0 ? (
-          <View style={[styles.budgetView, { justifyContent: "center" }]}>
+          <View style={{ justifyContent: "center", flex: 1 }}>
             <Text style={styles.budgetText}>There is no notification for now</Text>
           </View>
         ) : (

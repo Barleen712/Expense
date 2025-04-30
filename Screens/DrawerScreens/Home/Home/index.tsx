@@ -1,5 +1,16 @@
-import React, { useEffect, useMemo, useState, useTransition } from "react";
-import { View,TouchableOpacity, Text, Image, FlatList,Platform,Dimensions, SafeAreaView,ActivityIndicator, StatusBar,} from "react-native";
+import React, { useEffect, useMemo, useState, useTransition, useCallback } from "react";
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  Image,
+  FlatList,
+  Platform,
+  Dimensions,
+  SafeAreaView,
+  ActivityIndicator,
+  StatusBar,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomD from "../../../../Components/Practice";
 import styles from "../../../Stylesheet";
@@ -9,15 +20,16 @@ import { useSelector } from "react-redux";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { selectTransactions, selectIncomeTotal, selectExpenseTotal } from "../../../../Slice/Selectors";
 import TransactionList from "../TransactionsList";
-import { StringConstants, currencies,profilepics } from "../../../Constants";
+import { StringConstants, currencies, profilepics } from "../../../Constants";
 import { useTranslation } from "react-i18next";
 import useTransactionListener from "../../../../Saga/TransactionSaga";
 import useBudgetListener from "../../../../Saga/BudgetSaga";
 import useNotificationListener from "../../../../Saga/NotificationSaga";
 import { getUseNamerDocument } from "../../../../Saga/BudgetSaga";
 import { RootState } from "../../../../Store/Store";
-import {Props} from "./types"
-export default function Home({ navigation }:Props) {
+import MonthPicker from "react-native-month-year-picker";
+import { Props } from "./types";
+export default function Home({ navigation }: Props) {
   async function getData() {
     const user = await getUseNamerDocument();
     if (typeof user?.Photo.uri === "number") {
@@ -31,19 +43,20 @@ export default function Home({ navigation }:Props) {
   }
   useEffect(() => {
     getData();
-  });
+  }, []);
   const index = new Date().getMonth();
   useTransactionListener();
   useBudgetListener();
   useNotificationListener();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [photo, setPhoto] = useState("");
-  const [month, selectMonth] = useState(Month[index]);
   const height = Dimensions.get("window").height * 0.2;
   const { t } = useTranslation();
   const Flat = ["Today", "Week", "Month", "Year"];
-  const Rates = useSelector((state:RootState) => state.Rates);
+  const Rates = useSelector((state: RootState) => state.Rates);
   const currency = Rates.selectedCurrencyCode;
+  const [selectedMonth_Year, setSelectionMonth_Year] = useState(new Date());
+  const [show, setShow] = useState(false);
   let convertRate;
   if (currency === "USD") {
     convertRate = 1;
@@ -56,61 +69,76 @@ export default function Home({ navigation }:Props) {
   });
   const income = useSelector(selectIncomeTotal);
   const expense = useSelector(selectExpenseTotal);
-  // const GraphExpenses = useMemo(
-  //   () =>
-  //     transaction
-  //       .filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer")
-  //       .sort((a, b) => {
-  //         return new Date(a.Date) - new Date(b.Date);
-  //       })
-  //       .map((expense) => ({ value: expense.amount,date:expense.Date })),
-  //   [transaction]
-  // );
-  const now = new Date();
+  const badgeCount = useSelector((state) => state.Money.badgeCount);
+  const GraphExpenses = useMemo(() => {
+    const selectedDate = new Date(selectedMonth_Year);
+    const selectedStartOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+    const selectedEndOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
+    const today = new Date();
 
-const GraphExpenses = useMemo(() => {
-  const filtered = transaction.filter((item) => {
-    const itemDate = new Date(item.Date);
+    const getStartOfWeek = (date: Date) => {
+      const start = new Date(date);
+      const day = start.getDay();
+      start.setDate(start.getDate() - day);
+      start.setHours(0, 0, 0, 0);
+      return start;
+    };
 
-    // Filter by month
-    const isSameMonth = itemDate.getMonth() === Month.indexOf(month);
+    const getEndOfWeek = (date: Date) => {
+      const end = getStartOfWeek(date);
+      end.setDate(end.getDate() + 6);
+      end.setHours(23, 59, 59, 999);
+      return end;
+    };
 
-    if (!isSameMonth) return false;
+    const filtered = transaction.filter((item) => {
+      const itemDate = new Date(item.Date);
 
-    // Filter by selected time frame
-    switch (Flat[selectedIndex ?? 0]) {
-      case "Today":
-        return (
-          itemDate.toDateString() === now.toDateString()
-        );
-      case "Week":
-        const startOfWeek = new Date(now);
-        startOfWeek.setDate(now.getDate() - now.getDay());
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6);
-        return itemDate >= startOfWeek && itemDate <= endOfWeek;
-      case "Month":
-        return (
-          itemDate.getMonth() === now.getMonth() &&
-          itemDate.getFullYear() === now.getFullYear()
-        );
-      case "Year":
-        return itemDate.getFullYear() === now.getFullYear();
-      default:
-        return true;
-    }
-  });
+      // Must match selected month and year
+      if (itemDate.getMonth() !== selectedDate.getMonth() || itemDate.getFullYear() !== selectedDate.getFullYear()) {
+        return false;
+      }
 
-  return filtered
-    .filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer")
-    .sort((a, b) => new Date(a.Date).getTime() - new Date(b.Date).getTime())
-    .map((expense) => ({
-      value: expense.amount,
-      date: expense.Date,
-    }));
-}, [transaction, selectedIndex, month]);
+      // Filter by time frame (Today, Week, Month, Year) within selected month/year
+      switch (Flat[selectedIndex ?? 0]) {
+        case "Today":
+          return itemDate.toDateString() === today.toDateString();
+        case "Week":
+          const startOfWeek = getStartOfWeek(today);
+          const endOfWeek = getEndOfWeek(today);
+          return itemDate >= startOfWeek && itemDate <= endOfWeek;
+        case "Month":
+          return true; // already filtered by selected month/year
+        case "Year":
+          return itemDate.getFullYear() === selectedDate.getFullYear();
+        default:
+          return true;
+      }
+    });
+
+    return filtered
+      .filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer")
+      .sort((a, b) => new Date(a.Date).getTime() - new Date(b.Date).getTime())
+      .map((expense) => ({
+        value: expense.amount,
+        date: expense.Date,
+      }));
+  }, [transaction, selectedIndex, selectedMonth_Year]);
 
   const loading = useSelector((state: RootState) => state.Money.loading);
+  const onValueChange = (event: string, newDate?: Date) => {
+    const isAndroid = Platform.OS === "android";
+
+    if (isAndroid) {
+      if (event === "dateSetAction" && newDate) {
+        setSelectionMonth_Year(newDate);
+      }
+      setShow(false);
+    } else if (newDate) {
+      setSelectionMonth_Year(newDate);
+    }
+  };
+
   if (loading)
     return (
       <View
@@ -126,32 +154,59 @@ const GraphExpenses = useMemo(() => {
     );
   return (
     <View style={{ flex: 1 }}>
-     <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
+      <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
       <SafeAreaView style={[styles.container]}>
         <LinearGradient colors={["rgb(229, 255, 243)", "rgba(205, 230, 200, 0.09)"]} style={styles.homeHeadgradient}>
+          {badgeCount > 0 && (
+            <View
+              style={{
+                position: "absolute",
+                right: "5%",
+                top: "8%",
+                backgroundColor: "red",
+                width: "4%",
+                height: "8%",
+                borderRadius: 10,
+                zIndex: 100,
+                alignItems: "center",
+                justifyContent: "center",
+                borderWidth: 1,
+                borderColor: "white",
+              }}
+            >
+              <Text style={{ color: "white", fontSize: 10 }}>{badgeCount}</Text>
+            </View>
+          )}
           <TouchableOpacity
             onPress={() => navigation.navigate("DisplayNotification")}
-            style={{ position: "absolute", right: "4%", top: "5%" }}
+            style={{ position: "absolute", right: "6%", top: "8%" }}
           >
-            <Ionicons name="notifications" size={24} color="rgb(56, 88, 85)" />
+            <Ionicons name="notifications" size={28} color="rgb(56, 88, 85)" />
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ position: "absolute", left: "4%", top: "3%" }}
+            style={{ position: "absolute", left: "4%", top: "8%" }}
             onPress={() => navigation.navigate("Profile")}
           >
             <Image style={{ height: 30, width: 30, borderRadius: 50, borderWidth: 1 }} source={photo} />
           </TouchableOpacity>
-          <CustomD
-            name={t(month)}
-            data={Month}
-            styleButton={styles.homeMonth}
-            styleItem={styles.dropdownItems}
-            styleArrow={styles.homeArrow}
-            onSelectItem={(item) => selectMonth(item)}
-          />
+          <TouchableOpacity style={[styles.homeMonth]} onPress={() => setShow(true)}>
+            <Text>
+              {Month[new Date(selectedMonth_Year).getMonth()]} {new Date(selectedMonth_Year).getFullYear()}
+            </Text>
+            <Image style={styles.homeArrow} source={require("../../../../assets/arrowDown.png")} />
+          </TouchableOpacity>
+          {show && (
+            <MonthPicker
+              onChange={onValueChange}
+              value={selectedMonth_Year}
+              minimumDate={new Date(2020, 1)}
+              maximumDate={new Date()}
+              locale="en"
+            />
+          )}
           <View style={{ padding: 8 }}>
             <Text style={styles.username}>{t(StringConstants.AccountBalance)}</Text>
-            <Text style={styles.heading}>$94500</Text>
+            <Text style={styles.heading}>${94500 + income - expense}</Text>
           </View>
           <View style={styles.homeHeadView}>
             <TouchableOpacity
@@ -240,9 +295,23 @@ const GraphExpenses = useMemo(() => {
             </TouchableOpacity>
           </View>
           {/* <TransactionList data={sortedTransactions.slice(0,3)}/> */}
-          <View style={{ width: "90%", flex: 1 }}>
-            <TransactionList data={sortedTransactions.slice(0, 5)} />
-          </View>
+          {sortedTransactions.length === 0 ? (
+            <View
+              style={{
+                flex: 0.6,
+                justifyContent: "center",
+                alignItems: "center",
+                width: "90%",
+                // backgroundColor: "pink",
+              }}
+            >
+              <Text style={styles.budgetText}>Start tracking your finances by making your first transaction.</Text>
+            </View>
+          ) : (
+            <View style={{ width: "90%", flex: 1 }}>
+              <TransactionList data={sortedTransactions.slice(0, 5)} />
+            </View>
+          )}
         </View>
       </SafeAreaView>
     </View>

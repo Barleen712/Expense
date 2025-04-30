@@ -40,6 +40,18 @@ export async function AddPin(pinData) {
 export const deleteDocument = async (collection: string, id: string) => {
   await deleteDoc(doc(db, collection, id));
 };
+export const deleteAllUserNotifications = async (userId) => {
+  try {
+    const q = query(collection(db, "Notification"), where("userId", "==", userId));
+    const querySnapshot = await getDocs(q);
+
+    const deletePromises = querySnapshot.docs.map((docSnapshot) => deleteDoc(docSnapshot.ref));
+
+    await Promise.all(deletePromises);
+  } catch (error) {
+    console.error("Error deleting notifications:", error);
+  }
+};
 export const updateDocument = async (collection: string, id: string, data) => {
   const userRef = doc(db, collection, id);
   await updateDoc(userRef, {

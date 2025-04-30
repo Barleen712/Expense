@@ -39,7 +39,6 @@ import { StringConstants } from "../../Constants";
 import { updateTransaction } from "../../../Slice/IncomeSlice";
 import { AddTransaction } from "../../FirestoreHandler";
 import FrequencyModal from "../../../Components/FrequencyModal";
-import { setDate } from "date-fns";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -79,6 +78,11 @@ export default function Income({ navigation, route }: Props) {
   const [startDate, setStartDate] = useState(new Date().getDate());
   const [endDate, setEndDate] = useState(new Date());
   const [Frequencymodal, setFrequencyModal] = useState(false);
+  const [incomeError, setIncomeError] = useState("");
+  const [categoryError, setcategoryError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
+  const [walletError, setwalletError] = useState("");
+
   const modal = [
     require("../../../assets/Camera.png"),
     require("../../../assets/Image.png"),
@@ -105,9 +109,34 @@ export default function Income({ navigation, route }: Props) {
     }
   };
   const handleIncomeChange = (text: string) => {
-    const numericValue = text.replace(/[^0-9.]/g, "");
-    setIncome(`$${numericValue}`);
+    if (text.includes(",")) {
+      setIncomeError("Commas are not allowed");
+      return;
+    }
+    const cleaned = text.replace(/[^0-9.]/g, "");
+
+    const decimalCount = (cleaned.match(/\./g) || []).length;
+    if (decimalCount > 1) {
+      setIncomeError("Enter a valid number with only one decimal point");
+      return;
+    }
+    if (!/^\d*\.?\d*$/.test(cleaned)) {
+      setIncomeError("Enter a valid number");
+      return;
+    }
+
+    if (cleaned.length > 7) {
+      setIncomeError("Maximum 7 digits allowed");
+      return;
+    }
+    setIncomeError("");
+    setIncome(`$${cleaned}`);
   };
+  function handleDescriptionChange() {
+    if (descriptionError) {
+      setDescriptionError("");
+    }
+  }
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const user = auth.currentUser;
@@ -115,23 +144,22 @@ export default function Income({ navigation, route }: Props) {
     const numericIncome = parseFloat(Income.replace("$", "") || "0");
     let supabaseImageUrl = null;
     if (numericIncome === 0) {
-      alert("Add amount");
+      setIncomeError("Enter Amount");
       return;
     }
     if (selectedCategory === "Category") {
-      alert("Select Category");
+      setcategoryError("Select Category");
       return;
     }
     if (Description === "") {
-      alert("Add Description");
+      setDescriptionError("Add Description");
       return;
     }
     if (selectedWallet === "Wallet") {
-      alert("Select Wallet");
+      setwalletError("Select Wallet");
       return;
     }
     if (image) {
-      // Upload to Supabase
       setLoading(true);
       supabaseImageUrl = await uploadImage(image);
     }
@@ -160,6 +188,13 @@ export default function Income({ navigation, route }: Props) {
         type: "image",
         uri: supabaseImageUrl,
       },
+      Frequency: frequency,
+      endAfter: endAfter,
+      weekly: week,
+      endDate: endDate.toISOString(),
+      startDate: startDate,
+      startMonth: month,
+      startYear: new Date().getFullYear(),
     });
     setLoading(false);
     navigation.goBack();
@@ -205,6 +240,7 @@ export default function Income({ navigation, route }: Props) {
     setEndDate(new Date());
     setendAfter("");
   }
+  console.log(frequency, startDate, endDate, endAfter);
   return (
     <View style={styles.container}>
       <Header
@@ -232,6 +268,18 @@ export default function Income({ navigation, route }: Props) {
                     onFocus={handleFocus}
                   ></TextInput>
                 </TouchableOpacity>
+                {incomeError !== "" && (
+                  <Text
+                    style={{
+                      color: "rgb(255, 0, 17)",
+                      marginTop: 4,
+                      marginLeft: 10,
+                      fontFamily: "Inter",
+                    }}
+                  >
+                    *{incomeError}
+                  </Text>
+                )}
               </View>
               <View style={[styles.selection]}>
                 <CustomD
@@ -240,8 +288,24 @@ export default function Income({ navigation, route }: Props) {
                   styleButton={styles.textinput}
                   styleItem={styles.dropdownItems}
                   styleArrow={styles.arrowDown}
-                  onSelectItem={(item) => setSelectedCategory(item)}
+                  onSelectItem={(item) => {
+                    setSelectedCategory(item);
+                    setcategoryError("");
+                  }}
                 />
+                {categoryError !== "" && (
+                  <Text
+                    style={{
+                      color: "rgb(255, 0, 17)",
+                      marginTop: 4,
+                      marginLeft: 10,
+                      fontFamily: "Inter",
+                      width: "90%",
+                    }}
+                  >
+                    *{categoryError}
+                  </Text>
+                )}
                 <Input
                   title={t(StringConstants.Description)}
                   color="black"
@@ -249,15 +313,45 @@ export default function Income({ navigation, route }: Props) {
                   isPass={false}
                   name={Description}
                   onchange={setDescription}
+                  handleFocus={handleDescriptionChange}
                 />
+                {descriptionError !== "" && (
+                  <Text
+                    style={{
+                      color: "rgb(255, 0, 17)",
+                      marginTop: 4,
+                      marginLeft: 10,
+                      fontFamily: "Inter",
+                      width: "90%",
+                    }}
+                  >
+                    *{descriptionError}
+                  </Text>
+                )}
                 <CustomD
                   name={t(parameters.wallet)}
                   data={wallet}
                   styleButton={styles.textinput}
                   styleItem={styles.dropdownItems}
                   styleArrow={styles.arrowDown}
-                  onSelectItem={(item) => setSelectedWallet(item)}
+                  onSelectItem={(item) => {
+                    setSelectedWallet(item);
+                    setwalletError("");
+                  }}
                 />
+                {walletError !== "" && (
+                  <Text
+                    style={{
+                      color: "rgb(255, 0, 17)",
+                      marginTop: 4,
+                      marginLeft: 10,
+                      fontFamily: "Inter",
+                      width: "90%",
+                    }}
+                  >
+                    *{walletError}
+                  </Text>
+                )}
                 {showAttach && (
                   <TouchableOpacity
                     onPress={toggleModal}
@@ -343,7 +437,7 @@ export default function Income({ navigation, route }: Props) {
                       <Text style={{ fontSize: 16, fontWeight: "bold" }}>Frequency</Text>
                       <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
                         {frequency}
-                        {frequency === "Yearly" && ` - ${Month[month]} ${startDate} ` + new Date().getFullYear()}
+                        {frequency === "Yearly" && ` - ${month} ${startDate} ` + new Date().getFullYear()}
                         {frequency === "Monthly" &&
                           " - " + Month[new Date().getMonth()] + ` ${startDate} ` + new Date().getFullYear()}
                         {frequency === "Weekly" && ` - ${week}`}

@@ -149,10 +149,10 @@ export default function Transaction({ navigation }: Props) {
         </TouchableOpacity>
       </View> */}
       {transactions.length === 0 && (
-        <View style={{ flex: 0.75, justifyContent: "center", alignItems: "center", marginTop: 200 }}>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", marginTop: 200 }}>
           <Text style={styles.budgetText}>
             You have not made any transaction.{"\n"}
-            {t(StringConstants.Letmake)}.
+            Start your first transaction
           </Text>
         </View>
       )}
@@ -251,7 +251,7 @@ export default function Transaction({ navigation }: Props) {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-      <View style={{ width: "100%", flex: 0.75, alignItems: "center" }}>
+      <View style={{ width: "100%", flex: 1, alignItems: "center", marginBottom: 80 }}>
         <TransactionList data={FilterTrans} />
       </View>
     </View>

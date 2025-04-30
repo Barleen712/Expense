@@ -1,8 +1,52 @@
 import { createSelector } from "@reduxjs/toolkit";
-
+import { RootState } from "../Store/Store";
 const selectMoney = (state: RootState) => state.Money;
 
-export const selectTransactions = createSelector([selectMoney], (money) => money.amount);
+export const selectTransactions = createSelector([(state) => state.Money.amount], (transactions) => {
+  const expanded = [];
+
+  transactions.forEach((tx) => {
+    const {
+      Frequency,
+      startDate,
+      endDate, // This is the specific end date
+      endAfter, // This is either a date or "never"
+      id,
+      repeat,
+    } = tx;
+
+    if (repeat && Frequency && startDate) {
+      const start = new Date(startDate);
+      const current = new Date(start);
+
+      const end = endDate ? new Date(endDate) : null;
+      const endAfterDate = endAfter && endAfter !== "never" ? new Date(endAfter) : null;
+
+      let count = 0;
+
+      while ((!end || current <= end) && (!endAfterDate || current <= endAfterDate)) {
+        expanded.push({
+          ...tx,
+          Date: current.toISOString(),
+          id: `${id}_${current.getTime()}`,
+        });
+
+        // Apply frequency logic (daily, weekly, monthly)
+        if (Frequency === "daily") current.setDate(current.getDate() + 1);
+        else if (Frequency === "weekly") current.setDate(current.getDate() + 7);
+        else if (Frequency === "monthly") current.setMonth(current.getMonth() + 1);
+        else break;
+
+        count++;
+      }
+    } else {
+      expanded.push(tx);
+    }
+  });
+
+  return expanded;
+});
+
 export const selectBudget = createSelector([selectMoney], (money) => money.budget);
 
 export const selectIncomeTotal = createSelector([selectTransactions], (transactions) =>

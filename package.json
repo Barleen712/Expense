@@ -50,6 +50,8 @@
     "react-native-insta-story": "^1.1.9",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-modal-dropdown": "^1.0.2",
+    "react-native-month-picker": "^1.0.1",
+    "react-native-month-year-picker": "^1.9.0",
     "react-native-paper": "^5.13.1",
     "react-native-pie-chart": "^4.0.1",
     "react-native-reanimated": "^3.17.4",

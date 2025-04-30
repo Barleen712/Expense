@@ -58,6 +58,10 @@ export default function Income({ navigation, route }: Props) {
   const [To, setTo] = useState(`${to}`);
   const [Description, setDescription] = useState(`${title}`);
   const [loading, setLoading] = useState(false);
+  const [TransferError, setTransferError] = useState("");
+  const [toError, setToError] = useState("");
+  const [categoryError, setcategoryError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
 
   function toggleModal() {
     setModalVisible(!modalVisible);
@@ -75,8 +79,28 @@ export default function Income({ navigation, route }: Props) {
     }
   };
   const handleTransferChange = (text: string) => {
-    const numericValue = text.replace(/[^0-9.]/g, "");
-    setTransfer(`$${numericValue}`);
+    if (text.includes(",")) {
+      setTransferError("Commas are not allowed");
+      return;
+    }
+    const cleaned = text.replace(/[^0-9.]/g, "");
+
+    const decimalCount = (cleaned.match(/\./g) || []).length;
+    if (decimalCount > 1) {
+      setTransferError("Enter a valid number with only one decimal point");
+      return;
+    }
+    if (!/^\d*\.?\d*$/.test(cleaned)) {
+      setTransferError("Enter a valid number");
+      return;
+    }
+
+    if (cleaned.length > 7) {
+      setTransferError("Maximum 7 digits allowed");
+      return;
+    }
+    setTransferError("");
+    setTransfer(`$${cleaned}`);
   };
   const handleFocus = () => {
     if (Transfer === "" || Transfer === "$0" || Transfer === "$") {
@@ -86,23 +110,28 @@ export default function Income({ navigation, route }: Props) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const user = auth.currentUser;
+  function handleDescriptionChange() {
+    if (descriptionError) {
+      setDescriptionError("");
+    }
+  }
   async function add() {
     const numericIncome = parseFloat(Transfer.replace("$", "") || "0");
     let supabaseImageUrl = null;
     if (numericIncome === 0) {
-      alert("Add amount");
+      setTransferError("Add amount");
       return;
     }
     if (From === "") {
-      alert("Add From");
+      setToError("Add From");
       return;
     }
     if (To === "") {
-      alert("Add To");
+      setToError("Add To");
       return;
     }
     if (Description === "") {
-      alert("Add description");
+      setDescriptionError("Add description");
       return;
     }
 
@@ -167,6 +196,11 @@ export default function Income({ navigation, route }: Props) {
       </View>
     );
   }
+  function handleToFromChange() {
+    if (toError) {
+      setToError("");
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -195,6 +229,18 @@ export default function Income({ navigation, route }: Props) {
                     onFocus={handleFocus}
                   ></TextInput>
                 </TouchableOpacity>
+                {TransferError !== "" && (
+                  <Text
+                    style={{
+                      color: "rgb(255, 0, 17)",
+                      marginTop: 4,
+                      marginLeft: 10,
+                      fontFamily: "Inter",
+                    }}
+                  >
+                    *{TransferError}
+                  </Text>
+                )}
               </View>
               <View style={[styles.selection]}>
                 <View style={{ flexDirection: "row", width: "100%" }}>
@@ -206,6 +252,7 @@ export default function Income({ navigation, route }: Props) {
                       isPass={false}
                       name={From}
                       onchange={setFrom}
+                      handleFocus={handleToFromChange}
                     />
                   </View>
                   <View style={{ width: "50%" }}>
@@ -216,6 +263,7 @@ export default function Income({ navigation, route }: Props) {
                       isPass={false}
                       name={To}
                       onchange={setTo}
+                      handleFocus={handleToFromChange}
                     />
                   </View>
                   <Image
@@ -223,6 +271,19 @@ export default function Income({ navigation, route }: Props) {
                     source={require("../../../assets/Transfer.png")}
                   />
                 </View>
+                {toError !== "" && (
+                  <Text
+                    style={{
+                      color: "rgb(255, 0, 17)",
+                      marginTop: 4,
+                      marginLeft: 10,
+                      fontFamily: "Inter",
+                      width: "90%",
+                    }}
+                  >
+                    *{toError}
+                  </Text>
+                )}
                 <Input
                   title={t(StringConstants.Description)}
                   color="rgb(56, 88, 85)"
@@ -230,8 +291,21 @@ export default function Income({ navigation, route }: Props) {
                   isPass={false}
                   name={Description}
                   onchange={setDescription}
+                  handleFocus={handleDescriptionChange}
                 />
-
+                {descriptionError !== "" && (
+                  <Text
+                    style={{
+                      color: "rgb(255, 0, 17)",
+                      marginTop: 4,
+                      marginLeft: 10,
+                      fontFamily: "Inter",
+                      width: "90%",
+                    }}
+                  >
+                    *{descriptionError}
+                  </Text>
+                )}
                 {showAttach && (
                   <TouchableOpacity
                     onPress={toggleModal}
