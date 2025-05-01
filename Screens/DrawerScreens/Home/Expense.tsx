@@ -56,7 +56,7 @@ const category = [
 ];
 
 const wallet = [
-  { value: "PayPal", label: "PaypPal" },
+  { value: "PayPal", label: "PayPal" },
   { value: "GooglePay", label: "GooglePay" },
   { label: "Paytm", value: "Paytm" },
   { label: "PhonePe", value: "PhonePe" },

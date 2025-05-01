@@ -27,6 +27,7 @@ import { addUser, addGoogleUser } from "../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import styles from "../Stylesheet";
+import { error } from "console";
 type SignupProp = StackNavigationProp<StackParamList, "SignUp">;
 interface Props {
   navigation: SignupProp;
@@ -39,55 +40,53 @@ export default function SignUp({ navigation }: Props) {
       iosClientId: "26672937768-9fqv55u26fqipe8gn6kh9dh1tg71189b.apps.googleusercontent.com",
     });
   }, []);
-  const [name, setname] = useState("");
-  const [email, setemail] = useState("");
-  const [password, setpass] = useState("");
-  const [checked, setChecked] = useState(false);
+  const [name, setname] = useState({ name: "", nameError: "" });
+  const [email, setemail] = useState({ email: "", emailError: "" });
+  const [password, setpass] = useState({ password: "", passwordError: "" });
+  const [checked, setChecked] = useState({ state: false, error: "" });
+  function handleChange() {
+    setname({ ...name, nameError: "" });
+    setemail({ ...email, emailError: "" });
+    setpass({ ...password, passwordError: "" });
+  }
   async function handleSignUp() {
-    // try {
-    //   const user = await createUserWithEmailAndPassword(auth, email, password);
-    //   setLoading(false);
-    // } catch (error: any) {
-    //   alert(error.message);
-    // }
-    if (name === "") {
-      alert("Enter Name");
+    if (name.name === "") {
+      setname({ ...name, nameError: "Enter Name" });
       return;
     }
-    if (email === "") {
-      alert("Enter Email");
+    if (email.email === "") {
+      setemail({ ...email, emailError: "Enter Email" });
       return;
     }
     const emailRegex =
       /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!emailRegex.test(email)) {
-      alert("Please Enter Valid Email");
+    if (!emailRegex.test(email.email)) {
+      setemail({ ...email, emailError: "Enter Valid Email" });
       return;
     }
-    if (password === "") {
-      alert("Enter Password");
+    if (password.password === "") {
+      setpass({ ...password, passwordError: "Enter Password" });
       return;
     }
-    if (password.length < 6) {
-      alert("Enter Password of atleast length 6");
+    if (password.password.length < 6) {
+      setpass({ ...password, passwordError: "Enter Password of length atleast 6" });
       return;
     }
-    if(checked===false)
-    {
-      alert("Kindly agree to the Terms and Policy")
+    if (checked.state === false) {
+      setChecked({ ...checked, error: "Kindly agree to the Terms and Policy" });
       return;
     }
     dispatch(
       addUser({
-        name: name,
-        email: email,
-        password: password,
+        name: name.name,
+        email: email.email,
+        password: password.password,
         google: false,
       })
     );
-    setname("");
-    setemail("");
-    setpass("");
+    setname({ name: "", nameError: "" });
+    setemail({ email: "", emailError: "" });
+    setpass({ password: "", passwordError: "" });
     navigation.navigate("Setpin");
   }
   const { t } = useTranslation();
@@ -104,13 +103,7 @@ export default function SignUp({ navigation }: Props) {
     );
     navigation.navigate("Setpin");
   }
-  // if (loading) {
-  //   return (
-  //     <View style={{ height: "100%", alignItems: "center", justifyContent: "center" }}>
-  //       <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
-  //     </View>
-  //   );
-  // }
+
   return (
     <SafeAreaView style={[styles.container, { alignItems: "center" }]}>
       <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
@@ -120,40 +113,102 @@ export default function SignUp({ navigation }: Props) {
           title={t(StringConstants.Name)}
           color="rgb(56, 88, 85)"
           css={style.textinput}
-          name={name}
-          onchange={setname}
+          name={name.name}
+          handleFocus={handleChange}
+          onchange={(data) => {
+            const onlyAlphabets = data.replace(/[^a-zA-Z\s]/g, "");
+            setname({ nameError: "", name: onlyAlphabets });
+          }}
           isPass={false}
         />
+        {name.nameError !== "" && (
+          <Text
+            style={{
+              color: "rgb(255, 0, 17)",
+              marginTop: 4,
+              marginLeft: 10,
+              fontFamily: "Inter",
+              width: "90%",
+            }}
+          >
+            *{name.nameError}
+          </Text>
+        )}
         <Input
           title={t(StringConstants.Email)}
           color="rgb(56, 88, 85)"
           css={style.textinput}
-          name={email}
-          onchange={setemail}
+          name={email.email}
+          onchange={(data) => {
+            setemail({ emailError: "", email: data });
+          }}
           isPass={false}
+          handleFocus={handleChange}
         />
+        {email.emailError !== "" && (
+          <Text
+            style={{
+              color: "rgb(255, 0, 17)",
+              marginTop: 4,
+              marginLeft: 10,
+              fontFamily: "Inter",
+              width: "90%",
+            }}
+          >
+            *{email.emailError}
+          </Text>
+        )}
         <Input
           title={t(StringConstants.Password)}
           color="rgb(56, 88, 85)"
           css={style.textinput}
           isPass={true}
-          name={password}
-          onchange={setpass}
+          name={password.password}
+          handleFocus={handleChange}
+          onchange={(data) => {
+            setpass({ password: data, passwordError: "" });
+          }}
         />
+        {password.passwordError !== "" && (
+          <Text
+            style={{
+              color: "rgb(255, 0, 17)",
+              marginTop: 4,
+              marginLeft: 10,
+              fontFamily: "Inter",
+              width: "90%",
+            }}
+          >
+            *{password.passwordError}
+          </Text>
+        )}
       </View>
-      <View style={{ flexDirection: "row", margin: 20 ,width:"90%",justifyContent:"space-evenly"}}>
-        <View style={{ borderWidth: Platform.OS === "ios" ? 1 : 0 ,flex:0.1}}>
-        <Checkbox
-        status={checked ? 'checked' : 'unchecked'}
-        onPress={() => setChecked(!checked)}
-        color="rgb(57, 112, 109)"
-      />
+      <View style={{ flexDirection: "row", margin: 20, width: "90%", justifyContent: "space-evenly" }}>
+        <View style={{ borderWidth: Platform.OS === "ios" ? 1 : 0, flex: 0.1 }}>
+          <Checkbox
+            status={checked.state ? "checked" : "unchecked"}
+            onPress={() => setChecked({ state: !checked.state, error: checked.state ? checked.error : "" })}
+            color="rgb(57, 112, 109)"
+          />
         </View>
-        <Text style={{flex:0.9}}>
+        <Text style={{ flex: 0.9 }}>
           {t(StringConstants.Bysigningupyouagreetothe)}{" "}
           <Text style={{ color: "rgb(57, 112, 109)" }}>{t(StringConstants.TermsofServiceandPrivacyPolicy)}</Text>
         </Text>
       </View>
+      {checked.error !== "" && (
+        <Text
+          style={{
+            color: "rgb(255, 0, 17)",
+            marginTop: 4,
+            marginLeft: 10,
+            fontFamily: "Inter",
+            width: "90%",
+          }}
+        >
+          *{checked.error}
+        </Text>
+      )}
       <GradientButton title="Sign Up" handles={handleSignUp} />
       <Text style={style.or}>{t(StringConstants.orwith)}</Text>
       <TouchableOpacity style={style.GoogleView} onPress={GoogleSignIn}>
@@ -183,6 +238,7 @@ const style = StyleSheet.create({
   input: {
     alignItems: "center",
     marginTop: Platform.OS === "ios" ? 20 : 30,
+    width: "100%",
   },
   or: {
     color: "rgb(145, 145, 159)",

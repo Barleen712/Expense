@@ -30,16 +30,16 @@ const Month = [
   { label: "December", value: "December" },
 ];
 
-const data = [
-  "Salary",
-  "Passive Income",
-  "Shopping",
-  "Food",
-  "Entertainment",
-  "Subscription",
-  "Transportation",
-  "Bills",
-  "Miscellaneous",
+const category = [
+  { label: "Salary", value: "Salary" },
+  { label: "Passive Income", value: "Passive Income" },
+  { label: "Shopping", value: "Shopping" },
+  { label: "Food", value: "Food" },
+  { label: "Entertainment", value: "Entertainment" },
+  { label: "Subscription", value: "Subscription" },
+  { label: "Transportation", value: "Transportation" },
+  { label: "Bills", value: "Bills" },
+  { label: "Miscellaneous", value: "Miscellaneous" },
 ];
 const FilterBy = ["Income", "Expense", "Transfer"];
 const SortBy = ["Highest", "Lowest", "Newest", "Oldest"];
@@ -253,14 +253,15 @@ export default function Transaction({ navigation }: Props) {
               </View>
               <View style={styles.FilterCategory}>
                 <Text style={styles.notiTitle}>{t(StringConstants.Category)}</Text>
-                <CustomD
+
+                <DropdownComponent
+                  data={category}
+                  value={selectedCategory}
                   name={t(StringConstants.ChooseCategory)}
-                  data={data}
                   styleButton={styles.settingsOptions}
-                  styleText={styles.settingtitle}
-                  styleItem={styles.dropdownItems}
-                  styleArrow={{ position: "absolute", right: "1%" }}
-                  onSelectItem={(item) => setSelectedCategory(item)}
+                  onSelectItem={(item) => {
+                    setSelectedCategory(item);
+                  }}
                 />
                 <View style={styles.Apply}>
                   <CustomButton title={t("Apply")} bg="rgb(42, 124, 118)" color="white" press={handleSort} />

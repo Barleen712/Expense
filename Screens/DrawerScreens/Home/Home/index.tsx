@@ -75,10 +75,12 @@ export default function Home({ navigation }: Props) {
     const expense = transaction.filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer");
 
     const mapToAmountAndDate = (items) =>
-      items.map((item) => ({
-        value: item.amount,
-        date: new Date(item.Date),
-      }));
+      items
+        .map((item) => ({
+          value: item.amount,
+          date: new Date(item.Date),
+        }))
+        .sort((a, b) => a.date - b.date);
 
     switch (Flat[selectedIndex ?? 0]) {
       case "Today":

@@ -64,6 +64,7 @@
     "react-native-select-dropdown": "^4.0.1",
     "react-native-slider-text": "^0.0.10",
     "react-native-svg": "^15.11.2",
+    "react-native-toast-message": "^2.3.0",
     "react-native-tts": "^4.1.1",
     "react-native-vector-icons": "^10.2.0",
     "react-redux": "^9.2.0",

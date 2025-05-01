@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
   },
   dropdownItems: {
     justifyContent: "center",
-    width: "35%",
+    height: 56,
   },
   itemView: {
     height: 200,

@@ -28,21 +28,35 @@ interface Props {
   navigation: LoginProp;
 }
 export default function Login({ navigation }: Props) {
-  const [email, setemail] = useState("");
-  const [password, setpass] = useState("");
+  const [email, setemail] = useState({ email: "", emailError: "" });
+  const [password, setpass] = useState({ password: "", passwordError: "" });
   const [loading, setLoading] = useState(false);
+  function handleChange() {
+    setemail({ ...email, emailError: "" });
+    setpass({ ...password, passwordError: "" });
+  }
   async function handlesLogin() {
-    if (email === "") {
-      alert("Enter Email");
+    if (email.email === "") {
+      setemail({ ...email, emailError: "Enter Email" });
       return;
     }
-    if (password === "") {
-      alert("Enter Password");
+    const emailRegex =
+      /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailRegex.test(email.email)) {
+      setemail({ ...email, emailError: "Enter Valid Email" });
+      return;
+    }
+    if (password.password === "") {
+      setpass({ ...password, passwordError: "Enter Password" });
+      return;
+    }
+    if (password.password.length < 6) {
+      setpass({ ...password, passwordError: "Enter Password of length atleast 6" });
       return;
     }
     try {
       setLoading(true);
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email.email, password.password);
       setLoading(false);
       navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
     } catch (error: any) {
@@ -66,18 +80,50 @@ export default function Login({ navigation }: Props) {
           title={t(StringConstants.Email)}
           color="rgb(56, 88, 85)"
           css={style.textinput}
-          name={email}
-          onchange={setemail}
+          name={email.email}
+          onchange={(data) => {
+            setemail({ emailError: "", email: data });
+          }}
           isPass={false}
+          handleFocus={handleChange}
         />
+        {email.emailError !== "" && (
+          <Text
+            style={{
+              color: "rgb(255, 0, 17)",
+              marginTop: 4,
+              marginLeft: 10,
+              fontFamily: "Inter",
+              width: "90%",
+            }}
+          >
+            *{email.emailError}
+          </Text>
+        )}
         <Input
           title={t(StringConstants.Password)}
           color="rgb(56, 88, 85)"
           css={style.textinput}
           isPass={true}
-          name={password}
-          onchange={setpass}
+          name={password.password}
+          handleFocus={handleChange}
+          onchange={(data) => {
+            setpass({ password: data, passwordError: "" });
+          }}
         />
+        {password.passwordError !== "" && (
+          <Text
+            style={{
+              color: "rgb(255, 0, 17)",
+              marginTop: 4,
+              marginLeft: 10,
+              fontFamily: "Inter",
+              width: "90%",
+            }}
+          >
+            *{password.passwordError}
+          </Text>
+        )}
       </View>
       <GradientButton title={t(StringConstants.Login)} handles={handlesLogin} />
       <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
@@ -105,6 +151,7 @@ const style = StyleSheet.create({
   input: {
     alignItems: "center",
     marginTop: Platform.OS === "ios" ? 30 : 80,
+    width: "100%",
   },
 
   forgot: {
