@@ -39,14 +39,24 @@ import { StringConstants } from "../../Constants";
 import { updateTransaction } from "../../../Slice/IncomeSlice";
 import { AddTransaction } from "../../FirestoreHandler";
 import FrequencyModal from "../../../Components/FrequencyModal";
+import DropdownComponent from "../../../Components/DropDown";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
   navigation: IncomeProp;
 }
+const wallet = [
+  { value: "PayPal", label: "PaypPal" },
+  { value: "GooglePay", label: "GooglePay" },
+  { label: "Paytm", value: "Paytm" },
+  { label: "PhonePe", value: "PhonePe" },
+  { label: "ApplePay", value: "ApplePay" },
+];
 
-const category = ["Salary", "Passive Income"];
-const wallet = ["PayPal", "Google Pay", "Paytm", "PhonePe", "Apple Pay", "Razorpay", "Mobikwik"];
+const category = [
+  { value: "Salary", label: "Salary" },
+  { value: "Passive Income", label: "Passive Income" },
+];
 const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
 const date = [];
@@ -82,7 +92,6 @@ export default function Income({ navigation, route }: Props) {
   const [categoryError, setcategoryError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [walletError, setwalletError] = useState("");
-
   const modal = [
     require("../../../assets/Camera.png"),
     require("../../../assets/Image.png"),
@@ -240,7 +249,6 @@ export default function Income({ navigation, route }: Props) {
     setEndDate(new Date());
     setendAfter("");
   }
-  console.log(frequency, startDate, endDate, endAfter);
   return (
     <View style={styles.container}>
       <Header
@@ -282,12 +290,11 @@ export default function Income({ navigation, route }: Props) {
                 )}
               </View>
               <View style={[styles.selection]}>
-                <CustomD
-                  name={t(parameters.category)}
+                <DropdownComponent
                   data={category}
+                  value={selectedCategory}
+                  name={t(parameters.category)}
                   styleButton={styles.textinput}
-                  styleItem={styles.dropdownItems}
-                  styleArrow={styles.arrowDown}
                   onSelectItem={(item) => {
                     setSelectedCategory(item);
                     setcategoryError("");
@@ -328,12 +335,11 @@ export default function Income({ navigation, route }: Props) {
                     *{descriptionError}
                   </Text>
                 )}
-                <CustomD
-                  name={t(parameters.wallet)}
+                <DropdownComponent
                   data={wallet}
+                  value={selectedWallet}
+                  name={t(parameters.wallet)}
                   styleButton={styles.textinput}
-                  styleItem={styles.dropdownItems}
-                  styleArrow={styles.arrowDown}
                   onSelectItem={(item) => {
                     setSelectedWallet(item);
                     setwalletError("");
@@ -451,7 +457,7 @@ export default function Income({ navigation, route }: Props) {
                       </Text>
                     </View>
                     <TouchableOpacity
-                    onPress={()=>setFrequencyModal(!Frequencymodal)}
+                      onPress={() => setFrequencyModal(!Frequencymodal)}
                       style={{
                         backgroundColor: "rgba(56, 184, 176, 0.23)",
                         padding: 10,

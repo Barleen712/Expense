@@ -22,7 +22,7 @@ export default function EnterPin({ navigation }: Props) {
   async function handlenext() {
     const Pin = await getUserDocument();
     if (Pin.Pin === pin) {
-      navigation.navigate("MainScreen");
+      navigation.replace("MainScreen");
     } else {
       alert("Wrong Pin!");
       handleClear();

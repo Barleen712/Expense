@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(252, 252, 255, 0.45)",
+    // backgroundColor: "rgba(252, 252, 255, 0.45)",
     padding: 10,
 
     //marginTop: 10,
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   options: {
     backgroundColor: "white",
     borderRadius: "5%",
-    width: "80%",
+    width: "90%",
     marginTop: Platform.OS === "ios" ? 10 : 29,
   },
   optionView: {
@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
   },
   dropdownItems: {
     justifyContent: "center",
-    height: 56,
+    width: "35%",
   },
   itemView: {
     height: 200,
@@ -613,7 +613,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     padding: 2,
     marginTop: 5,
-    //width: "28%",
+    // width: "28%",
     height: 25,
     flexDirection: "row",
   },
@@ -661,6 +661,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     margin: 10,
+    marginLeft: 10,
   },
   sortImage: {
     borderWidth: 1,
@@ -673,7 +674,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   financialReport: {
-    width: "90%",
+    width: "95%",
     height: 48,
     borderRadius: 5,
     backgroundColor: "rgba(173, 210, 189, 0.6)",

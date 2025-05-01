@@ -17,6 +17,7 @@ import { FinancialReportIncome } from "./Screens/DrawerScreens/Transaction/Finan
 import Setpin from "./Screens/Onboarding/SetupPin01";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector } from "react-redux";
+import DropdownComponent from "./Components/DropDown";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -61,6 +62,7 @@ export default function App() {
   return (
     <Provider store={Store}>
       <NavigationContainer>
+        {/* <DropdownComponent /> */}
         {user ? <TabScreens /> : <Screens />}
         {/* <BiometricAuth/> */}
         {/* <Setpin /> */}

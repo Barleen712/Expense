@@ -12,7 +12,6 @@ import {
   StatusBar,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import CustomD from "../../../../Components/Practice";
 import styles from "../../../Stylesheet";
 import { Month } from "../../../Constants";
 import { Linearchart } from "../../Transaction/FinancialReport/Graph";
@@ -29,6 +28,7 @@ import { getUseNamerDocument } from "../../../../Saga/BudgetSaga";
 import { RootState } from "../../../../Store/Store";
 import MonthPicker from "react-native-month-year-picker";
 import { Props } from "./types";
+import { G } from "react-native-svg";
 export default function Home({ navigation }: Props) {
   async function getData() {
     const user = await getUseNamerDocument();
@@ -57,6 +57,7 @@ export default function Home({ navigation }: Props) {
   const currency = Rates.selectedCurrencyCode;
   const [selectedMonth_Year, setSelectionMonth_Year] = useState(new Date());
   const [show, setShow] = useState(false);
+  const today = new Date();
   let convertRate;
   if (currency === "USD") {
     convertRate = 1;
@@ -71,59 +72,59 @@ export default function Home({ navigation }: Props) {
   const expense = useSelector(selectExpenseTotal);
   const badgeCount = useSelector((state) => state.Money.badgeCount);
   const GraphExpenses = useMemo(() => {
-    const selectedDate = new Date(selectedMonth_Year);
-    const selectedStartOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
-    const selectedEndOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
-    const today = new Date();
+    const expense = transaction.filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer");
 
-    const getStartOfWeek = (date: Date) => {
-      const start = new Date(date);
-      const day = start.getDay();
-      start.setDate(start.getDate() - day);
-      start.setHours(0, 0, 0, 0);
-      return start;
-    };
-
-    const getEndOfWeek = (date: Date) => {
-      const end = getStartOfWeek(date);
-      end.setDate(end.getDate() + 6);
-      end.setHours(23, 59, 59, 999);
-      return end;
-    };
-
-    const filtered = transaction.filter((item) => {
-      const itemDate = new Date(item.Date);
-
-      // Must match selected month and year
-      if (itemDate.getMonth() !== selectedDate.getMonth() || itemDate.getFullYear() !== selectedDate.getFullYear()) {
-        return false;
-      }
-
-      // Filter by time frame (Today, Week, Month, Year) within selected month/year
-      switch (Flat[selectedIndex ?? 0]) {
-        case "Today":
-          return itemDate.toDateString() === today.toDateString();
-        case "Week":
-          const startOfWeek = getStartOfWeek(today);
-          const endOfWeek = getEndOfWeek(today);
-          return itemDate >= startOfWeek && itemDate <= endOfWeek;
-        case "Month":
-          return true; // already filtered by selected month/year
-        case "Year":
-          return itemDate.getFullYear() === selectedDate.getFullYear();
-        default:
-          return true;
-      }
-    });
-
-    return filtered
-      .filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer")
-      .sort((a, b) => new Date(a.Date).getTime() - new Date(b.Date).getTime())
-      .map((expense) => ({
-        value: expense.amount,
-        date: expense.Date,
+    const mapToAmountAndDate = (items) =>
+      items.map((item) => ({
+        value: item.amount,
+        date: new Date(item.Date),
       }));
-  }, [transaction, selectedIndex, selectedMonth_Year]);
+
+    switch (Flat[selectedIndex ?? 0]) {
+      case "Today":
+        return mapToAmountAndDate(
+          expense.filter((item) => {
+            const itemDate = new Date(item.Date);
+            return (
+              itemDate.getDate() === today.getDate() &&
+              itemDate.getMonth() === today.getMonth() &&
+              itemDate.getFullYear() === today.getFullYear()
+            );
+          })
+        );
+
+      case "Week": {
+        const sevenDaysAgo = new Date(today);
+        sevenDaysAgo.setDate(today.getDate() - 6);
+        return mapToAmountAndDate(
+          expense.filter((item) => {
+            const itemDate = new Date(item.Date);
+            itemDate.setHours(0, 0, 0, 0);
+            return itemDate >= sevenDaysAgo && itemDate <= today;
+          })
+        );
+      }
+
+      case "Month":
+        return mapToAmountAndDate(
+          expense.filter((item) => {
+            const itemDate = new Date(item.Date);
+            return itemDate.getMonth() === today.getMonth() && itemDate.getFullYear() === today.getFullYear();
+          })
+        );
+
+      case "Year":
+        return mapToAmountAndDate(
+          expense.filter((item) => {
+            const itemDate = new Date(item.Date);
+            return itemDate.getFullYear() === today.getFullYear();
+          })
+        );
+
+      default:
+        return [];
+    }
+  }, [transaction, selectedIndex]);
 
   const loading = useSelector((state: RootState) => state.Money.loading);
   const onValueChange = (event: string, newDate?: Date) => {
@@ -138,7 +139,6 @@ export default function Home({ navigation }: Props) {
       setSelectionMonth_Year(newDate);
     }
   };
-
   if (loading)
     return (
       <View

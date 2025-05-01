@@ -13,7 +13,7 @@ import {
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import styles from "../../Stylesheet";
 import { CustomButton } from "../../../Components/CustomButton";
-import CustomD from "../../../Components/Practice";
+import DropdownComponent from "../../../Components/DropDown";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
@@ -42,11 +42,20 @@ interface Props {
     };
   };
 }
-const category = ["Shopping", "Food", "Entertainment", "Subscription", "Transportation", "Bills", "Miscellaneous"];
+const category = [
+  { label: "Shopping", value: "Shopping" },
+  { label: "Food", value: "Food" },
+  { label: "Entertainment", value: "Entertainment" },
+  { label: "Subscription", value: "Subscription" },
+  { label: "Transportation", value: "Transportation" },
+  { label: "Bills", value: "Bills" },
+  { label: "Miscellaneous", value: "Miscellaneous" },
+];
 
 export default function CreateBudget({ navigation, route }: Props) {
   const parameters = route.params;
-  
+  const [amountError, setAmountError] = useState("");
+  const [categoryError, setCategoryError] = useState("");
   const [Expense, setExpense] = useState(parameters.alert);
   const [sliderValue, setSliderValue] = useState(parameters.percentage);
   const [Budget, setBudget] = useState<string>(`$${parameters.value}`);
@@ -67,8 +76,12 @@ export default function CreateBudget({ navigation, route }: Props) {
   const user = auth.currentUser;
   function add() {
     const numericBudget = parseFloat(Budget.replace("$", "") || "0");
-    if (selectedCategory === "Category" || numericBudget === 0) {
-      setmissing(true);
+    if (numericBudget === 0) {
+      setAmountError("Please enter a valid amount");
+      return;
+    }
+    if (selectedCategory === "Category") {
+      setCategoryError("Please select a category");
       return;
     }
     // dispatch(
@@ -98,19 +111,17 @@ export default function CreateBudget({ navigation, route }: Props) {
         percentage: sliderValue,
         amount: numericBudget,
         id: parameters.index,
-      notification:Expense,
-        notified: false
+        notification: Expense,
+        notified: false,
       })
     );
-    updateBudgetDocument("Budgets",parameters.index,
-      {
-        category: selectedCategory,
-        percentage: sliderValue,
-        amount: numericBudget,
-        noti:Expense,
-        notified:false
-      }
-    )
+    updateBudgetDocument("Budgets", parameters.index, {
+      category: selectedCategory,
+      percentage: sliderValue,
+      amount: numericBudget,
+      noti: Expense,
+      notified: false,
+    });
     navigation.goBack();
     navigation.goBack();
   }
@@ -129,16 +140,51 @@ export default function CreateBudget({ navigation, route }: Props) {
               style={styles.amount}
               onFocus={handleFocus}
             />
+            {amountError !== "" && (
+              <Text
+                style={{
+                  color: "rgb(255, 0, 17)",
+                  marginTop: 4,
+                  marginLeft: 10,
+                  fontFamily: "Inter",
+                }}
+              >
+                *{amountError}
+              </Text>
+            )}
           </View>
           <View style={styles.selection}>
-            <CustomD
+            {/* <CustomD
               name={t(parameters.category)}
               data={category}
               styleButton={styles.textinput}
               styleItem={styles.dropdownItems}
               styleArrow={styles.arrowDown}
               onSelectItem={(item) => setSelectedCategory(item)}
+            /> */}
+            <DropdownComponent
+              data={category}
+              value={selectedCategory}
+              name={t(parameters.category)}
+              styleButton={styles.textinput}
+              onSelectItem={(item) => {
+                setSelectedCategory(item);
+                setCategoryError("");
+              }}
             />
+            {categoryError !== "" && (
+              <Text
+                style={{
+                  color: "rgb(255, 0, 17)",
+                  marginTop: 4,
+                  marginLeft: 10,
+                  fontFamily: "Inter",
+                  width: "90%",
+                }}
+              >
+                *{categoryError}
+              </Text>
+            )}
             <View style={styles.dropdown}>
               <View style={styles.notiView}>
                 <View style={styles.noti}>
@@ -162,11 +208,6 @@ export default function CreateBudget({ navigation, route }: Props) {
                 press={parameters.edit ? editBudget : add}
               />
             </View>
-            {missing && (
-              <View style={{ position: "absolute", top: "2%", left: "7%" }}>
-                <Text style={{ color: "red", fontStyle: "bold" }}>*Specify Category and Budget Amount</Text>
-              </View>
-            )}
           </View>
         </View>
       </TouchableWithoutFeedback>

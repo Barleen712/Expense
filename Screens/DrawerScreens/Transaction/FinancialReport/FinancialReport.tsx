@@ -10,6 +10,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import DropdownComponent from "../../../../Components/DropDown";
 import { currencies, StringConstants } from "../../../Constants";
 import {
   selectIncomeTotal,
@@ -25,7 +26,6 @@ import { Linearchart } from "./Graph";
 import TransactionList from "../../Home/TransactionsList";
 import CategoryList from "./CategoryList";
 import { CATEGORY_COLORS } from "../../../Constants";
-import { Month } from "../../../Constants";
 const height = Dimensions.get("window").height * 0.22;
 
 type financialProp = StackNavigationProp<StackParamList, "FinancialReport">;
@@ -33,13 +33,27 @@ type financialProp = StackNavigationProp<StackParamList, "FinancialReport">;
 interface Props {
   navigation: financialProp;
 }
+const Month = [
+  { label: "January", value: "January" },
+  { label: "February", value: "February" },
+  { label: "March", value: "March" },
+  { label: "April", value: "April" },
+  { label: "May", value: "May" },
+  { label: "June", value: "June" },
+  { label: "July", value: "July" },
+  { label: "August", value: "August" },
+  { label: "September", value: "September" },
+  { label: "October", value: "October" },
+  { label: "November", value: "November" },
+  { label: "December", value: "December" },
+];
 
 export default function FinancialReport({ navigation }: Props) {
   const [line, showline] = useState(true);
   const [pie, showpie] = useState(false);
   const [Expense, setExpense] = useState(true);
   const [Income, setIncome] = useState(false);
-  const [month, setMonth] = useState(Month[new Date().getMonth()]);
+  const [month, setMonth] = useState(Month[new Date().getMonth()].value);
   const income = useSelector(selectIncomeTotal);
   const expense = useSelector(selectExpenseTotal);
   const transaction = useSelector(selectTransactions);
@@ -49,41 +63,40 @@ export default function FinancialReport({ navigation }: Props) {
     .sort((a, b) => {
       return new Date(b.Date) - new Date(a.Date);
     })
-    .filter((item) => Month[new Date(item.Date).getMonth()] === month);
+    .filter((item) => Month[new Date(item.Date).getMonth()].value === month);
   const sortedExpense = [...expensesAndTransfers]
     .sort((a, b) => {
       return new Date(b.Date) - new Date(a.Date);
     })
-    .filter((item) => Month[new Date(item.Date).getMonth()] === month);
-  const sortedTrans = [...transaction].filter((item) => Month[new Date(item.Date).getMonth()] === month);
+    .filter((item) => Month[new Date(item.Date).getMonth()].value === month);
+  const sortedTrans = [...transaction].filter((item) => Month[new Date(item.Date).getMonth()].value === month);
   const GraphExpenses = useMemo(
     () =>
       sortedTrans
         .filter(
           (item) =>
             item.moneyCategory === "Expense" ||
-            (item.moneyCategory === "Transfer" && Month[new Date(item.Date).getMonth()] === month)
+            (item.moneyCategory === "Transfer" && Month[new Date(item.Date).getMonth()].value === month)
         )
         .sort((a, b) => {
           return new Date(a.Date) - new Date(b.Date);
         })
-        .map((expense) => ({ value: expense.amount,date:expense.Date })),
+        .map((expense) => ({ value: expense.amount, date: expense.Date })),
     [sortedTrans]
   );
   const GraphIncome = useMemo(
     () =>
       sortedTrans
-        .filter((item) => item.moneyCategory === "Income" && Month[new Date(item.Date).getMonth()] === month)
+        .filter((item) => item.moneyCategory === "Income" && Month[new Date(item.Date).getMonth()].value === month)
         .sort((a, b) => {
           return new Date(a.Date) - new Date(b.Date);
         })
-        .map((income) => ({ value: income.amount ,       date: income.Date})),
+        .map((income) => ({ value: income.amount, date: income.Date })),
     [sortedTrans]
   );
   const categoryExpense = useSelector(CategoryExpense);
-  const monthIndex = Month.indexOf(month); 
-  const selectedMonthKey = `${new Date().getFullYear()}-${String(monthIndex + 1).padStart(2, '0')}`;
-  
+  const monthIndex = Month.findIndex((item) => item.value === month);
+  const selectedMonthKey = `${new Date().getFullYear()}-${String(monthIndex + 1).padStart(2, "0")}`;
 
   const CategorytDataForMonthExpense = categoryExpense[selectedMonthKey] || [];
 
@@ -114,13 +127,35 @@ export default function FinancialReport({ navigation }: Props) {
         }}
       />
       <View style={[styles.transactionHead]}>
-        <CustomD
+        {/* <CustomD
           name={t(month)}
           data={Month}
           styleButton={styles.homeMonth}
           styleItem={styles.dropdownItems}
           styleArrow={styles.homeArrow}
           onSelectItem={(item) => setMonth(item)}
+        /> */}
+        <DropdownComponent
+          data={Month}
+          value={month}
+          name={t(month)}
+          styleButton={{
+            borderRadius: 20,
+            borderWidth: 0.3,
+            borderColor: "grey",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingHorizontal: 20,
+            height: "60%",
+
+            marginTop: 10,
+            alignSelf: "flex-start",
+            width: "38%",
+          }}
+          styleItem={styles.dropdownItems}
+          onSelectItem={(item) => {
+            setMonth(item);
+          }}
         />
         <TouchableOpacity style={styles.reportGraph}>
           <TouchableOpacity
@@ -205,80 +240,75 @@ export default function FinancialReport({ navigation }: Props) {
       <View style={{ flex: 0.5, alignItems: "center" }}>
         {line && Expense && (
           <View style={{ flex: 1 }}>
-            {sortedExpense.length===0 &&(
-            
-                 <View
-                 style={{
-                  height:"100%",
-                  width:"100%",
-                   justifyContent: "center",
-                   alignItems: "center",
-                   
-                 }}
-               >
-                 <Text style={styles.budgetText}>No transaction occured</Text>
-               </View>
+            {sortedExpense.length === 0 && (
+              <View
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.budgetText}>No expense transaction occured</Text>
+              </View>
             )}
             <TransactionList data={sortedExpense} />
           </View>
         )}
         {line && Income && (
           <View style={{ flex: 1 }}>
-            {sortedIncome.length===0 &&(
-            
-                 <View
-                 style={{
-                  height:"100%",
-                  width:"100%",
-                   justifyContent: "center",
-                   alignItems: "center",
-                   
-                 }}
-               >
-                 <Text style={styles.budgetText}>No transaction occured.</Text>
-               </View>
+            {sortedIncome.length === 0 && (
+              <View
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.budgetText}>No income transaction occured.</Text>
+              </View>
             )}
             <TransactionList data={sortedIncome} />
           </View>
         )}
         {pie && Expense && (
-  <>
-    {CategorytDataForMonthExpense.length > 0 ? (
-      <CategoryList category={CategorytDataForMonthExpense} totalExpense={expense} />
-    ) : (
-      <View
-        style={{
-          height: "100%",
-          width: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text style={styles.budgetText}>No transaction occurred.</Text>
-      </View>
-    )}
-  </>
-)}
+          <>
+            {CategorytDataForMonthExpense.length > 0 ? (
+              <CategoryList category={CategorytDataForMonthExpense} totalExpense={expense} />
+            ) : (
+              <View
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.budgetText}>No expense transaction occurred.</Text>
+              </View>
+            )}
+          </>
+        )}
 
-{pie && Income && (
-  <>
-    {CategorytDataForMonthIncome.length > 0 ? (
-      <CategoryList category={CategorytDataForMonthIncome} totalExpense={income} />
-    ) : (
-      <View
-        style={{
-          height: "100%",
-          width: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text style={styles.budgetText}>No income transaction occurred.</Text>
-      </View>
-    )}
-  </>
-)}
-
+        {pie && Income && (
+          <>
+            {CategorytDataForMonthIncome.length > 0 ? (
+              <CategoryList category={CategorytDataForMonthIncome} totalExpense={income} />
+            ) : (
+              <View
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.budgetText}>No income transaction occurred.</Text>
+              </View>
+            )}
+          </>
+        )}
       </View>
     </View>
   );

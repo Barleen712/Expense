@@ -39,13 +39,29 @@ import { auth } from "../../FirebaseConfig";
 import { BudgetCategory } from "../../../Slice/Selectors";
 import { onDisplayNotification } from "../Budget/TestNotification";
 import { ActivityIndicator } from "react-native-paper";
+import DropdownComponent from "../../../Components/DropDown";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
   navigation: IncomeProp;
 }
-const category = ["Shopping", "Food", "Entertainment", "Subscription", "Transportation", "Bills", "Miscellaneous"];
-const wallet = ["PayPal", "Google Pay", "Paytm", "PhonePe", "Apple Pay"];
+const category = [
+  { label: "Shopping", value: "Shopping" },
+  { label: "Food", value: "Food" },
+  { label: "Entertainment", value: "Entertainment" },
+  { label: "Subscription", value: "Subscription" },
+  { label: "Transportation", value: "Transportation" },
+  { label: "Bills", value: "Bills" },
+  { label: "Miscellaneous", value: "Miscellaneous" },
+];
+
+const wallet = [
+  { value: "PayPal", label: "PaypPal" },
+  { value: "GooglePay", label: "GooglePay" },
+  { label: "Paytm", value: "Paytm" },
+  { label: "PhonePe", value: "PhonePe" },
+  { label: "ApplePay", value: "ApplePay" },
+];
 const modal = [
   require("../../../assets/CameraRed.png"),
   require("../../../assets/ImageRed.png"),
@@ -83,6 +99,10 @@ export default function Expense({ navigation, route }: Props) {
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
+  const today = new Date();
+  const currentMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+
+  const monthlyBudget = budget[currentMonth] || [];
   const openDocument = async () => {
     if (!document) return;
 
@@ -188,9 +208,9 @@ export default function Expense({ navigation, route }: Props) {
       startYear: new Date().getFullYear(),
     });
 
-    const Budget = budget.some((item) => item.category === selectedCategory);
+    const Budget = monthlyBudget.some((item) => item.category === selectedCategory);
     if (Budget) {
-      const Budget = budget.find((item) => item.category === selectedCategory);
+      const Budget = monthlyBudget.find((item) => item.category === selectedCategory);
       if (
         Budget.amountSpent + numericExpense >= (Budget.alertPercent / 100) * Budget.budgetvalue &&
         Budget.notification === true &&
@@ -333,12 +353,11 @@ export default function Expense({ navigation, route }: Props) {
                 )}
               </View>
               <View style={[styles.selection]}>
-                <CustomD
-                  name={t(parameters.category)}
+                <DropdownComponent
                   data={category}
+                  value={selectedCategory}
+                  name={t(parameters.category)}
                   styleButton={styles.textinput}
-                  styleItem={styles.dropdownItems}
-                  styleArrow={styles.arrowDown}
                   onSelectItem={(item) => {
                     setSelectedCategory(item);
                     setcategoryError("");
@@ -379,12 +398,12 @@ export default function Expense({ navigation, route }: Props) {
                     *{descriptionError}
                   </Text>
                 )}
-                <CustomD
-                  name={t(parameters.wallet)}
+
+                <DropdownComponent
                   data={wallet}
+                  value={selectedWallet}
+                  name={t(parameters.wallet)}
                   styleButton={styles.textinput}
-                  styleItem={styles.dropdownItems}
-                  styleArrow={styles.arrowDown}
                   onSelectItem={(item) => {
                     setSelectedWallet(item);
                     setwalletError("");
@@ -517,7 +536,7 @@ export default function Expense({ navigation, route }: Props) {
                       </Text>
                     </View>
                     <TouchableOpacity
-                      onPress={()=>setFrequencyModal(!Frequencymodal)}
+                      onPress={() => setFrequencyModal(!Frequencymodal)}
                       style={{
                         backgroundColor: "rgba(56, 184, 176, 0.23)",
                         padding: 10,

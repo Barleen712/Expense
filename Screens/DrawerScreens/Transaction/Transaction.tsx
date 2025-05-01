@@ -9,26 +9,27 @@ import {
   FlatList,
   TouchableWithoutFeedback,
 } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { selectTransactions } from "../../../Slice/Selectors";
 import CustomD from "../../../Components/Practice";
 import { CustomButton } from "../../../Components/CustomButton";
 import { useSelector } from "react-redux";
 import styles from "../../Stylesheet";
+import DropdownComponent from "../../../Components/DropDown";
 const Month = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  { label: "January", value: "January" },
+  { label: "February", value: "February" },
+  { label: "March", value: "March" },
+  { label: "April", value: "April" },
+  { label: "May", value: "May" },
+  { label: "June", value: "June" },
+  { label: "July", value: "July" },
+  { label: "August", value: "August" },
+  { label: "September", value: "September" },
+  { label: "October", value: "October" },
+  { label: "November", value: "November" },
+  { label: "December", value: "December" },
 ];
+
 const data = [
   "Salary",
   "Passive Income",
@@ -47,8 +48,6 @@ import StackParamList from "../../../Navigation/StackList";
 import TransactionList from "../Home/TransactionsList";
 import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
-import { auth, db } from "../../FirebaseConfig";
-import { query, collection, where, onSnapshot } from "firebase/firestore";
 
 type Transactionprop = StackNavigationProp<StackParamList, "MainScreen">;
 
@@ -57,7 +56,7 @@ interface Props {
 }
 export default function Transaction({ navigation }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [month, setMonth] = useState(Month[new Date().getMonth()]);
+  const [month, setMonth] = useState(Month[new Date().getMonth()].value);
   const [sortBy, setSortBy] = useState("");
   const [filteritem, setFilter] = useState("");
   const [reset, setReset] = useState(true);
@@ -78,7 +77,7 @@ export default function Transaction({ navigation }: Props) {
     if (month) {
       filteredResult = filteredResult.filter((item) => {
         const transactionMonth = new Date(item.Date).getMonth();
-        return transactionMonth === Month.indexOf(month);
+        return transactionMonth === Month.findIndex((item) => item.value === month);
       });
     }
     setFilterTrans(filteredResult);
@@ -92,7 +91,7 @@ export default function Transaction({ navigation }: Props) {
       if (month) {
         filteredResult = filteredResult.filter((item) => {
           const transactionMonth = new Date(item.Date).getMonth();
-          return transactionMonth === Month.indexOf(month);
+          return transactionMonth === Month.findIndex((item) => item.value === month);
         });
       }
 
@@ -136,18 +135,33 @@ export default function Transaction({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.transactionHead}>
-        <CustomD
-          name={t(month)}
+        <DropdownComponent
           data={Month}
-          styleButton={styles.homeMonth}
+          value={month}
+          name={t(month)}
+          styleButton={{
+            borderRadius: 20,
+            borderWidth: 0.3,
+            borderColor: "grey",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingHorizontal: 20,
+            height: "60%",
+
+            marginTop: 10,
+            alignSelf: "flex-start",
+            width: "38%",
+          }}
           styleItem={styles.dropdownItems}
-          styleArrow={styles.homeArrow}
-          onSelectItem={(item) => setMonth(item)}
+          onSelectItem={(item) => {
+            setMonth(item);
+          }}
         />
         <TouchableOpacity onPress={toggleModal}>
           <Image source={require("../../../assets/sort.png")} style={styles.sortImage} />
         </TouchableOpacity>
       </View>
+
       {containIncome && containExpense && (
         <View style={styles.reportView}>
           <TouchableOpacity
@@ -159,25 +173,7 @@ export default function Transaction({ navigation }: Props) {
           </TouchableOpacity>
         </View>
       )}
-      {/* <View style={styles.reportView}>
-        <TouchableOpacity style={styles.financialReport} onPress={() => navigation.navigate("FinancialReportExpense")}>
-          <Text style={styles.reportText}>{t(StringConstants.Seeyourfinancialreport)}</Text>
-          <Image style={styles.arrows} source={require("../../../assets/arrow.png")} />
-        </TouchableOpacity>
-      </View> */}
-      {transactions.length === 0 && (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", marginTop: 200 }}>
-          <Text style={styles.budgetText}>
-            You have not made any transaction.{"\n"}
-            Start your first transaction
-          </Text>
-        </View>
-      )}
-      {FilterTrans.length === 0 && (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", marginTop: 200 }}>
-          <Text style={styles.budgetText}>No record of transactions</Text>
-        </View>
-      )}
+
       <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
         <TouchableWithoutFeedback onPress={toggleModal}>
           <View style={styles.modalOverlay}>
@@ -206,7 +202,10 @@ export default function Transaction({ navigation }: Props) {
                   data={FilterBy}
                   renderItem={({ item }) => (
                     <TouchableOpacity
-                      onPress={() => setFilter(item)}
+                      onPress={() => {
+                        if (filteritem === item) setFilter("");
+                        else setFilter(item);
+                      }}
                       style={[
                         styles.filterButton,
                         { backgroundColor: item === filteritem ? "rgba(174, 225, 221, 0.6)" : "white" },
@@ -233,7 +232,10 @@ export default function Transaction({ navigation }: Props) {
                   renderItem={({ item }) => {
                     return (
                       <TouchableOpacity
-                        onPress={() => setSortBy(item)}
+                        onPress={() => {
+                          if (sortBy === item) setSortBy("");
+                          else setSortBy(item);
+                        }}
                         style={[
                           styles.filterButton,
                           { backgroundColor: item === sortBy ? "rgba(174, 225, 221, 0.6)" : "white" },
@@ -258,13 +260,8 @@ export default function Transaction({ navigation }: Props) {
                   styleText={styles.settingtitle}
                   styleItem={styles.dropdownItems}
                   styleArrow={{ position: "absolute", right: "1%" }}
-                  onReset={reset}
                   onSelectItem={(item) => setSelectedCategory(item)}
                 />
-                {/* // <TouchableOpacity style={[styles.settingsOptions, { marginTop: 20 }]}>
-                //   <Text style={styles.settingtitle}>{t(StringConstants.ChooseCategory)}</Text>
-                //   <Image style={{ position: "absolute", right: "1%" }} source={require("../../../assets/arrow.png")} />
-                // </TouchableOpacity> */}
                 <View style={styles.Apply}>
                   <CustomButton title={t("Apply")} bg="rgb(42, 124, 118)" color="white" press={handleSort} />
                 </View>
@@ -273,8 +270,21 @@ export default function Transaction({ navigation }: Props) {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-      <View style={{ width: "100%", flex: 1, alignItems: "center", marginBottom: 80 }}>
-        <TransactionList data={FilterTrans} />
+      <View
+        style={{
+          width: "100%",
+          flex: 1,
+          alignItems: "center",
+          marginBottom: 80,
+          justifyContent: "center",
+          marginTop: 10,
+        }}
+      >
+        {FilterTrans.length === 0 ? (
+          <Text style={styles.budgetText}>No record of transactions</Text>
+        ) : (
+          <TransactionList data={FilterTrans} />
+        )}
       </View>
     </View>
   );
