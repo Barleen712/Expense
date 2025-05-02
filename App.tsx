@@ -10,14 +10,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Screens/FirebaseConfig";
 import { TabScreens } from "./Navigation/StackNavigation";
 import { ActivityIndicator } from "react-native-paper";
-import BiometricAuth from "./Screens/DrawerScreens/Profile/Biometrics";
-import styles from "./Screens/Stylesheet";
-import MyComponent from "./Component";
-import { FinancialReportIncome } from "./Screens/DrawerScreens/Transaction/FinancialReport/Report";
-import Setpin from "./Screens/Onboarding/SetupPin01";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useSelector } from "react-redux";
-import DropdownComponent from "./Components/DropDown";
+import Toast from "react-native-toast-message";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -62,10 +55,8 @@ export default function App() {
   return (
     <Provider store={Store}>
       <NavigationContainer>
-        {/* <DropdownComponent /> */}
         {user ? <TabScreens /> : <Screens />}
-        {/* <BiometricAuth/> */}
-        {/* <Setpin /> */}
+        <Toast />
       </NavigationContainer>
     </Provider>
   );

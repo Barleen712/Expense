@@ -374,13 +374,15 @@ export default function Income({ navigation, route }: Props) {
                   <TouchableOpacity style={styles.modalContainer}>
                     <SelectImageWithDocumentPicker
                       toggle={toggleModal}
-                      setAttach={() => setAttach(!showAttach)}
+                      attach={showAttach}
+                      setAttach={setAttach}
                       image={image}
                       setImage={setImage}
-                      setclose={() => setclose(!close)}
+                      setclose={setclose}
                       setDocument={setDocument}
                       modalItems={modal}
                       setPhoto={setPhoto}
+                      close={close}
                     />
                   </TouchableOpacity>
                 </View>

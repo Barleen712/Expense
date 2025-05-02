@@ -33,8 +33,6 @@ import FinancialReportExpense, {
   FinancialReportQuote,
 } from "../Screens/DrawerScreens/Transaction/FinancialReport/Report";
 import FinancialReport from "../Screens/DrawerScreens/Transaction/FinancialReport/FinancialReport";
-import Transaction from "../Screens/DrawerScreens/Transaction/Transaction";
-import TransactionList from "../Screens/DrawerScreens/Home/TransactionsList";
 import DetailedBudget from "../Screens/DrawerScreens/Budget/DetailedBudget";
 import DetailAccount from "../Screens/DrawerScreens/Profile/DetailAccount";
 import { useEffect } from "react";
@@ -67,7 +65,7 @@ export function TabScreens() {
   const navigation = useNavigation<StackNavigationProp<StackParamList>>();
   useEffect(() => {
     handleBiometricAuth(navigation);
-    dispatch(fetchRates());
+    //dispatch(fetchRates());
   }, []);
   return (
     <Stack2.Navigator initialRouteName="EnterPin" screenOptions={{ headerShown: false }}>

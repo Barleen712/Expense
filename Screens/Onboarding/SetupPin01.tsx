@@ -17,6 +17,7 @@ export default function Setpin({ navigation }: Props) {
   const [pin, setpin] = useState("");
   function handlenext() {
     if (pin.length === 4) navigation.navigate("Setpin1", { FirstPin: pin });
+    setpin("");
   }
   const { t } = useTranslation();
   const handleClear = () => {

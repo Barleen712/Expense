@@ -58,25 +58,35 @@ export default function Getstarted({ navigation }: Props) {
     );
   };
   return (
-    <SafeAreaView style={{ alignItems: "center", backgroundColor: "white", flex: 1, paddingTop: 20 }}>
+    <SafeAreaView style={{ alignItems: "center", flex: 1, backgroundColor: "white" }}>
       <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
-      <Carousel
-        data={data}
-        renderItem={render}
-        loop={true}
-        autoPlay={true}
-        autoPlayInterval={3000}
-        width={screenWidth}
-        height={Platform.OS === "ios" ? 400 : 500}
-        onSnapToItem={(index) => setActiveIndex(index)}
-      ></Carousel>
-      <View style={styles.paginationContainer}>
-        {data.map((_, index) => (
-          <View key={index} style={[styles.dot, activeIndex === index && styles.activeDot]} />
-        ))}
+      <View style={{ flex: 0.75, alignItems: "center", justifyContent: "center" }}>
+        <Carousel
+          data={data}
+          renderItem={render}
+          loop={true}
+          autoPlay={true}
+          autoPlayInterval={3000}
+          width={screenWidth}
+          style={{ flex: 0.95 }}
+          onSnapToItem={(index) => setActiveIndex(index)}
+        ></Carousel>
+        <View style={styles.paginationContainer}>
+          {data.map((_, index) => (
+            <View key={index} style={[styles.dot, activeIndex === index && styles.activeDot]} />
+          ))}
+        </View>
       </View>
-      <CustomButton title={t(StringConstants.SignUp)} bg="rgb(42, 124, 118)" color="white" press={signup} />
-      <View style={{ marginTop: 10, width: "100%", alignItems: "center" }}>
+
+      <View
+        style={{
+          flex: 0.2,
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "space-evenly",
+        }}
+      >
+        <CustomButton title={t(StringConstants.SignUp)} bg="rgb(42, 124, 118)" color="white" press={signup} />
         <CustomButton
           title={t(StringConstants.Login)}
           bg="rgba(220, 234, 233, 0.6)"
@@ -91,26 +101,26 @@ const styles = StyleSheet.create({
   view: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 10,
-    //  padding: 40,
+    height: "100%",
   },
   image: {
-    height: Platform.OS === "ios" ? 220 : 300,
-    width: Platform.OS === "ios" ? 200 : 280,
+    height: "70%",
+    width: "75%",
+    resizeMode: "contain",
   },
   title: {
-    paddingTop: 30,
     fontFamily: "Inter",
     fontWeight: 700,
-    fontSize: Platform.OS === "ios" ? 32 : 37,
+    fontSize: 32,
     textAlign: "center",
+    width: "90%",
   },
   des: {
-    width: "95%",
+    width: "75%",
     paddingTop: 10,
     fontFamily: "Inter",
     fontWeight: 500,
-    fontSize: Platform.OS === "ios" ? 16 : 19,
+    fontSize: 16,
     textAlign: "center",
     color: " rgba(145, 145, 159, 1)",
   },
@@ -118,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    margin: 15,
+    flex: 0.05,
   },
   dot: {
     width: 10,

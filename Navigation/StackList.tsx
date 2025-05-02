@@ -8,7 +8,7 @@ type StackParamList = {
   GetStarted: undefined;
   Setpin: undefined;
   Setpin1: { FirstPin: number };
-  AllSet: undefined;
+  AllSet: { title: string };
   MainScreen: undefined;
   Settings: undefined;
   Account: undefined;

@@ -3,8 +3,9 @@ import { supabase } from "./SuperbaseConfig";
 import RNFS from "react-native-fs";
 import ReactNativeBiometrics, { FaceID } from "react-native-biometrics";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { signInWithCredential, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "./FirebaseConfig";
+import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
 const rnBiometrics = new ReactNativeBiometrics();
 export const categoryMap = {
   Food: require("../assets/Food.png"),
@@ -206,31 +207,59 @@ export const currencies: Record<string, string> = {
   RUB: "₽",
 };
 export const handleBiometricAuth = async (navigation: any) => {
-  // Accept navigation prop
   try {
     const { available } = await rnBiometrics.isSensorAvailable();
 
     if (!available) {
-      navigation.navigate("EnterPin"); // No biometric support → PIN
-      return false;
+      navigation.navigate("EnterPin");
+      return;
     }
 
-    const { success } = await rnBiometrics.simplePrompt({
-      promptMessage: "Confirm your identity",
-      cancelButtonText: "Use PIN Instead",
-    });
+    const biometricEnabled = await AsyncStorage.getItem("biometricEnabled");
+    if (biometricEnabled === null) {
+      Alert.alert("Enable Biometric Login?", "Would you like to use fingerprint/face recognition to log in?", [
+        {
+          text: "No",
+          onPress: async () => {
+            await AsyncStorage.setItem("biometricEnabled", "false");
+            navigation.navigate("EnterPin");
+          },
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            await AsyncStorage.setItem("biometricEnabled", "true");
+            const { success } = await rnBiometrics.simplePrompt({
+              promptMessage: "Confirm your identity",
+              cancelButtonText: "Use PIN Instead",
+            });
 
-    if (success) {
-      navigation.navigate("MainScreen");
-      return true;
+            if (success) {
+              navigation.navigate("MainScreen");
+            } else {
+              navigation.navigate("EnterPin");
+            }
+          },
+        },
+      ]);
+    } else if (biometricEnabled === "true") {
+      const { success } = await rnBiometrics.simplePrompt({
+        promptMessage: "Confirm your identity",
+        cancelButtonText: "Use PIN Instead",
+      });
+
+      if (success) {
+        navigation.navigate("MainScreen");
+      } else {
+        navigation.navigate("EnterPin");
+      }
     } else {
       navigation.navigate("EnterPin");
-      return false;
     }
   } catch (error) {
     console.error("Biometric error:", error);
     navigation.navigate("SetPinScreen");
-    return false;
   }
 };
 
@@ -259,3 +288,18 @@ export const profilepics = [
   require("../assets/man2.jpg"),
   require("../assets/women1.jpg"),
 ];
+export const FirebaseErrors: Record<string, string> = {
+  "auth/invalid-credential": "Check Your Credentials",
+  "auth/too-many-requests": "You have exceeded the request limit",
+  "auth/email-already-in-use": "The provided email is already in use",
+};
+export function raiseToast(text1: string, error: string) {
+  Toast.show({
+    type: "error",
+    text1: text1,
+    text2: FirebaseErrors[error],
+    position: "bottom",
+    text1Style: { fontSize: 16 },
+    text2Style: { fontSize: 16, fontWeight: "bold" },
+  });
+}

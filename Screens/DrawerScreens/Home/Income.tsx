@@ -446,7 +446,7 @@ export default function Income({ navigation, route }: Props) {
                         {frequency === "Yearly" && ` - ${month} ${startDate} ` + new Date().getFullYear()}
                         {frequency === "Monthly" &&
                           " - " + Month[new Date().getMonth()] + ` ${startDate} ` + new Date().getFullYear()}
-                        {frequency === "Weekly" && ` - ${week}`}
+                        {frequency === "Weekly" && ` - ${Weeks[week]}`}
                       </Text>
                     </View>
                     <View style={{ flex: 1 }}>
@@ -489,13 +489,15 @@ export default function Income({ navigation, route }: Props) {
                   <TouchableOpacity style={styles.modalContainer}>
                     <SelectImageWithDocumentPicker
                       toggle={toggleModal}
-                      setAttach={() => setAttach(!showAttach)}
+                      attach={showAttach}
+                      setAttach={setAttach}
                       image={image}
                       setImage={setImage}
-                      setclose={() => setclose(!close)}
+                      setclose={setclose}
                       setDocument={setDocument}
                       modalItems={modal}
                       setPhoto={setPhoto}
+                      close={close}
                     />
                   </TouchableOpacity>
                 </View>
@@ -505,7 +507,7 @@ export default function Income({ navigation, route }: Props) {
               <>
                 {(image || photo) && (
                   <TouchableOpacity
-                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "25%" : "21%", left: "26%" }}
+                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "35%" : "30%", left: "27%" }}
                     onPress={() => {
                       setImage(null);
                       setPhoto(null);

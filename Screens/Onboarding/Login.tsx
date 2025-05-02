@@ -1,16 +1,6 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Platform,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import React, { useState, useRef } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Platform, ActivityIndicator, TextInput } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Input from "../../Components/CustomTextInput";
 import GradientButton from "../../Components/CustomButton";
 import { auth } from "../FirebaseConfig";
@@ -19,15 +9,16 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
 import Header from "../../Components/Header";
 import { useTranslation } from "react-i18next";
-import { StringConstants } from "../Constants";
-import Success from "./SignUp_success";
-import styles from "../Stylesheet";
+import { raiseToast, StringConstants } from "../Constants";
+
 type LoginProp = StackNavigationProp<StackParamList, "Login">;
 
 interface Props {
   navigation: LoginProp;
 }
 export default function Login({ navigation }: Props) {
+  const passwordRef = useRef<TextInput>(null);
+  const emailRef = useRef<TextInput>(null);
   const [email, setemail] = useState({ email: "", emailError: "" });
   const [password, setpass] = useState({ password: "", passwordError: "" });
   const [loading, setLoading] = useState(false);
@@ -37,7 +28,7 @@ export default function Login({ navigation }: Props) {
   }
   async function handlesLogin() {
     if (email.email === "") {
-      setemail({ ...email, emailError: "Enter Email" });
+      setemail({ ...email, emailError: "Email is required" });
       return;
     }
     const emailRegex =
@@ -47,7 +38,7 @@ export default function Login({ navigation }: Props) {
       return;
     }
     if (password.password === "") {
-      setpass({ ...password, passwordError: "Enter Password" });
+      setpass({ ...password, passwordError: "Password is required" });
       return;
     }
     if (password.password.length < 6) {
@@ -60,7 +51,8 @@ export default function Login({ navigation }: Props) {
       setLoading(false);
       navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
     } catch (error: any) {
-      alert(error.message);
+      raiseToast("Login Failed", error.code);
+
       setLoading(false);
     }
   }
@@ -77,6 +69,7 @@ export default function Login({ navigation }: Props) {
       <Header title={t(StringConstants.Login)} press={() => navigation.goBack()} />
       <View style={style.input}>
         <Input
+          ref={emailRef}
           title={t(StringConstants.Email)}
           color="rgb(56, 88, 85)"
           css={style.textinput}
@@ -85,7 +78,6 @@ export default function Login({ navigation }: Props) {
             setemail({ emailError: "", email: data });
           }}
           isPass={false}
-          handleFocus={handleChange}
         />
         {email.emailError !== "" && (
           <Text
@@ -97,16 +89,22 @@ export default function Login({ navigation }: Props) {
               width: "90%",
             }}
           >
-            *{email.emailError}
+            {email.emailError}*
           </Text>
         )}
         <Input
+          ref={passwordRef}
           title={t(StringConstants.Password)}
           color="rgb(56, 88, 85)"
           css={style.textinput}
           isPass={true}
           name={password.password}
-          handleFocus={handleChange}
+          handleFocus={() => {
+            if (!email.email.trim()) {
+              setemail({ ...email, emailError: "Email is required" });
+              emailRef.current?.focus();
+            }
+          }}
           onchange={(data) => {
             setpass({ password: data, passwordError: "" });
           }}
@@ -121,7 +119,7 @@ export default function Login({ navigation }: Props) {
               width: "90%",
             }}
           >
-            *{password.passwordError}
+            {password.passwordError}*
           </Text>
         )}
       </View>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -40,6 +40,9 @@ export default function SignUp({ navigation }: Props) {
       iosClientId: "26672937768-9fqv55u26fqipe8gn6kh9dh1tg71189b.apps.googleusercontent.com",
     });
   }, []);
+  const nameRef = useRef<TextInput>(null);
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
   const [name, setname] = useState({ name: "", nameError: "" });
   const [email, setemail] = useState({ email: "", emailError: "" });
   const [password, setpass] = useState({ password: "", passwordError: "" });
@@ -51,11 +54,11 @@ export default function SignUp({ navigation }: Props) {
   }
   async function handleSignUp() {
     if (name.name === "") {
-      setname({ ...name, nameError: "Enter Name" });
+      setname({ ...name, nameError: "Name is required" });
       return;
     }
     if (email.email === "") {
-      setemail({ ...email, emailError: "Enter Email" });
+      setemail({ ...email, emailError: "Email is required" });
       return;
     }
     const emailRegex =
@@ -65,11 +68,16 @@ export default function SignUp({ navigation }: Props) {
       return;
     }
     if (password.password === "") {
-      setpass({ ...password, passwordError: "Enter Password" });
+      setpass({ ...password, passwordError: "Password is required" });
       return;
     }
-    if (password.password.length < 6) {
-      setpass({ ...password, passwordError: "Enter Password of length atleast 6" });
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&()_+^#])[A-Za-z\d@$!%*?&()_+^#]{8,}$/;
+    if (!passwordRegex.test(password.password)) {
+      setpass({
+        ...password,
+        passwordError:
+          "Password must be at least 8 characters, include uppercase, lowercase, number, and special character.",
+      });
       return;
     }
     if (checked.state === false) {
@@ -87,6 +95,7 @@ export default function SignUp({ navigation }: Props) {
     setname({ name: "", nameError: "" });
     setemail({ email: "", emailError: "" });
     setpass({ password: "", passwordError: "" });
+    setChecked({ state: false, error: "" });
     navigation.navigate("Setpin");
   }
   const { t } = useTranslation();
@@ -110,17 +119,19 @@ export default function SignUp({ navigation }: Props) {
       <Header title={t(StringConstants.SignUp)} press={() => navigation.goBack()}></Header>
       <View style={style.input}>
         <Input
+          ref={nameRef}
           title={t(StringConstants.Name)}
           color="rgb(56, 88, 85)"
           css={style.textinput}
           name={name.name}
-          handleFocus={handleChange}
+          // handleFocus={handleChange}
           onchange={(data) => {
             const onlyAlphabets = data.replace(/[^a-zA-Z\s]/g, "");
             setname({ nameError: "", name: onlyAlphabets });
           }}
           isPass={false}
         />
+
         {name.nameError !== "" && (
           <Text
             style={{
@@ -131,20 +142,27 @@ export default function SignUp({ navigation }: Props) {
               width: "90%",
             }}
           >
-            *{name.nameError}
+            {name.nameError}*
           </Text>
         )}
         <Input
+          ref={emailRef}
           title={t(StringConstants.Email)}
           color="rgb(56, 88, 85)"
           css={style.textinput}
           name={email.email}
+          handleFocus={() => {
+            if (!name.name.trim()) {
+              setname({ ...name, nameError: "Name is required" });
+              nameRef.current?.focus();
+            }
+          }}
           onchange={(data) => {
             setemail({ emailError: "", email: data });
           }}
           isPass={false}
-          handleFocus={handleChange}
         />
+
         {email.emailError !== "" && (
           <Text
             style={{
@@ -155,20 +173,27 @@ export default function SignUp({ navigation }: Props) {
               width: "90%",
             }}
           >
-            *{email.emailError}
+            {email.emailError}*
           </Text>
         )}
         <Input
+          ref={passwordRef}
           title={t(StringConstants.Password)}
           color="rgb(56, 88, 85)"
           css={style.textinput}
           isPass={true}
           name={password.password}
-          handleFocus={handleChange}
+          handleFocus={() => {
+            if (!email.email.trim()) {
+              setemail({ ...email, emailError: "Email is required" });
+              emailRef.current?.focus();
+            }
+          }}
           onchange={(data) => {
             setpass({ password: data, passwordError: "" });
           }}
         />
+
         {password.passwordError !== "" && (
           <Text
             style={{
@@ -179,7 +204,7 @@ export default function SignUp({ navigation }: Props) {
               width: "90%",
             }}
           >
-            *{password.passwordError}
+            {password.passwordError}*
           </Text>
         )}
       </View>
@@ -206,7 +231,7 @@ export default function SignUp({ navigation }: Props) {
             width: "90%",
           }}
         >
-          *{checked.error}
+          {checked.error}*
         </Text>
       )}
       <GradientButton title="Sign Up" handles={handleSignUp} />

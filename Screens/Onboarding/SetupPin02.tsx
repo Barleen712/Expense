@@ -6,7 +6,7 @@ import Keypad from "../../Components/Keypad";
 import Pin from "../../Components/Pin";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
-import { StringConstants } from "../Constants";
+import { raiseToast, StringConstants } from "../Constants";
 import { useTranslation } from "react-i18next";
 import { auth } from "../FirebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -37,9 +37,9 @@ export default function Setpin02({ navigation, route }: Props) {
           index: null,
         });
         AddUser({ User: name, userId: user.user?.uid });
-        navigation.navigate("AllSet", { title: "All Set" });
+        navigation.navigate("AllSet", { title: "You are set!" });
       } catch (error: any) {
-        alert(error.message);
+        raiseToast("Sign Up Failed", error.code);
       }
     } else if (route.params.FirstPin === pin && google === true) {
       const googleCredential = GoogleAuthProvider.credential(id);
@@ -50,11 +50,12 @@ export default function Setpin02({ navigation, route }: Props) {
         userId: user.uid,
       });
       AddUser({ User: username, photo: { uri: photo }, userId: user.uid, index: null });
-      navigation.navigate("AllSet", { title: "All Set" });
+      navigation.navigate("AllSet", { title: "You are set!" });
     } else {
       alert("PINS don't match. \nPlease Re-Enter your Pin");
       handleClear();
     }
+    setpin("");
   }
   const { t } = useTranslation();
   return (
