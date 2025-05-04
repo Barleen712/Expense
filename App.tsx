@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 import { StyleSheet, Text, View, SafeAreaView, Button, PermissionsAndroid, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import Screens from "./Navigation/StackNavigation";
 import { Provider } from "react-redux";
 import Store from "./Store/Store";
-import Home from "./Screens/DrawerScreens/Home/Home";
+import { ThemeContext, ThemeProvider } from "./Context/ThemeContext";
 import notifee, { AuthorizationStatus } from "@notifee/react-native";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Screens/FirebaseConfig";
@@ -47,7 +47,7 @@ export default function App() {
   {
     if (loading)
       return (
-        <View style={{ height: "100%", alignItems: "center", justifyContent: "center" }}>
+        <View style={{ height: "100%", alignItems: "center", justifyContent: "center"}}>
           <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
         </View>
       );
@@ -55,8 +55,10 @@ export default function App() {
   return (
     <Provider store={Store}>
       <NavigationContainer>
-        {user ? <TabScreens /> : <Screens />}
-        <Toast />
+       <ThemeProvider>
+       {user ? <TabScreens /> : <Screens />}
+       <Toast />
+       </ThemeProvider>
       </NavigationContainer>
     </Provider>
   );

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import Slider from "@react-native-community/slider";
 import styles from "../Screens/Stylesheet";
+import { ThemeContext } from "../Context/ThemeContext";
 
 const { width } = Dimensions.get("window");
 interface SliderInterface {
@@ -10,8 +11,9 @@ interface SliderInterface {
 }
 export default function CustomSlider({ value, setvalue }: SliderInterface) {
   const thumbPosition = (value / 100) * (width - 60);
+  const {colors}=useContext(ThemeContext)
   return (
-    <View style={styles.container1}>
+    <View style={[styles.container1,{backgroundColor:colors.backgroundColor}]}>
       <View style={styles.sliderWrapper}>
         <View style={styles.trackBackground} />
         <View style={[styles.trackFill, { width: `${value}%` }]} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -14,9 +14,8 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import styles from "../../Stylesheet";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { CustomButton } from "../../../Components/CustomButton";
@@ -30,9 +29,9 @@ import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { updateUserDoc } from "../../FirestoreHandler";
 import * as DocumentPicker from "expo-document-picker";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { uploadImage } from "../../Constants";
-
+import { getStyles } from "./styles";
+import { ThemeContext } from "../../../Context/ThemeContext";
 type Profileprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
@@ -128,8 +127,10 @@ export default function Profile({ navigation }: Props) {
       console.error("Error while picking image:", err);
     }
   };
+   const { colors, setTheme, theme } = useContext(ThemeContext);
+  const styles=getStyles(colors)
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: "rgba(246, 246, 246, 1)" }]}>
+    <SafeAreaView style={styles.container}>
       <ImageBackground style={{ width: widths, height: 800 }} source={require("../../../assets/ProfileBack.png")}>
         <View style={styles.profile}>
           <View style={styles.userphoto}>
@@ -208,7 +209,7 @@ export default function Profile({ navigation }: Props) {
               style={{
                 width: "90%",
                 height: "80%",
-                backgroundColor: "white",
+                backgroundColor: colors.backgroundColor,
                 marginBottom: 70,
                 borderRadius: 20,
                 padding: 20,

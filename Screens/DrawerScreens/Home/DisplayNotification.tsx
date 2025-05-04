@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, FlatList, Text, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import Header from "../../../Components/Header";
 import styles from "../../Stylesheet";
@@ -8,6 +8,7 @@ import { removeNotification } from "../../../Slice/IncomeSlice";
 import { deleteAllUserNotifications } from "../../FirestoreHandler";
 import { auth } from "../../FirebaseConfig";
 import { updateBadge } from "../../../Slice/IncomeSlice";
+import { ThemeContext } from "../../../Context/ThemeContext";
 export default function DisplayNotification({ navigation }) {
   const NotificationData = useSelector((state) => state.Money.notification);
   const sortedNotification = [...NotificationData].sort((a, b) => {
@@ -15,12 +16,14 @@ export default function DisplayNotification({ navigation }) {
   });
   const [show, setShow] = useState(false);
   const dispatch = useDispatch();
+  const {colors}=useContext(ThemeContext)
+
   return (
     <TouchableWithoutFeedback onPress={() => setShow(false)}>
       <View style={styles.container}>
-        <Header title="Notification" press={() => navigation.goBack()} />
-        <TouchableOpacity onPress={() => setShow(!show)} style={{ position: "absolute", right: "5%", top: "8%" }}>
-          <Entypo name="dots-three-horizontal" size={24} color="black" />
+        <Header title="Notification" press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color} />
+        <TouchableOpacity onPress={() => setShow(!show)} style={{ position: "absolute", right: "5%", top: "7%" }}>
+          <Entypo name="dots-three-horizontal" size={24} color={colors.color} />
         </TouchableOpacity>
 
         {show && (
@@ -62,7 +65,7 @@ export default function DisplayNotification({ navigation }) {
           </View>
         )}
 
-        <View style={{ flex: 1, alignItems: "center", width: "100%" }}>
+        <View style={{ flex: 1, alignItems: "center", width: "100%",backgroundColor:colors.backgroundColor }}>
           {sortedNotification.length === 0 ? (
             <View style={{ justifyContent: "center", flex: 1 }}>
               <Text style={styles.budgetText}>There is no notification for now</Text>
@@ -91,11 +94,11 @@ export default function DisplayNotification({ navigation }) {
                       }}
                     >
                       <View style={{ width: "78%", justifyContent: "center", paddingLeft: 10 }}>
-                        <Text style={{ fontWeight: "bold" }}>{item.title}</Text>
+                        <Text style={{ fontWeight: "bold" ,color:colors.color}}>{item.title}</Text>
                         <Text style={{ color: "grey" }}>{item.body}</Text>
                       </View>
                       <View style={{ justifyContent: "center", alignItems: "center", paddingLeft: 5, width: "22%" }}>
-                        <Text style={{ fontSize: 12 }}>{DisplayDate}</Text>
+                        <Text style={{ fontSize: 12,color:colors.color }}>{DisplayDate}</Text>
                         <Text style={{ color: "grey", fontSize: 12 }}>{formattedTime}</Text>
                       </View>
                     </View>

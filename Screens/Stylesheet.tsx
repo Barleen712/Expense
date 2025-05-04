@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   },
   settingsOptions: {
     flexDirection: "row",
-    height: "20%",
+   // height: "20%",
     alignItems: "center",
   },
   settings: {
@@ -823,39 +823,7 @@ const styles = StyleSheet.create({
     borderColor: "grey",
     borderRadius: 30,
   },
-  FilterOptions: {
-    flex: 0.2,
-    width: "90%",
-  },
-  flatListContainer: {
-    justifyContent: "center",
-    height: "90%",
-  },
-  filterButton: {
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#D1D1D1",
-    height: "100%",
-    alignItems: "center",
-    padding: 10,
-    marginRight: 10,
-  },
-  filterButtonText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#555",
-    width: Platform.OS === "ios" ? 70 : 78,
-    textAlign: "center",
-  },
-  FilterCategory: {
-    flex: 0.35,
-    width: "90%",
-    marginBottom: 20,
-  },
-  Apply: {
-    width: "100%",
-    alignItems: "center",
-  },
+ 
   DetailHead: {
     flex: 0.25,
     borderBottomLeftRadius: 30,

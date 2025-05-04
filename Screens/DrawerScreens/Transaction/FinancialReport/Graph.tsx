@@ -1,10 +1,11 @@
-import React from "react";
+import React,{useContext} from "react";
 import { LineChart } from "react-native-gifted-charts";
 import { Platform, View, Text, Dimensions } from "react-native";
 import Svg, { Circle, G } from "react-native-svg";
 import styles from "../../../Stylesheet";
 import { useSelector } from "react-redux";
 import { currencies } from "../../../Constants";
+import { ThemeContext } from "../../../../Context/ThemeContext";
 interface Donut {
   data: Array<object>;
   value: number;
@@ -22,9 +23,10 @@ export const DonutChart = ({
   const Rates = useSelector((state) => state.Rates);
   const currency = Rates.selectedCurrencyCode;
   const convertRate = Rates.Rate[currency];
+  const {colors}=useContext(ThemeContext)
   return (
     <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
-      <Text style={[styles.typeText, { position: "absolute", top: "40%", color: "black" }]}>
+      <Text style={[styles.typeText, { position: "absolute", top: "40%", color: colors.color }]}>
         {currencies[currency]}
         {(value * convertRate).toFixed(2)}
       </Text>
@@ -75,6 +77,7 @@ export const Linearchart = ({ data, height }: lineData) => {
     let hours = data_date.getHours();
     const minutes = data_date.getMinutes().toString().padStart(2, "0");
     const formattedTime = `${hours}:${minutes}`;
+  
     return (
       <View
         style={{
@@ -102,6 +105,7 @@ export const Linearchart = ({ data, height }: lineData) => {
       </View>
     );
   }
+  const {colors}=useContext(ThemeContext)
   return (
     <LineChart
       data={data}
@@ -111,7 +115,7 @@ export const Linearchart = ({ data, height }: lineData) => {
       yAxisLabelWidth={0}
       height={height}
       startFillColor="rgb(61, 122, 95)"
-      endFillColor="white"
+      endFillColor={colors.backgroundColor}
       initialSpacing={0}
       endSpacing={70}
       color="rgb(42, 124, 118)"

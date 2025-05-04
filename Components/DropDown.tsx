@@ -40,11 +40,12 @@
 //         </View>
 //     )
 // }
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import styles from "../Screens/Stylesheet";
+import { ThemeContext } from "../Context/ThemeContext";
 interface DropdownItem {
   label: string;
   value: string;
@@ -59,6 +60,7 @@ interface dropdown {
 }
 
 const DropdownComponent = ({ name, data, styleButton, value, styleItem, onSelectItem }: dropdown) => {
+  const { colors } = useContext(ThemeContext);
   return (
     <Dropdown
       style={styleButton}
@@ -69,6 +71,8 @@ const DropdownComponent = ({ name, data, styleButton, value, styleItem, onSelect
       valueField="value"
       value={value}
       placeholder={name}
+      placeholderStyle={{color:colors.color}}
+      selectedTextStyle={{color:colors.color}}
       onChange={(selectedItem) => {
         onSelectItem(selectedItem.value);
       }}

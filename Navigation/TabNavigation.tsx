@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Alert, Animated, StyleSheet, TouchableOpacity, Text, View, Image } from "react-native";
 import { CurvedBottomBarExpo } from "react-native-curved-bottom-bar";
 import { Ionicons } from "@expo/vector-icons";
@@ -6,11 +6,12 @@ import Home from "../Screens/DrawerScreens/Home/Home";
 import Transaction from "../Screens/DrawerScreens/Transaction/Transaction";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "./StackList";
-import Budget from "../Screens/DrawerScreens/Budget/Budget";
+import Budget from "../Screens/DrawerScreens/Budget/Budget/Budget";
 import Profile from "../Screens/DrawerScreens/Profile/Profile";
 import { StringConstants } from "../Screens/Constants";
 import { useTranslation } from "react-i18next";
 import { useFocusEffect } from "@react-navigation/native";
+import { ThemeContext } from "../Context/ThemeContext";
 type BottomTabprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
@@ -63,7 +64,7 @@ export default function Tabscreens({ navigation }: Props) {
   );
   const [plus, setplus] = useState(true);
   const [cross, setcross] = useState(false);
-
+const {colors}=useContext(ThemeContext)
   return (
     <CurvedBottomBarExpo.Navigator
       type="DOWN"
@@ -71,7 +72,7 @@ export default function Tabscreens({ navigation }: Props) {
       shadowStyle={styles.shadow}
       height={70}
       circleWidth={56}
-      bgColor="white"
+      bgColor={colors.backgroundColor}
       initialRouteName="Home"
       borderTopLeftRight
       renderCircle={() => (

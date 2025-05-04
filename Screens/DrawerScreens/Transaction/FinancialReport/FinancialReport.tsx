@@ -1,9 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useContext } from "react";
 import { View, Text, Image, Touchable, TouchableOpacity, Dimensions } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+
 import Header from "../../../../Components/Header";
-import styles from "../../../Stylesheet";
-import CustomD from "../../../../Components/Practice";
+import { getStyles } from "./styles";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -23,9 +22,10 @@ import {
 } from "../../../../Slice/Selectors";
 import { DonutChart } from "./Graph";
 import { Linearchart } from "./Graph";
-import TransactionList from "../../Home/TransactionsList";
+import TransactionList from "../../Home/TransactionList/TransactionsList";
 import CategoryList from "./CategoryList";
 import { CATEGORY_COLORS } from "../../../Constants";
+import { ThemeContext } from "../../../../Context/ThemeContext";
 const height = Dimensions.get("window").height * 0.22;
 
 type financialProp = StackNavigationProp<StackParamList, "FinancialReport">;
@@ -114,7 +114,8 @@ export default function FinancialReport({ navigation }: Props) {
   const Rates = useSelector((state) => state.Rates);
   const currency = Rates.selectedCurrencyCode;
   const convertRate = Rates.Rate[currency];
-
+   const {colors}=useContext(ThemeContext)
+   const styles=getStyles(colors)
   return (
     <View style={styles.container}>
       <Header
@@ -125,16 +126,10 @@ export default function FinancialReport({ navigation }: Props) {
           navigation.goBack();
           navigation.goBack();
         }}
+        bgcolor={colors.backgroundColor}
+        color={colors.color}
       />
       <View style={[styles.transactionHead]}>
-        {/* <CustomD
-          name={t(month)}
-          data={Month}
-          styleButton={styles.homeMonth}
-          styleItem={styles.dropdownItems}
-          styleArrow={styles.homeArrow}
-          onSelectItem={(item) => setMonth(item)}
-        /> */}
         <DropdownComponent
           data={Month}
           value={month}
@@ -163,12 +158,12 @@ export default function FinancialReport({ navigation }: Props) {
               showline(true);
               showpie(false);
             }}
-            style={[styles.lineGraph, { backgroundColor: line ? "rgba(42, 124, 118, 1)" : "white" }]}
+            style={[styles.lineGraph, { backgroundColor: line ? "rgba(42, 124, 118, 1)" : colors.backgroundColor }]}
           >
             <Ionicons name="analytics" size={35} color={line ? "white" : "rgba(42, 124, 118, 1)"} />
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.lineGraph, { backgroundColor: pie ? "rgba(42, 124, 118, 1)" : "white" }]}
+            style={[styles.lineGraph, { backgroundColor: pie ? "rgba(42, 124, 118, 1)" : colors.backgroundColor }]}
             onPress={() => {
               showline(false);
               showpie(true);
@@ -180,7 +175,7 @@ export default function FinancialReport({ navigation }: Props) {
       </View>
       {line && Expense && (
         <View style={[styles.linechart, { flex: 0.4 }]}>
-          <Text style={{ margin: 5, paddingLeft: 10, color: "black", fontSize: 32, fontWeight: "bold" }}>
+          <Text style={{ margin: 5, paddingLeft: 10, color: colors.color, fontSize: 32, fontWeight: "bold" }}>
             {currencies[currency]}
             {(expense * convertRate).toFixed(2)}
           </Text>
@@ -189,7 +184,7 @@ export default function FinancialReport({ navigation }: Props) {
       )}
       {line && Income && (
         <View style={[styles.linechart, { flex: 0.4 }]}>
-          <Text style={{ margin: 5, paddingLeft: 10, color: "black", fontSize: 32, fontWeight: "bold" }}>
+          <Text style={{ margin: 5, paddingLeft: 10, color: colors.color, fontSize: 32, fontWeight: "bold" }}>
             {currencies[currency]} {(income * convertRate).toFixed(2)}
           </Text>
           <Linearchart data={GraphIncome} height={height} />

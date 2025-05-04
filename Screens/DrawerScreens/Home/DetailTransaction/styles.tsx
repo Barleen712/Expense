@@ -1,0 +1,117 @@
+import { StyleSheet, Platform, StatusBar } from "react-native";
+
+export const getStyles = (colors: any) =>
+    StyleSheet.create(
+        {
+            container: {
+                flex: 1,
+                backgroundColor: colors.backgroundColor,
+                paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+            },
+            DetailHead: {
+                flex: 0.25,
+                borderBottomLeftRadius: 30,
+                borderBottomRightRadius: 30,
+                alignItems: "center",
+              },
+              number: {
+                fontFamily: "Inter",
+                fontWeight: 500,
+                fontSize: 53,
+                color: "white",
+              },
+              MonthText: {
+                color: "rgba(214, 224, 220, 0.93)",
+                fontSize: 24,
+                fontWeight: "bold",
+              },
+              Apply: {
+                width: "100%",
+                alignItems: "center",
+              },
+              username: {
+                fontFamily: "Inter",
+                fontWeight: "bold",
+                fontSize: Platform.OS === "ios" ? 14 : 14,
+                color: "rgba(145, 145, 159, 1)",
+              },
+              exportText: {
+                fontFamily: "Inter",
+                fontSize: Platform.OS === "ios" ? 14 : 16,
+                padding: 10,
+                fontWeight: Platform.OS === "ios" ? 500 : "bold",
+                color:colors.color
+              },
+              modalOverlay: {
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+              },
+              TypeContainer: {
+                width: "90%",
+                borderRadius: 10,
+                borderColor: "grey",
+                backgroundColor:colors.backgroundColor,
+                borderWidth: 0.5,
+                flexDirection: "row",
+                position: "absolute",
+                top: "28%",
+                height: "9%",
+                left: "5%",
+                alignItems: "center",
+                justifyContent: "space-evenly",
+                paddingBottom: 10,
+              },
+              type: {
+                alignItems: "center",
+                height: "90%",
+                justifyContent: "center",
+              },
+              typeHead: {
+                fontSize: 14,
+                color: "rgba(145, 145, 159, 1)",
+                padding: 5,
+                fontWeight: "bold",
+              },
+              dashedline: {
+                width: "100%",
+                flex: 0.05,
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: Platform.OS === "ios" ? 38 : 30,
+              },
+              Description: {
+                flex: 0.2,
+                width: "95%",
+                marginLeft: "5%",
+              },
+              attachView: {
+                flex: 0.35,
+                width: "90%",
+                marginLeft: "5%",
+              },
+              attachImg: {
+                width: "100%",
+                marginTop: 10,
+                borderRadius: 10,
+                height: 150,
+              },
+              Trash: {
+                position: "absolute",
+                right: "3%",
+                top: "8%",
+                width: 32,
+                height: 32,
+                // backgroundColor: "red",
+              },
+              Export1text: {
+                textAlign: "center",
+                fontFamily: "Inter",
+                fontSize: Platform.OS === "ios" ? 14 : 16,
+                fontWeight: Platform.OS === "ios" ? 500 : "bold",
+                color:colors.color
+              },
+            },
+            
+    )

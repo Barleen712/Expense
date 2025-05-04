@@ -1,6 +1,7 @@
-import React, { useState, forwardRef } from "react";
+import React, { useState, forwardRef, useContext } from "react";
 import { TextInput, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { ThemeContext } from "../Context/ThemeContext";
 interface InputProps {
   title: string;
   color: string;
@@ -13,13 +14,13 @@ interface InputProps {
 const Input = forwardRef<TextInput, InputProps>(
   ({ title, color, css, isPass, name, onchange, handleFocus }: InputProps, ref) => {
     const [Visible, setVisible] = useState(isPass);
-
+const {colors}=useContext(ThemeContext)
     return (
       <View style={{ width: "100%", alignItems: "center" }}>
         <TextInput
           ref={ref}
           placeholder={title}
-          placeholderTextColor={color}
+          placeholderTextColor={colors.color}
           style={css}
           secureTextEntry={Visible}
           value={name}

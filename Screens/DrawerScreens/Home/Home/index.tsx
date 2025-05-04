@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useTransition, useCallback } from "react";
+import React, { useEffect, useMemo, useState, useContext } from "react";
 import {
   View,
   TouchableOpacity,
@@ -12,13 +12,12 @@ import {
   StatusBar,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import styles from "../../../Stylesheet";
 import { Month } from "../../../Constants";
 import { Linearchart } from "../../Transaction/FinancialReport/Graph";
 import { useSelector } from "react-redux";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { selectTransactions, selectIncomeTotal, selectExpenseTotal } from "../../../../Slice/Selectors";
-import TransactionList from "../TransactionsList";
+import TransactionList from "../TransactionList/TransactionsList";
 import { StringConstants, currencies, profilepics } from "../../../Constants";
 import { useTranslation } from "react-i18next";
 import useTransactionListener from "../../../../Saga/TransactionSaga";
@@ -28,7 +27,9 @@ import { getUseNamerDocument } from "../../../../Saga/BudgetSaga";
 import { RootState } from "../../../../Store/Store";
 import MonthPicker from "react-native-month-year-picker";
 import { Props } from "./types";
-import { G } from "react-native-svg";
+import { ThemeContext } from "../../../../Context/ThemeContext";
+import { getStyles } from "./styles";
+
 export default function Home({ navigation }: Props) {
   async function getData() {
     const user = await getUseNamerDocument();
@@ -154,36 +155,24 @@ export default function Home({ navigation }: Props) {
         <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
       </View>
     );
+    const { colors, setTheme, theme } = useContext(ThemeContext);
+    const styles = getStyles(colors);
   return (
     <View style={{ flex: 1 }}>
       <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
       <SafeAreaView style={[styles.container]}>
-        <LinearGradient colors={["rgb(229, 255, 243)", "rgba(205, 230, 200, 0.09)"]} style={styles.homeHeadgradient}>
+        <LinearGradient colors={colors.LinearGradient} style={styles.homeHeadgradient}>
           {badgeCount > 0 && (
-            <View
-              style={{
-                position: "absolute",
-                right: "5%",
-                top: "8%",
-                backgroundColor: "red",
-                width: "4%",
-                height: "8%",
-                borderRadius: 10,
-                zIndex: 100,
-                alignItems: "center",
-                justifyContent: "center",
-                borderWidth: 1,
-                borderColor: "white",
-              }}
+            <View style={styles.badgeCount}
             >
-              <Text style={{ color: "white", fontSize: 10 }}>{badgeCount}</Text>
+              <Text style={styles.badgeCountText}>{badgeCount}</Text>
             </View>
           )}
           <TouchableOpacity
             onPress={() => navigation.navigate("DisplayNotification")}
             style={{ position: "absolute", right: "6%", top: "8%" }}
           >
-            <Ionicons name="notifications" size={28} color="rgb(56, 88, 85)" />
+            <Ionicons name="notifications" size={28} color={colors.textcolor}/>
           </TouchableOpacity>
           <TouchableOpacity
             style={{ position: "absolute", left: "4%", top: "8%" }}
@@ -191,8 +180,8 @@ export default function Home({ navigation }: Props) {
           >
             <Image style={{ height: 30, width: 30, borderRadius: 50, borderWidth: 1 }} source={photo} />
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.homeMonth]} onPress={() => setShow(true)}>
-            <Text>
+          <TouchableOpacity style={styles.homeMonth} onPress={() => setShow(true)}>
+            <Text style={styles.MonthText}>
               {Month[new Date(selectedMonth_Year).getMonth()]} {new Date(selectedMonth_Year).getFullYear()}
             </Text>
             <Image style={styles.homeArrow} source={require("../../../../assets/arrowDown.png")} />
@@ -262,7 +251,7 @@ export default function Home({ navigation }: Props) {
           </View>
         </LinearGradient>
         <View style={styles.linechart}>
-          <Text style={[styles.notiTitle, { marginLeft: 5, marginTop: Platform.OS === "ios" ? 10 : 15 }]}>
+          <Text style={styles.notiTitle}>
             {t(StringConstants.SpendFrequency)}
           </Text>
           <Linearchart data={GraphExpenses} height={height} />

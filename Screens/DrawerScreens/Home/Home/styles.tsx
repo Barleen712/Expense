@@ -1,0 +1,136 @@
+import { StyleSheet,Platform,StatusBar } from "react-native";
+
+export const getStyles = (colors: any) =>
+    StyleSheet.create(
+    {
+          container: {
+            flex: 1,
+            backgroundColor: colors.backgroundColor,
+            paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+          },
+          homeHeadgradient: {
+            flex: 0.25,
+            borderBottomLeftRadius: 15,
+            borderBottomRightRadius: 15,
+            alignItems: "center",
+            paddingBottom: 5,
+          },
+          badgeCount:
+          {
+            position: "absolute",
+                right: "5%",
+                top: "8%",
+                backgroundColor: "red",
+                width: "4%",
+                height: "8%",
+                borderRadius: 10,
+                zIndex: 100,
+                alignItems: "center",
+                justifyContent: "center",
+                borderWidth: 1,
+                borderColor: "white",
+          },
+          badgeCountText:{
+            color: "white", fontSize: 10
+          },
+          homeMonth: {
+            borderRadius: 20,
+            borderWidth: 0.3,
+            borderColor: colors.borderColor,
+            alignItems: "center",
+            justifyContent: "center",
+            paddingHorizontal: 20,
+            padding: 2,
+            marginTop: 5,
+            height: 25,
+            flexDirection: "row",
+          },
+          homeArrow: {
+            width: 20,
+            height: 20,
+            resizeMode: "contain",
+          },
+            username: {
+              fontFamily: "Inter",
+              fontWeight: "bold",
+              fontSize: Platform.OS === "ios" ? 14 : 14,
+              color: "rgba(145, 145, 159, 1)",
+            },
+            heading: {
+                fontFamily: "Inter",
+                fontWeight: "bold",
+                fontSize: Platform.OS === "ios" ? 28 : 35,
+                color: colors.color
+              },
+              homeHeadView: {
+                width: "95%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                height: "38%",
+              },
+              headButton: {
+                flexDirection: "row",
+                alignItems: "center",
+                padding: 10,
+                borderRadius: 25,
+                width: "49%",
+              },
+              homeTitle: {
+                fontFamily: "Inter",
+                fontSize: Platform.OS === "ios" ? 14 : 16,
+                color: "white",
+              },
+              linechart: {
+                flex: Platform.OS === "ios" ? 0.28 : 0.3,
+              },
+                notiTitle: {
+                  fontFamily: "Inter",
+                  fontSize: Platform.OS === "ios" ? 18 : 20,
+                  fontWeight: Platform.OS === "ios" ? 500 : "bold",
+                  color:colors.color,
+                  marginLeft: 5, marginTop: Platform.OS === "ios" ? 10 : 15
+                },
+                flatView: {
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: 5,
+                    borderRadius: 20,
+                    marginLeft: 5,
+                    marginRight: 5,
+                    paddingLeft: 20,
+                    paddingRight: 15,
+                  },
+                  itemText: {
+                    paddingLeft: 5,
+                    paddingRight: 5,
+                  },
+                  filterRecent: {
+                    flex: Platform.OS === "ios" ? 0.2 : 0.25,
+                    width: "95%",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  },
+                  reset: {
+                    backgroundColor: "rgba(220, 234, 233, 0.6)",
+                    width: "18%",
+                    height: "60%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderColor: "grey",
+                    borderRadius: 30,
+                  },
+                  budgetText: {
+                    fontFamily: "Inter",
+                    fontSize: Platform.OS === "ios" ? 14 : 16,
+                    color: "grey",
+                    width: "70%",
+                    textAlign: "center",
+                  },
+                  MonthText:
+                  {
+                    color:colors.color
+                  }
+
+    }
+)

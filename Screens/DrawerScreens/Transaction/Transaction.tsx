@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -13,8 +13,9 @@ import { selectTransactions } from "../../../Slice/Selectors";
 import CustomD from "../../../Components/Practice";
 import { CustomButton } from "../../../Components/CustomButton";
 import { useSelector } from "react-redux";
-import styles from "../../Stylesheet";
+import {getStyles} from "./styles"
 import DropdownComponent from "../../../Components/DropDown";
+import { ThemeContext } from "../../../Context/ThemeContext";
 const Month = [
   { label: "January", value: "January" },
   { label: "February", value: "February" },
@@ -45,7 +46,7 @@ const FilterBy = ["Income", "Expense", "Transfer"];
 const SortBy = ["Highest", "Lowest", "Newest", "Oldest"];
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
-import TransactionList from "../Home/TransactionsList";
+import TransactionList from "../Home/TransactionList/TransactionsList";
 import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
 
@@ -132,6 +133,8 @@ export default function Transaction({ navigation }: Props) {
   };
   const containIncome = FilterTrans.some((item) => item.moneyCategory === "Income");
   const containExpense = FilterTrans.some((item) => item.moneyCategory === "Expense");
+   const { colors, setTheme, theme } = useContext(ThemeContext);
+  const styles=getStyles(colors)
   return (
     <View style={styles.container}>
       <View style={styles.transactionHead}>
@@ -147,7 +150,6 @@ export default function Transaction({ navigation }: Props) {
             justifyContent: "center",
             paddingHorizontal: 20,
             height: "60%",
-
             marginTop: 10,
             alignSelf: "flex-start",
             width: "38%",
@@ -156,7 +158,7 @@ export default function Transaction({ navigation }: Props) {
           onSelectItem={(item) => {
             setMonth(item);
           }}
-        />
+        />  
         <TouchableOpacity onPress={toggleModal}>
           <Image source={require("../../../assets/sort.png")} style={styles.sortImage} />
         </TouchableOpacity>
