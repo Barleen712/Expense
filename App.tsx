@@ -1,8 +1,8 @@
-import { useEffect, useState,useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { StyleSheet, Text, View, SafeAreaView, Button, PermissionsAndroid, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import Screens from "./Navigation/StackNavigation";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import Store from "./Store/Store";
 import { ThemeContext, ThemeProvider } from "./Context/ThemeContext";
 import notifee, { AuthorizationStatus } from "@notifee/react-native";
@@ -11,6 +11,7 @@ import { auth } from "./Screens/FirebaseConfig";
 import { TabScreens } from "./Navigation/StackNavigation";
 import { ActivityIndicator } from "react-native-paper";
 import Toast from "react-native-toast-message";
+import { loadPreferences } from "./Slice/IncomeSlice";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -47,7 +48,7 @@ export default function App() {
   {
     if (loading)
       return (
-        <View style={{ height: "100%", alignItems: "center", justifyContent: "center"}}>
+        <View style={{ height: "100%", alignItems: "center", justifyContent: "center" }}>
           <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
         </View>
       );
@@ -55,10 +56,10 @@ export default function App() {
   return (
     <Provider store={Store}>
       <NavigationContainer>
-       <ThemeProvider>
-       {user ? <TabScreens /> : <Screens />}
-       <Toast />
-       </ThemeProvider>
+        <ThemeProvider>
+          {user ? <TabScreens /> : <Screens />}
+          <Toast />
+        </ThemeProvider>
       </NavigationContainer>
     </Provider>
   );

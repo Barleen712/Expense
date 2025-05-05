@@ -5,7 +5,7 @@ import Setpin from "../Screens/Onboarding/SetupPin01";
 import SignUp from "../Screens/Onboarding/SignUp/Signup";
 import ForgotPass from "../Screens/Onboarding/ForgotPassword/ForgotPassword";
 import EmailSent from "../Screens/Onboarding/EmailSent/EmailSent";
-import Success from "../Screens/Onboarding/SignUp_success";
+import Success from "../Screens/Onboarding/Success/SignUp_success";
 import Setpin02 from "../Screens/Onboarding/SetupPin02";
 import Getstarted from "../Screens/Onboarding/GetStarted/GetStarted";
 import Tabscreens from "./TabNavigation";
@@ -23,15 +23,15 @@ import DetailTransaction_Expense from "../Screens/DrawerScreens/Home/DetailTrans
 import { DetailTransaction_Income } from "../Screens/DrawerScreens/Home/DetailTransaction/DetailTransaction";
 import { DetailTransaction_Transfer } from "../Screens/DrawerScreens/Home/DetailTransaction/DetailTransaction";
 import CreateBudget from "../Screens/DrawerScreens/Budget/CreateBudget/CreateBudget";
-import Expense from "../Screens/DrawerScreens/Home/Expense";
+import Expense from "../Screens/DrawerScreens/Home/Expense/Expense";
 import Income from "../Screens/DrawerScreens/Home/Income/Income";
-import Transfer from "../Screens/DrawerScreens/Home/Transfer";
+import Transfer from "../Screens/DrawerScreens/Home/Transfer/Transfer";
 import { handleBiometricAuth } from "../Screens/Constants";
 import FinancialReportExpense, {
   FinancialReportBudget,
   FinancialReportIncome,
   FinancialReportQuote,
-} from "../Screens/DrawerScreens/Transaction/FinancialReport/Report";
+} from "../Screens/DrawerScreens/Transaction/FinancialReport/Report structure/Report";
 import FinancialReport from "../Screens/DrawerScreens/Transaction/FinancialReport/FinancialReport";
 import DetailedBudget from "../Screens/DrawerScreens/Budget/DetailBudget/DetailedBudget";
 import DetailAccount from "../Screens/DrawerScreens/Profile/Account/DetailAccount/DetailAccount";
@@ -42,6 +42,7 @@ import DisplayNotification from "../Screens/DrawerScreens/Home/DisplayNotificati
 import EnterPin from "../Screens/DrawerScreens/Home/EnterPin";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { loadPreferences } from "../Slice/IncomeSlice";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
@@ -66,6 +67,7 @@ export function TabScreens() {
   useEffect(() => {
     handleBiometricAuth(navigation);
     //dispatch(fetchRates());
+    dispatch(loadPreferences());
   }, []);
   return (
     <Stack2.Navigator initialRouteName="EnterPin" screenOptions={{ headerShown: false }}>

@@ -259,7 +259,7 @@ export const handleBiometricAuth = async (navigation: any) => {
     }
   } catch (error) {
     console.error("Biometric error:", error);
-    navigation.navigate("SetPinScreen");
+    navigation.navigate("EnterPin");
   }
 };
 

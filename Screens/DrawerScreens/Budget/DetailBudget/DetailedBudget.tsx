@@ -10,7 +10,7 @@ import { ProgressBar } from "react-native-paper";
 import { CATEGORY_COLORS, StringConstants } from "../../../Constants";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { CustomButton } from "../../../../Components/CustomButton";
-import CustomModal from ".././Modal";
+import CustomModal from "../../../../Components/Modal/Modal";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteBudget } from "../../../../Slice/IncomeSlice";
 import { useTranslation } from "react-i18next";
@@ -29,13 +29,13 @@ interface Props {
       index: string;
       total: number;
       percentage: number;
-      alert:boolean
+      alert: boolean;
     };
   };
 }
 const width = Dimensions.get("window").width - 60;
 export default function DetailedBudget({ navigation, route }: Props) {
-  const { category, remaining, progress, exceeded, index, total, percentage,alert } = route.params;
+  const { category, remaining, progress, exceeded, index, total, percentage, alert } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   function deleteBudgetFunction() {
@@ -46,16 +46,21 @@ export default function DetailedBudget({ navigation, route }: Props) {
   const Rates = useSelector((state) => state.Rates);
   const currency = Rates.selectedCurrencyCode;
   const convertRate = Rates.Rate[currency];
-  const {colors}=useContext(ThemeContext)
-  const styles=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
-      <Header title={t(StringConstants.DetailBudget)} press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color}/>
+      <Header
+        title={t(StringConstants.DetailBudget)}
+        press={() => navigation.goBack()}
+        bgcolor={colors.backgroundColor}
+        color={colors.color}
+      />
       <TouchableOpacity style={styles.Trash} onPress={() => setModalVisible(true)}>
         <CustomModal
           visible={modalVisible}
           setVisible={() => setModalVisible(!modalVisible)}
-          color="rgba(237, 234, 234, 0.28)"
+          color={colors.nobutton}
           bg={CATEGORY_COLORS[category]}
           head={t("Remove this budget")}
           text={t("Are you sure you want to remove this budget?")}

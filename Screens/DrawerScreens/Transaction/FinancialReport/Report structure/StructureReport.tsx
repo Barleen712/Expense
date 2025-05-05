@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, Dimensions, Image } from "react-native";
-import styles from "../../../Stylesheet";
+import { getStyles } from "./styles";
 import { ProgressBar, MD3Colors } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { StringConstants, categoryMap, currencies } from "../../../Constants";
+import { StringConstants, categoryMap, currencies } from "../../../../Constants";
+import { ThemeContext } from "../../../../../Context/ThemeContext";
 interface Report {
   type: string;
   amount: string;
@@ -25,12 +26,14 @@ export default function FaceCard({ type, amount, detail, category, amount1, bg, 
     convertRate = Rates.Rate[currency];
   }
   const { t } = useTranslation();
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={[styles.card, { backgroundColor: bg }]}>
       <View style={styles.cardMonth}>
         <ProgressBar
           progress={progress}
-          color="white"
+          color={colors.backgroundColor}
           style={{
             backgroundColor: "rgba(214, 224, 220, 0.24)",
             width: width - 20,
@@ -75,12 +78,13 @@ export default function FaceCard({ type, amount, detail, category, amount1, bg, 
                   fontFamily: "Inter",
                   fontWeight: "bold",
                   fontSize: 18,
+                  color: colors.color,
                 }}
               >
                 {t(category)}
               </Text>
             </View>
-            <Text style={[styles.typeText, { color: "black" }]}>
+            <Text style={[styles.typeText, { color: colors.color }]}>
               {currencies[currency]} {(amount1 * convertRate).toFixed(2)}
             </Text>
           </View>

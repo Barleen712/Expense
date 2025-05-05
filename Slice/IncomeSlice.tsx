@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { changeLanguage } from "i18next";
 interface IncomeEntry {
   amount: number;
@@ -17,7 +18,7 @@ interface IncomeEntry {
   startYear?: string;
 }
 interface BudgetEntry {
-  Date:string
+  Date: string;
   amount: number;
   category: number;
   percentage: number;
@@ -207,3 +208,40 @@ export const {
   updateBadge,
 } = ExpenseTrackerSlice.actions;
 export default ExpenseTrackerSlice.reducer;
+export const updatePreferences =
+  (key: keyof Preferences, value: string) => async (dispatch: AppDispatch, getState: () => RootState) => {
+    try {
+      const currentPrefs = getState().Money.preferences;
+      const newPrefs = { ...currentPrefs, [key]: value };
+      await AsyncStorage.setItem("@preferences", JSON.stringify(newPrefs));
+
+      switch (key) {
+        case "theme":
+          dispatch(changeTheme(value));
+          break;
+        case "currency":
+          dispatch(changeCurrency(value));
+          break;
+        case "security":
+          dispatch(changeSecurity(value));
+          break;
+      }
+    } catch (error) {
+      console.error("Failed to update preference:", error);
+    }
+  };
+export const loadPreferences = () => async (dispatch: AppDispatch) => {
+  try {
+    const stored = await AsyncStorage.getItem("@preferences");
+
+    if (stored) {
+      const prefs: Preferences = JSON.parse(stored);
+      dispatch(changeTheme(prefs.theme));
+      dispatch(changeCurrency(prefs.currency));
+      dispatch(changeLanguages(prefs.language));
+      dispatch(changeSecurity(prefs.security));
+    }
+  } catch (error) {
+    console.error("Failed to load preferences:", error);
+  }
+};

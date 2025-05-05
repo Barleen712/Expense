@@ -22,12 +22,12 @@ interface Props {
 export default function EmailSent({ navigation, route }: Props) {
   const { t } = useTranslation();
   const { email } = route.params;
-  const {colors}=useContext(ThemeContext)
-  const styles=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
       <View style={styles.emailImgView}>
-        <Image style={styles.emailImg} source={require("../../../assets/email.png")} />
+        <Image style={styles.emailImg} source={require("../../../assets/mail.png")} />
       </View>
       <View style={styles.emailDes}>
         <Text style={styles.ForgotDes}>{t(StringConstants.Youremailisontheway)}</Text>

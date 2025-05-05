@@ -64,7 +64,7 @@ export default function Tabscreens({ navigation }: Props) {
   );
   const [plus, setplus] = useState(true);
   const [cross, setcross] = useState(false);
-const {colors}=useContext(ThemeContext)
+  const { colors } = useContext(ThemeContext);
   return (
     <CurvedBottomBarExpo.Navigator
       type="DOWN"

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -16,22 +16,23 @@ import {
 } from "react-native";
 import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
-import styles from "../../Stylesheet";
-import { CustomButton } from "../../../Components/CustomButton";
+import { getStyles } from "./styles";
+import { CustomButton } from "../../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
-import StackParamList from "../../../Navigation/StackList";
-import Header from "../../../Components/Header";
+import StackParamList from "../../../../Navigation/StackList";
+import Header from "../../../../Components/Header";
 import Entypo from "@expo/vector-icons/Entypo";
-import Input from "../../../Components/CustomTextInput";
-import SelectImageWithDocumentPicker from "./Attachment";
-import { addTransaction } from "../../../Slice/IncomeSlice";
+import Input from "../../../../Components/CustomTextInput";
+import SelectImageWithDocumentPicker from ".././Attachment";
+import { addTransaction } from "../../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
-import { uploadImage, StringConstants } from "../../Constants";
+import { uploadImage, StringConstants } from "../../../Constants";
 import { useTranslation } from "react-i18next";
-import { AddTransaction } from "../../FirestoreHandler";
-import { auth } from "../../FirebaseConfig";
-import { updateDocument } from "../../FirestoreHandler";
-import { updateTransaction } from "../../../Slice/IncomeSlice";
+import { AddTransaction } from "../../../FirestoreHandler";
+import { auth } from "../../../FirebaseConfig";
+import { updateDocument } from "../../../FirestoreHandler";
+import { updateTransaction } from "../../../../Slice/IncomeSlice";
+import { ThemeContext } from "../../../../Context/ThemeContext";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -39,9 +40,9 @@ interface Props {
   navigation: IncomeProp;
 }
 const modal = [
-  require("../../../assets/CameraBlue.png"),
-  require("../../../assets/ImageBlue.png"),
-  require("../../../assets/DocumentBlue.png"),
+  require("../../../../assets/CameraBlue.png"),
+  require("../../../../assets/ImageBlue.png"),
+  require("../../../../assets/DocumentBlue.png"),
 ];
 export default function Income({ navigation, route }: Props) {
   const { from, to, amount, id, edit, title } = route.params;
@@ -201,6 +202,8 @@ export default function Income({ navigation, route }: Props) {
       setToError("");
     }
   }
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
 
   return (
     <View style={styles.container}>
@@ -268,7 +271,7 @@ export default function Income({ navigation, route }: Props) {
                   </View>
                   <Image
                     style={{ width: 40, height: 40, position: "absolute", top: "25%", left: "45%" }}
-                    source={require("../../../assets/Transfer.png")}
+                    source={require("../../../../assets/Transfer.png")}
                   />
                 </View>
                 {toError !== "" && (
@@ -314,8 +317,8 @@ export default function Income({ navigation, route }: Props) {
                       { borderStyle: "dashed", alignItems: "center", flexDirection: "row", justifyContent: "center" },
                     ]}
                   >
-                    <Entypo name="attachment" size={24} color="black" />
-                    <Text>{t(StringConstants.Addattachment)}</Text>
+                    <Entypo name="attachment" size={24} color={colors.color} />
+                    <Text style={{ color: colors.color }}>{t(StringConstants.Addattachment)}</Text>
                   </TouchableOpacity>
                 )}
                 {image && (
@@ -401,7 +404,7 @@ export default function Income({ navigation, route }: Props) {
                       setclose(false);
                     }}
                   >
-                    <Image style={{ width: 15, height: 15 }} source={require("../../../assets/close.png")} />
+                    <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
                   </TouchableOpacity>
                 )}
 
@@ -415,7 +418,7 @@ export default function Income({ navigation, route }: Props) {
                       setclose(false);
                     }}
                   >
-                    <Image style={{ width: 15, height: 15 }} source={require("../../../assets/close.png")} />
+                    <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
                   </TouchableOpacity>
                 )}
               </>

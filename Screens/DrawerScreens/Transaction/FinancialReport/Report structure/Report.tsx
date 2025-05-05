@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { View, Text, Dimensions, Image } from "react-native";
-import styles from "../../../Stylesheet";
+import styles from "../../../../Stylesheet";
 import FaceCard from "./StructureReport";
-import { CustomButton } from "../../../../Components/CustomButton";
+import { CustomButton } from "../../../../../Components/CustomButton";
 import { ProgressBar, MD3Colors } from "react-native-paper";
 const width = Dimensions.get("window").width;
 import { StackNavigationProp } from "@react-navigation/stack";
-import StackParamList from "../../../../Navigation/StackList";
+import StackParamList from "../../../../../Navigation/StackList";
 import { useTranslation } from "react-i18next";
-import { StringConstants, categoryMap } from "../../../Constants";
+import { StringConstants, categoryMap } from "../../../../Constants";
+import { getStyles } from "./styles";
 import {
   selectIncome,
   selectIncomeTotal,
@@ -16,9 +17,10 @@ import {
   selectExpensesAndTransfers,
   BudgetCategory,
   selectBudget,
-} from "../../../../Slice/Selectors";
+} from "../../../../../Slice/Selectors";
 import { useSelector } from "react-redux";
 import { FlatList } from "react-native-gesture-handler";
+import { ThemeContext } from "../../../../../Context/ThemeContext";
 type Transactionprop = StackNavigationProp<StackParamList, "FinancialReportExpense">;
 
 interface Props {
@@ -29,12 +31,7 @@ export default function FinancialReportExpense({ navigation }: Props) {
   const total = useSelector(selectExpenseTotal);
   const highestAmount = Math.max(...expense.map((t) => t.amount));
   const highestExpenseTransaction = expense.find((t) => t.amount === highestAmount);
-  // useEffect(() => {
-  //   const id = setTimeout(() => {
-  //     navigation.replace("FinancialReportIncome");
-  //   }, 3000);
-  //   return () => clearTimeout(id);
-  // }, [navigation]);
+
   const handleSwipe = (evt) => {
     const { nativeEvent } = evt;
     const { pageX } = nativeEvent;
@@ -67,12 +64,7 @@ export function FinancialReportIncome({ navigation }: Props) {
   const total = useSelector(selectIncomeTotal);
   const highestAmount = Math.max(...income.map((t) => t.amount));
   const highestIncomeTransaction = income.find((t) => t.amount === highestAmount);
-  // useEffect(() => {
-  //   const id = setTimeout(() => {
-  //     navigation.replace("FinancialReportBudget");
-  //   }, 3000);
-  //   return () => clearTimeout(id);
-  // }, [navigation]);
+
   const handleSwipe = (evt) => {
     const { nativeEvent } = evt;
     const { pageX } = nativeEvent;
@@ -101,12 +93,6 @@ export function FinancialReportIncome({ navigation }: Props) {
 }
 
 export function FinancialReportBudget({ navigation }: Props) {
-  // useEffect(() => {
-  //   const id = setTimeout(() => {
-  //     navigation.replace("FinancialReportQuote");
-  //   }, 3000);
-  //   return () => clearTimeout(id);
-  // }, [navigation]);
   const handleSwipe = (evt) => {
     const { nativeEvent } = evt;
     const { pageX } = nativeEvent;
@@ -122,20 +108,21 @@ export function FinancialReportBudget({ navigation }: Props) {
     }
   };
   const { t } = useTranslation();
-  const budgets = useSelector(BudgetCategory)
- 
-  const selectedMonthKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+  const budgets = useSelector(BudgetCategory);
+  const selectedMonthKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
   const monthBudgets = budgets[selectedMonthKey] || [];
-  const exceed = monthBudgets.filter((item) => item.amountSpent > item.budgetvalue)|| []
+  const exceed = monthBudgets.filter((item) => item.amountSpent > item.budgetvalue) || [];
   const totalBudgets = monthBudgets.length;
   const exceedBudgets = exceed.length;
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View onStartShouldSetResponder={() => true} onResponderRelease={handleSwipe} style={{ flex: 1 }}>
       <View style={[styles.card, { backgroundColor: "rgba(0, 119, 255, 1)" }]}>
         <View style={styles.cardMonth}>
           <ProgressBar
             progress={0.75}
-            color="white"
+            color={colors.backgroundColor}
             style={{
               backgroundColor: "rgba(214, 224, 220, 0.24)",
               width: width - 20,
@@ -145,10 +132,10 @@ export function FinancialReportBudget({ navigation }: Props) {
           <Text style={styles.MonthText}>{t("This Month")}</Text>
         </View>
         <View style={styles.budgetReport}>
-           <Text style={[styles.detailText, { fontSize: 32, color: "white" }]}>
+          <Text style={[styles.detailText, { fontSize: 32, color: colors.backgroundColor }]}>
             {exceedBudgets} of {totalBudgets} {t(StringConstants.Budgetisexceedsthelimit)}
-           </Text> 
-            <FlatList
+          </Text>
+          <FlatList
             data={exceed}
             numColumns={2}
             contentContainerStyle={{
@@ -164,7 +151,7 @@ export function FinancialReportBudget({ navigation }: Props) {
                   padding: 10,
                   margin: 15,
                   // marginTop: 5,
-                  backgroundColor: "rgba(254, 255, 255, 0.85)",
+                  backgroundColor: "rgba(189, 194, 194, 0.17)",
                   borderRadius: 20,
                 }}
               >
@@ -179,13 +166,14 @@ export function FinancialReportBudget({ navigation }: Props) {
                     fontFamily: "Inter",
                     fontWeight: "bold",
                     fontSize: 18,
+                    color: colors.color,
                   }}
                 >
                   {t(item.category)}
                 </Text>
               </View>
             )}
-          /> 
+          />
         </View>
       </View>
     </View>
@@ -202,6 +190,7 @@ export function FinancialReportQuote({ navigation }: Props) {
       navigation.replace("FinancialReportBudget");
     }
   };
+  const { colors } = useContext(ThemeContext);
   return (
     <View onStartShouldSetResponder={() => true} onResponderRelease={handleSwipe} style={{ flex: 1 }}>
       <View
@@ -217,7 +206,7 @@ export function FinancialReportQuote({ navigation }: Props) {
       >
         <ProgressBar
           progress={1}
-          color="white"
+          color={colors.backgroundColor}
           style={{
             backgroundColor: "rgba(214, 224, 220, 0.24)",
             width: width - 20,

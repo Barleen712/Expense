@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { changeTheme } from "../../../../../Slice/IncomeSlice";
 import { ThemeContext } from "../../../../../Context/ThemeContext";
+import { updatePreferences } from "../../../../../Slice/IncomeSlice";
 type ThemeProp = StackNavigationProp<StackParamList, "EmailSent">;
 
 interface Props {
@@ -20,11 +21,11 @@ export default function Theme({ navigation }: Props) {
   const currencies = ["Light", "Dark", "Using device theme"];
   const [selectedTheme, setSelectedTheme] = useState(theme);
   const { t } = useTranslation();
-  const {colors}=useContext(ThemeContext)
-  const styles=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
-      <Header title="Theme" press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color}/>
+      <Header title="Theme" press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color} />
       <View style={styles.Line}></View>
       <FlatList
         style={styles.settings}
@@ -35,6 +36,7 @@ export default function Theme({ navigation }: Props) {
               onPress={() => {
                 setSelectedTheme(item);
                 dispatch(changeTheme(item));
+                dispatch(updatePreferences("theme", item));
               }}
               style={styles.items}
             >

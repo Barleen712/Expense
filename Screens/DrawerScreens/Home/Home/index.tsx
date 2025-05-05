@@ -155,16 +155,15 @@ export default function Home({ navigation }: Props) {
         <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
       </View>
     );
-    const { colors, setTheme, theme } = useContext(ThemeContext);
-    const styles = getStyles(colors);
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={{ flex: 1 }}>
       <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
       <SafeAreaView style={[styles.container]}>
         <LinearGradient colors={colors.LinearGradient} style={styles.homeHeadgradient}>
           {badgeCount > 0 && (
-            <View style={styles.badgeCount}
-            >
+            <View style={styles.badgeCount}>
               <Text style={styles.badgeCountText}>{badgeCount}</Text>
             </View>
           )}
@@ -172,7 +171,7 @@ export default function Home({ navigation }: Props) {
             onPress={() => navigation.navigate("DisplayNotification")}
             style={{ position: "absolute", right: "6%", top: "8%" }}
           >
-            <Ionicons name="notifications" size={28} color={colors.textcolor}/>
+            <Ionicons name="notifications" size={28} color={colors.textcolor} />
           </TouchableOpacity>
           <TouchableOpacity
             style={{ position: "absolute", left: "4%", top: "8%" }}
@@ -251,9 +250,7 @@ export default function Home({ navigation }: Props) {
           </View>
         </LinearGradient>
         <View style={styles.linechart}>
-          <Text style={styles.notiTitle}>
-            {t(StringConstants.SpendFrequency)}
-          </Text>
+          <Text style={styles.notiTitle}>{t(StringConstants.SpendFrequency)}</Text>
           <Linearchart data={GraphExpenses} height={height} />
         </View>
         <View style={{ flex: 0.4, alignItems: "center" }}>

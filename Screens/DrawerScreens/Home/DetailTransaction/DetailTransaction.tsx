@@ -6,7 +6,7 @@ import { CustomButton } from "../../../../Components/CustomButton";
 
 import { deleteTransaction } from "../../../../Slice/IncomeSlice";
 import { useSelector, useDispatch } from "react-redux";
-import CustomModal from "../../Budget/Modal";
+import CustomModal from "../../../../Components/Modal/Modal";
 import { useTranslation } from "react-i18next";
 import { deleteDocument } from "../../../FirestoreHandler";
 import { StringConstants, currencies, Month, Weeks } from "../../../Constants";
@@ -23,7 +23,7 @@ interface DetailTransactionProps {
   wallet: string;
   uri: string;
   id: string;
-  des?:string
+  des?: string;
 }
 function DetailTransaction({
   navigation,
@@ -77,8 +77,8 @@ function DetailTransaction({
   const getHours = DisplayDate.getHours();
   const getMinute = DisplayDate.getMinutes();
   const DisplayTime = `${day} ${getDate} ${month} ${year} ${getHours}:${getMinute}`;
-  const {colors}=useContext(ThemeContext)
-  const styles=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
       <Header title={t("Detail Transaction")} press={() => navigation.goBack()} bgcolor={bg} color="white" />
@@ -134,7 +134,7 @@ function DetailTransaction({
       <CustomModal
         visible={modalVisible}
         setVisible={() => setModalVisible(!modalVisible)}
-        color={color}
+        color={colors.nobutton}
         bg={bg}
         head={t(StringConstants.Removethistransaction)}
         text={t(StringConstants.Areyousure)}

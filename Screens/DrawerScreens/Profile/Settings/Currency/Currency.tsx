@@ -6,10 +6,9 @@ import { Ionicons } from "@expo/vector-icons";
 import Header from "../../../../../Components/Header";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../../Navigation/StackList";
-import { fetchRates } from "../../../../../Slice/CurrencySlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrencycode } from "../../../../../Slice/CurrencySlice";
-import { changeCurrency } from "../../../../../Slice/IncomeSlice";
+import { changeCurrency, updatePreferences } from "../../../../../Slice/IncomeSlice";
 import { ThemeContext } from "../../../../../Context/ThemeContext";
 
 type CurrencyProp = StackNavigationProp<StackParamList, "Currency">;
@@ -29,11 +28,16 @@ export default function Currency({ navigation }: Props) {
   const dispatch = useDispatch();
   const currency = useSelector((state) => state.Money.preferences.currency);
   const [selectedCurrency, setSelectedCurrency] = useState<string>(currency);
-  const {colors}=useContext(ThemeContext)
-  const styles=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
-      <Header title="Currency" press={() => navigation.goBack() } bgcolor={colors.backgroundColor} color={colors.color} />
+      <Header
+        title="Currency"
+        press={() => navigation.goBack()}
+        bgcolor={colors.backgroundColor}
+        color={colors.color}
+      />
       <View style={styles.Line}></View>
       <FlatList
         style={styles.settings}
@@ -45,6 +49,7 @@ export default function Currency({ navigation }: Props) {
                 setSelectedCurrency(item.code);
                 dispatch(setCurrencycode(item.code));
                 dispatch(changeCurrency(item.code));
+                dispatch(updatePreferences("currency", item.code));
               }}
               style={styles.items}
             >

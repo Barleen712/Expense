@@ -25,7 +25,7 @@ import { StringConstants } from "../../../Constants";
 import { AddBudget } from "../../../FirestoreHandler";
 import { auth } from "../../../FirebaseConfig";
 import { updateBudgetDocument } from "../../../FirestoreHandler";
-import { ThemeContext} from "../../../../Context/ThemeContext";
+import { ThemeContext } from "../../../../Context/ThemeContext";
 
 type CreateBudgetProp = StackNavigationProp<StackParamList, "CreateBudget">;
 
@@ -127,8 +127,8 @@ export default function CreateBudget({ navigation, route }: Props) {
     navigation.goBack();
   }
   const { t } = useTranslation();
-  const {colors}=useContext(ThemeContext)
-  const styles=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
       <Header title={t(parameters.header)} press={() => navigation.goBack()} bgcolor="rgb(56, 88, 85)" color="white" />
@@ -157,14 +157,6 @@ export default function CreateBudget({ navigation, route }: Props) {
             )}
           </View>
           <View style={styles.selection}>
-            {/* <CustomD
-              name={t(parameters.category)}
-              data={category}
-              styleButton={styles.textinput}
-              styleItem={styles.dropdownItems}
-              styleArrow={styles.arrowDown}
-              onSelectItem={(item) => setSelectedCategory(item)}
-            /> */}
             <DropdownComponent
               data={category}
               value={selectedCategory}

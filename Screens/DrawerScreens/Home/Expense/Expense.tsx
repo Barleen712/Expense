@@ -1,14 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
-  Button,
   Image,
   TouchableOpacity,
   Switch,
-  ImageBackground,
   Modal,
-  Linking,
   Platform,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
@@ -18,28 +15,28 @@ import {
 } from "react-native";
 import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
-import styles from "../../Stylesheet";
-import { CustomButton } from "../../../Components/CustomButton";
-import { AddNotification, updateBudgetDocument, updateDocument } from "../../FirestoreHandler";
+import { CustomButton } from "../../../../Components/CustomButton";
+import { AddNotification, updateBudgetDocument, updateDocument } from "../../../FirestoreHandler";
 import { StackNavigationProp } from "@react-navigation/stack";
-import StackParamList from "../../../Navigation/StackList";
-import Header from "../../../Components/Header";
+import StackParamList from "../../../../Navigation/StackList";
+import Header from "../../../../Components/Header";
 import Entypo from "@expo/vector-icons/Entypo";
-import Input from "../../../Components/CustomTextInput";
-import CustomD from "../../../Components/Practice";
-import SelectImageWithDocumentPicker from "./Attachment";
+import Input from "../../../../Components/CustomTextInput";
+import SelectImageWithDocumentPicker from ".././Attachment";
 import { useDispatch, useSelector } from "react-redux";
-import FrequencyModal from "../../../Components/FrequencyModal";
-import { uploadImage } from "../../Constants";
+import FrequencyModal from "../../../../Components/FrequencyModal";
+import { uploadImage } from "../../../Constants";
 import { useTranslation } from "react-i18next";
-import { StringConstants } from "../../Constants";
-import { updateBudget, updateTransaction } from "../../../Slice/IncomeSlice";
-import { AddTransaction } from "../../FirestoreHandler";
-import { auth } from "../../FirebaseConfig";
-import { BudgetCategory } from "../../../Slice/Selectors";
-import { onDisplayNotification } from "../Budget/TestNotification";
+import { StringConstants } from "../../../Constants";
+import { updateBudget, updateTransaction } from "../../../../Slice/IncomeSlice";
+import { AddTransaction } from "../../../FirestoreHandler";
+import { auth } from "../../../FirebaseConfig";
+import { BudgetCategory } from "../../../../Slice/Selectors";
+import { onDisplayNotification } from "../../Budget/TestNotification";
 import { ActivityIndicator } from "react-native-paper";
-import DropdownComponent from "../../../Components/DropDown";
+import DropdownComponent from "../../../../Components/DropDown";
+import { ThemeContext } from "../../../../Context/ThemeContext";
+import { getStyles } from "./styles";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -63,9 +60,9 @@ const wallet = [
   { label: "ApplePay", value: "ApplePay" },
 ];
 const modal = [
-  require("../../../assets/CameraRed.png"),
-  require("../../../assets/ImageRed.png"),
-  require("../../../assets/DocumentRed.png"),
+  require("../../../../assets/CameraRed.png"),
+  require("../../../../assets/ImageRed.png"),
+  require("../../../../assets/DocumentRed.png"),
 ];
 const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 export default function Expense({ navigation, route }: Props) {
@@ -244,8 +241,9 @@ export default function Expense({ navigation, route }: Props) {
           userId: user.uid,
         });
       }
+
       if (Budget) {
-        const Budget = budget.find((item) => item.category === selectedCategory);
+        const Budget = monthlyBudget.find((item) => item.category === selectedCategory);
         if (Budget.amountSpent + numericExpense >= Budget.budgetvalue && exceeded === true) {
           onDisplayNotification({
             title: `${selectedCategory} budget has exceeded the limit`,
@@ -308,6 +306,8 @@ export default function Expense({ navigation, route }: Props) {
     navigation.goBack();
     navigation.goBack();
   }
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   if (loading) {
     return (
       <View
@@ -430,8 +430,8 @@ export default function Expense({ navigation, route }: Props) {
                       { borderStyle: "dashed", alignItems: "center", flexDirection: "row", justifyContent: "center" },
                     ]}
                   >
-                    <Entypo name="attachment" size={24} color="black" />
-                    <Text>{t(StringConstants.Addattachment)}</Text>
+                    <Entypo name="attachment" size={24} color={colors.color} />
+                    <Text style={{ color: colors.color }}>{t(StringConstants.Addattachment)}</Text>
                   </TouchableOpacity>
                 )}
                 {image && (
@@ -462,20 +462,6 @@ export default function Expense({ navigation, route }: Props) {
                     </TouchableOpacity>
                   </View>
                 )}
-                {/* <View style={styles.notiView}>
-                  <View style={styles.noti}>
-                    <Text style={styles.notiTitle}>{t("Repeat")}</Text>
-                    <Text style={styles.notiDes}>{t(StringConstants.RecentTransaction)}</Text>
-                  </View>
-                  <View style={styles.switch}>
-                    <Switch
-                      trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgb(42, 124, 118)" }}
-                      value={Expense}
-                      thumbColor={"white"}
-                      onValueChange={setExpense}
-                    />
-                  </View>
-                </View> */}
                 <View style={styles.notiView}>
                   <View style={styles.noti}>
                     <Text style={styles.notiTitle}>{t("Repeat")}</Text>
@@ -519,7 +505,7 @@ export default function Expense({ navigation, route }: Props) {
                     }}
                   >
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: 16, fontWeight: "bold" }}>Frequency</Text>
+                      <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.color }}>Frequency</Text>
                       <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
                         {frequency}
                         {frequency === "Yearly" && ` - ${Month[month]} ${startDate} ` + new Date().getFullYear()}
@@ -529,7 +515,7 @@ export default function Expense({ navigation, route }: Props) {
                       </Text>
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: 16, fontWeight: "bold" }}>End After</Text>
+                      <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.color }}>End After</Text>
                       <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
                         {endAfter === "Never" && endAfter}
                         {endAfter === "Date" && `${new Date(endDate).toDateString()}`}
@@ -541,12 +527,8 @@ export default function Expense({ navigation, route }: Props) {
                         backgroundColor: "rgba(56, 184, 176, 0.23)",
                         padding: 10,
                         borderRadius: 20,
-                        //paddingLeft: 10,
-                        //  paddingRight: 10,
                         alignItems: "center",
                         justifyContent: "center",
-                        //width: "18%",
-                        //height: "20%",
                         flex: 0.4,
                       }}
                     >
@@ -595,7 +577,7 @@ export default function Expense({ navigation, route }: Props) {
                       setclose(false);
                     }}
                   >
-                    <Image style={{ width: 15, height: 15 }} source={require("../../../assets/close.png")} />
+                    <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
                   </TouchableOpacity>
                 )}
 
@@ -609,7 +591,7 @@ export default function Expense({ navigation, route }: Props) {
                       setclose(false);
                     }}
                   >
-                    <Image style={{ width: 15, height: 15 }} source={require("../../../assets/close.png")} />
+                    <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
                   </TouchableOpacity>
                 )}
               </>

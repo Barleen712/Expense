@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { changeLanguages } from "../../../../../Slice/IncomeSlice";
 import { ThemeContext } from "../../../../../Context/ThemeContext";
-
+import { updatePreferences } from "../../../../../Slice/IncomeSlice";
 type LanguageProp = StackNavigationProp<StackParamList, "Account">;
 
 interface Props {
@@ -35,11 +35,16 @@ export default function Language({ navigation }: Props) {
   const language = useSelector((state) => state.Money.preferences.language);
   const index = currencies.findIndex((item) => item.name == language);
   const [selectedLanguage, setSelectedLanguage] = useState(currencies[index].tc);
-  const {colors}=useContext(ThemeContext)
-  const styles=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
-      <Header title={t("Language")} press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color}/>
+      <Header
+        title={t("Language")}
+        press={() => navigation.goBack()}
+        bgcolor={colors.backgroundColor}
+        color={colors.color}
+      />
       <View style={styles.Line}></View>
       <FlatList
         style={styles.settings}
@@ -51,6 +56,7 @@ export default function Language({ navigation }: Props) {
               onPress={() => {
                 changeLanguage(item.tc);
                 setSelectedLanguage(item.tc);
+                dispatch(updatePreferences("language", item.name));
                 dispatch(changeLanguages(item.name));
               }}
               style={styles.items}

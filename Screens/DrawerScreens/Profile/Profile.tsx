@@ -32,6 +32,7 @@ import * as DocumentPicker from "expo-document-picker";
 import { uploadImage } from "../../Constants";
 import { getStyles } from "./styles";
 import { ThemeContext } from "../../../Context/ThemeContext";
+import Feather from "@expo/vector-icons/Feather";
 type Profileprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
@@ -127,8 +128,8 @@ export default function Profile({ navigation }: Props) {
       console.error("Error while picking image:", err);
     }
   };
-   const { colors, setTheme, theme } = useContext(ThemeContext);
-  const styles=getStyles(colors)
+  const { colors, setTheme, theme } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground style={{ width: widths, height: 800 }} source={require("../../../assets/ProfileBack.png")}>
@@ -142,7 +143,7 @@ export default function Profile({ navigation }: Props) {
           </View>
           <View style={styles.icon}>
             <TouchableOpacity onPress={() => seteditProfile(true)}>
-              <Image source={require("../../../assets/Button Icon.png")} />
+              <Feather name="edit" size={30} color={colors.color} />
             </TouchableOpacity>
           </View>
         </View>
@@ -178,25 +179,22 @@ export default function Profile({ navigation }: Props) {
           </View>
         </View>
         <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <Text style={styles.logout}>{t("Logout")}?</Text>
-              <Text style={styles.quesLogout}>{t("Are you sure you want to logout?")}</Text>
-              <View style={styles.modalButton}>
-                <View style={styles.modalY}>
-                  <CustomButton title={t("Yes")} bg="rgb(42, 124, 118)" color="white" press={handleLogout} />
-                </View>
-                <View style={styles.modalN}>
-                  <CustomButton
-                    title={t("No")}
-                    bg="rgba(220, 234, 233, 0.6)"
-                    color="rgb(42, 124, 118)"
-                    press={toggleModal}
-                  />
+          <TouchableWithoutFeedback onPress={toggleModal}>
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.logout}>{t("Logout")}?</Text>
+                <Text style={styles.quesLogout}>{t("Are you sure you want to logout?")}</Text>
+                <View style={styles.modalButton}>
+                  <View style={styles.modalY}>
+                    <CustomButton title={t("Yes")} bg="rgb(42, 124, 118)" color="white" press={handleLogout} />
+                  </View>
+                  <View style={styles.modalN}>
+                    <CustomButton title={t("No")} bg={colors.nobutton} color="rgb(42, 124, 118)" press={toggleModal} />
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
+          </TouchableWithoutFeedback>
         </Modal>
         <Modal
           animationType="slide"
@@ -225,7 +223,7 @@ export default function Profile({ navigation }: Props) {
                     style={{ height: "100%", width: "100%" }}
                   >
                     <TouchableOpacity style={{ position: "absolute", right: "3%" }} onPress={Discard}>
-                      <MaterialIcons name="cancel" size={26} color="rgb(4, 73, 69)" />
+                      <MaterialIcons name="cancel" size={26} color={colors.editColor} />
                     </TouchableOpacity>
                     <View style={{ alignItems: "center", justifyContent: "center", padding: 20 }}>
                       <Image
@@ -267,13 +265,13 @@ export default function Profile({ navigation }: Props) {
                       style={{ marginTop: 20, alignItems: "center", justifyContent: "center" }}
                       onPress={() => pickImageFromGallery()}
                     >
-                      <Text style={{ color: "rgb(4, 73, 69)", fontWeight: "bold", fontSize: 18, textAlign: "center" }}>
+                      <Text style={{ color: colors.editColor, fontWeight: "bold", fontSize: 18, textAlign: "center" }}>
                         Add Your Custom Profile Picture
                       </Text>
                     </TouchableOpacity>
 
                     <View style={{ marginTop: 30, paddingLeft: 10, justifyContent: "space-evenly" }}>
-                      <Text style={{ fontFamily: "Inter", fontSize: 16, color: "rgb(4, 73, 69)" }}>Username</Text>
+                      <Text style={{ fontFamily: "Inter", fontSize: 16, color: colors.editColor }}>Username</Text>
                       <TextInput
                         placeholder={username}
                         value={modalUser}
@@ -283,8 +281,8 @@ export default function Profile({ navigation }: Props) {
                           fontWeight: "600",
                           //fontStyle:"italic",
                           fontSize: Platform.OS === "ios" ? 24 : 24,
-                          color: " rgb(3, 73, 69)",
-                          borderBottomColor: "rgb(4, 73, 69)",
+                          color: colors.editColor,
+                          borderBottomColor: colors.editColor,
                           borderBottomWidth: 2,
                         }}
                         placeholderTextColor="rgba(4, 73, 69, 0.38)"
@@ -294,7 +292,7 @@ export default function Profile({ navigation }: Props) {
                       onPress={saveChanges}
                       style={{ marginTop: 30, alignItems: "center", justifyContent: "center" }}
                     >
-                      <Text style={{ color: "rgb(4, 73, 69)", fontWeight: "bold", fontSize: 18, textAlign: "center" }}>
+                      <Text style={{ color: colors.editColor, fontWeight: "bold", fontSize: 18, textAlign: "center" }}>
                         Save Changes
                       </Text>
                     </TouchableOpacity>

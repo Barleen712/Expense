@@ -16,12 +16,17 @@ export default function DisplayNotification({ navigation }) {
   });
   const [show, setShow] = useState(false);
   const dispatch = useDispatch();
-  const {colors}=useContext(ThemeContext)
+  const { colors } = useContext(ThemeContext);
 
   return (
     <TouchableWithoutFeedback onPress={() => setShow(false)}>
       <View style={styles.container}>
-        <Header title="Notification" press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color} />
+        <Header
+          title="Notification"
+          press={() => navigation.goBack()}
+          bgcolor={colors.backgroundColor}
+          color={colors.color}
+        />
         <TouchableOpacity onPress={() => setShow(!show)} style={{ position: "absolute", right: "5%", top: "7%" }}>
           <Entypo name="dots-three-horizontal" size={24} color={colors.color} />
         </TouchableOpacity>
@@ -56,6 +61,7 @@ export default function DisplayNotification({ navigation }) {
             <TouchableOpacity
               onPress={() => {
                 dispatch(removeNotification());
+                dispatch(updateBadge(0));
                 deleteAllUserNotifications(auth.currentUser?.uid);
                 setShow(false);
               }}
@@ -65,7 +71,7 @@ export default function DisplayNotification({ navigation }) {
           </View>
         )}
 
-        <View style={{ flex: 1, alignItems: "center", width: "100%",backgroundColor:colors.backgroundColor }}>
+        <View style={{ flex: 1, alignItems: "center", width: "100%", backgroundColor: colors.backgroundColor }}>
           {sortedNotification.length === 0 ? (
             <View style={{ justifyContent: "center", flex: 1 }}>
               <Text style={styles.budgetText}>There is no notification for now</Text>
@@ -94,11 +100,11 @@ export default function DisplayNotification({ navigation }) {
                       }}
                     >
                       <View style={{ width: "78%", justifyContent: "center", paddingLeft: 10 }}>
-                        <Text style={{ fontWeight: "bold" ,color:colors.color}}>{item.title}</Text>
+                        <Text style={{ fontWeight: "bold", color: colors.color }}>{item.title}</Text>
                         <Text style={{ color: "grey" }}>{item.body}</Text>
                       </View>
                       <View style={{ justifyContent: "center", alignItems: "center", paddingLeft: 5, width: "22%" }}>
-                        <Text style={{ fontSize: 12,color:colors.color }}>{DisplayDate}</Text>
+                        <Text style={{ fontSize: 12, color: colors.color }}>{DisplayDate}</Text>
                         <Text style={{ color: "grey", fontSize: 12 }}>{formattedTime}</Text>
                       </View>
                     </View>

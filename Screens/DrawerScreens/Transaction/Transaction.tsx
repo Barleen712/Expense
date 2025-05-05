@@ -13,9 +13,10 @@ import { selectTransactions } from "../../../Slice/Selectors";
 import CustomD from "../../../Components/Practice";
 import { CustomButton } from "../../../Components/CustomButton";
 import { useSelector } from "react-redux";
-import {getStyles} from "./styles"
+import { getStyles } from "./styles";
 import DropdownComponent from "../../../Components/DropDown";
 import { ThemeContext } from "../../../Context/ThemeContext";
+import Ionicons from "@expo/vector-icons/Ionicons";
 const Month = [
   { label: "January", value: "January" },
   { label: "February", value: "February" },
@@ -133,8 +134,8 @@ export default function Transaction({ navigation }: Props) {
   };
   const containIncome = FilterTrans.some((item) => item.moneyCategory === "Income");
   const containExpense = FilterTrans.some((item) => item.moneyCategory === "Expense");
-   const { colors, setTheme, theme } = useContext(ThemeContext);
-  const styles=getStyles(colors)
+  const { colors, setTheme, theme } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
       <View style={styles.transactionHead}>
@@ -144,8 +145,8 @@ export default function Transaction({ navigation }: Props) {
           name={t(month)}
           styleButton={{
             borderRadius: 20,
-            borderWidth: 0.3,
-            borderColor: "grey",
+            borderWidth: 0.5,
+            borderColor: colors.color,
             alignItems: "center",
             justifyContent: "center",
             paddingHorizontal: 20,
@@ -158,9 +159,9 @@ export default function Transaction({ navigation }: Props) {
           onSelectItem={(item) => {
             setMonth(item);
           }}
-        />  
-        <TouchableOpacity onPress={toggleModal}>
-          <Image source={require("../../../assets/sort.png")} style={styles.sortImage} />
+        />
+        <TouchableOpacity onPress={toggleModal} style={styles.sortButton}>
+          <Ionicons name="filter" size={24} color={colors.color} />
         </TouchableOpacity>
       </View>
 
@@ -179,7 +180,7 @@ export default function Transaction({ navigation }: Props) {
       <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
         <TouchableWithoutFeedback onPress={toggleModal}>
           <View style={styles.modalOverlay}>
-            <View style={[styles.modalContainer, { height: "65%" }]}>
+            <View style={styles.modalContainer}>
               <View style={styles.filter}>
                 <Text style={styles.notiTitle}>{t(StringConstants.FilterTransaction)}</Text>
                 <TouchableOpacity
