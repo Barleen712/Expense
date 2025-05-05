@@ -1,17 +1,16 @@
-import { useEffect, useState, useContext } from "react";
-import { StyleSheet, Text, View, SafeAreaView, Button, PermissionsAndroid, Platform } from "react-native";
+import { useEffect, useState } from "react";
+import { View, PermissionsAndroid, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import Screens from "./Navigation/StackNavigation";
-import { Provider, useDispatch } from "react-redux";
+import { Provider } from "react-redux";
 import Store from "./Store/Store";
-import { ThemeContext, ThemeProvider } from "./Context/ThemeContext";
+import { ThemeProvider } from "./Context/ThemeContext";
 import notifee, { AuthorizationStatus } from "@notifee/react-native";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Screens/FirebaseConfig";
 import { TabScreens } from "./Navigation/StackNavigation";
 import { ActivityIndicator } from "react-native-paper";
 import Toast from "react-native-toast-message";
-import { loadPreferences } from "./Slice/IncomeSlice";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 

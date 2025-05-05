@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Alert, Animated, StyleSheet, TouchableOpacity, Text, View, Image } from "react-native";
+import { Animated, StyleSheet, TouchableOpacity, Text, View, Image } from "react-native";
 import { CurvedBottomBarExpo } from "react-native-curved-bottom-bar";
 import { Ionicons } from "@expo/vector-icons";
 import Home from "../Screens/DrawerScreens/Home/Home";
@@ -8,9 +8,9 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "./StackList";
 import Budget from "../Screens/DrawerScreens/Budget/Budget/Budget";
 import Profile from "../Screens/DrawerScreens/Profile/Profile";
-import { StringConstants } from "../Screens/Constants";
+
 import { useTranslation } from "react-i18next";
-import { useFocusEffect } from "@react-navigation/native";
+
 import { ThemeContext } from "../Context/ThemeContext";
 type BottomTabprop = StackNavigationProp<StackParamList, "MainScreen">;
 

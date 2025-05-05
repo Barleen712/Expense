@@ -3,43 +3,69 @@ import * as Sharing from "expo-sharing";
 import { RootState } from "../../../../Store/Store";
 import { Platform } from "react-native";
 import * as IntentLauncher from "expo-intent-launcher";
-
 import { selectTransactions, selectExpenseTotal, selectIncomeTotal, BudgetCategory } from "../../../../Slice/Selectors";
 import store from "../../../../Store/Store";
 
-export const generateReportPDF = async () => {
+const data = [
+  { label: "Income", value: "0" },
+  { label: "Expense", value: "1" },
+  { label: "Transfer", value: "2" },
+  { label: "Budget", value: "3" },
+  { label: "All", value: "4" },
+];
+
+const dateRanges = {
+  "0": () => new Date(new Date().setHours(0, 0, 0, 0)), // Today
+  "1": () => new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Last 7 days
+  "2": () => new Date(Date.now() - 15 * 24 * 60 * 60 * 1000), // Last 15 days
+  "3": () => new Date(new Date().getFullYear(), new Date().getMonth(), 1), // This month
+};
+
+export const generateReportPDF = async (exportdata: string, dateRange: string) => {
   const state: RootState = store.getState();
 
   const transactions = selectTransactions(state);
   const incomeTotal = selectIncomeTotal(state);
   const expenseTotal = selectExpenseTotal(state);
-  const budgetData = BudgetCategory(state);
-  const transactionRows = transactions
+  const budgetMap = BudgetCategory(state); // Format: { "YYYY-MM": [...] }
+
+  const now = new Date();
+  const startDate = dateRanges[dateRange]?.() || new Date(0);
+
+  const filterOption = data.find((item) => item.value === exportdata);
+  const matchCategory = (t) => filterOption?.value === "4" || t.moneyCategory === filterOption?.label;
+  const matchDate = (t) => new Date(t.Date) >= startDate;
+
+  const filteredTransactions = transactions.filter((t) => matchCategory(t) && matchDate(t));
+
+  const transactionRows = filteredTransactions
     .map((t) => {
       const date = new Date(t.Date).toLocaleDateString();
       return `
-      <tr>
-        <td>${date}</td>
-        <td>${t.moneyCategory}</td>
-        <td>${t.category}</td>
-        <td>$${t.amount}</td>
-        <td>${t.description}</td>
-        <td>${t.wallet}</td>
-      </tr>
-    `;
+        <tr>
+          <td>${date}</td>
+          <td>${t.moneyCategory}</td>
+          <td>${t.category}</td>
+          <td>$${t.amount}</td>
+          <td>${t.description}</td>
+          <td>${t.wallet}</td>
+        </tr>`;
     })
     .join("");
+
+  const includeBudget = filterOption?.value === "3" || filterOption?.value === "4";
+  const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const budgetData = includeBudget ? budgetMap[currentMonthKey] || [] : [];
 
   const budgetRows = budgetData
     .map(
       (b) => `
-    <tr>
-      <td>${b.category}</td>
-      <td>$${b.budgetvalue}</td>
-      <td>$${b.amountSpent}</td>
-      <td>${b.alertPercent}%</td>
-    </tr>
-  `
+        <tr>
+          <td>${b.category}</td>
+          <td>$${b.budgetvalue}</td>
+          <td>$${b.amountSpent}</td>
+          <td>${b.alertPercent}%</td>
+        </tr>`
     )
     .join("");
 
@@ -47,18 +73,21 @@ export const generateReportPDF = async () => {
     <html>
       <head>
         <style>
-          table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-family: Arial, sans-serif; }
+          body { font-family: Arial, sans-serif; padding: 10px; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
           th, td { border: 1px solid #ddd; padding: 8px; font-size: 14px; }
           th { background-color: #f2f2f2; }
-          h2 { color: rgb(42, 124, 118); font-family: Arial, sans-serif;}
-          
+          h2 { color: rgb(42, 124, 118); }
         </style>
       </head>
       <body>
         <h2>Income & Expense Report</h2>
+        ${
+          filterOption?.value !== "3"
+            ? `
         <p><strong>Total Income:</strong> $${incomeTotal}</p>
         <p><strong>Total Expenses:</strong> $${expenseTotal}</p>
-        
+
         <h2>Transactions</h2>
         <table>
           <thead>
@@ -71,10 +100,15 @@ export const generateReportPDF = async () => {
               <th>Wallet</th>
             </tr>
           </thead>
-          <tbody>${transactionRows}</tbody>
-        </table>
+          <tbody>${transactionRows || "<tr><td colspan='6'>No transactions</td></tr>"}</tbody>
+        </table>`
+            : ""
+        }
 
-        <h2>Budget Summary</h2>
+        ${
+          includeBudget
+            ? `
+        <h2>Budget Summary (${currentMonthKey})</h2>
         <table>
           <thead>
             <tr>
@@ -84,8 +118,10 @@ export const generateReportPDF = async () => {
               <th>Alert %</th>
             </tr>
           </thead>
-          <tbody>${budgetRows}</tbody>
-        </table>
+          <tbody>${budgetRows || "<tr><td colspan='4'>No budget data</td></tr>"}</tbody>
+        </table>`
+            : ""
+        }
       </body>
     </html>
   `;

@@ -1,13 +1,12 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useColorScheme } from "react-native";
 
 export const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const theme = useSelector((state) => state.Money.preferences.theme); // This should be "Light", "Dark", or "Using device theme"
-  const deviceTheme = useColorScheme(); // Returns "light" | "dark"
-
+  const theme = useSelector((state) => state.Money.preferences.theme);
+  const deviceTheme = useColorScheme();
   const themes = {
     Light: {
       backgroundColor: "#fff",
@@ -43,10 +42,9 @@ export const ThemeProvider = ({ children }) => {
     },
   };
 
-  // Figure out which theme to use
   const selectedThemeName = theme === "Using device theme" ? (deviceTheme === "dark" ? "Dark" : "Light") : theme;
 
-  const selectedColors = themes[selectedThemeName] || themes.Light;
+  const selectedColors = useMemo(() => themes[selectedThemeName] || themes.Light, [selectedThemeName]);
 
   return (
     <ThemeContext.Provider value={{ theme: selectedThemeName, colors: selectedColors }}>

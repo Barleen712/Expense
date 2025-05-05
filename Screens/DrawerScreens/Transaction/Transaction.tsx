@@ -1,16 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  View,
-  Text,
-  Image,
-  Touchable,
-  TouchableOpacity,
-  Modal,
-  FlatList,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { View, Text, Image, TouchableOpacity, Modal, FlatList, TouchableWithoutFeedback } from "react-native";
 import { selectTransactions } from "../../../Slice/Selectors";
-import CustomD from "../../../Components/Practice";
 import { CustomButton } from "../../../Components/CustomButton";
 import { useSelector } from "react-redux";
 import { getStyles } from "./styles";

@@ -7,9 +7,8 @@ import { StringConstants, Weeks } from "../Screens/Constants";
 import { CustomButton } from "./CustomButton";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import CustomD from "./Practice";
 import { ThemeContext } from "../Context/ThemeContext";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+
 const Frequency = ["Yearly", "Monthly", "Weekly", "Daily"].map((item) => ({
   label: item,
   value: item,
@@ -60,7 +59,7 @@ export default function FrequencyModal({
     if (Platform.OS === "android") setShowEndDatePicker(false);
     if (selectedDate) setEndDate(selectedDate);
   };
-   const {colors}=useContext(ThemeContext)
+  const { colors } = useContext(ThemeContext);
   return (
     <Modal
       animationType="slide"
@@ -73,7 +72,7 @@ export default function FrequencyModal({
       <TouchableWithoutFeedback onPress={() => setFrequencyModal(false)}>
         <View style={styles.modalOverlay}>
           <TouchableWithoutFeedback>
-            <View style={[styles.modalContainer, { height: "35%",backgroundColor:colors.backgroundColor}]}>
+            <View style={[styles.modalContainer, { height: "35%", backgroundColor: colors.backgroundColor }]}>
               <View
                 style={{ width: "100%", alignItems: "center", flexDirection: "row", justifyContent: "space-evenly" }}
               >
@@ -149,7 +148,9 @@ export default function FrequencyModal({
                     onPress={() => setShowEndDatePicker(true)}
                     style={[styles.textinput, { flex: 1, flexDirection: "row", justifyContent: "space-between" }]}
                   >
-                    <Text style={{color:colors.color}}>{endAfter ? ` ${new Date(endDate).toDateString()}` : "Select End Date :"}</Text>
+                    <Text style={{ color: colors.color }}>
+                      {endAfter ? ` ${new Date(endDate).toDateString()}` : "Select End Date :"}
+                    </Text>
                     {showEndDatePicker && (
                       <DateTimePicker value={endDate} mode="date" display="default" onChange={onChange} />
                     )}
