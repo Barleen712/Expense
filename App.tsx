@@ -11,6 +11,7 @@ import { auth } from "./Screens/FirebaseConfig";
 import { TabScreens } from "./Navigation/StackNavigation";
 import { ActivityIndicator } from "react-native-paper";
 import Toast from "react-native-toast-message";
+import { getUserDocument } from "./Saga/BudgetSaga";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -33,15 +34,31 @@ const checkApplicationPermission = async () => {
     }
   }
 };
+
 export default function App() {
   const [user, setUser] = useState("");
   const [loading, setLoading] = useState(true);
+  async function getuser() {
+    const pin = await getUserDocument();
+    console.log(pin);
+  }
   useEffect(() => {
     checkApplicationPermission();
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        await currentUser.reload(); // Refresh user to get latest verification status
+        if (currentUser.emailVerified) {
+          setUser(currentUser);
+        } else {
+          console.log("User email not verified.");
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
+
     return () => unsubscribe();
   }, []);
   {

@@ -292,14 +292,17 @@ export const FirebaseErrors: Record<string, string> = {
   "auth/invalid-credential": "Check Your Credentials",
   "auth/too-many-requests": "You have exceeded the request limit",
   "auth/email-already-in-use": "The provided email is already in use",
+  done: "You have successfully registered",
+  verify: "Please check your inbox to verify your email.",
+  fail: "Email not verified. Please check your inbox.",
 };
-export function raiseToast(text1: string, error: string) {
+export function raiseToast(type: string, text1: string, error: string) {
   Toast.show({
-    type: "error",
+    type: type,
     text1: text1,
     text2: FirebaseErrors[error],
     position: "bottom",
     text1Style: { fontSize: 16 },
-    text2Style: { fontSize: 16, fontWeight: "bold" },
+    text2Style: { fontSize: 12, fontWeight: "bold" },
   });
 }

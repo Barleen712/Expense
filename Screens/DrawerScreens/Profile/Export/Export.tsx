@@ -34,8 +34,8 @@ const date = [
 export default function Export({ navigation }: Props) {
   const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState(category[0].value);
-  const [exportdata, selectedData] = useState(data[4].value);
-  const [dateRange, selecteddateRange] = useState(date[3].value);
+  const [exportdata, setselectedData] = useState(data[4].value);
+  const [dateRange, setselecteddateRange] = useState(date[3].value);
   async function exporting() {
     if (selectedCategory === "0") {
       await GenerateCSVReport(exportdata, dateRange);
@@ -63,7 +63,7 @@ export default function Export({ navigation }: Props) {
             name={exportdata}
             styleButton={styles.textinput}
             onSelectItem={(item) => {
-              selectedData(item);
+              setselectedData(item);
             }}
           />
         </View>
@@ -75,7 +75,7 @@ export default function Export({ navigation }: Props) {
             styleButton={styles.textinput}
             name={dateRange}
             onSelectItem={(item) => {
-              selecteddateRange(item);
+              setselecteddateRange(item);
             }}
           />
         </View>

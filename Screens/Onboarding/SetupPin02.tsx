@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Text, FlatList } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { View, Text } from "react-native";
 import styles from "../Stylesheet";
 import Keypad from "../../Components/Keypad";
 import Pin from "../../Components/Pin";
@@ -15,14 +14,20 @@ import { AddPin } from "../FirestoreHandler";
 import { GoogleAuthProvider } from "firebase/auth";
 import { signInWithCredential } from "firebase/auth";
 import { AddUser } from "../FirestoreHandler";
+import { RootState } from "../../Store/Store";
 type PinProp = StackNavigationProp<StackParamList, "Setpin1">;
 
 interface Props {
   navigation: PinProp;
+  route: {
+    params: {
+      FirstPin: string;
+    };
+  };
 }
 export default function Setpin02({ navigation, route }: Props) {
-  const { email, password, name } = useSelector((state) => state.Money.signup);
-  const { id, google, username, photo } = useSelector((state) => state.Money.googleSign);
+  const { email, password, name } = useSelector((state: RootState) => state.Money.signup);
+  const { id, google, username, photo } = useSelector((state: RootState) => state.Money.googleSign);
   const [pin, setpin] = useState("");
   const handleClear = () => {
     setpin("");

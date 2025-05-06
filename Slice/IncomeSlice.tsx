@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { changeLanguage } from "i18next";
+import { RootState } from "../Store/Store";
 interface IncomeEntry {
   amount: number;
   description: string;

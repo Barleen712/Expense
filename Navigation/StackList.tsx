@@ -7,7 +7,7 @@ type StackParamList = {
   SignUp: undefined;
   GetStarted: undefined;
   Setpin: undefined;
-  Setpin1: { FirstPin: number };
+  Setpin1: { FirstPin: string };
   AllSet: { title: string };
   MainScreen: undefined;
   Settings: undefined;

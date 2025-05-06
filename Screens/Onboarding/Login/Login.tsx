@@ -49,18 +49,28 @@ export default function Login({ navigation }: Props) {
     }
     try {
       setLoading(true);
-      await signInWithEmailAndPassword(auth, email.email, password.password);
+      const user = await signInWithEmailAndPassword(auth, email.email, password.password);
+      if (!user.user.emailVerified) {
+        raiseToast("error", "Login Failed", "fail");
+        await auth.signOut();
+        setLoading(false);
+        setemail({ email: "", emailError: "" });
+        setpass({ password: "", passwordError: "" });
+        return;
+      }
       setLoading(false);
       navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
     } catch (error: any) {
-      raiseToast("Login Failed", error.code);
+      raiseToast("error", "Login Failed", error.code);
 
       setLoading(false);
     }
+    setemail({ email: "", emailError: "" });
+    setpass({ password: "", passwordError: "" });
   }
   const { t } = useTranslation();
-  const {colors}=useContext(ThemeContext)
-  const style=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const style = getStyles(colors);
   if (loading) {
     return (
       <View style={{ height: "100%", alignItems: "center", justifyContent: "center" }}>
@@ -70,7 +80,12 @@ export default function Login({ navigation }: Props) {
   }
   return (
     <SafeAreaView style={style.container}>
-      <Header title={t(StringConstants.Login)} press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color}/>
+      <Header
+        title={t(StringConstants.Login)}
+        press={() => navigation.goBack()}
+        bgcolor={colors.backgroundColor}
+        color={colors.color}
+      />
       <View style={style.input}>
         <Input
           ref={emailRef}

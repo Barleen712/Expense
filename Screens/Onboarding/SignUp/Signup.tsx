@@ -1,16 +1,5 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  Platform,
-  Image,
-  ActivityIndicator,
-  SafeAreaView,
-  StatusBar,
-} from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Platform, Image, SafeAreaView, StatusBar } from "react-native";
 import GradientButton from "../../../Components/CustomButton";
 import Input from "../../../Components/CustomTextInput";
 import { Checkbox } from "react-native-paper";
@@ -20,12 +9,13 @@ import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
 import { useTranslation } from "react-i18next";
 import { StringConstants, handleGoogleSignIn } from "../../Constants";
-
 import { addUser, addGoogleUser } from "../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import styles from "../../Stylesheet";
 import { ThemeContext } from "../../../Context/ThemeContext";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "@firebase/auth";
+import { auth } from "../../FirebaseConfig";
+import { raiseToast } from "../../Constants";
 
 type SignupProp = StackNavigationProp<StackParamList, "SignUp">;
 interface Props {
@@ -91,11 +81,23 @@ export default function SignUp({ navigation }: Props) {
         google: false,
       })
     );
+    try {
+      const user = await createUserWithEmailAndPassword(auth, email.email, password.password);
+      raiseToast("success", "Sign Up Success", "done");
+      if (user) {
+        await sendEmailVerification(user.user);
+        raiseToast("success", "Email Verification", "verify");
+      }
+    } catch (error: any) {
+      raiseToast("error", "Sign Up Failed", error.code);
+      return;
+    }
+
+    navigation.navigate("Login");
     setname({ name: "", nameError: "" });
     setemail({ email: "", emailError: "" });
     setpass({ password: "", passwordError: "" });
     setChecked({ state: false, error: "" });
-    navigation.navigate("Setpin");
   }
   const { t } = useTranslation();
 
@@ -111,12 +113,17 @@ export default function SignUp({ navigation }: Props) {
     );
     navigation.navigate("Setpin");
   }
-const {colors}=useContext(ThemeContext)
-const style=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const style = getStyles(colors);
   return (
-    <SafeAreaView style={[style.container, { alignItems: "center" }]} >
+    <SafeAreaView style={[style.container, { alignItems: "center" }]}>
       <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
-      <Header title={t(StringConstants.SignUp)} press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color}></Header>
+      <Header
+        title={t(StringConstants.SignUp)}
+        press={() => navigation.goBack()}
+        bgcolor={colors.backgroundColor}
+        color={colors.color}
+      ></Header>
       <View style={style.input}>
         <Input
           ref={nameRef}
@@ -216,7 +223,7 @@ const style=getStyles(colors)
             color="rgb(57, 112, 109)"
           />
         </View>
-        <Text style={{ flex: 0.9,color:colors.color }}>
+        <Text style={{ flex: 0.9, color: colors.color }}>
           {t(StringConstants.Bysigningupyouagreetothe)}{" "}
           <Text style={{ color: "rgb(57, 112, 109)" }}>{t(StringConstants.TermsofServiceandPrivacyPolicy)}</Text>
         </Text>
@@ -248,5 +255,3 @@ const style=getStyles(colors)
     </SafeAreaView>
   );
 }
-
-
