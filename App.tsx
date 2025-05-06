@@ -48,7 +48,6 @@ export default function App() {
         await currentUser.reload();
         if (currentUser.emailVerified) {
           const userdetails = await getUseNamerDocument();
-
           if (userdetails?.pinSet === false) {
             setinitialRoute("Setpin");
           } else {

@@ -19,6 +19,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import * as Sharing from "expo-sharing";
+import {getRealm} from "../../../../Realm/realm"
 import * as IntentLauncher from "expo-intent-launcher";
 import { auth } from "../../../FirebaseConfig";
 import { updateDocument } from "../../../FirestoreHandler";
@@ -150,6 +151,10 @@ export default function Income({ navigation, route }: Props) {
   const dispatch = useDispatch();
   const user = auth.currentUser;
   async function add() {
+    console.log("hello")
+    const realm = await getRealm();
+   
+    console.log(realm)
     const numericIncome = parseFloat(Income.replace("$", "") || "0");
     let supabaseImageUrl = null;
     if (numericIncome === 0) {
@@ -205,6 +210,35 @@ export default function Income({ navigation, route }: Props) {
       startMonth: month,
       startYear: new Date().getFullYear(),
     });
+    const transaction = {
+      _id:new Date().toISOString(),
+      amount: numericIncome,
+      description: Description,
+      category: selectedCategory,
+      wallet: selectedWallet,
+      moneyCategory: "Income",
+      Frequency: frequency,
+      endAfter: endAfter || null,
+      weekly: week || null,
+      endDate: endDate || null,
+      startDate: startDate,
+      startMonth: month,
+      startYear: new Date().getFullYear(),
+      userId: user?.uid || "unknown",
+      createdAt: new Date(),
+    };
+    console.log("added")
+    try {
+      realm.write(() => {
+        realm.create("Transaction", transaction);
+      });
+      console.log("done")
+    }
+    catch(error)
+    {
+      console.log(error)
+    }
+  
     setLoading(false);
     navigation.goBack();
   }

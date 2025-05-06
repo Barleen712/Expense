@@ -34,7 +34,7 @@ export default function Setpin02({ navigation, route }: Props) {
     setpin("");
   };
   async function handlenext() {
-    if (route.params.FirstPin === pin && google === false) {
+    if (route.params.FirstPin === pin ) {
       try {
         const { ID } = await getUseNamerDocument();
         console.log(ID);
@@ -43,16 +43,17 @@ export default function Setpin02({ navigation, route }: Props) {
       } catch (error: any) {
         raiseToast("Sign Up Failed", error.code);
       }
-    } else if (route.params.FirstPin === pin && google === true) {
-      const googleCredential = GoogleAuthProvider.credential(id);
-      const creds = await signInWithCredential(auth, googleCredential);
-      const user = creds.user;
-      AddPin({
-        Pin: pin,
-        userId: user.uid,
-      });
-      AddUser({ User: username, photo: { uri: photo }, userId: user.uid, index: null });
-      navigation.navigate("AllSet", { title: "You are set!" });
+    
+    // } else if (route.params.FirstPin === pin && google === true) {
+    //   const googleCredential = GoogleAuthProvider.credential(id);
+    //   const creds = await signInWithCredential(auth, googleCredential);
+    //   const user = creds.user;
+    //   AddPin({
+    //     Pin: pin,
+    //     userId: user.uid,
+    //   });
+    //   AddUser({ User: username, photo: { uri: photo }, userId: user.uid, index: null });
+    //   navigation.navigate("AllSet", { title: "You are set!" });
     } else {
       alert("PINS don't match. \nPlease Re-Enter your Pin");
       handleClear();
