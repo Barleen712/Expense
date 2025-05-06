@@ -46,6 +46,10 @@ import { loadPreferences } from "../Slice/IncomeSlice";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(loadPreferences());
+  }, []);
   return (
     <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={Onboarding} />

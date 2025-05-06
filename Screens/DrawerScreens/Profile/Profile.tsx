@@ -20,7 +20,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { CustomButton } from "../../../Components/CustomButton";
 import { auth } from "../../FirebaseConfig";
-import { signOut } from "firebase/auth";
 import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -81,7 +80,6 @@ export default function Profile({ navigation }: Props) {
     try {
       toggleModal();
       dispatch(clearData());
-      console.log("Sign out");
       await auth.signOut();
     } catch (error) {
       alert("Their was some error");
@@ -129,9 +127,8 @@ export default function Profile({ navigation }: Props) {
       console.error("Error while picking image:", err);
     }
   };
-  const { colors, setTheme, theme } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);
-  console.log(auth.currentUser);
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground style={{ width: widths, height: 800 }} source={require("../../../assets/ProfileBack.png")}>
@@ -227,23 +224,43 @@ export default function Profile({ navigation }: Props) {
                     <TouchableOpacity style={{ position: "absolute", right: "3%" }} onPress={Discard}>
                       <MaterialIcons name="cancel" size={26} color={colors.editColor} />
                     </TouchableOpacity>
-                    <View style={{ alignItems: "center", justifyContent: "center", padding: 20 }}>
+                    <View
+                      style={{
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: 20,
+                        flex: 0.3,
+                      }}
+                    >
                       <Image
                         style={{
-                          width: Platform.OS === "ios" ? 100 : 150,
-                          height: Platform.OS === "ios" ? 100 : 150,
+                          width: "48%",
+                          height: "100%",
                           borderRadius: 80,
                           borderWidth: 3,
                         }}
                         source={modalPhoto}
                       />
                     </View>
-                    <View style={{ margin: 10 }}>
-                      <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-evenly" }}>
+                    <View style={{ margin: 10, flex: 0.4 }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          justifyContent: "space-evenly",
+
+                          flex: 1,
+                        }}
+                      >
                         {profilepics.map((item, index) => (
                           <TouchableOpacity
                             key={index}
-                            style={{ marginBottom: 5 }}
+                            style={{
+                              marginBottom: 5,
+                              width: "30%",
+                              height: "45%",
+                              alignItems: "center",
+                            }}
                             onPress={() => {
                               setmodalPhoto(profilepics[index]);
                               setselectedindex(index);
@@ -251,8 +268,8 @@ export default function Profile({ navigation }: Props) {
                           >
                             <Image
                               style={{
-                                width: Platform.OS === "ios" ? 70 : 80,
-                                height: Platform.OS === "ios" ? 70 : 80,
+                                width: "90%",
+                                height: "100%",
                                 borderRadius: 50,
                                 borderWidth: 2,
                                 resizeMode: "contain",
@@ -264,7 +281,12 @@ export default function Profile({ navigation }: Props) {
                       </View>
                     </View>
                     <TouchableOpacity
-                      style={{ marginTop: 20, alignItems: "center", justifyContent: "center" }}
+                      style={{
+                        marginTop: 5,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flex: 0.1,
+                      }}
                       onPress={() => pickImageFromGallery()}
                     >
                       <Text style={{ color: colors.editColor, fontWeight: "bold", fontSize: 18, textAlign: "center" }}>
@@ -272,7 +294,7 @@ export default function Profile({ navigation }: Props) {
                       </Text>
                     </TouchableOpacity>
 
-                    <View style={{ marginTop: 30, paddingLeft: 10, justifyContent: "space-evenly" }}>
+                    <View style={{ paddingLeft: 10, justifyContent: "space-evenly", flex: 0.1 }}>
                       <Text style={{ fontFamily: "Inter", fontSize: 16, color: colors.editColor }}>Username</Text>
                       <TextInput
                         placeholder={username}
@@ -292,7 +314,7 @@ export default function Profile({ navigation }: Props) {
                     </View>
                     <TouchableOpacity
                       onPress={saveChanges}
-                      style={{ marginTop: 30, alignItems: "center", justifyContent: "center" }}
+                      style={{ alignItems: "center", justifyContent: "center", flex: 0.1 }}
                     >
                       <Text style={{ color: colors.editColor, fontWeight: "bold", fontSize: 18, textAlign: "center" }}>
                         Save Changes

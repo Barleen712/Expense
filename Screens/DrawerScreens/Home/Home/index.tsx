@@ -190,7 +190,7 @@ export default function Home({ navigation }: Props) {
               onChange={onValueChange}
               value={selectedMonth_Year}
               minimumDate={new Date(2020, 1)}
-              maximumDate={new Date()}
+              maximumDate={new Date(new Date().getFullYear(), new Date().getMonth(), 1)}
               locale="en"
             />
           )}
