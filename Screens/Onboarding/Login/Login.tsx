@@ -50,6 +50,7 @@ export default function Login({ navigation }: Props) {
     try {
       setLoading(true);
       const user = await signInWithEmailAndPassword(auth, email.email, password.password);
+      setLoading(false);
       if (!user.user.emailVerified) {
         raiseToast("error", "Login Failed", "fail");
         await auth.signOut();
@@ -58,8 +59,8 @@ export default function Login({ navigation }: Props) {
         setpass({ password: "", passwordError: "" });
         return;
       }
-      setLoading(false);
-      navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
+      // setLoading(false);
+      // navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
     } catch (error: any) {
       raiseToast("error", "Login Failed", error.code);
 

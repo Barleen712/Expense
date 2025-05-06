@@ -81,7 +81,8 @@ export default function Profile({ navigation }: Props) {
     try {
       toggleModal();
       dispatch(clearData());
-      await signOut(auth);
+      console.log("Sign out");
+      await auth.signOut();
     } catch (error) {
       alert("Their was some error");
     }
@@ -130,6 +131,7 @@ export default function Profile({ navigation }: Props) {
   };
   const { colors, setTheme, theme } = useContext(ThemeContext);
   const styles = getStyles(colors);
+  console.log(auth.currentUser);
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground style={{ width: widths, height: 800 }} source={require("../../../assets/ProfileBack.png")}>

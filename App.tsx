@@ -11,7 +11,9 @@ import { auth } from "./Screens/FirebaseConfig";
 import { TabScreens } from "./Navigation/StackNavigation";
 import { ActivityIndicator } from "react-native-paper";
 import Toast from "react-native-toast-message";
-import { getUserDocument } from "./Saga/BudgetSaga";
+import { getUseNamerDocument, getUserDocument } from "./Saga/BudgetSaga";
+import { raiseToast } from "./Screens/Constants";
+import StackParamList from "./Navigation/StackList";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -38,6 +40,7 @@ const checkApplicationPermission = async () => {
 export default function App() {
   const [user, setUser] = useState("");
   const [loading, setLoading] = useState(true);
+  const [initialRoute, setinitialRoute] = useState<keyof StackParamList | undefined>(undefined);
   async function getuser() {
     const pin = await getUserDocument();
     console.log(pin);
@@ -46,21 +49,32 @@ export default function App() {
     checkApplicationPermission();
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        await currentUser.reload(); // Refresh user to get latest verification status
+        await currentUser.reload();
         if (currentUser.emailVerified) {
+          console.log("email verified");
+
+          const userdetails = await getUseNamerDocument();
+          console.log(userdetails);
+          if (userdetails?.pinSet === false) {
+            setinitialRoute("Setpin");
+            console.log("pin not set");
+          } else {
+            setinitialRoute("EnterPin");
+          }
           setUser(currentUser);
         } else {
-          console.log("User email not verified.");
+          auth.signOut();
           setUser(null);
+          //  raiseToast("error", "Email Verification", "fail");
         }
       } else {
         setUser(null);
       }
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, []);
+  console.log(user, "app");
   {
     if (loading)
       return (
@@ -73,7 +87,7 @@ export default function App() {
     <Provider store={Store}>
       <NavigationContainer>
         <ThemeProvider>
-          {user ? <TabScreens /> : <Screens />}
+          {user ? <TabScreens initial={initialRoute} /> : <Screens />}
           <Toast />
         </ThemeProvider>
       </NavigationContainer>

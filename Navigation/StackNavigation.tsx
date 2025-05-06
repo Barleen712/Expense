@@ -54,24 +54,24 @@ export default function Screens() {
       <Stack.Screen name="ForgotPassword" component={ForgotPass} />
       <Stack.Screen name="EmailSent" component={EmailSent} />
       <Stack.Screen name="GetStarted" component={Getstarted} />
-      <Stack.Screen name="Setpin" component={Setpin} />
+
       <Stack.Screen name="AllSet" component={Success} />
-      <Stack.Screen name="Setpin1" component={Setpin02} />
     </Stack.Navigator>
   );
 }
 const Stack2 = createStackNavigator<StackParamList>();
-export function TabScreens() {
+export function TabScreens({ initial = "EnterPin" }: { initial?: keyof StackParamList }) {
   const dispatch = useDispatch();
   const navigation = useNavigation<StackNavigationProp<StackParamList>>();
   useEffect(() => {
-    handleBiometricAuth(navigation);
+    // handleBiometricAuth(navigation);
     //dispatch(fetchRates());
     dispatch(loadPreferences());
   }, []);
   return (
-    <Stack2.Navigator initialRouteName="EnterPin" screenOptions={{ headerShown: false }}>
-      {/* <Stack.Screen name="Setpin" component={Setpin} /> */}
+    <Stack2.Navigator initialRouteName={initial} screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Setpin" component={Setpin} />
+      <Stack.Screen name="Setpin1" component={Setpin02} />
       <Stack.Screen name="AllSet" component={Success} />
       <Stack.Screen name="EnterPin" component={EnterPin} />
       <Stack.Screen name="MainScreen" component={Tabscreens} />

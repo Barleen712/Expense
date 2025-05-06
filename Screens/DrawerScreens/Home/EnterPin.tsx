@@ -8,7 +8,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
-import { getUserDocument } from "../../../Saga/BudgetSaga";
+import { getUseNamerDocument, getUserDocument } from "../../../Saga/BudgetSaga";
 type pinProp = StackNavigationProp<StackParamList, "Setpin">;
 
 interface Props {
@@ -20,8 +20,8 @@ export default function EnterPin({ navigation }: Props) {
   };
   const [pin, setpin] = useState("");
   async function handlenext() {
-    const Pin = await getUserDocument();
-    if (Pin.Pin === pin) {
+    const Pin = await getUseNamerDocument();
+    if (Pin.pin === pin) {
       navigation.replace("MainScreen");
     } else {
       alert("Wrong Pin!");

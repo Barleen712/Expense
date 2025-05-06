@@ -50,7 +50,7 @@ export const getUseNamerDocument = async () => {
   const user = auth.currentUser;
   try {
     if (!user) return;
-    const q = query(collection(db, "Names"), where("userId", "==", user.uid));
+    const q = query(collection(db, "Names"), where("userid", "==", user.uid));
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
       console.log("No user");
@@ -61,8 +61,10 @@ export const getUseNamerDocument = async () => {
     return {
       Name: userData.User,
       Photo: userData.photo,
+      pinSet: userData.pinSet,
       ID: userDoc.id,
       Index: userData.index,
+      pin: userData.pin,
     };
   } catch (error) {
     console.error("Error fetching PIN:", error);

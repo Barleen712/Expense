@@ -16,6 +16,7 @@ import { ThemeContext } from "../../../Context/ThemeContext";
 import { createUserWithEmailAndPassword, sendEmailVerification } from "@firebase/auth";
 import { auth } from "../../FirebaseConfig";
 import { raiseToast } from "../../Constants";
+import { AddUser } from "../../FirestoreHandler";
 
 type SignupProp = StackNavigationProp<StackParamList, "SignUp">;
 interface Props {
@@ -86,6 +87,13 @@ export default function SignUp({ navigation }: Props) {
       raiseToast("success", "Sign Up Success", "done");
       if (user) {
         await sendEmailVerification(user.user);
+        console.log("logout");
+        await auth.signOut();
+        AddUser({
+          User: name.name,
+          userid: user.user.uid,
+          pinSet: false,
+        });
         raiseToast("success", "Email Verification", "verify");
       }
     } catch (error: any) {

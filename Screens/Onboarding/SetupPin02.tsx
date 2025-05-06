@@ -10,11 +10,12 @@ import { useTranslation } from "react-i18next";
 import { auth } from "../FirebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useSelector } from "react-redux";
-import { AddPin } from "../FirestoreHandler";
+import { AddPin, updateUserDoc } from "../FirestoreHandler";
 import { GoogleAuthProvider } from "firebase/auth";
 import { signInWithCredential } from "firebase/auth";
 import { AddUser } from "../FirestoreHandler";
 import { RootState } from "../../Store/Store";
+import { getUseNamerDocument } from "../../Saga/BudgetSaga";
 type PinProp = StackNavigationProp<StackParamList, "Setpin1">;
 
 interface Props {
@@ -35,14 +36,10 @@ export default function Setpin02({ navigation, route }: Props) {
   async function handlenext() {
     if (route.params.FirstPin === pin && google === false) {
       try {
-        const user = await createUserWithEmailAndPassword(auth, email, password);
-        AddPin({
-          Pin: pin,
-          userId: user.user?.uid,
-          index: null,
-        });
-        AddUser({ User: name, userId: user.user?.uid });
-        navigation.navigate("AllSet", { title: "You are set!" });
+        const { ID } = await getUseNamerDocument();
+        console.log(ID);
+        await updateUserDoc(ID, { pinSet: true, pin: pin });
+        navigation.navigate("MainScreen");
       } catch (error: any) {
         raiseToast("Sign Up Failed", error.code);
       }
