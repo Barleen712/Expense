@@ -23,6 +23,8 @@ export const ThemeProvider = ({ children }) => {
       line: "rgba(56, 88, 85, 0.11)",
       editColor: "rgb(4, 73, 69)",
       nobutton: "rgba(220, 234, 233, 0.6)",
+      seeall: "rgba(220, 234, 233, 0.6)",
+      selected: "rgba(4, 73, 69, 0.53)",
     },
     Dark: {
       backgroundColor: "#000",
@@ -37,8 +39,10 @@ export const ThemeProvider = ({ children }) => {
       financialReport: "rgb(25, 75, 72)",
       reportText: "white",
       line: "rgba(150, 148, 148, 0.28)",
-      editColor: "rgb(41, 234, 163)",
+      editColor: "rgb(39, 176, 192)",
       nobutton: "rgba(255, 255, 255, 0.9)",
+      seeall: "white",
+      selected: "rgb(39, 176, 192)",
     },
   };
 

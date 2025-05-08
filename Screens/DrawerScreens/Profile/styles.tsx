@@ -72,7 +72,6 @@ export const getStyles = (colors: any) =>
       padding: 5,
       flex: 0.12,
       marginRight: 5,
-      backgroundColor: " rgba(255, 226, 228, 1)",
       borderRadius: 10,
     },
     Line: {

@@ -1,35 +1,42 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Animated, StyleSheet, TouchableOpacity, Text, View, Image } from "react-native";
+import { Animated, StyleSheet, TouchableOpacity, Text, View, Image, ActivityIndicator } from "react-native";
 import { CurvedBottomBarExpo } from "react-native-curved-bottom-bar";
 import { Ionicons } from "@expo/vector-icons";
 import Home from "../Screens/DrawerScreens/Home/Home";
 import Transaction from "../Screens/DrawerScreens/Transaction/Transaction";
-import { StackNavigationProp } from "@react-navigation/stack";
-import StackParamList from "./StackList";
 import Budget from "../Screens/DrawerScreens/Budget/Budget/Budget";
 import Profile from "../Screens/DrawerScreens/Profile/Profile";
-
+import { StackNavigationProp } from "@react-navigation/stack";
+import StackParamList from "./StackList";
+import { useSelector } from "react-redux";
+import { RootState } from "../Store/Store";
 import { useTranslation } from "react-i18next";
-
 import { ThemeContext } from "../Context/ThemeContext";
+
 type BottomTabprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
   navigation: BottomTabprop;
 }
+
 export default function Tabscreens({ navigation }: Props) {
+  const loading = useSelector((state: RootState) => state.Money.loading);
+  const [plus, setplus] = useState(true);
+  const [cross, setcross] = useState(false);
+  const { t } = useTranslation();
+  const { colors } = useContext(ThemeContext);
+  const styles = getstyles(colors);
+
   useEffect(() => {
     const unsubscribe = navigation.addListener("state", () => {
       setplus(true);
       setcross(false);
     });
-
     return unsubscribe;
   }, [navigation]);
 
   const _renderIcon = (routeName: string, selectedTab: string): JSX.Element => {
     let icon = "";
-
     switch (routeName) {
       case "Home":
         icon = "home";
@@ -46,16 +53,10 @@ export default function Tabscreens({ navigation }: Props) {
       default:
         icon = "add-outline";
     }
-
     return <Ionicons name={icon} size={25} color={routeName === selectedTab ? "rgb(42, 124, 118)" : "gray"} />;
   };
-  interface renderCircle {
-    routeName: string;
-    selectedTab: string;
-    navigate: any;
-  }
-  const { t } = useTranslation();
-  const renderTabBar = ({ routeName, selectedTab, navigate }: renderCircle) => (
+
+  const renderTabBar = ({ routeName, selectedTab, navigate }: any) => (
     <TouchableOpacity onPress={() => navigate(routeName)} style={styles.tabbarItem}>
       {_renderIcon(routeName, selectedTab)}
       <Text style={[styles.tabText, { color: routeName === selectedTab ? "rgb(42, 124, 118)" : "gray" }]}>
@@ -63,20 +64,25 @@ export default function Tabscreens({ navigation }: Props) {
       </Text>
     </TouchableOpacity>
   );
-  const [plus, setplus] = useState(true);
-  const [cross, setcross] = useState(false);
-  const { colors } = useContext(ThemeContext);
-  const styles = getstyles(colors);
+
+  // if (loading) {
+  //   return (
+  //     <View style={styles.loadingContainer}>
+  //       <ActivityIndicator size="large" color="rgb(42, 124, 118)" />
+  //     </View>
+  //   );
+  // }
   return (
     <CurvedBottomBarExpo.Navigator
       type="DOWN"
-      style={styles.bottomBar}
+      style={[styles.bottomBar, loading && { display: "none" }]}
       shadowStyle={styles.shadow}
       height={70}
       circleWidth={56}
       bgColor="transparent"
       initialRouteName="Home"
       borderTopLeftRight
+      screenOptions={{ headerShown: false }}
       renderCircle={() => (
         <Animated.View style={styles.btnCircleUp}>
           <TouchableOpacity
@@ -88,6 +94,7 @@ export default function Tabscreens({ navigation }: Props) {
           >
             {plus && <Ionicons name="add-outline" size={30} color="white" />}
             {cross && <Ionicons name="close-outline" size={30} color="white" />}
+
             {cross && (
               <TouchableOpacity
                 onPress={() =>
@@ -146,7 +153,6 @@ export default function Tabscreens({ navigation }: Props) {
         </Animated.View>
       )}
       tabBar={renderTabBar}
-      screenOptions={{ headerShown: false }}
     >
       <CurvedBottomBarExpo.Screen name="Home" position="LEFT" component={Home} />
       <CurvedBottomBarExpo.Screen name="Transactions" position="LEFT" component={Transaction} />
@@ -156,7 +162,6 @@ export default function Tabscreens({ navigation }: Props) {
   );
 }
 
-// Styles
 function getstyles(colors) {
   return StyleSheet.create({
     shadow: {
@@ -170,7 +175,9 @@ function getstyles(colors) {
       flex: 1,
       justifyContent: "center",
     },
-    bottomBar: { backgroundColor: colors.backgroundColor },
+    bottomBar: {
+      backgroundColor: colors.backgroundColor,
+    },
     btnCircleUp: {
       width: 56,
       height: 56,
@@ -189,12 +196,17 @@ function getstyles(colors) {
       flex: 1,
       alignItems: "center",
       justifyContent: "center",
-      //backgroundColor: colors.backgroundcolor,
     },
     tabText: {
       fontSize: 12,
       fontWeight: "500",
       marginTop: 3,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: colors.backgroundColor,
     },
   });
 }

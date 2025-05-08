@@ -1,7 +1,8 @@
 import React from "react";
 import { View, TouchableOpacity, Image, StyleSheet, Alert } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
-import * as ImagePicker from "expo-image-picker";
+//import * as ImagePicker from "expo-image-picker";
+import ImagePicker from "react-native-image-crop-picker";
 
 interface Images {
   toggle: () => void;
@@ -28,26 +29,18 @@ const SelectImageWithDocumentPicker = ({
   close,
 }: Images) => {
   const pickImageFromGallery = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: "image/*",
-        multiple: false,
-        copyToCacheDirectory: true,
-      });
-
-      if (!result.canceled && result.assets?.length > 0) {
-        setImage(result.assets[0].uri);
-        setAttach(false);
-
-        setclose(true);
-      } else {
-        setAttach(true);
-      }
-
+    const result = ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+      cropperToolbarTitle: "Save",
+      freeStyleCropEnabled: true,
+    }).then((image) => {
+      setImage(image.path);
+      setAttach(false);
+      setclose(true);
       toggle();
-    } catch (err) {
-      console.error("Error while picking image:", err);
-    }
+    });
   };
 
   const pickDocument = async () => {
@@ -66,38 +59,53 @@ const SelectImageWithDocumentPicker = ({
         toggle();
       } else {
         setAttach(true);
-        toggle();
+        // toggle();
       }
     } catch (err) {
       console.error("Error while picking document:", err);
     }
   };
 
+  // const openCamera = async () => {
+  //   const { status } = await ImagePicker.requestCameraPermissionsAsync();
+  //   if (status !== "granted") {
+  //     Alert.alert("Permission Denied", "You need to enable camera permissions.");
+  //     return;
+  //   }
+
+  //   const result = await ImagePicker.launchCameraAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //     //  allowsEditing: true,
+  //     quality: 1,
+  //   });
+
+  //   if (!result.canceled && result.assets?.length > 0) {
+  //     setImage(result.assets[0].uri);
+  //     setAttach(false);
+  //     setclose(true);
+  //   } else {
+  //     setAttach(true);
+  //     setclose(false);
+  //   }
+
+  //   toggle();
+  // };
+
   const openCamera = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permission Denied", "You need to enable camera permissions.");
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets?.length > 0) {
-      setImage(result.assets[0].uri);
+    const result = await ImagePicker.openCamera({
+      width: 330,
+      height: 400,
+      cropping: true,
+      cropperToolbarTitle: "Save",
+      freeStyleCropEnabled: true,
+    }).then((image) => {
+      setImage(image.path);
       setAttach(false);
       setclose(true);
-    } else {
-      setAttach(true);
-      setclose(false);
-    }
-
-    toggle();
+      toggle();
+    });
+    //  console.log(result, "hkhika");
   };
-
   return (
     <TouchableOpacity
       style={{

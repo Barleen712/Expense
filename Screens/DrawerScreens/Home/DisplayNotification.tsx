@@ -9,6 +9,7 @@ import { deleteAllUserNotifications } from "../../FirestoreHandler";
 import { auth } from "../../FirebaseConfig";
 import { updateBadge } from "../../../Slice/IncomeSlice";
 import { ThemeContext } from "../../../Context/ThemeContext";
+import { useTranslation } from "react-i18next";
 export default function DisplayNotification({ navigation }) {
   const NotificationData = useSelector((state) => state.Money.notification);
   const sortedNotification = [...NotificationData].sort((a, b) => {
@@ -17,12 +18,12 @@ export default function DisplayNotification({ navigation }) {
   const [show, setShow] = useState(false);
   const dispatch = useDispatch();
   const { colors } = useContext(ThemeContext);
-
+  const { t } = useTranslation();
   return (
     <TouchableWithoutFeedback onPress={() => setShow(false)}>
       <View style={styles.container}>
         <Header
-          title="Notification"
+          title={t("Notification")}
           press={() => navigation.goBack()}
           bgcolor={colors.backgroundColor}
           color={colors.color}
@@ -40,7 +41,6 @@ export default function DisplayNotification({ navigation }) {
               height: 94,
               width: 134,
               backgroundColor: "white",
-              alignItems: "center",
               justifyContent: "space-evenly",
               elevation: 3,
               shadowColor: "#000",
@@ -48,6 +48,7 @@ export default function DisplayNotification({ navigation }) {
               shadowOpacity: 0.2,
               shadowRadius: 4,
               zIndex: 100,
+              paddingLeft: 20,
             }}
           >
             <TouchableOpacity
@@ -56,7 +57,7 @@ export default function DisplayNotification({ navigation }) {
                 setShow(false);
               }}
             >
-              <Text>Mark all read</Text>
+              <Text>{t("Mark all read")}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -66,7 +67,7 @@ export default function DisplayNotification({ navigation }) {
                 setShow(false);
               }}
             >
-              <Text>Remove all</Text>
+              <Text>{t("Remove all")}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -74,7 +75,7 @@ export default function DisplayNotification({ navigation }) {
         <View style={{ flex: 1, alignItems: "center", width: "100%", backgroundColor: colors.backgroundColor }}>
           {sortedNotification.length === 0 ? (
             <View style={{ justifyContent: "center", flex: 1 }}>
-              <Text style={styles.budgetText}>There is no notification for now</Text>
+              <Text style={styles.budgetText}>{t("There is no notification for now")}</Text>
             </View>
           ) : (
             <FlatList

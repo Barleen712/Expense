@@ -1,16 +1,5 @@
 import React, { useContext, useState } from "react";
-import {
-  View,
-  Text,
-  Button,
-  Image,
-  TouchableOpacity,
-  Switch,
-  TextInput,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { View, Text, Switch, TextInput, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
 import { getStyles } from "./styles";
 import { CustomButton } from "../../../../Components/CustomButton";
 import DropdownComponent from "../../../../Components/DropDown";
@@ -18,7 +7,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
 import Header from "../../../../Components/Header";
 import CustomSlider from "../../../../Components/Slider";
-import { addBudget, updateBudget } from "../../../../Slice/IncomeSlice";
+import { updateBudget } from "../../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../../Constants";
@@ -26,7 +15,8 @@ import { AddBudget } from "../../../FirestoreHandler";
 import { auth } from "../../../FirebaseConfig";
 import { updateBudgetDocument } from "../../../FirestoreHandler";
 import { ThemeContext } from "../../../../Context/ThemeContext";
-
+import { useSelector } from "react-redux";
+import { BudgetCategory } from "../../../../Slice/Selectors";
 type CreateBudgetProp = StackNavigationProp<StackParamList, "CreateBudget">;
 
 interface Props {
@@ -54,6 +44,7 @@ const category = [
 ];
 
 export default function CreateBudget({ navigation, route }: Props) {
+  const Budgetcat = useSelector(BudgetCategory);
   const parameters = route.params;
   const [amountError, setAmountError] = useState("");
   const [categoryError, setCategoryError] = useState("");
@@ -83,6 +74,17 @@ export default function CreateBudget({ navigation, route }: Props) {
     }
     if (selectedCategory === "Category") {
       setCategoryError("Please select a category");
+      return;
+    }
+    const selectedMonthKey = `${parameters.year}-${String(parameters.month + 1).padStart(2, "0")}`;
+    const budgetDataForMonth = Budgetcat[selectedMonthKey] || [];
+    const findCategory = budgetDataForMonth.find((item) => item.category === selectedCategory) || null;
+    if (findCategory) {
+      Alert.alert("Budget Exists", `Budget already exists for ${selectedCategory} for this month`);
+      setBudget("$");
+      setSelectedCategory("");
+      setExpense(false);
+      setSliderValue(20);
       return;
     }
     // dispatch(

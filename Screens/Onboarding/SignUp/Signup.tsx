@@ -82,6 +82,7 @@ export default function SignUp({ navigation }: Props) {
         email: email.email,
         password: password.password,
         google: false,
+        photo: "",
       })
     );
     try {
@@ -95,6 +96,9 @@ export default function SignUp({ navigation }: Props) {
           User: name.name,
           userid: user.user.uid,
           pinSet: false,
+          Photo: {
+            uri: "",
+          },
         });
         raiseToast("success", "Email Verification", "verify");
       }

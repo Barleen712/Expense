@@ -78,7 +78,7 @@ export const getStyles = (colors: any) =>
       color: colors.color,
     },
     reset: {
-      backgroundColor: "rgba(220, 234, 233, 0.6)",
+      backgroundColor: colors.seeall,
       width: "18%",
       height: "60%",
       alignItems: "center",

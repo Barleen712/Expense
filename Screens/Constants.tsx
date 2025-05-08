@@ -301,7 +301,8 @@ export function raiseToast(type: string, text1: string, error: string) {
     type: type,
     text1: text1,
     text2: FirebaseErrors[error],
-    position: "bottom",
+    position: "top",
+    topOffset: 100,
     text1Style: { fontSize: 16 },
     text2Style: { fontSize: 12, fontWeight: "bold" },
   });

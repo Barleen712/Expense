@@ -218,7 +218,7 @@ export default function Transaction({ navigation }: Props) {
               </View>
               <View style={[styles.FilterOptions, { flex: 0.35 }]}>
                 <Text style={styles.notiTitle}>{t(StringConstants.SortBy)}</Text>
-                <FlatList
+                {/* <FlatList
                   numColumns={3}
                   contentContainerStyle={styles.flatListContainer}
                   data={SortBy}
@@ -242,7 +242,40 @@ export default function Transaction({ navigation }: Props) {
                       </TouchableOpacity>
                     );
                   }}
-                />
+                /> */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flex: 1,
+                    flexWrap: "wrap",
+                    paddingTop: 10,
+                  }}
+                >
+                  {SortBy.map((item, index) => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (sortBy === item) setSortBy("");
+                        else setSortBy(item);
+                      }}
+                      key={index}
+                      style={[
+                        styles.filterButton,
+                        {
+                          backgroundColor: item === sortBy ? "rgba(174, 225, 221, 0.6)" : "white",
+                          width: "28%",
+                          height: "35%",
+                          margin: 5,
+                        },
+                      ]}
+                    >
+                      <Text
+                        style={[styles.filterButtonText, { color: item === sortBy ? "rgb(42, 124, 118)" : "black" }]}
+                      >
+                        {t(item)}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
               <View style={styles.FilterCategory}>
                 <Text style={styles.notiTitle}>{t(StringConstants.Category)}</Text>
@@ -275,7 +308,7 @@ export default function Transaction({ navigation }: Props) {
         }}
       >
         {FilterTrans.length === 0 ? (
-          <Text style={styles.budgetText}>No record of transactions</Text>
+          <Text style={styles.budgetText}>{t("No record of transactions")}</Text>
         ) : (
           <TransactionList data={FilterTrans} />
         )}

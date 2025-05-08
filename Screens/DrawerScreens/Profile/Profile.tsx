@@ -59,10 +59,12 @@ export default function Profile({ navigation }: Props) {
   const [selectedindex, setselectedindex] = useState();
   async function getData() {
     const user = await getUseNamerDocument();
+    console.log(user, "gugu");
     setuser(user?.Name);
     setModalUser(user?.Name);
     setmodalPhoto(user?.Photo);
     setUserId(user?.ID);
+    console.log(user?.Photo);
     if (typeof user?.Photo.uri === "number") {
       setPhoto(profilepics[user?.Index]);
       setselectedindex(user?.Index);
@@ -70,7 +72,7 @@ export default function Profile({ navigation }: Props) {
     } else {
       setPhoto(user?.Photo);
     }
-    if (!user?.Photo) {
+    if (user?.Photo.uri === "") {
       setPhoto(profilepics[1]);
     }
   }
@@ -143,7 +145,7 @@ export default function Profile({ navigation }: Props) {
             <Image style={{ width: 80, height: 80, borderRadius: 50, borderWidth: 3 }} source={photo} />
           </View>
           <View style={styles.details}>
-            <Text style={styles.username}>Username</Text>
+            <Text style={styles.username}>{t("Username")}</Text>
             <Text style={styles.ForgotDes}>{username}</Text>
           </View>
           <View style={styles.icon}>
@@ -170,14 +172,14 @@ export default function Profile({ navigation }: Props) {
             <View style={styles.Line}></View>
             <TouchableOpacity style={styles.optionView} onPress={() => navigation.navigate("Export")}>
               <View style={styles.icons}>
-                <Ionicons name="push-outline" color="rgb(42, 124, 118)" size={30} />
+                <Ionicons name="push" color="rgb(42, 124, 118)" size={30} />
               </View>
               <Text style={styles.optionsText}>{t(StringConstants.ExportData)}</Text>
             </TouchableOpacity>
             <View style={styles.Line}></View>
             <TouchableOpacity style={styles.optionView} onPress={toggleModal}>
-              <View style={styles.logouticon}>
-                <Ionicons name="log-out-outline" color="red" size={30} />
+              <View style={styles.icons}>
+                <Ionicons name="log-out" color="rgb(42, 124, 118)" size={30} />
               </View>
               <Text style={styles.optionsText}>{t(StringConstants.Logout)}</Text>
             </TouchableOpacity>
@@ -269,7 +271,7 @@ export default function Profile({ navigation }: Props) {
                               alignItems: "center",
                               justifyContent: "center",
                               borderRadius: 45,
-                              backgroundColor: selectedindex === index ? "rgba(4, 73, 69, 0.53)" : "white",
+                              backgroundColor: selectedindex === index ? colors.selected : colors.backgroundColor,
                             }}
                             onPress={() => {
                               setmodalPhoto(profilepics[index]);
@@ -296,16 +298,21 @@ export default function Profile({ navigation }: Props) {
                         alignItems: "center",
                         justifyContent: "center",
                         flex: 0.1,
+                        backgroundColor: colors.seeall,
+                        padding: 5,
+                        borderRadius: 20,
                       }}
                       onPress={() => pickImageFromGallery()}
                     >
                       <Text style={{ color: colors.editColor, fontWeight: "bold", fontSize: 18, textAlign: "center" }}>
-                        Add Your Custom Profile Picture
+                        {t("Add Your Custom Profile Picture")}
                       </Text>
                     </TouchableOpacity>
 
                     <View style={{ paddingLeft: 10, justifyContent: "space-evenly", flex: 0.1, marginTop: 10 }}>
-                      <Text style={{ fontFamily: "Inter", fontSize: 16, color: colors.editColor }}>Username</Text>
+                      <Text style={{ fontFamily: "Inter", fontSize: 16, color: colors.editColor }}>
+                        {t("Username")}
+                      </Text>
                       <TextInput
                         placeholder={username}
                         value={modalUser}
@@ -325,10 +332,26 @@ export default function Profile({ navigation }: Props) {
                     </View>
                     <TouchableOpacity
                       onPress={saveChanges}
-                      style={{ marginTop: 30, alignItems: "center", justifyContent: "center", flex: 0.1 }}
+                      style={{
+                        marginTop: 20,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flex: 0.1,
+                      }}
                     >
-                      <Text style={{ color: colors.editColor, fontWeight: "bold", fontSize: 18, textAlign: "center" }}>
-                        Save Changes
+                      <Text
+                        style={{
+                          color: colors.editColor,
+                          fontWeight: "bold",
+                          fontSize: 16,
+                          textAlign: "center",
+                          padding: 5,
+                          borderRadius: 18,
+                          width: "50%",
+                          backgroundColor: colors.seeall,
+                        }}
+                      >
+                        {t("Save Changes")}
                       </Text>
                     </TouchableOpacity>
                   </ScrollView>

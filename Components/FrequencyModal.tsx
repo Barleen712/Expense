@@ -80,7 +80,7 @@ export default function FrequencyModal({
                   <DropdownComponent
                     data={Frequency}
                     value={frequency}
-                    name={"Frequency"}
+                    name={t("Frequency")}
                     styleButton={styles.textinput}
                     onSelectItem={(item) => {
                       setFrequency(item);
@@ -92,7 +92,7 @@ export default function FrequencyModal({
                     <DropdownComponent
                       data={Month}
                       value={month}
-                      name={"Month"}
+                      name={t("Month")}
                       styleButton={styles.textinput}
                       onSelectItem={(item) => {
                         setMonth(item);
@@ -105,7 +105,7 @@ export default function FrequencyModal({
                     <DropdownComponent
                       data={weekDropdownData}
                       value={week}
-                      name={"Day"}
+                      name={t("Day")}
                       styleButton={styles.textinput}
                       onSelectItem={(item) => {
                         setWeek(item);
@@ -135,7 +135,7 @@ export default function FrequencyModal({
                   <DropdownComponent
                     data={EndAfter}
                     value={endAfter}
-                    name={"End After"}
+                    name={t("End After")}
                     styleButton={styles.textinput}
                     onSelectItem={(item) => {
                       setendAfter(item);

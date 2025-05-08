@@ -1,4 +1,4 @@
-import React,{useContext} from "react";
+import React, { useContext } from "react";
 import { LineChart } from "react-native-gifted-charts";
 import { Platform, View, Text, Dimensions } from "react-native";
 import Svg, { Circle, G } from "react-native-svg";
@@ -6,6 +6,7 @@ import styles from "../../../Stylesheet";
 import { useSelector } from "react-redux";
 import { currencies } from "../../../Constants";
 import { ThemeContext } from "../../../../Context/ThemeContext";
+import { useTranslation } from "react-i18next";
 interface Donut {
   data: Array<object>;
   value: number;
@@ -23,7 +24,7 @@ export const DonutChart = ({
   const Rates = useSelector((state) => state.Rates);
   const currency = Rates.selectedCurrencyCode;
   const convertRate = Rates.Rate[currency];
-  const {colors}=useContext(ThemeContext)
+  const { colors } = useContext(ThemeContext);
   return (
     <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
       <Text style={[styles.typeText, { position: "absolute", top: "40%", color: colors.color }]}>
@@ -77,7 +78,7 @@ export const Linearchart = ({ data, height }: lineData) => {
     let hours = data_date.getHours();
     const minutes = data_date.getMinutes().toString().padStart(2, "0");
     const formattedTime = `${hours}:${minutes}`;
-  
+
     return (
       <View
         style={{
@@ -99,13 +100,14 @@ export const Linearchart = ({ data, height }: lineData) => {
     );
   };
   if (data.length <= 1) {
+    const { t } = useTranslation();
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text style={styles.budgetText}>Not Enough Expenses</Text>
+        <Text style={styles.budgetText}>{t("Not Enough Expenses")}</Text>
       </View>
     );
   }
-  const {colors}=useContext(ThemeContext)
+  const { colors } = useContext(ThemeContext);
   return (
     <LineChart
       data={data}

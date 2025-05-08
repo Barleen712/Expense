@@ -324,11 +324,29 @@ export default function Income({ navigation, route }: Props) {
                 {image && (
                   <View style={{ width: "100%", marginLeft: 30 }}>
                     <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
-                  </View>
-                )}
-                {photo && (
-                  <View style={{ width: "100%", marginLeft: 30 }}>
-                    <Image source={{ uri: photo }} style={{ width: 90, height: 80, borderRadius: 10 }} />
+                    {close && (
+                      <>
+                        {(image || photo) && (
+                          <TouchableOpacity
+                            style={{
+                              position: "absolute",
+                              bottom: Platform.OS === "ios" ? "35%" : "30%",
+                              left: "21%",
+                              top: "-6%",
+                            }}
+                            onPress={() => {
+                              setImage(null);
+                              setPhoto(null);
+                              setAttach(!showAttach);
+                              setDocument(null);
+                              setclose(false);
+                            }}
+                          >
+                            <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
+                          </TouchableOpacity>
+                        )}
+                      </>
+                    )}
                   </View>
                 )}
                 {document && (
@@ -347,6 +365,28 @@ export default function Income({ navigation, route }: Props) {
                     <TouchableOpacity onPress={() => openDocument()}>
                       <Text>{document.split("/").pop()}</Text>
                     </TouchableOpacity>
+                    {close && (
+                      <>
+                        {document && (
+                          <TouchableOpacity
+                            style={{
+                              position: "absolute",
+                              bottom: Platform.OS === "ios" ? "30%" : "28%",
+                              right: "-2%",
+                              top: "-10%",
+                            }}
+                            onPress={() => {
+                              setImage(null);
+                              setAttach(!showAttach);
+                              setDocument(null);
+                              setclose(false);
+                            }}
+                          >
+                            <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
+                          </TouchableOpacity>
+                        )}
+                      </>
+                    )}
                   </View>
                 )}
                 {/* <View style={styles.notiView}>
@@ -391,38 +431,6 @@ export default function Income({ navigation, route }: Props) {
                 </View>
               </TouchableWithoutFeedback>
             </Modal>
-            {close && (
-              <>
-                {(image || photo) && (
-                  <TouchableOpacity
-                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "25%" : "21%", left: "25%" }}
-                    onPress={() => {
-                      setImage(null);
-                      setPhoto(null);
-                      setAttach(!showAttach);
-                      setDocument(null);
-                      setclose(false);
-                    }}
-                  >
-                    <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
-                  </TouchableOpacity>
-                )}
-
-                {document && (
-                  <TouchableOpacity
-                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "30%" : "28%", right: "3%" }}
-                    onPress={() => {
-                      setImage(null);
-                      setAttach(!showAttach);
-                      setDocument(null);
-                      setclose(false);
-                    }}
-                  >
-                    <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
-                  </TouchableOpacity>
-                )}
-              </>
-            )}
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>

@@ -30,8 +30,17 @@ import { Props } from "./types";
 import { ThemeContext } from "../../../../Context/ThemeContext";
 import { getStyles } from "./styles";
 import { retrieveOldTransactions } from "../../../../Realm/realm";
+import { changeLanguages } from "../../../../Slice/IncomeSlice";
 
 export default function Home({ navigation }: Props) {
+  const lang = [
+    { name: "Arabic", code: "AR", tc: "ar" },
+    { name: "Chinese", code: "ZH", tc: "zh" },
+    { name: "English", code: "EN", tc: "en" },
+    { name: "Italian", code: "IT", tc: "it" },
+    { name: "Spanish", code: "ES", tc: "es" },
+    { name: "Hindi", code: "HI", tc: "hi" },
+  ];
   async function getData() {
     const user = await getUseNamerDocument();
     if (typeof user?.Photo.uri === "number") {
@@ -51,6 +60,7 @@ export default function Home({ navigation }: Props) {
   useTransactionListener();
   useBudgetListener();
   useNotificationListener();
+  const language = useSelector((state) => state.Money.preferences.language);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [photo, setPhoto] = useState("");
   const height = Dimensions.get("window").height * 0.2;
@@ -73,6 +83,7 @@ export default function Home({ navigation }: Props) {
   });
   const income = useSelector(selectIncomeTotal);
   const expense = useSelector(selectExpenseTotal);
+  const { colors } = useContext(ThemeContext);
   const badgeCount = useSelector((state) => state.Money.badgeCount);
   const GraphExpenses = useMemo(() => {
     const expense = transaction.filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer");
@@ -130,7 +141,7 @@ export default function Home({ navigation }: Props) {
         return [];
     }
   }, [transaction, selectedIndex]);
-
+  const langindex = lang.find((item) => item.name === language);
   const loading = useSelector((state: RootState) => state.Money.loading);
   const onValueChange = (event: string, newDate?: Date) => {
     const isAndroid = Platform.OS === "android";
@@ -151,13 +162,13 @@ export default function Home({ navigation }: Props) {
           height: "100%",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backgroundColor: colors.backgroundColor,
         }}
       >
         <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
       </View>
     );
-  const { colors } = useContext(ThemeContext);
+
   const styles = getStyles(colors);
   return (
     <View style={{ flex: 1 }}>
@@ -183,7 +194,7 @@ export default function Home({ navigation }: Props) {
           </TouchableOpacity>
           <TouchableOpacity style={styles.homeMonth} onPress={() => setShow(true)}>
             <Text style={styles.MonthText}>
-              {Month[new Date(selectedMonth_Year).getMonth()]} {new Date(selectedMonth_Year).getFullYear()}
+              {t(Month[new Date(selectedMonth_Year).getMonth()])} {new Date(selectedMonth_Year).getFullYear()}
             </Text>
             <Image style={styles.homeArrow} source={require("../../../../assets/arrowDown.png")} />
           </TouchableOpacity>
@@ -193,7 +204,8 @@ export default function Home({ navigation }: Props) {
               value={selectedMonth_Year}
               minimumDate={new Date(2020, 1)}
               maximumDate={new Date(new Date().getFullYear(), new Date().getMonth(), 1)}
-              locale="en"
+              locale={langindex?.tc}
+              mode="short"
             />
           )}
           <View style={{ padding: 8 }}>
@@ -295,7 +307,9 @@ export default function Home({ navigation }: Props) {
                 // backgroundColor: "pink",
               }}
             >
-              <Text style={styles.budgetText}>Start tracking your finances by making your first transaction.</Text>
+              <Text style={styles.budgetText}>
+                {t("Start tracking your finances by making your first transaction.")}
+              </Text>
             </View>
           ) : (
             <View style={{ width: "90%", flex: 1 }}>

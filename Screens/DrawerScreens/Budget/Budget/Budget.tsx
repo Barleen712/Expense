@@ -7,7 +7,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
 import { currencies, Month } from "../../../Constants";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { selectBudget, CategoryExpense, BudgetCategory, } from "../../../../Slice/Selectors";
+import { selectBudget, CategoryExpense, BudgetCategory } from "../../../../Slice/Selectors";
 import { useSelector } from "react-redux";
 import { CATEGORY_COLORS } from "../../../Constants";
 import { ProgressBar } from "react-native-paper";
@@ -56,8 +56,8 @@ export default function Budget({ navigation }: Props) {
   const convertRate = Rates.Rate[currency];
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
-  const selectedMonthKey = `${date.getFullYear()}-${String(month + 1).padStart(2, '0')}`;
-const budgetDataForMonth = Budgetcat[selectedMonthKey] || [];
+  const selectedMonthKey = `${date.getFullYear()}-${String(month + 1).padStart(2, "0")}`;
+  const budgetDataForMonth = Budgetcat[selectedMonthKey] || [];
   const renderBudgetItems = useCallback(
     ({ item, index }) => {
       let remaining = item.budgetvalue - item.amountSpent;
@@ -78,8 +78,7 @@ const budgetDataForMonth = Budgetcat[selectedMonthKey] || [];
               exceeded: exceeded,
               total: item.budgetvalue,
               percentage: item.alertPercent,
-              alert:item.notification
-
+              alert: item.notification,
             })
           }
           style={{ margin: 10, backgroundColor: colors.budgetView, padding: 10, borderRadius: 15 }}
@@ -169,8 +168,8 @@ const budgetDataForMonth = Budgetcat[selectedMonthKey] || [];
       </View>
     );
   }
-     
-  const styles=getStyles(colors)
+
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
       <View style={styles.add}>
@@ -217,6 +216,8 @@ const budgetDataForMonth = Budgetcat[selectedMonthKey] || [];
                   percentage: 20,
                   edit: false,
                   header: "Create Budget",
+                  month: month,
+                  year: new Date().getFullYear(),
                 })
               }
             />

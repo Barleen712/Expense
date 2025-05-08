@@ -54,10 +54,10 @@ const category = [
 
 const wallet = [
   { value: "PayPal", label: "PayPal" },
-  { value: "GooglePay", label: "GooglePay" },
+  { value: "Google Pay", label: "Google Pay" },
   { label: "Paytm", value: "Paytm" },
   { label: "PhonePe", value: "PhonePe" },
-  { label: "ApplePay", value: "ApplePay" },
+  { label: "Apple Pay", value: "Apple Pay" },
 ];
 const modal = [
   require("../../../../assets/CameraRed.png"),
@@ -437,13 +437,32 @@ export default function Expense({ navigation, route }: Props) {
                 {image && (
                   <View style={{ width: "100%", marginLeft: 30 }}>
                     <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
+                    {close && (
+                      <>
+                        {(image || photo) && (
+                          <TouchableOpacity
+                            style={{
+                              position: "absolute",
+                              bottom: Platform.OS === "ios" ? "35%" : "30%",
+                              left: "21%",
+                              top: "-6%",
+                            }}
+                            onPress={() => {
+                              setImage(null);
+                              setPhoto(null);
+                              setAttach(!showAttach);
+                              setDocument(null);
+                              setclose(false);
+                            }}
+                          >
+                            <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
+                          </TouchableOpacity>
+                        )}
+                      </>
+                    )}
                   </View>
                 )}
-                {photo && (
-                  <View style={{ width: "100%", marginLeft: 30 }}>
-                    <Image source={{ uri: photo }} style={{ width: 90, height: 80, borderRadius: 10 }} />
-                  </View>
-                )}
+
                 {document && (
                   <View
                     style={{
@@ -460,6 +479,28 @@ export default function Expense({ navigation, route }: Props) {
                     <TouchableOpacity onPress={() => openDocument()}>
                       <Text>{document.split("/").pop()}</Text>
                     </TouchableOpacity>
+                    {close && (
+                      <>
+                        {document && (
+                          <TouchableOpacity
+                            style={{
+                              position: "absolute",
+                              bottom: Platform.OS === "ios" ? "30%" : "28%",
+                              right: "-2%",
+                              top: "-10%",
+                            }}
+                            onPress={() => {
+                              setImage(null);
+                              setAttach(!showAttach);
+                              setDocument(null);
+                              setclose(false);
+                            }}
+                          >
+                            <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
+                          </TouchableOpacity>
+                        )}
+                      </>
+                    )}
                   </View>
                 )}
                 <View style={styles.notiView}>
@@ -505,7 +546,7 @@ export default function Expense({ navigation, route }: Props) {
                     }}
                   >
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.color }}>Frequency</Text>
+                      <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.color }}>{t("Frequency")}</Text>
                       <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
                         {frequency}
                         {frequency === "Yearly" && ` - ${Month[month]} ${startDate} ` + new Date().getFullYear()}
@@ -515,7 +556,7 @@ export default function Expense({ navigation, route }: Props) {
                       </Text>
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.color }}>End After</Text>
+                      <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.color }}>{t("End After")}</Text>
                       <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
                         {endAfter === "Never" && endAfter}
                         {endAfter === "Date" && `${new Date(endDate).toDateString()}`}
@@ -532,7 +573,7 @@ export default function Expense({ navigation, route }: Props) {
                         flex: 0.4,
                       }}
                     >
-                      <Text style={{ color: "rgb(42, 124, 118)", fontSize: 16, fontWeight: "bold" }}>Edit</Text>
+                      <Text style={{ color: "rgb(42, 124, 118)", fontSize: 16, fontWeight: "bold" }}>{t("Edit")}</Text>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -564,38 +605,6 @@ export default function Expense({ navigation, route }: Props) {
                 </View>
               </TouchableWithoutFeedback>
             </Modal>
-            {close && (
-              <>
-                {(image || photo) && (
-                  <TouchableOpacity
-                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "25%" : "21%", left: "26%" }}
-                    onPress={() => {
-                      setImage(null);
-                      setPhoto(null);
-                      setAttach(!showAttach);
-                      setDocument(null);
-                      setclose(false);
-                    }}
-                  >
-                    <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
-                  </TouchableOpacity>
-                )}
-
-                {document && (
-                  <TouchableOpacity
-                    style={{ position: "absolute", bottom: Platform.OS === "ios" ? "30%" : "28%", right: "3%" }}
-                    onPress={() => {
-                      setImage(null);
-                      setAttach(!showAttach);
-                      setDocument(null);
-                      setclose(false);
-                    }}
-                  >
-                    <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
-                  </TouchableOpacity>
-                )}
-              </>
-            )}
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
