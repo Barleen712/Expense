@@ -1,28 +1,36 @@
 import { Platform, StyleSheet, Dimensions, StatusBar } from "react-native";
-import Budget from "./DrawerScreens/Budget/Budget";
 const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   setup: {
-    flex: 0.2,
-
+    flex: 0.15,
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    // justifyContent: "space-between",
+    width: "100%",
   },
   keypad: {
     alignItems: "center",
     justifyContent: "center",
-    flex: 0.4,
+    flex: 0.5,
+    //  backgroundColor: "red",
   },
   pin: {
     flexDirection: "row",
-    flex: 0.4,
+    flex: 0.45,
     height: "100%",
+    paddingTop: "20%",
+    alignItems: "flex-start",
+    // alignItems: "center",
+    //   backgroundColor: "blue",
   },
   setuptext: {
     fontFamily: "Inter",
     fontWeight: 600,
     fontSize: 18,
     color: "white",
+    width: "80%",
+    textAlign: "center",
+    // backgroundColor: "red",
   },
   keypad1: {
     alignItems: "center",
@@ -48,7 +56,7 @@ const styles = StyleSheet.create({
   },
   dot: {
     width: "10%",
-    height: Platform.OS === "ios" ? "14%" : "13%",
+    height: Platform.OS === "ios" ? "14%" : "14%",
     borderRadius: 40,
     margin: 5,
     borderWidth: 3,
@@ -278,7 +286,7 @@ const styles = StyleSheet.create({
   },
   settingsOptions: {
     flexDirection: "row",
-   // height: "20%",
+    // height: "20%",
     alignItems: "center",
   },
   settings: {
@@ -823,7 +831,7 @@ const styles = StyleSheet.create({
     borderColor: "grey",
     borderRadius: 30,
   },
- 
+
   DetailHead: {
     flex: 0.25,
     borderBottomLeftRadius: 30,

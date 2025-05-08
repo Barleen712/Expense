@@ -29,6 +29,7 @@ import MonthPicker from "react-native-month-year-picker";
 import { Props } from "./types";
 import { ThemeContext } from "../../../../Context/ThemeContext";
 import { getStyles } from "./styles";
+import { retrieveOldTransactions } from "../../../../Realm/realm";
 
 export default function Home({ navigation }: Props) {
   async function getData() {
@@ -44,6 +45,7 @@ export default function Home({ navigation }: Props) {
   }
   useEffect(() => {
     getData();
+    //retrieveOldTransactions();
   }, []);
   const index = new Date().getMonth();
   useTransactionListener();

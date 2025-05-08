@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef, useMemo } from "react";
 import {
   View,
   Text,
@@ -44,14 +44,19 @@ export default function Profile({ navigation }: Props) {
   const [modalPhoto, setmodalPhoto] = useState("");
   const [modalUser, setModalUser] = useState("");
   const [id, setUserId] = useState("");
-  const profilepics = [
-    require("../../../assets/women3.jpg"),
-    require("../../../assets/man1.jpg"),
-    require("../../../assets/Women2.jpg"),
-    require("../../../assets/man2.jpg"),
-    require("../../../assets/women1.jpg"),
-  ];
-  const [index, setselectedindex] = useState("");
+  const scrollRef = useRef<ScrollView>(null);
+
+  const profilepics = useMemo(
+    () => [
+      require("../../../assets/women3.jpg"),
+      require("../../../assets/man1.jpg"),
+      require("../../../assets/Women2.jpg"),
+      require("../../../assets/man2.jpg"),
+      require("../../../assets/women1.jpg"),
+    ],
+    []
+  );
+  const [selectedindex, setselectedindex] = useState();
   async function getData() {
     const user = await getUseNamerDocument();
     setuser(user?.Name);
@@ -60,6 +65,7 @@ export default function Profile({ navigation }: Props) {
     setUserId(user?.ID);
     if (typeof user?.Photo.uri === "number") {
       setPhoto(profilepics[user?.Index]);
+      setselectedindex(user?.Index);
       setmodalPhoto(profilepics[user?.Index]);
     } else {
       setPhoto(user?.Photo);
@@ -215,6 +221,7 @@ export default function Profile({ navigation }: Props) {
               <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                   <ScrollView
+                    ref={scrollRef}
                     scrollEnabled={Platform.OS === "ios" ? false : true}
                     contentContainerStyle={{ flexGrow: 1 }}
                     keyboardShouldPersistTaps="handled"
@@ -228,14 +235,15 @@ export default function Profile({ navigation }: Props) {
                       style={{
                         alignItems: "center",
                         justifyContent: "center",
-                        padding: 20,
+                        // padding: 20,
                         flex: 0.3,
+                        //backgroundColor: "blue",
                       }}
                     >
                       <Image
                         style={{
-                          width: "48%",
-                          height: "100%",
+                          width: 150,
+                          height: 150,
                           borderRadius: 80,
                           borderWidth: 3,
                         }}
@@ -248,7 +256,6 @@ export default function Profile({ navigation }: Props) {
                           flexDirection: "row",
                           flexWrap: "wrap",
                           justifyContent: "space-evenly",
-
                           flex: 1,
                         }}
                       >
@@ -257,9 +264,12 @@ export default function Profile({ navigation }: Props) {
                             key={index}
                             style={{
                               marginBottom: 5,
-                              width: "30%",
-                              height: "45%",
+                              width: "31%",
+                              height: "46%",
                               alignItems: "center",
+                              justifyContent: "center",
+                              borderRadius: 45,
+                              backgroundColor: selectedindex === index ? "rgba(4, 73, 69, 0.53)" : "white",
                             }}
                             onPress={() => {
                               setmodalPhoto(profilepics[index]);
@@ -268,8 +278,8 @@ export default function Profile({ navigation }: Props) {
                           >
                             <Image
                               style={{
-                                width: "90%",
-                                height: "100%",
+                                width: 80,
+                                height: 80,
                                 borderRadius: 50,
                                 borderWidth: 2,
                                 resizeMode: "contain",
@@ -294,16 +304,17 @@ export default function Profile({ navigation }: Props) {
                       </Text>
                     </TouchableOpacity>
 
-                    <View style={{ paddingLeft: 10, justifyContent: "space-evenly", flex: 0.1 }}>
+                    <View style={{ paddingLeft: 10, justifyContent: "space-evenly", flex: 0.1, marginTop: 10 }}>
                       <Text style={{ fontFamily: "Inter", fontSize: 16, color: colors.editColor }}>Username</Text>
                       <TextInput
                         placeholder={username}
                         value={modalUser}
+                        maxLength={25}
+                        onFocus={() => scrollRef.current?.scrollToEnd({ animated: true })}
                         onChangeText={setModalUser}
                         style={{
                           fontFamily: "Inter",
                           fontWeight: "600",
-                          //fontStyle:"italic",
                           fontSize: Platform.OS === "ios" ? 24 : 24,
                           color: colors.editColor,
                           borderBottomColor: colors.editColor,
@@ -314,7 +325,7 @@ export default function Profile({ navigation }: Props) {
                     </View>
                     <TouchableOpacity
                       onPress={saveChanges}
-                      style={{ alignItems: "center", justifyContent: "center", flex: 0.1 }}
+                      style={{ marginTop: 30, alignItems: "center", justifyContent: "center", flex: 0.1 }}
                     >
                       <Text style={{ color: colors.editColor, fontWeight: "bold", fontSize: 18, textAlign: "center" }}>
                         Save Changes

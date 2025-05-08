@@ -62,6 +62,7 @@ export default function Login({ navigation }: Props) {
       // setLoading(false);
       // navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
     } catch (error: any) {
+      console.log(error);
       raiseToast("error", "Login Failed", error.code);
 
       setLoading(false);

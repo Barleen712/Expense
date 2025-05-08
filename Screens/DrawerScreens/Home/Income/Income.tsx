@@ -1,4 +1,4 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -6,7 +6,6 @@ import {
   Image,
   TouchableOpacity,
   Switch,
-
   Modal,
   Linking,
   Platform,
@@ -19,7 +18,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import * as Sharing from "expo-sharing";
-import {getRealm} from "../../../../Realm/realm"
+import { getRealm } from "../../../../Realm/realm";
 import * as IntentLauncher from "expo-intent-launcher";
 import { auth } from "../../../FirebaseConfig";
 import { updateDocument } from "../../../FirestoreHandler";
@@ -151,10 +150,7 @@ export default function Income({ navigation, route }: Props) {
   const dispatch = useDispatch();
   const user = auth.currentUser;
   async function add() {
-    console.log("hello")
-    const realm = await getRealm();
-   
-    console.log(realm)
+    // const realm = await getRealm();
     const numericIncome = parseFloat(Income.replace("$", "") || "0");
     let supabaseImageUrl = null;
     if (numericIncome === 0) {
@@ -210,35 +206,32 @@ export default function Income({ navigation, route }: Props) {
       startMonth: month,
       startYear: new Date().getFullYear(),
     });
-    const transaction = {
-      _id:new Date().toISOString(),
-      amount: numericIncome,
-      description: Description,
-      category: selectedCategory,
-      wallet: selectedWallet,
-      moneyCategory: "Income",
-      Frequency: frequency,
-      endAfter: endAfter || null,
-      weekly: week || null,
-      endDate: endDate || null,
-      startDate: startDate,
-      startMonth: month,
-      startYear: new Date().getFullYear(),
-      userId: user?.uid || "unknown",
-      createdAt: new Date(),
-    };
-    console.log("added")
-    try {
-      realm.write(() => {
-        realm.create("Transaction", transaction);
-      });
-      console.log("done")
-    }
-    catch(error)
-    {
-      console.log(error)
-    }
-  
+    // const transaction = {
+    //   _id: new Date().toISOString(),
+    //   amount: numericIncome,
+    //   description: Description,
+    //   category: selectedCategory,
+    //   wallet: selectedWallet,
+    //   moneyCategory: "Income",
+    //   Frequency: frequency,
+    //   endAfter: endAfter || null,
+    //   weekly: week || null,
+    //   endDate: endDate || null,
+    //   repeat: Switchs,
+    //   startDate: startDate,
+    //   startMonth: month,
+    //   startYear: new Date().getFullYear(),
+    //   Date: new Date().toISOString(),
+    // };
+
+    // try {
+    //   realm.write(() => {
+    //     realm.create("Transaction", transaction);
+    //   });
+    // } catch (error) {
+    //   console.log(error);
+    // }
+
     setLoading(false);
     navigation.goBack();
   }
@@ -283,8 +276,8 @@ export default function Income({ navigation, route }: Props) {
     setEndDate(new Date());
     setendAfter("");
   }
-      const { colors, setTheme, theme } = useContext(ThemeContext);
-      const styles = getStyles(colors);
+  const { colors, setTheme, theme } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
       <Header
@@ -312,13 +305,7 @@ export default function Income({ navigation, route }: Props) {
                     onFocus={handleFocus}
                   ></TextInput>
                 </TouchableOpacity>
-                {incomeError !== "" && (
-                  <Text
-                    style={styles.error}
-                  >
-                    *{incomeError}
-                  </Text>
-                )}
+                {incomeError !== "" && <Text style={styles.error}>*{incomeError}</Text>}
               </View>
               <View style={[styles.selection]}>
                 <DropdownComponent
@@ -331,13 +318,7 @@ export default function Income({ navigation, route }: Props) {
                     setcategoryError("");
                   }}
                 />
-                {categoryError !== "" && (
-                  <Text
-                    style={styles.error}
-                  >
-                    *{categoryError}
-                  </Text>
-                )}
+                {categoryError !== "" && <Text style={styles.error}>*{categoryError}</Text>}
                 <Input
                   title={t(StringConstants.Description)}
                   color="black"
@@ -347,13 +328,7 @@ export default function Income({ navigation, route }: Props) {
                   onchange={setDescription}
                   handleFocus={handleDescriptionChange}
                 />
-                {descriptionError !== "" && (
-                  <Text
-                    style={styles.error}
-                  >
-                    *{descriptionError}
-                  </Text>
-                )}
+                {descriptionError !== "" && <Text style={styles.error}>*{descriptionError}</Text>}
                 <DropdownComponent
                   data={wallet}
                   value={selectedWallet}
@@ -364,20 +339,11 @@ export default function Income({ navigation, route }: Props) {
                     setwalletError("");
                   }}
                 />
-                {walletError !== "" && (
-                  <Text
-                    style={styles.error}
-                  >
-                    *{walletError}
-                  </Text>
-                )}
+                {walletError !== "" && <Text style={styles.error}>*{walletError}</Text>}
                 {showAttach && (
-                  <TouchableOpacity
-                    onPress={toggleModal}
-                    style={styles.attachment}
-                  >
+                  <TouchableOpacity onPress={toggleModal} style={styles.attachment}>
                     <Entypo name="attachment" size={24} color={colors.color} />
-                    <Text style={{color:colors.color}}>{t(StringConstants.Addattachment)}</Text>
+                    <Text style={{ color: colors.color }}>{t(StringConstants.Addattachment)}</Text>
                   </TouchableOpacity>
                 )}
                 {image && (
@@ -450,7 +416,7 @@ export default function Income({ navigation, route }: Props) {
                     }}
                   >
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: 16, fontWeight: "bold",color:colors.color }}>Frequency</Text>
+                      <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.color }}>Frequency</Text>
                       <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
                         {frequency}
                         {frequency === "Yearly" && ` - ${month} ${startDate} ` + new Date().getFullYear()}
@@ -460,7 +426,7 @@ export default function Income({ navigation, route }: Props) {
                       </Text>
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: 16, fontWeight: "bold",color:colors.color }}>End After</Text>
+                      <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.color }}>End After</Text>
                       <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
                         {endAfter === "Never" && endAfter}
                         {endAfter === "Date" && `${new Date(endDate).toDateString()}`}

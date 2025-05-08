@@ -74,5 +74,4 @@ export const updateBudgetDocument = async (collection: string, id: string, data)
 export const updateUserDoc = async (id: string, data) => {
   const userRef = doc(db, "Names", id);
   const d = await updateDoc(userRef, data);
-  console.log("done");
 };

@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import Onboarding from "../Screens/Onboarding/Onboarding/Onboarding";
 import Login from "../Screens/Onboarding/Login/Login";
-import Setpin from "../Screens/Onboarding/SetupPin01";
+import Setpin from "../Screens/Onboarding/Setpin/SetupPin01";
 import SignUp from "../Screens/Onboarding/SignUp/Signup";
 import ForgotPass from "../Screens/Onboarding/ForgotPassword/ForgotPassword";
 import EmailSent from "../Screens/Onboarding/EmailSent/EmailSent";
@@ -68,8 +68,8 @@ export function TabScreens({ initial = "EnterPin" }: { initial?: keyof StackPara
   const dispatch = useDispatch();
   const navigation = useNavigation<StackNavigationProp<StackParamList>>();
   useEffect(() => {
-    // handleBiometricAuth(navigation);
-    //dispatch(fetchRates());
+    //handleBiometricAuth(navigation);
+    dispatch(fetchRates());
     dispatch(loadPreferences());
   }, []);
   return (

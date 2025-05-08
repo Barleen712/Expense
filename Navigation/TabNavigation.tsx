@@ -26,6 +26,7 @@ export default function Tabscreens({ navigation }: Props) {
 
     return unsubscribe;
   }, [navigation]);
+
   const _renderIcon = (routeName: string, selectedTab: string): JSX.Element => {
     let icon = "";
 
@@ -65,6 +66,7 @@ export default function Tabscreens({ navigation }: Props) {
   const [plus, setplus] = useState(true);
   const [cross, setcross] = useState(false);
   const { colors } = useContext(ThemeContext);
+  const styles = getstyles(colors);
   return (
     <CurvedBottomBarExpo.Navigator
       type="DOWN"
@@ -72,7 +74,7 @@ export default function Tabscreens({ navigation }: Props) {
       shadowStyle={styles.shadow}
       height={70}
       circleWidth={56}
-      bgColor={colors.backgroundColor}
+      bgColor="transparent"
       initialRouteName="Home"
       borderTopLeftRight
       renderCircle={() => (
@@ -155,41 +157,44 @@ export default function Tabscreens({ navigation }: Props) {
 }
 
 // Styles
-const styles = StyleSheet.create({
-  shadow: {
-    shadowColor: "#DDDDDD",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  button: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  bottomBar: {},
-  btnCircleUp: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgb(42, 124, 118)",
-    bottom: 25,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  tabbarItem: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  tabText: {
-    fontSize: 12,
-    fontWeight: "500",
-    marginTop: 3,
-  },
-});
+function getstyles(colors) {
+  return StyleSheet.create({
+    shadow: {
+      shadowColor: "#DDDDDD",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 3,
+      elevation: 3,
+    },
+    button: {
+      flex: 1,
+      justifyContent: "center",
+    },
+    bottomBar: { backgroundColor: colors.backgroundColor },
+    btnCircleUp: {
+      width: 56,
+      height: 56,
+      borderRadius: 28,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "rgb(42, 124, 118)",
+      bottom: 25,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 3,
+      elevation: 5,
+    },
+    tabbarItem: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      //backgroundColor: colors.backgroundcolor,
+    },
+    tabText: {
+      fontSize: 12,
+      fontWeight: "500",
+      marginTop: 3,
+    },
+  });
+}

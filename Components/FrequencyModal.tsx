@@ -152,7 +152,13 @@ export default function FrequencyModal({
                       {endAfter ? ` ${new Date(endDate).toDateString()}` : "Select End Date :"}
                     </Text>
                     {showEndDatePicker && (
-                      <DateTimePicker value={endDate} mode="date" display="default" onChange={onChange} />
+                      <DateTimePicker
+                        value={endDate}
+                        mode="date"
+                        display="default"
+                        onChange={onChange}
+                        minimumDate={new Date()}
+                      />
                     )}
                     <FontAwesome name="calendar" size={24} color="grey" />
                   </TouchableOpacity>

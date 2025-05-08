@@ -16,7 +16,7 @@ interface Props {
 }
 export default function EnterPin({ navigation }: Props) {
   const handleClear = () => {
-    setpin("");
+    setpin(pin.slice(0, pin.length - 1));
   };
   const [pin, setpin] = useState("");
   async function handlenext() {
@@ -24,15 +24,19 @@ export default function EnterPin({ navigation }: Props) {
     if (Pin.pin === pin) {
       navigation.replace("MainScreen");
     } else {
-      alert("Wrong Pin!");
-      handleClear();
+      if (pin.length !== 4) {
+        alert("enter pin");
+      } else {
+        alert("Wrong Pin!");
+        handleClear();
+      }
     }
   }
   const { t } = useTranslation();
 
   return (
     <View style={{ backgroundColor: "#2A7C76", flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <View style={styles.setup}>
+      <View style={[styles.setup, { justifyContent: "center" }]}>
         <Text style={styles.setuptext}>Enter your Pin</Text>
       </View>
       <Pin pin={pin} />

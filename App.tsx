@@ -14,6 +14,8 @@ import Toast from "react-native-toast-message";
 import { getUseNamerDocument, getUserDocument } from "./Saga/BudgetSaga";
 import { raiseToast } from "./Screens/Constants";
 import StackParamList from "./Navigation/StackList";
+import Setpin02 from "./Screens/Onboarding/SetupPin02";
+import Setpin from "./Screens/Onboarding/Setpin/SetupPin01";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -52,6 +54,7 @@ export default function App() {
             setinitialRoute("Setpin");
           } else {
             setinitialRoute("EnterPin");
+            //  deleteRealmDatabase();
           }
           setUser(currentUser);
         } else {
@@ -78,6 +81,7 @@ export default function App() {
       <NavigationContainer>
         <ThemeProvider>
           {user ? <TabScreens initial={initialRoute} /> : <Screens />}
+          {/* <Setpin /> */}
           <Toast />
         </ThemeProvider>
       </NavigationContainer>

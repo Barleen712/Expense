@@ -13,12 +13,12 @@ import { addUser, addGoogleUser } from "../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { ThemeContext } from "../../../Context/ThemeContext";
-import { createUserWithEmailAndPassword, sendEmailVerification,signInWithCredential } from "@firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, signInWithCredential } from "@firebase/auth";
 import { auth } from "../../FirebaseConfig";
 import { raiseToast } from "../../Constants";
 import { AddUser } from "../../FirestoreHandler";
 import { GoogleAuthProvider } from "@firebase/auth";
-import Setpin from "../SetupPin01";
+import Setpin from "../Setpin/SetupPin01";
 
 type SignupProp = StackNavigationProp<StackParamList, "SignUp">;
 interface Props {
@@ -99,6 +99,7 @@ export default function SignUp({ navigation }: Props) {
         raiseToast("success", "Email Verification", "verify");
       }
     } catch (error: any) {
+      console.log(error);
       raiseToast("error", "Sign Up Failed", error.code);
       return;
     }
@@ -121,13 +122,13 @@ export default function SignUp({ navigation }: Props) {
         photo: photo,
       })
     );
- const googleCredential = GoogleAuthProvider.credential(id);
-      const creds = await signInWithCredential(auth, googleCredential);
-      raiseToast("success", "Sign Up Success", "done");
-      const user = creds.user;
-      AddUser({ User: name, photo: { uri: photo }, userid: user.uid, index: null ,pinSet:false});
+    const googleCredential = GoogleAuthProvider.credential(id);
+    const creds = await signInWithCredential(auth, googleCredential);
+    raiseToast("success", "Sign Up Success", "done");
+    const user = creds.user;
+    AddUser({ User: name, photo: { uri: photo }, userid: user.uid, index: null, pinSet: false });
     //  raiseToast("success", "Email Verification", "verify");
-   //  navigation.navigate("Setpin")
+    //  navigation.navigate("Setpin")
   }
   const { colors } = useContext(ThemeContext);
   const style = getStyles(colors);
