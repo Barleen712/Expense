@@ -54,5 +54,7 @@ type StackParamList = {
   };
   DisplayNotification: undefined;
   EnterPin: undefined;
+  "Terms&Services": undefined;
+  Privacy: undefined;
 };
 export default StackParamList;

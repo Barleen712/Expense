@@ -43,6 +43,8 @@ import EnterPin from "../Screens/DrawerScreens/Home/EnterPin";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { loadPreferences } from "../Slice/IncomeSlice";
+import Terms_Condition from "../Screens/Onboarding/Terms&Services/Terms&Services";
+import Privacy from "../Screens/Onboarding/Terms&Services/Privacy/Privacy";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
@@ -58,7 +60,8 @@ export default function Screens() {
       <Stack.Screen name="ForgotPassword" component={ForgotPass} />
       <Stack.Screen name="EmailSent" component={EmailSent} />
       <Stack.Screen name="GetStarted" component={Getstarted} />
-
+      <Stack.Screen name="Terms&Services" component={Terms_Condition} />
+      <Stack.Screen name="Privacy" component={Privacy} />
       <Stack.Screen name="AllSet" component={Success} />
     </Stack.Navigator>
   );

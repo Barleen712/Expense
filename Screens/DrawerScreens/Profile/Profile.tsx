@@ -59,21 +59,21 @@ export default function Profile({ navigation }: Props) {
   const [selectedindex, setselectedindex] = useState();
   async function getData() {
     const user = await getUseNamerDocument();
-    console.log(user, "gugu");
     setuser(user?.Name);
     setModalUser(user?.Name);
     setmodalPhoto(user?.Photo);
     setUserId(user?.ID);
-    console.log(user?.Photo);
     if (typeof user?.Photo.uri === "number") {
       setPhoto(profilepics[user?.Index]);
       setselectedindex(user?.Index);
       setmodalPhoto(profilepics[user?.Index]);
     } else {
       setPhoto(user?.Photo);
+      setmodalPhoto(user?.Photo);
     }
     if (user?.Photo.uri === "") {
       setPhoto(profilepics[1]);
+      setmodalPhoto(profilepics[1]);
     }
   }
   useEffect(() => {
@@ -106,11 +106,10 @@ export default function Profile({ navigation }: Props) {
     }
     updateUserDoc(id, {
       User: modalUser,
-      photo: { uri: imageurl },
-      index: index,
+      Photo: { uri: imageurl },
+      Index: selectedindex,
     });
   }
-
   function Discard() {
     seteditProfile(!editProfile);
     setmodalPhoto(photo);

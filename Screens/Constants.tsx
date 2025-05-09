@@ -307,3 +307,117 @@ export function raiseToast(type: string, text1: string, error: string) {
     text2Style: { fontSize: 12, fontWeight: "bold" },
   });
 }
+export const Terms_Conditions = [
+  {
+    title: "1. Use of the App",
+    description:
+      "You must be at least 13 years old (or the minimum age required in your jurisdiction) to use the App. By using the App, you represent that you meet this requirement. You agree to use the App only for lawful purposes and in accordance with these Terms.",
+  },
+  {
+    title: "2. Account Registration",
+    description:
+      "To use certain features, you may need to create an account. You agree to provide accurate, current, and complete information and to keep it updated. You are responsible for maintaining the confidentiality of your login credentials and for all activities that occur under your account.",
+  },
+  {
+    title: "3. Privacy",
+    description:
+      "Your privacy is important to us. Please review our Privacy Policy to understand how we collect, use, and safeguard your information.",
+  },
+  {
+    title: "4. Data Accuracy and Responsibility",
+    description:
+      "The App provides tools to track expenses and budgets, but you are solely responsible for the accuracy of the data you input. We do not guarantee financial outcomes or provide financial advice.",
+  },
+  {
+    title: "5. Intellectual Property",
+    description:
+      "The App and its content (excluding user-submitted data) are the property of Chicmic Studios and are protected by intellectual property laws. You may not copy, modify, or distribute any part of the App without our written consent.",
+  },
+  {
+    title: "6. Prohibited Conduct",
+    description: `You agree not to:\n(a) Use the App for any unlawful purpose.\n(b) Access or attempt to access other users’ data without authorization.\n(c) Introduce viruses or malicious code into the App.`,
+  },
+  {
+    title: "7. Termination",
+    description:
+      "We may suspend or terminate your access to the App at any time, with or without notice, if we believe you’ve violated these Terms.",
+  },
+  {
+    title: "8. Disclaimer of Warranties",
+    description:
+      'The App is provided "as is" without warranties of any kind. We do not guarantee that the App will be error-free or continuously available.',
+  },
+  {
+    title: "9. Limitation of Liability",
+    description:
+      "To the fullest extent permitted by law, Chicmic Studios shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the App.",
+  },
+  {
+    title: "10. Changes to Terms",
+    description:
+      "We may update these Terms from time to time. If we make material changes, we will notify you within the App or via email. Continued use of the App after changes means you accept the new Terms.",
+  },
+  {
+    title: "11. Governing Law",
+    description:
+      "These Terms are governed by and construed in accordance with the laws of India, without regard to its conflict of law principles.",
+  },
+  {
+    title: "12. Contact Us",
+    description:
+      "If you have any questions about these Terms, please contact us at:\nEmail:support@montra.com\nAddress: Chicmic Studios ,F-273, Phase 8B, Industrial Area, Sector 74, Sahibzada Ajit Singh Nagar, Punjab 160071",
+  },
+];
+
+export const Privacy_Policy = [
+  {
+    title: "1. Introduction",
+    description:
+      "This Privacy Policy describes how ChicmicStudios collects, uses, and protects your personal information when you use our expense tracking app.",
+  },
+  {
+    title: "2. Information We Collect",
+    description:
+      "We may collect the following types of information:\n(a) Personal Information (e.g., name, email address etc)\n(b) Financial Data (e.g., expense and income records you input)\n (c) Device Information (e.g., IP address, device type, operating system), (d) Usage Data (e.g., app features you use, time spent on the app).",
+  },
+  {
+    title: "3. How We Use Your Information",
+    description:
+      "We use your information to: (a) Provide and improve the App's functionality, (b) Personalize your experience, (c) Send important updates or notifications, (d) Respond to your inquiries or support requests, (e) Comply with legal obligations.",
+  },
+  {
+    title: "4. Data Storage and Security",
+    description:
+      "We use secure servers and encryption to store your information. While we strive to protect your data, no method of transmission or storage is 100% secure. You use the App at your own risk.",
+  },
+  {
+    title: "5. Sharing Your Information",
+    description:
+      "We do not sell your personal information. We may share it with: (a) Service providers who help us operate the app, (b) Legal authorities if required by law, (c) Third parties with your consent.",
+  },
+  {
+    title: "6. Data Retention",
+    description:
+      "We retain your information as long as your account is active or as needed to provide our services. You may request deletion of your account and associated data at any time.",
+  },
+  {
+    title: "7. Your Rights",
+    description:
+      "Depending on your location, you may have rights to access, correct, or delete your personal data. To exercise these rights, please contact us.",
+  },
+  {
+    title: "8. Children's Privacy",
+    description:
+      "Our App is not intended for children under 13 (or the applicable minimum age). We do not knowingly collect personal data from children without parental consent.",
+  },
+  {
+    title: "9. Changes to This Policy",
+    description:
+      "We may update this Privacy Policy from time to time. We will notify you of significant changes via the app or email.",
+  },
+  {
+    title: "10. Contact Us",
+    description:
+      "If you have any questions about this Privacy Policy, please contact us at: Email: [support@yourapp.com], Address: [Your Company Address].",
+  },
+];

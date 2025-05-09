@@ -58,13 +58,12 @@ export const getUseNamerDocument = async () => {
     }
     const userDoc = querySnapshot.docs[0];
     const userData = userDoc.data();
-    console.log(userData);
     return {
       Name: userData.User,
-      Photo: userData.photo,
+      Photo: userData.Photo,
       pinSet: userData.pinSet,
       ID: userDoc.id,
-      Index: userData.index,
+      Index: userData.Index,
       pin: userData.pin,
     };
   } catch (error) {

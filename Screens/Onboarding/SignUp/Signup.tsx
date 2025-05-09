@@ -123,14 +123,14 @@ export default function SignUp({ navigation }: Props) {
         id: id,
         google: true,
         username: name,
-        photo: photo,
+        Photo: photo,
       })
     );
     const googleCredential = GoogleAuthProvider.credential(id);
     const creds = await signInWithCredential(auth, googleCredential);
     raiseToast("success", "Sign Up Success", "done");
     const user = creds.user;
-    AddUser({ User: name, photo: { uri: photo }, userid: user.uid, index: null, pinSet: false });
+    AddUser({ User: name, Photo: { uri: photo }, userid: user.uid, index: null, pinSet: false });
     //  raiseToast("success", "Email Verification", "verify");
     //  navigation.navigate("Setpin")
   }
@@ -246,7 +246,9 @@ export default function SignUp({ navigation }: Props) {
         </View>
         <Text style={{ flex: 0.9, color: colors.color }}>
           {t(StringConstants.Bysigningupyouagreetothe)}{" "}
-          <Text style={{ color: "rgb(57, 112, 109)" }}>{t(StringConstants.TermsofServiceandPrivacyPolicy)}</Text>
+          <Text onPress={() => navigation.navigate("Terms&Services")} style={{ color: "rgb(57, 112, 109)" }}>
+            {t(StringConstants.TermsofServiceandPrivacyPolicy)}
+          </Text>
         </Text>
       </View>
       {checked.error !== "" && (
