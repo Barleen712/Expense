@@ -27,13 +27,12 @@ export default function EnterPin({ navigation }: Props) {
       if (pin.length !== 4) {
         alert("enter pin");
       } else {
+        setpin("")   
         alert("Wrong Pin!");
-        handleClear();
-      }
+           }
     }
   }
   const { t } = useTranslation();
-
   return (
     <View style={{ backgroundColor: "#2A7C76", flex: 1, alignItems: "center", justifyContent: "center" }}>
       <View style={[styles.setup, { justifyContent: "center" }]}>

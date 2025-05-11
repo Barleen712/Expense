@@ -373,17 +373,17 @@ export const Privacy_Policy = [
   {
     title: "1. Introduction",
     description:
-      "This Privacy Policy describes how ChicmicStudios collects, uses, and protects your personal information when you use our expense tracking app.",
+      "This Privacy Policy describes how Chicmic Studios collects, uses, and protects your personal information when you use our expense tracking app.",
   },
   {
     title: "2. Information We Collect",
     description:
-      "We may collect the following types of information:\n(a) Personal Information (e.g., name, email address etc)\n(b) Financial Data (e.g., expense and income records you input)\n (c) Device Information (e.g., IP address, device type, operating system), (d) Usage Data (e.g., app features you use, time spent on the app).",
+      "We may collect the following types of information:\n(a) Personal Information (e.g., name, email address etc)\n(b) Financial Data (e.g., expense and income records you input)\n (c) Device Information (e.g., IP address, device type, operating system)\n(d) Usage Data (e.g., app features you use, time spent on the app).",
   },
   {
     title: "3. How We Use Your Information",
     description:
-      "We use your information to: (a) Provide and improve the App's functionality, (b) Personalize your experience, (c) Send important updates or notifications, (d) Respond to your inquiries or support requests, (e) Comply with legal obligations.",
+      "We use your information to:\n(a) Provide and improve the App's functionality\n(b) Personalize your experience\n(c) Send important updates or notifications\n(d) Respond to your inquiries or support requests\n(e) Comply with legal obligations.",
   },
   {
     title: "4. Data Storage and Security",
@@ -393,7 +393,7 @@ export const Privacy_Policy = [
   {
     title: "5. Sharing Your Information",
     description:
-      "We do not sell your personal information. We may share it with: (a) Service providers who help us operate the app, (b) Legal authorities if required by law, (c) Third parties with your consent.",
+      "We do not sell your personal information. We may share it with:\n(a) Service providers who help us operate the app\n(b) Legal authorities if required by law\n(c) Third parties with your consent.",
   },
   {
     title: "6. Data Retention",
@@ -418,6 +418,6 @@ export const Privacy_Policy = [
   {
     title: "10. Contact Us",
     description:
-      "If you have any questions about this Privacy Policy, please contact us at: Email: [support@yourapp.com], Address: [Your Company Address].",
+      "If you have any questions about this Privacy Policy, please contact us at:\nEmail:support@montra.com\nAddress: Chicmic Studios ,F-273, Phase 8B, Industrial Area, Sector 74, Sahibzada Ajit Singh Nagar, Punjab 160071.",
   },
 ];

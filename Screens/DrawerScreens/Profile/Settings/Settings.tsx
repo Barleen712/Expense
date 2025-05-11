@@ -59,6 +59,7 @@ export default function Settings({ navigation }: Props) {
     {
       key: "about",
       label: t(StringConstants.About),
+      navigateTo:"AboutUs"
     },
     {
       key: "help",

@@ -23,7 +23,7 @@ export default function Privacy({ navigation }) {
           renderItem={({ item }) => (
             <View style={styles.TermsView}>
               <Text style={styles.head}>{item.title}</Text>
-              <Text>{item.description}</Text>
+              <Text style={styles.description}>{item.description}</Text>
             </View>
           )}
         />
