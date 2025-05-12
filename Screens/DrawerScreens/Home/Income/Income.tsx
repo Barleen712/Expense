@@ -76,7 +76,7 @@ export default function Income({ navigation, route }: Props) {
   const [close, setclose] = useState(false);
   const [document, setDocument] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
-  const [Income, setIncome] = useState<string>(`$${parameters.amount}`);
+  const [Income, setIncome] = useState<string>(`${parameters.amount}`);
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
@@ -98,8 +98,8 @@ export default function Income({ navigation, route }: Props) {
     require("../../../../assets/Document.png"),
   ];
   const handleFocus = () => {
-    if (Income === "" || Income === "$0" || Income === "$") {
-      setIncome("$");
+    if (Income === "0") {
+      setIncome("");
     }
   };
   function toggleModal() {
@@ -139,7 +139,7 @@ export default function Income({ navigation, route }: Props) {
       return;
     }
     setIncomeError("");
-    setIncome(`$${cleaned}`);
+    setIncome(`${cleaned}`);
   };
   function handleDescriptionChange() {
     if (descriptionError) {
@@ -297,13 +297,16 @@ export default function Income({ navigation, route }: Props) {
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
                 <TouchableOpacity activeOpacity={1}>
-                  <TextInput
-                    value={Income}
-                    keyboardType="numeric"
-                    onChangeText={handleIncomeChange}
-                    style={styles.amount}
-                    onFocus={handleFocus}
-                  ></TextInput>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text style={styles.amount}>$</Text>
+                    <TextInput
+                      value={Income}
+                      keyboardType="numeric"
+                      onChangeText={handleIncomeChange}
+                      style={styles.amount}
+                      onFocus={handleFocus}
+                    ></TextInput>
+                  </View>
                 </TouchableOpacity>
                 {incomeError !== "" && <Text style={styles.error}>*{incomeError}</Text>}
               </View>

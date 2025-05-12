@@ -76,7 +76,7 @@ export default function Expense({ navigation, route }: Props) {
   const [close, setclose] = useState(false);
   const [document, setDocument] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
-  const [Expenses, setExpenses] = useState<string>(`$${parameters.amount}`);
+  const [Expenses, setExpenses] = useState<string>(`${parameters.amount}`);
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
@@ -134,7 +134,7 @@ export default function Expense({ navigation, route }: Props) {
       return;
     }
     setExpenseError("");
-    setExpenses(`$${cleaned}`);
+    setExpenses(`${cleaned}`);
   };
   function handleDescriptionChange() {
     if (descriptionError) {
@@ -142,8 +142,8 @@ export default function Expense({ navigation, route }: Props) {
     }
   }
   const handleFocus = () => {
-    if (Expenses === "" || Expenses === "$0" || Expenses === "$") {
-      setExpenses("$");
+    if (Expenses === "0") {
+      setExpenses("");
     }
   };
   const dispatch = useDispatch();
@@ -330,15 +330,18 @@ export default function Expense({ navigation, route }: Props) {
             <View style={[styles.add, { backgroundColor: "rgba(253, 60, 74, 1)" }]}>
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
-                <TouchableOpacity activeOpacity={1}>
-                  <TextInput
-                    value={Expenses}
-                    keyboardType="numeric"
-                    onChangeText={handleExpenseChange}
-                    style={styles.amount}
-                    onFocus={handleFocus}
-                  ></TextInput>
-                </TouchableOpacity>
+                <View style={{ flexDirection: "row" }}>
+                  <Text style={styles.amount}>$</Text>
+                  <TouchableOpacity activeOpacity={1}>
+                    <TextInput
+                      value={Expenses}
+                      keyboardType="numeric"
+                      onChangeText={handleExpenseChange}
+                      style={styles.amount}
+                      onFocus={handleFocus}
+                    ></TextInput>
+                  </TouchableOpacity>
+                </View>
                 {expenseError !== "" && (
                   <Text
                     style={{

@@ -46,6 +46,8 @@ import { loadPreferences } from "../Slice/IncomeSlice";
 import Terms_Condition from "../Screens/Onboarding/Terms&Services/Terms&Services";
 import Privacy from "../Screens/Onboarding/Terms&Services/Privacy/Privacy";
 import AboutUs from "../Screens/DrawerScreens/Profile/Settings/About/About";
+import HelpScreen from "../Screens/DrawerScreens/Profile/Settings/Help/Help";
+import Tutorial from "../Screens/DrawerScreens/Profile/Settings/Help/Tutorial";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
@@ -73,7 +75,7 @@ export function TabScreens({ initial = "EnterPin" }: { initial?: keyof StackPara
   const navigation = useNavigation<StackNavigationProp<StackParamList>>();
   useEffect(() => {
     //handleBiometricAuth(navigation);
-   // dispatch(fetchRates());
+    //dispatch(fetchRates());
     dispatch(loadPreferences());
   }, []);
   return (
@@ -108,6 +110,8 @@ export function TabScreens({ initial = "EnterPin" }: { initial?: keyof StackPara
       <Stack.Screen name="DetailAccount" component={DetailAccount} />
       <Stack.Screen name="DisplayNotification" component={DisplayNotification} />
       <Stack.Screen name="AboutUs" component={AboutUs} />
+      <Stack.Screen name="Help" component={HelpScreen} />
+      <Stack.Screen name="Tutorial" component={Tutorial} />
     </Stack2.Navigator>
   );
 }

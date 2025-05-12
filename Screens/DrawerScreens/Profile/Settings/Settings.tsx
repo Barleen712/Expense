@@ -59,15 +59,16 @@ export default function Settings({ navigation }: Props) {
     {
       key: "about",
       label: t(StringConstants.About),
-      navigateTo:"AboutUs"
+      navigateTo: "AboutUs",
     },
     {
       key: "help",
       label: t(StringConstants.Help),
+      navigateTo: "Help",
     },
   ];
- const {colors}=useContext(ThemeContext)
- const styles=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   const renderItem = ({ item }: { item: SettingItemType }) => (
     <View>
       <TouchableOpacity
@@ -77,9 +78,7 @@ export default function Settings({ navigation }: Props) {
         }}
       >
         <Text style={styles.settingtitle}>{item.label}</Text>
-        <View style={styles.titleoption}>
-          {item.value && <Text style={styles.settingtext}>{item.value}</Text>}
-        </View>
+        <View style={styles.titleoption}>{item.value && <Text style={styles.settingtext}>{item.value}</Text>}</View>
         <Image style={styles.arrows} source={require("../../../../assets/arrow.png")} />
       </TouchableOpacity>
       <View style={styles.Line} />
@@ -88,7 +87,12 @@ export default function Settings({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      <Header title={t(StringConstants.Settings)} press={() => navigation.goBack()} bgcolor={colors.backgroundColor}color={colors.color} />
+      <Header
+        title={t(StringConstants.Settings)}
+        press={() => navigation.goBack()}
+        bgcolor={colors.backgroundColor}
+        color={colors.color}
+      />
       <View style={styles.Line} />
       <FlatList
         data={settingsList}

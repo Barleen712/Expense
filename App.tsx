@@ -16,6 +16,7 @@ import { raiseToast } from "./Screens/Constants";
 import StackParamList from "./Navigation/StackList";
 import Setpin02 from "./Screens/Onboarding/SetupPin02";
 import Setpin from "./Screens/Onboarding/Setpin/SetupPin01";
+import Tutorial from "./Screens/DrawerScreens/Profile/Settings/Help/Tutorial";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -81,6 +82,7 @@ export default function App() {
       <NavigationContainer>
         <ThemeProvider>
           {user ? <TabScreens initial={initialRoute} /> : <Screens />}
+          {/* <Tutorial /> */}
           {/* <Setpin /> */}
           <Toast />
         </ThemeProvider>

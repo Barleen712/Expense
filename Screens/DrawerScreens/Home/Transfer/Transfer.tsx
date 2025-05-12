@@ -54,7 +54,7 @@ export default function Income({ navigation, route }: Props) {
   const [close, setclose] = useState(false);
   const [document, setDocument] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
-  const [Transfer, setTransfer] = useState<string>(`$${amount}`);
+  const [Transfer, setTransfer] = useState<string>(`${amount}`);
   const [From, setFrom] = useState(`${from}`);
   const [To, setTo] = useState(`${to}`);
   const [Description, setDescription] = useState(`${title}`);
@@ -101,11 +101,11 @@ export default function Income({ navigation, route }: Props) {
       return;
     }
     setTransferError("");
-    setTransfer(`$${cleaned}`);
+    setTransfer(`${cleaned}`);
   };
   const handleFocus = () => {
-    if (Transfer === "" || Transfer === "$0" || Transfer === "$") {
-      setTransfer("$");
+    if (Transfer === "0") {
+      setTransfer("");
     }
   };
   const { t } = useTranslation();
@@ -223,15 +223,18 @@ export default function Income({ navigation, route }: Props) {
             <View style={[styles.add, { backgroundColor: "rgba(0, 119, 255, 1)" }]}>
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
-                <TouchableOpacity activeOpacity={1}>
-                  <TextInput
-                    value={Transfer}
-                    keyboardType="numeric"
-                    onChangeText={handleTransferChange}
-                    style={styles.amount}
-                    onFocus={handleFocus}
-                  ></TextInput>
-                </TouchableOpacity>
+                <View style={{ flexDirection: "row" }}>
+                  <Text style={styles.amount}>$</Text>
+                  <TouchableOpacity activeOpacity={1}>
+                    <TextInput
+                      value={Transfer}
+                      keyboardType="numeric"
+                      onChangeText={handleTransferChange}
+                      style={styles.amount}
+                      onFocus={handleFocus}
+                    ></TextInput>
+                  </TouchableOpacity>
+                </View>
                 {TransferError !== "" && (
                   <Text
                     style={{

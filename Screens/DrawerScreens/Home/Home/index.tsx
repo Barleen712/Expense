@@ -208,9 +208,9 @@ export default function Home({ navigation }: Props) {
               mode="short"
             />
           )}
-          <View style={{ padding: 8 }}>
+          <View style={{ padding: 8, alignItems: "center" }}>
             <Text style={styles.username}>{t(StringConstants.AccountBalance)}</Text>
-            <Text style={styles.heading}>${94500 + income - expense}</Text>
+            <Text style={styles.heading}>${(94500 + income - expense).toFixed(4)}</Text>
           </View>
           <View style={styles.homeHeadView}>
             <TouchableOpacity

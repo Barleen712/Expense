@@ -56,6 +56,8 @@ export default function Budget({ navigation }: Props) {
   const convertRate = Rates.Rate[currency];
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
+  const { colors, setTheme, theme } = useContext(ThemeContext);
+  console.log(colors.budgetView);
   const selectedMonthKey = `${date.getFullYear()}-${String(month + 1).padStart(2, "0")}`;
   const budgetDataForMonth = Budgetcat[selectedMonthKey] || [];
   const renderBudgetItems = useCallback(
@@ -153,7 +155,7 @@ export default function Budget({ navigation }: Props) {
     [navigation]
   );
   const { t } = useTranslation();
-  const { colors, setTheme, theme } = useContext(ThemeContext);
+
   if (loading) {
     return (
       <View
