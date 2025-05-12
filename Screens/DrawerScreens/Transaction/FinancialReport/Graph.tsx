@@ -71,6 +71,7 @@ interface lineData {
 }
 
 export const Linearchart = ({ data, height }: lineData) => {
+      const { t } = useTranslation();
   const renderPointerLabel = (items, secondaryItem, pointerIndex) => {
     if (!items || items.length === 0 || pointerIndex === -1) return null;
     const { value, date } = items[0];
@@ -100,7 +101,6 @@ export const Linearchart = ({ data, height }: lineData) => {
     );
   };
   if (data.length <= 1) {
-    const { t } = useTranslation();
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text style={styles.budgetText}>{t("Not Enough Expenses")}</Text>

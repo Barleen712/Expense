@@ -70,7 +70,7 @@ export default function Home({ navigation }: Props) {
   const currency = Rates.selectedCurrencyCode;
   const [selectedMonth_Year, setSelectionMonth_Year] = useState(new Date());
   const [show, setShow] = useState(false);
-  const today = new Date();
+  const today = new Date(selectedMonth_Year);
   let convertRate;
   if (currency === "USD") {
     convertRate = 1;
@@ -102,7 +102,7 @@ export default function Home({ navigation }: Props) {
           expense.filter((item) => {
             const itemDate = new Date(item.Date);
             return (
-              itemDate.getDate() === today.getDate() &&
+              itemDate.getDate() === new Date().getDate() &&
               itemDate.getMonth() === today.getMonth() &&
               itemDate.getFullYear() === today.getFullYear()
             );
@@ -110,25 +110,25 @@ export default function Home({ navigation }: Props) {
         );
 
       case "Week": {
-        const sevenDaysAgo = new Date(today);
-        sevenDaysAgo.setDate(today.getDate() - 6);
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(new Date().getDate() - 6);
         return mapToAmountAndDate(
           expense.filter((item) => {
             const itemDate = new Date(item.Date);
             itemDate.setHours(0, 0, 0, 0);
-            return itemDate >= sevenDaysAgo && itemDate <= today;
+            return itemDate >= sevenDaysAgo && itemDate <= new Date() && itemDate.getMonth()===today.getMonth();
           })
         );
       }
 
       case "Month":
+        
         return mapToAmountAndDate(
           expense.filter((item) => {
             const itemDate = new Date(item.Date);
-            return itemDate.getMonth() === today.getMonth() && itemDate.getFullYear() === today.getFullYear();
+             return itemDate.getMonth() === today.getMonth() && itemDate.getFullYear() === today.getFullYear();
           })
         );
-
       case "Year":
         return mapToAmountAndDate(
           expense.filter((item) => {
@@ -140,7 +140,8 @@ export default function Home({ navigation }: Props) {
       default:
         return [];
     }
-  }, [transaction, selectedIndex]);
+  }, [transaction, selectedIndex,selectedMonth_Year]);
+
   const langindex = lang.find((item) => item.name === language);
   const loading = useSelector((state: RootState) => state.Money.loading);
   const onValueChange = (event: string, newDate?: Date) => {

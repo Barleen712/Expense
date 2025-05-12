@@ -481,7 +481,7 @@ export default function Income({ navigation, route }: Props) {
                   setFrequencyModal={setFrequencyModal}
                 />
 
-                {Switchs && (
+                {Switchs && (frequency !="")&& (endAfter !="")&& (
                   <View
                     style={{
                       width: "100%",

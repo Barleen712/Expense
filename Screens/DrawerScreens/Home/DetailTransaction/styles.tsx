@@ -82,14 +82,16 @@ export const getStyles = (colors: any) =>
                 marginTop: Platform.OS === "ios" ? 38 : 30,
               },
               Description: {
-                flex: 0.2,
+                flex: 0.3,
+               // backgroundColor:"red",
                 width: "95%",
                 marginLeft: "5%",
               },
               attachView: {
-                flex: 0.35,
+                flex: 0.28,
                 width: "90%",
                 marginLeft: "5%",
+                marginTop:10,
               },
               attachImg: {
                 width: "100%",

@@ -50,19 +50,24 @@ export default function CreateBudget({ navigation, route }: Props) {
   const [categoryError, setCategoryError] = useState("");
   const [Expense, setExpense] = useState(parameters.alert);
   const [sliderValue, setSliderValue] = useState(parameters.percentage);
-  const [Budget, setBudget] = useState<string>(`$${parameters.value}`);
+  const [Budget, setBudget] = useState<string>(`${parameters.value}`);
   const [missing, setmissing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const handleFocus = () => {
-    if (missing === true) {
-      setmissing(false);
-    } else if (Budget === "" || Budget === "$0" || Budget === "$") {
-      setBudget("$");
+    if (Budget === "0") {
+      setBudget("");
     }
   };
   const handleIncomeChange = (text: string) => {
-    const numericValue = text.replace(/[^0-9.]/g, "");
-    setBudget(`$${numericValue}`);
+    setAmountError("")
+    const formattedText = text.replace(/[^0-9.]/g, "");
+  const regex = /^(\d{0,7})(\.\d{0,2})?$/;
+
+  if (regex.test(formattedText)) {
+    setBudget(formattedText);
+  }else{
+    setAmountError("Maximum 7 digits allowed with 2 digits after decimal")
+  }
   };
   const dispatch = useDispatch();
   const user = auth.currentUser;
@@ -81,7 +86,7 @@ export default function CreateBudget({ navigation, route }: Props) {
     const findCategory = budgetDataForMonth.find((item) => item.category === selectedCategory) || null;
     if (findCategory) {
       Alert.alert("Budget Exists", `Budget already exists for ${selectedCategory} for this month`);
-      setBudget("$");
+      setBudget("");
       setSelectedCategory("");
       setExpense(false);
       setSliderValue(20);
@@ -138,6 +143,9 @@ export default function CreateBudget({ navigation, route }: Props) {
         <View style={styles.add}>
           <View style={styles.balanceView}>
             <Text style={styles.balance}>{t("How much do you want to spend?")}</Text>
+            <View style={{flexDirection:"row"}}>
+            <Text style={styles.amount}>$</Text>
+            
             <TextInput
               value={Budget}
               keyboardType="numeric"
@@ -145,6 +153,7 @@ export default function CreateBudget({ navigation, route }: Props) {
               style={styles.amount}
               onFocus={handleFocus}
             />
+            </View>
             {amountError !== "" && (
               <Text
                 style={{

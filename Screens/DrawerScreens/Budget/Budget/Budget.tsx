@@ -57,7 +57,6 @@ export default function Budget({ navigation }: Props) {
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
   const { colors, setTheme, theme } = useContext(ThemeContext);
-  console.log(colors.budgetView);
   const selectedMonthKey = `${date.getFullYear()}-${String(month + 1).padStart(2, "0")}`;
   const budgetDataForMonth = Budgetcat[selectedMonthKey] || [];
   const renderBudgetItems = useCallback(

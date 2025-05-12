@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Modal, TouchableWithoutFeedback } from "react-native";
+import { View, Text, Image, TouchableOpacity, Modal, TouchableWithoutFeedback,ScrollView } from "react-native";
 import { getStyles } from "./styles";
 import Header from "../../../../Components/Header";
 import { CustomButton } from "../../../../Components/CustomButton";
@@ -108,7 +108,10 @@ function DetailTransaction({
       </View>
       <View style={styles.Description}>
         <Text style={styles.username}>{t("Description")}</Text>
-        <Text style={[styles.exportText, { paddingLeft: 0 }]}>{title}</Text>
+        <ScrollView>
+          <Text style={[styles.exportText, { paddingLeft: 0 }]}>{title}</Text>
+        </ScrollView>
+        
       </View>
       <View style={styles.attachView}>
         {uri && (
