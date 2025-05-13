@@ -20,7 +20,7 @@ export const getStyles = (colors: any) =>
       width: "100%",
     },
     budgetYear: {
-      width: "35%",
+      width: "25%",
       alignItems: "center",
       marginBottom: 10,
       flexDirection: "row",
@@ -28,7 +28,8 @@ export const getStyles = (colors: any) =>
       borderWidth: 1,
       borderColor: "gray",
       borderRadius: 25,
-      padding: 2,
+      paddingLeft: 20,
+      padding:3
     },
     budgetMonthtext: {
       fontFamily: "Inter",

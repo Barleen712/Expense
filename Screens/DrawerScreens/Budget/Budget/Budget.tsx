@@ -11,15 +11,26 @@ import { selectBudget, CategoryExpense, BudgetCategory } from "../../../../Slice
 import { useSelector } from "react-redux";
 import { CATEGORY_COLORS } from "../../../Constants";
 import { ProgressBar } from "react-native-paper";
+import DropdownComponent from "../../../../Components/DropDown";
 const width = Dimensions.get("window").width * 0.8;
 const date = new Date();
 const MonthIndex = date.getMonth();
-import { useTranslation } from "react-i18next";
+import { useSSR, useTranslation } from "react-i18next";
 import { StringConstants } from "../../../Constants";
 import useBudgetListener from "../../../../Saga/BudgetSaga";
 type Budgetprop = StackNavigationProp<StackParamList, "MainScreen">;
 import { ActivityIndicator } from "react-native";
 import { ThemeContext } from "../../../../Context/ThemeContext";
+let Year = [];
+
+for (let i = 0; i < 31; i++) {
+  Year.push(2020+ i);
+}
+
+Year = Year.map((item) => ({
+  label: item.toString(),
+  value: item
+}));
 
 interface Props {
   navigation: Budgetprop;
@@ -57,6 +68,7 @@ export default function Budget({ navigation }: Props) {
   const convertRate = Rates.Rate[currency];
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
+  const [year,selectedYear]=useState("2025")
   const { colors, setTheme, theme } = useContext(ThemeContext);
   const budgetDataForMonth = Budgetcat[month] || [];
   const renderBudgetItems = useCallback(
@@ -169,29 +181,21 @@ export default function Budget({ navigation }: Props) {
       </View>
     );
   }
-
+  console.log(year)
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>
       <View style={styles.add}>
-        <View style={styles.budgetYear}>
-          <TouchableOpacity style={{ paddingRight: 5 }}>
-            <AntDesign name="left" size={24} color="white" />
-          </TouchableOpacity>
-          <Text
-            style={{
-              color: "white",
-              paddingLeft: 5,
-              paddingRight: 5,
-              fontSize: 20,
-            }}
-          >
-            2025
-          </Text>
-          <TouchableOpacity style={{ paddingLeft: 5 }}>
-            <AntDesign name="right" size={20} color={colors.color} />
-          </TouchableOpacity>
-        </View>
+          <DropdownComponent
+                  data={Year}
+                  value={year}
+                  name={year}
+                  styleButton={styles.budgetYear}
+                  onSelectItem={(item) => {
+                    selectedYear(item);
+
+                  }}
+                />
         <View style={styles.budgetMonth}>
           <TouchableOpacity onPress={handleprev}>
             <Image source={require("../../../../assets/arrowLeftWhite.png")} />
