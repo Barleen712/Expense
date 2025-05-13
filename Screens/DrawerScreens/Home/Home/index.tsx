@@ -29,8 +29,8 @@ import MonthPicker from "react-native-month-year-picker";
 import { Props } from "./types";
 import { ThemeContext } from "../../../../Context/ThemeContext";
 import { getStyles } from "./styles";
-import { retrieveOldTransactions } from "../../../../Realm/realm";
-import { changeLanguages } from "../../../../Slice/IncomeSlice";
+import Expense from "../../../../assets/ExpenseHome.svg";
+import Income from "../../../../assets/IncomeHome.svg";
 
 export default function Home({ navigation }: Props) {
   const lang = [
@@ -116,17 +116,16 @@ export default function Home({ navigation }: Props) {
           expense.filter((item) => {
             const itemDate = new Date(item.Date);
             itemDate.setHours(0, 0, 0, 0);
-            return itemDate >= sevenDaysAgo && itemDate <= new Date() && itemDate.getMonth()===today.getMonth();
+            return itemDate >= sevenDaysAgo && itemDate <= new Date() && itemDate.getMonth() === today.getMonth();
           })
         );
       }
 
       case "Month":
-        
         return mapToAmountAndDate(
           expense.filter((item) => {
             const itemDate = new Date(item.Date);
-             return itemDate.getMonth() === today.getMonth() && itemDate.getFullYear() === today.getFullYear();
+            return itemDate.getMonth() === today.getMonth() && itemDate.getFullYear() === today.getFullYear();
           })
         );
       case "Year":
@@ -140,7 +139,7 @@ export default function Home({ navigation }: Props) {
       default:
         return [];
     }
-  }, [transaction, selectedIndex,selectedMonth_Year]);
+  }, [transaction, selectedIndex, selectedMonth_Year]);
 
   const langindex = lang.find((item) => item.name === language);
   const loading = useSelector((state: RootState) => state.Money.loading);
@@ -226,7 +225,7 @@ export default function Home({ navigation }: Props) {
               }
               style={[styles.headButton, { backgroundColor: "rgba(0, 168, 107, 1)" }]}
             >
-              <Image style={{ height: 40, width: 40 }} source={require("../../../../assets/Income.png")} />
+              <Income />
               <View style={{ padding: 5 }}>
                 <Text style={styles.homeTitle}>{t(StringConstants.Income)}</Text>
                 <Text
@@ -253,7 +252,7 @@ export default function Home({ navigation }: Props) {
               }
               style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}
             >
-              <Image style={{ height: 40, width: 40 }} source={require("../../../../assets/Expense.png")} />
+              <Expense />
               <View style={{ padding: 5 }}>
                 <Text style={styles.homeTitle}>{t(StringConstants.Expense)}</Text>
                 <Text style={{ fontSize: Platform.OS === "ios" ? 21 : 22, color: "white", fontWeight: "bold" }}>

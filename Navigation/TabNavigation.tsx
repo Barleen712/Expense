@@ -12,6 +12,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../Store/Store";
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "../Context/ThemeContext";
+import Expense from "../assets/Expense.svg";
+import Income from "../assets/Income.svg";
+import Transfer from "../assets/Transaction.svg";
 
 type BottomTabprop = StackNavigationProp<StackParamList, "MainScreen">;
 
@@ -114,7 +117,7 @@ export default function Tabscreens({ navigation }: Props) {
                   bottom: 125,
                 }}
               >
-                <Image source={require("../assets/TransferButton.png")} />
+                <Transfer />
               </TouchableOpacity>
             )}
             {cross && (
@@ -130,7 +133,7 @@ export default function Tabscreens({ navigation }: Props) {
                 }
                 style={{ position: "absolute", left: 55, bottom: 55 }}
               >
-                <Image source={require("../assets/ExpenseButton.png")} />
+                <Expense />
               </TouchableOpacity>
             )}
             {cross && (
@@ -146,7 +149,7 @@ export default function Tabscreens({ navigation }: Props) {
                 }
                 style={{ position: "absolute", right: 55, bottom: 55 }}
               >
-                <Image source={require("../assets/IncomeButton.png")} />
+                <Income />
               </TouchableOpacity>
             )}
           </TouchableOpacity>

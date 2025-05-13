@@ -71,6 +71,8 @@ export default function TransactionList({ data }: TransactionListProps) {
     const meridiem = hours >= 12 ? "PM" : "AM";
     hours = hours % 12 || 12;
     const formattedTime = `${hours}:${minutes} ${meridiem}`;
+    const key = item.moneyCategory === "Transfer" ? item.moneyCategory : item.category;
+    const CategoryIcon = categoryMap[key];
 
     return (
       <TouchableOpacity
@@ -84,12 +86,7 @@ export default function TransactionList({ data }: TransactionListProps) {
           alignItems: "center",
         }}
       >
-        <View style={{ margin: 10 }}>
-          <Image
-            style={{ width: 60, height: 60 }}
-            source={categoryMap[item.moneyCategory === "Transfer" ? item.moneyCategory : item.category]}
-          />
-        </View>
+        <View style={{ margin: 10 }}>{CategoryIcon && <CategoryIcon width={60} height={60} />}</View>
         <View style={{ width: "52%", justifyContent: "space-between", height: "70%" }}>
           <Text style={styles.balance}>{t(item.category)}</Text>
           <Text style={[styles.categoryText, { color: "rgba(145, 145, 159, 1)" }]} numberOfLines={1}>
@@ -119,8 +116,8 @@ export default function TransactionList({ data }: TransactionListProps) {
       </TouchableOpacity>
     );
   };
-  const {colors}=useContext(ThemeContext)
-  const styles=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <SectionList
       sections={sections}
@@ -132,7 +129,7 @@ export default function TransactionList({ data }: TransactionListProps) {
       renderItem={renderItem}
       renderSectionHeader={({ section }) => (
         <View>
-          <Text style={{color:colors.color}}>{t(section.title)}</Text>
+          <Text style={{ color: colors.color }}>{t(section.title)}</Text>
         </View>
       )}
     />

@@ -109,7 +109,7 @@ export function FinancialReportBudget({ navigation }: Props) {
   };
   const { t } = useTranslation();
   const budgets = useSelector(BudgetCategory);
-  const selectedMonthKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+  const selectedMonthKey = new Date().getMonth();
   const monthBudgets = budgets[selectedMonthKey] || [];
   const exceed = monthBudgets.filter((item) => item.amountSpent > item.budgetvalue) || [];
   const totalBudgets = monthBudgets.length;
@@ -141,38 +141,38 @@ export function FinancialReportBudget({ navigation }: Props) {
             contentContainerStyle={{
               alignItems: "center",
             }}
-            renderItem={({ item }) => (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderWidth: 0.3,
-                  padding: 10,
-                  margin: 15,
-                  // marginTop: 5,
-                  backgroundColor: "rgba(189, 194, 194, 0.17)",
-                  borderRadius: 20,
-                }}
-              >
-                <Image
-                  style={{ width: 40, height: 40 }}
-                  source={categoryMap[item.category === "Transfer" ? "Transfer" : item.category]}
-                />
-                <Text
+            renderItem={({ item }) => {
+              const Category = categoryMap[item.category === "Transfer" ? "Transfer" : item.category];
+              return (
+                <View
                   style={{
-                    paddingLeft: 5,
-                    flexShrink: 1,
-                    fontFamily: "Inter",
-                    fontWeight: "bold",
-                    fontSize: 18,
-                    color: colors.color,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderWidth: 0.3,
+                    padding: 10,
+                    margin: 15,
+                    // marginTop: 5,
+                    backgroundColor: "rgba(189, 194, 194, 0.17)",
+                    borderRadius: 20,
                   }}
                 >
-                  {t(item.category)}
-                </Text>
-              </View>
-            )}
+                  <Category width={40} height={40} />
+                  <Text
+                    style={{
+                      paddingLeft: 5,
+                      flexShrink: 1,
+                      fontFamily: "Inter",
+                      fontWeight: "bold",
+                      fontSize: 18,
+                      color: colors.color,
+                    }}
+                  >
+                    {t(item.category)}
+                  </Text>
+                </View>
+              );
+            }}
           />
         </View>
       </View>

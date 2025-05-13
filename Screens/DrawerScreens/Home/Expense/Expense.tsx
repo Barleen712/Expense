@@ -97,8 +97,7 @@ export default function Expense({ navigation, route }: Props) {
     setModalVisible(!modalVisible);
   }
   const today = new Date();
-  const currentMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
-
+  const currentMonth = today.getMonth();
   const monthlyBudget = budget[currentMonth] || [];
   const openDocument = async () => {
     if (!document) return;
@@ -117,6 +116,7 @@ export default function Expense({ navigation, route }: Props) {
       setExpenseError("Commas are not allowed");
       return;
     }
+
     const cleaned = text.replace(/[^0-9.]/g, "");
 
     const decimalCount = (cleaned.match(/\./g) || []).length;
@@ -124,18 +124,33 @@ export default function Expense({ navigation, route }: Props) {
       setExpenseError("Enter a valid number with only one decimal point");
       return;
     }
-    if (!/^\d*\.?\d*$/.test(cleaned)) {
-      setExpenseError("Enter a valid number");
+
+    const parts = cleaned.split(".");
+    const integerPart = parts[0];
+    const decimalPart = parts[1] || "";
+
+    // Limit total digits to 7 (before + after decimal)
+    if ((integerPart + decimalPart).length > 7) {
+      setExpenseError("Maximum expense allowed is $99,999.99");
       return;
     }
 
-    if (cleaned.length > 7) {
-      setExpenseError("Maximum 7 digits allowed");
+    // Limit to 2 decimal digits
+    if (decimalPart.length > 2) {
+      setExpenseError("Only 2 digits allowed after decimal");
       return;
     }
+
+    const numericValue = parseFloat(cleaned);
+    if (numericValue > 99999.99) {
+      setExpenseError("Maximum expense allowed is $99,999.99");
+      return;
+    }
+
     setExpenseError("");
-    setExpenses(`${cleaned}`);
+    setExpenses(cleaned);
   };
+
   function handleDescriptionChange() {
     if (descriptionError) {
       setDescriptionError("");
@@ -257,18 +272,18 @@ export default function Expense({ navigation, route }: Props) {
           });
         }
       }
-      if (expenseAlert) {
-        onDisplayNotification({
-          title: `Added Expense`,
-          body: `You added an expense of ${selectedCategory} of amount ${Expenses}`,
-        });
-        AddNotification({
-          title: `Added Expense`,
-          body: `You added an expense of ${selectedCategory} of amount ${Expenses}`,
-          date: new Date().toISOString(),
-          userId: user.uid,
-        });
-      }
+    }
+    if (expenseAlert) {
+      onDisplayNotification({
+        title: `Added Expense`,
+        body: `You added an expense of ${selectedCategory} of amount ${Expenses}`,
+      });
+      AddNotification({
+        title: `Added Expense`,
+        body: `You added an expense of ${selectedCategory} of amount ${Expenses}`,
+        date: new Date().toISOString(),
+        userId: user.uid,
+      });
     }
     setLoading(false);
     navigation.goBack();
@@ -537,6 +552,7 @@ export default function Expense({ navigation, route }: Props) {
                     setEndDate={setEndDate}
                     Frequencymodal={Frequencymodal}
                     setFrequencyModal={setFrequencyModal}
+                    setswitch={setSwitch}
                   />
                 )}
                 {Switchs && (

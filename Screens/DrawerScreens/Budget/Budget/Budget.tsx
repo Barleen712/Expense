@@ -20,6 +20,7 @@ import useBudgetListener from "../../../../Saga/BudgetSaga";
 type Budgetprop = StackNavigationProp<StackParamList, "MainScreen">;
 import { ActivityIndicator } from "react-native";
 import { ThemeContext } from "../../../../Context/ThemeContext";
+
 interface Props {
   navigation: Budgetprop;
 }
@@ -57,8 +58,7 @@ export default function Budget({ navigation }: Props) {
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
   const { colors, setTheme, theme } = useContext(ThemeContext);
-  const selectedMonthKey = `${date.getFullYear()}-${String(month + 1).padStart(2, "0")}`;
-  const budgetDataForMonth = Budgetcat[selectedMonthKey] || [];
+  const budgetDataForMonth = Budgetcat[month] || [];
   const renderBudgetItems = useCallback(
     ({ item, index }) => {
       let remaining = item.budgetvalue - item.amountSpent;
@@ -174,6 +174,24 @@ export default function Budget({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.add}>
+        <View style={styles.budgetYear}>
+          <TouchableOpacity style={{ paddingRight: 5 }}>
+            <AntDesign name="left" size={24} color="white" />
+          </TouchableOpacity>
+          <Text
+            style={{
+              color: "white",
+              paddingLeft: 5,
+              paddingRight: 5,
+              fontSize: 20,
+            }}
+          >
+            2025
+          </Text>
+          <TouchableOpacity style={{ paddingLeft: 5 }}>
+            <AntDesign name="right" size={20} color={colors.color} />
+          </TouchableOpacity>
+        </View>
         <View style={styles.budgetMonth}>
           <TouchableOpacity onPress={handleprev}>
             <Image source={require("../../../../assets/arrowLeftWhite.png")} />
@@ -188,7 +206,7 @@ export default function Budget({ navigation }: Props) {
             <View style={{ flex: 1, justifyContent: "center" }}>
               <Text style={styles.budgetText}>
                 {t(StringConstants.Youdonthaveabudget)}.{"\n"}
-                {t(StringConstants.Letmake)}.
+                {/* {t(StringConstants.Letmake)}. */}
               </Text>
             </View>
           ) : (
@@ -205,23 +223,25 @@ export default function Budget({ navigation }: Props) {
             </View>
           )}
           <View style={styles.budgetButton}>
-            <CustomButton
-              title={t(StringConstants.CreateaBudget)}
-              bg="rgb(42, 124, 118)"
-              color="white"
-              press={() =>
-                navigation.navigate("CreateBudget", {
-                  value: 0,
-                  category: "Category",
-                  alert: false,
-                  percentage: 20,
-                  edit: false,
-                  header: "Create Budget",
-                  month: month,
-                  year: new Date().getFullYear(),
-                })
-              }
-            />
+            {month >= new Date().getMonth() && (
+              <CustomButton
+                title={t(StringConstants.CreateaBudget)}
+                bg="rgb(42, 124, 118)"
+                color="white"
+                press={() =>
+                  navigation.navigate("CreateBudget", {
+                    value: 0,
+                    category: "Category",
+                    alert: false,
+                    percentage: 20,
+                    edit: false,
+                    header: "Create Budget",
+                    month: month,
+                    year: new Date().getFullYear(),
+                  })
+                }
+              />
+            )}
           </View>
         </View>
       </View>

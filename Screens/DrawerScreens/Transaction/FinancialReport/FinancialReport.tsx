@@ -96,16 +96,14 @@ export default function FinancialReport({ navigation }: Props) {
   );
   const categoryExpense = useSelector(CategoryExpense);
   const monthIndex = Month.findIndex((item) => item.value === month);
-  const selectedMonthKey = `${new Date().getFullYear()}-${String(monthIndex + 1).padStart(2, "0")}`;
 
-  const CategorytDataForMonthExpense = categoryExpense[selectedMonthKey] || [];
-
+  const CategorytDataForMonthExpense = categoryExpense[monthIndex] || [];
   const pieDataExpense = CategorytDataForMonthExpense.map((item) => ({
     percentage: item.total,
     color: CATEGORY_COLORS[item.category],
   }));
   const categoryIncome = useSelector(CategoryIncome);
-  const CategorytDataForMonthIncome = categoryIncome[selectedMonthKey] || [];
+  const CategorytDataForMonthIncome = categoryIncome[monthIndex] || [];
   const pieDataIncome = CategorytDataForMonthIncome.map((item) => ({
     percentage: item.total,
     color: CATEGORY_COLORS[item.category],
@@ -114,8 +112,8 @@ export default function FinancialReport({ navigation }: Props) {
   const Rates = useSelector((state) => state.Rates);
   const currency = Rates.selectedCurrencyCode;
   const convertRate = Rates.Rate[currency];
-   const {colors}=useContext(ThemeContext)
-   const styles=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
       <Header

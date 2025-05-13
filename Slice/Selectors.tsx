@@ -66,121 +66,96 @@ export const selectIncome = createSelector([selectTransactions], (transactions) 
   transactions.filter((item) => item.moneyCategory === "Income")
 );
 
+export const CategoryExpense = createSelector([selectExpensesAndTransfers], (transactions) => {
+  const monthlyData: Record<string, { [category: string]: number }> = {};
 
-export const CategoryExpense = createSelector(
-  [selectExpensesAndTransfers],
-  (transactions) => {
-    const monthlyData: Record<
-      string,
-      { [category: string]: number }
-    > = {};
+  const monthlyTotals: Record<string, number> = {};
 
-    const monthlyTotals: Record<string, number> = {};
+  // Step 1: Group by month and category
+  for (const transaction of transactions) {
+    const monthKey = new Date(transaction.Date).getMonth();
+    const category = transaction.category.includes("->") ? "Transfer" : transaction.category;
 
-    // Step 1: Group by month and category
-    for (const transaction of transactions) {
-      const monthKey = getMonthKey(transaction.Date);
-      const category = transaction.category.includes("->") ? "Transfer" : transaction.category;
+    if (!monthlyData[monthKey]) monthlyData[monthKey] = {};
+    if (!monthlyData[monthKey][category]) monthlyData[monthKey][category] = 0;
 
-      if (!monthlyData[monthKey]) monthlyData[monthKey] = {};
-      if (!monthlyData[monthKey][category]) monthlyData[monthKey][category] = 0;
+    monthlyData[monthKey][category] += transaction.amount;
 
-      monthlyData[monthKey][category] += transaction.amount;
-
-      // Track total expense for month
-      if (!monthlyTotals[monthKey]) monthlyTotals[monthKey] = 0;
-      monthlyTotals[monthKey] += transaction.amount;
-    }
-
-    // Step 2: Build formatted result
-    const result: Record<
-      string,
-      { category: string; amount: number; total: number }[]
-    > = {};
-
-    for (const month in monthlyData) {
-      const expenseTotal = monthlyTotals[month] || 1; // avoid division by 0
-      result[month] = Object.entries(monthlyData[month])
-        .map(([category, amount]) => ({
-          category,
-          amount,
-          total: (amount / expenseTotal) * 100,
-        }))
-        .sort((a, b) => b.total - a.total);
-    }
-
-    return result;
+    // Track total expense for month
+    if (!monthlyTotals[monthKey]) monthlyTotals[monthKey] = 0;
+    monthlyTotals[monthKey] += transaction.amount;
   }
-);
 
-const getMonthKey = (date: string | Date) => {
-  const d = new Date(date);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-};
+  // Step 2: Build formatted result
+  const result: Record<string, { category: string; amount: number; total: number }[]> = {};
 
-export const CategoryIncome = createSelector(
-  [selectIncome],
-  (transactions) => {
-    const monthlyCategoryMap: Record<string, Record<string, number>> = {};
-    const monthlyIncomeTotal: Record<string, number> = {};
-
-    for (const txn of transactions) {
-      const monthKey = getMonthKey(txn.Date);
-      const category = txn.category;
-
-      if (!monthlyCategoryMap[monthKey]) monthlyCategoryMap[monthKey] = {};
-      if (!monthlyIncomeTotal[monthKey]) monthlyIncomeTotal[monthKey] = 0;
-
-      if (!monthlyCategoryMap[monthKey][category]) monthlyCategoryMap[monthKey][category] = 0;
-
-      monthlyCategoryMap[monthKey][category] += txn.amount;
-      monthlyIncomeTotal[monthKey] += txn.amount;
-    }
-
-    const result: Record<string, { category: string; total: number }[]> = {};
-
-    for (const month in monthlyCategoryMap) {
-      const incomeTotal = monthlyIncomeTotal[month] || 1;
-      result[month] = Object.entries(monthlyCategoryMap[month])
-        .map(([category, amount]) => ({
-          category,
-          amount,
-          total: (amount / incomeTotal) * 100,
-        }))
-        .sort((a, b) => b.total - a.total);
-    }
-
-    return result;
+  for (const month in monthlyData) {
+    const expenseTotal = monthlyTotals[month] || 1; // avoid division by 0
+    result[month] = Object.entries(monthlyData[month])
+      .map(([category, amount]) => ({
+        category,
+        amount,
+        total: (amount / expenseTotal) * 100,
+      }))
+      .sort((a, b) => b.total - a.total);
   }
-);
 
+  return result;
+});
 
-export const BudgetCategory = createSelector(
-  [selectBudget, CategoryExpense],
-  (budgetItems, categoryByMonth) => {
-    const result: Record<string, any[]> = {};
+export const CategoryIncome = createSelector([selectIncome], (transactions) => {
+  const monthlyCategoryMap: Record<string, Record<string, number>> = {};
+  const monthlyIncomeTotal: Record<string, number> = {};
 
-    for (const item of budgetItems) {
-      const monthKey = getMonthKey(item.Date);
-      const categoriesForMonth = categoryByMonth[monthKey] || [];
+  for (const txn of transactions) {
+    const monthKey = new Date(txn.Date).getMonth();
+    const category = txn.category;
 
-      const categorySpent = categoriesForMonth.find((value) => value.category === item.category);
-      const spentAmount = categorySpent ? categorySpent.amount : 0;
+    if (!monthlyCategoryMap[monthKey]) monthlyCategoryMap[monthKey] = {};
+    if (!monthlyIncomeTotal[monthKey]) monthlyIncomeTotal[monthKey] = 0;
 
-      const budgetEntry = {
-        id: item.id,
-        category: item.category,
-        budgetvalue: item.amount,
-        amountSpent: spentAmount,
-        alertPercent: item.percentage,
-        notification: item.notification,
-        notified: item.notified,
-      };
+    if (!monthlyCategoryMap[monthKey][category]) monthlyCategoryMap[monthKey][category] = 0;
 
-      if (!result[monthKey]) result[monthKey] = [];
-      result[monthKey].push(budgetEntry);
-    }
-
-    return result;
+    monthlyCategoryMap[monthKey][category] += txn.amount;
+    monthlyIncomeTotal[monthKey] += txn.amount;
   }
-);
+
+  const result: Record<string, { category: string; total: number }[]> = {};
+
+  for (const month in monthlyCategoryMap) {
+    const incomeTotal = monthlyIncomeTotal[month] || 1;
+    result[month] = Object.entries(monthlyCategoryMap[month])
+      .map(([category, amount]) => ({
+        category,
+        amount,
+        total: (amount / incomeTotal) * 100,
+      }))
+      .sort((a, b) => b.total - a.total);
+  }
+  return result;
+});
+
+export const BudgetCategory = createSelector([selectBudget, CategoryExpense], (budgetItems, categoryByMonth) => {
+  const result: Record<string, any[]> = {};
+
+  for (const item of budgetItems) {
+    const monthKey = item.month;
+
+    const categoriesForMonth = categoryByMonth[monthKey] || [];
+    const categorySpent = categoriesForMonth.find((value) => value.category === item.category);
+    const spentAmount = categorySpent ? categorySpent.amount : 0;
+
+    const budgetEntry = {
+      id: item.id,
+      category: item.category,
+      budgetvalue: item.amount,
+      amountSpent: spentAmount,
+      alertPercent: item.percentage,
+      notification: item.notification,
+      notified: item.notified,
+    };
+    if (!result[monthKey]) result[monthKey] = [];
+    result[monthKey].push(budgetEntry);
+  }
+  return result;
+});

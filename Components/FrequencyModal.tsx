@@ -51,15 +51,28 @@ export default function FrequencyModal({
   setEndDate,
   Frequencymodal,
   setFrequencyModal,
+  setswitch,
 }) {
   const { t } = useTranslation();
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [frequencyError, setFrequencyError] = useState("");
+  const [endAfterError, setEndAfterError] = useState("");
 
   const onChange = (event, selectedDate) => {
     if (Platform.OS === "android") setShowEndDatePicker(false);
     if (selectedDate) setEndDate(selectedDate);
   };
   const { colors } = useContext(ThemeContext);
+  function Save() {
+    if (frequency === "") {
+      setFrequencyError("Select Frequency");
+      return;
+    }
+    if (endAfter === "") {
+      setEndAfterError("Select an option");
+    }
+    setFrequencyModal(false);
+  }
   return (
     <Modal
       animationType="slide"
@@ -69,7 +82,12 @@ export default function FrequencyModal({
         setFrequencyModal(false);
       }}
     >
-      <TouchableWithoutFeedback onPress={() => setFrequencyModal(false)}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          setFrequencyModal(false);
+          setswitch(false);
+        }}
+      >
         <View style={styles.modalOverlay}>
           <TouchableWithoutFeedback>
             <View style={[styles.modalContainer, { height: "35%", backgroundColor: colors.backgroundColor }]}>
@@ -84,6 +102,7 @@ export default function FrequencyModal({
                     styleButton={styles.textinput}
                     onSelectItem={(item) => {
                       setFrequency(item);
+                      setFrequencyError("");
                     }}
                   />
                 </View>
@@ -92,7 +111,7 @@ export default function FrequencyModal({
                     <DropdownComponent
                       data={Month}
                       value={month}
-                      name={t("Month")}
+                      name={Month[month].label}
                       styleButton={styles.textinput}
                       onSelectItem={(item) => {
                         setMonth(item);
@@ -127,7 +146,19 @@ export default function FrequencyModal({
                   </View>
                 )}
               </View>
-
+              {frequencyError !== "" && (
+                <Text
+                  style={{
+                    color: "rgb(255, 0, 17)",
+                    marginTop: 4,
+                    marginLeft: 10,
+                    fontFamily: "Inter",
+                    width: "90%",
+                  }}
+                >
+                  *{frequencyError}
+                </Text>
+              )}
               <View
                 style={{ width: "100%", alignItems: "center", flexDirection: "row", justifyContent: "space-evenly" }}
               >
@@ -139,6 +170,7 @@ export default function FrequencyModal({
                     styleButton={styles.textinput}
                     onSelectItem={(item) => {
                       setendAfter(item);
+                      setEndAfterError("");
                     }}
                   />
                 </View>
@@ -164,13 +196,20 @@ export default function FrequencyModal({
                   </TouchableOpacity>
                 )}
               </View>
-
-              <CustomButton
-                title={t(StringConstants.Continue)}
-                bg={color}
-                color="white"
-                press={() => setFrequencyModal(false)}
-              />
+              {endAfterError !== "" && (
+                <Text
+                  style={{
+                    color: "rgb(255, 0, 17)",
+                    marginTop: 4,
+                    marginLeft: 10,
+                    fontFamily: "Inter",
+                    width: "90%",
+                  }}
+                >
+                  *{endAfterError}
+                </Text>
+              )}
+              <CustomButton title={t(StringConstants.Continue)} bg={color} color="white" press={Save} />
             </View>
           </TouchableWithoutFeedback>
         </View>

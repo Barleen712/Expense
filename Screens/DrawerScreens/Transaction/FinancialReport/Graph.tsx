@@ -71,7 +71,8 @@ interface lineData {
 }
 
 export const Linearchart = ({ data, height }: lineData) => {
-      const { t } = useTranslation();
+  const { t } = useTranslation();
+  const { colors } = useContext(ThemeContext);
   const renderPointerLabel = (items, secondaryItem, pointerIndex) => {
     if (!items || items.length === 0 || pointerIndex === -1) return null;
     const { value, date } = items[0];
@@ -79,24 +80,28 @@ export const Linearchart = ({ data, height }: lineData) => {
     let hours = data_date.getHours();
     const minutes = data_date.getMinutes().toString().padStart(2, "0");
     const formattedTime = `${hours}:${minutes}`;
+    const lastitem = new Date(data[data.length - 1].date).toISOString() === new Date(date).toISOString();
 
     return (
       <View
         style={{
-          marginTop: 20,
+          marginTop: 15,
+          //marginLeft: 10,
+          marginLeft: lastitem ? -65 : 0,
           backgroundColor: "rgb(42, 124, 118)",
           paddingLeft: 10,
           // paddingRight: 10,
 
           borderRadius: 4,
-          width: 56,
+          width: 70,
         }}
         pointerEvents="auto"
       >
         <Text style={{ color: "white", fontSize: 10 }}>${value}</Text>
         <Text style={{ color: "white", fontSize: 10 }}>
-          {data_date.getDate()}/{formattedTime}
+          {data_date.getDate()}/{data_date.getMonth() + 1}/{data_date.getFullYear()}
         </Text>
+        <Text style={{ color: "white", fontSize: 10 }}>{formattedTime}</Text>
       </View>
     );
   };
@@ -107,7 +112,7 @@ export const Linearchart = ({ data, height }: lineData) => {
       </View>
     );
   }
-  const { colors } = useContext(ThemeContext);
+
   return (
     <LineChart
       data={data}
@@ -139,6 +144,8 @@ export const Linearchart = ({ data, height }: lineData) => {
       pointerConfig={{
         pointerColor: "rgb(42, 144, 114)",
         pointerStripUptoDataPoint: true,
+        // autoAdjustPointerLabelPosition: true,
+        // stripOverPointer: true,
         radius: 8,
         pointerLabelComponent: renderPointerLabel,
       }}

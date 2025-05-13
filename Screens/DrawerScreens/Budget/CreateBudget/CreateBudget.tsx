@@ -59,15 +59,15 @@ export default function CreateBudget({ navigation, route }: Props) {
     }
   };
   const handleIncomeChange = (text: string) => {
-    setAmountError("")
+    setAmountError("");
     const formattedText = text.replace(/[^0-9.]/g, "");
-  const regex = /^(\d{0,7})(\.\d{0,2})?$/;
+    const regex = /^(\d{0,5})(\.\d{0,2})?$/;
 
-  if (regex.test(formattedText)) {
-    setBudget(formattedText);
-  }else{
-    setAmountError("Maximum 7 digits allowed with 2 digits after decimal")
-  }
+    if (regex.test(formattedText)) {
+      setBudget(formattedText);
+    } else {
+      setAmountError("Maximum budget allowed $99,999.99");
+    }
   };
   const dispatch = useDispatch();
   const user = auth.currentUser;
@@ -82,7 +82,7 @@ export default function CreateBudget({ navigation, route }: Props) {
       return;
     }
     const selectedMonthKey = `${parameters.year}-${String(parameters.month + 1).padStart(2, "0")}`;
-    const budgetDataForMonth = Budgetcat[selectedMonthKey] || [];
+    const budgetDataForMonth = Budgetcat[parameters.month] || [];
     const findCategory = budgetDataForMonth.find((item) => item.category === selectedCategory) || null;
     if (findCategory) {
       Alert.alert("Budget Exists", `Budget already exists for ${selectedCategory} for this month`);
@@ -103,10 +103,10 @@ export default function CreateBudget({ navigation, route }: Props) {
     AddBudget({
       category: selectedCategory,
       amount: numericBudget,
+      month: parameters.month,
       percentage: Math.round(sliderValue),
       notification: Expense,
       userId: user.uid,
-      Date: new Date().toISOString(),
       notified: false,
     });
     navigation.goBack();
@@ -143,16 +143,16 @@ export default function CreateBudget({ navigation, route }: Props) {
         <View style={styles.add}>
           <View style={styles.balanceView}>
             <Text style={styles.balance}>{t("How much do you want to spend?")}</Text>
-            <View style={{flexDirection:"row"}}>
-            <Text style={styles.amount}>$</Text>
-            
-            <TextInput
-              value={Budget}
-              keyboardType="numeric"
-              onChangeText={handleIncomeChange}
-              style={styles.amount}
-              onFocus={handleFocus}
-            />
+            <View style={{ flexDirection: "row" }}>
+              <Text style={styles.amount}>$</Text>
+
+              <TextInput
+                value={Budget}
+                keyboardType="numeric"
+                onChangeText={handleIncomeChange}
+                style={styles.amount}
+                onFocus={handleFocus}
+              />
             </View>
             {amountError !== "" && (
               <Text

@@ -90,7 +90,6 @@ export default function SignUp({ navigation }: Props) {
       raiseToast("success", "Sign Up Success", "done");
       if (user) {
         await sendEmailVerification(user.user);
-        console.log("logout");
         await auth.signOut();
         AddUser({
           User: name.name,

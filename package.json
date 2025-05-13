@@ -10,6 +10,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@miblanchard/react-native-slider": "^2.6.0",
     "@notifee/react-native": "^9.1.8",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-community/datetimepicker": "^8.3.0",
@@ -65,7 +66,7 @@
     "react-native-segmented-progress-bar": "^1.0.10",
     "react-native-select-dropdown": "^4.0.1",
     "react-native-slider-text": "^0.0.10",
-    "react-native-svg": "^15.11.2",
+    "react-native-svg": "^15.12.0",
     "react-native-toast-message": "^2.3.0",
     "react-native-tts": "^4.1.1",
     "react-native-vector-icons": "^10.2.0",
@@ -79,6 +80,7 @@
     "@react-native-community/cli": "^18.0.0",
     "@types/react": "~18.3.12",
     "@types/react-native-push-notification": "^8.1.4",
+    "react-native-svg-transformer": "^1.5.1",
     "typescript": "^5.3.3"
   },
   "private": true

@@ -113,6 +113,7 @@ export default function Profile({ navigation }: Props) {
   function Discard() {
     seteditProfile(!editProfile);
     setmodalPhoto(photo);
+    setModalUser(username);
   }
   const pickImageFromGallery = async () => {
     try {
@@ -330,6 +331,7 @@ export default function Profile({ navigation }: Props) {
                       />
                     </View>
                     <TouchableOpacity
+                      disabled={modalPhoto === photo && modalUser === username}
                       onPress={saveChanges}
                       style={{
                         marginTop: 20,
@@ -340,14 +342,15 @@ export default function Profile({ navigation }: Props) {
                     >
                       <Text
                         style={{
-                          color: colors.editColor,
+                          color: modalPhoto === photo && modalUser === username ? "gray" : colors.editColor,
                           fontWeight: "bold",
                           fontSize: 16,
                           textAlign: "center",
                           padding: 5,
                           borderRadius: 18,
                           width: "50%",
-                          backgroundColor: colors.seeall,
+                          backgroundColor:
+                            modalPhoto === photo && modalUser === username ? "rgba(158, 158, 163, 0.9)" : colors.seeall,
                         }}
                       >
                         {t("Save Changes")}

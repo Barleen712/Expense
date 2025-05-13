@@ -7,19 +7,29 @@ import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 const rnBiometrics = new ReactNativeBiometrics();
+import Food from "../assets/food.svg";
+import Shopping from "../assets/shopping.svg";
+import Subscription from "../assets/subscription.svg";
+import Miscellaneous from "../assets/miscellaneous.svg";
+import Entertainment from "../assets/entertainment.svg";
+import Transportation from "../assets/transportation.svg";
+import Bills from "../assets/bills.svg";
+import Transfer from "../assets/transfer.svg";
+import Salary from "../assets/salary.svg";
+import PassiveIncome from "../assets/passive.svg"; // if name has space
+
 export const categoryMap = {
-  Food: require("../assets/Food.png"),
-  Shopping: require("../assets/Shopping.png"),
-  Subscription: require("../assets/Subscription.png"),
-  Miscellaneous: require("../assets/Miscellaneous.png"),
-  Entertainment: require("../assets/Entertainment.png"),
-  Transportation: require("../assets/Transportation.png"),
-  Bills: require("../assets/Bills.png"),
-  Transfer: require("../assets/Transfer.png"),
-  Salary: require("../assets/Salary.png"),
-  "Passive Income": require("../assets/Passive Income.png"),
+  Food,
+  Shopping,
+  Subscription,
+  Miscellaneous,
+  Entertainment,
+  Transportation,
+  Bills,
+  Transfer,
+  Salary,
+  "Passive Income": PassiveIncome,
 };
-export const Food = "../assets/Food.png";
 export const Month = [
   "January",
   "February",

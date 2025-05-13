@@ -84,25 +84,40 @@ export default function Income({ navigation, route }: Props) {
       setTransferError("Commas are not allowed");
       return;
     }
+
     const cleaned = text.replace(/[^0-9.]/g, "");
 
     const decimalCount = (cleaned.match(/\./g) || []).length;
     if (decimalCount > 1) {
-      setTransferError("Enter a valid number with only one decimal point");
-      return;
-    }
-    if (!/^\d*\.?\d*$/.test(cleaned)) {
-      setTransferError("Enter a valid number");
+      setTransferError("Only one decimal point is allowed");
       return;
     }
 
-    if (cleaned.length > 7) {
-      setTransferError("Maximum 7 digits allowed");
+    const parts = cleaned.split(".");
+    const integerPart = parts[0];
+    const decimalPart = parts[1] || "";
+
+    if (decimalPart.length > 2) {
+      setTransferError("Maximum transfer amount is $99,999.99");
       return;
     }
+
+    // Combined digits should not exceed 7
+    if ((integerPart + decimalPart).length > 7) {
+      setTransferError("Maximum transfer amount is $99,999.99");
+      return;
+    }
+
+    const numericValue = parseFloat(cleaned);
+    if (numericValue > 99999.99) {
+      setTransferError("Maximum transfer amount is $99,999.99");
+      return;
+    }
+
     setTransferError("");
-    setTransfer(`${cleaned}`);
+    setTransfer(cleaned);
   };
+
   const handleFocus = () => {
     if (Transfer === "0") {
       setTransfer("");

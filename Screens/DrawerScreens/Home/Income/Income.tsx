@@ -122,25 +122,41 @@ export default function Income({ navigation, route }: Props) {
       setIncomeError("Commas are not allowed");
       return;
     }
+
     const cleaned = text.replace(/[^0-9.]/g, "");
 
     const decimalCount = (cleaned.match(/\./g) || []).length;
     if (decimalCount > 1) {
-      setIncomeError("Enter a valid number with only one decimal point");
-      return;
-    }
-    if (!/^\d*\.?\d*$/.test(cleaned)) {
-      setIncomeError("Enter a valid number");
+      setIncomeError("Only one decimal point is allowed");
       return;
     }
 
-    if (cleaned.length > 7) {
-      setIncomeError("Maximum 7 digits allowed");
+    const parts = cleaned.split(".");
+    const integerPart = parts[0];
+    const decimalPart = parts[1] || "";
+
+    // Limit to 2 decimal digits
+    if (decimalPart.length > 2) {
+      setIncomeError("Maximum income allowed is $99,999.99");
       return;
     }
+
+    // Limit total digits (excluding the decimal point) to 7
+    if ((integerPart + decimalPart).length > 7) {
+      setIncomeError("Maximum income allowed is $99,999.99");
+      return;
+    }
+
+    const numericValue = parseFloat(cleaned);
+    if (numericValue > 99999.99) {
+      setIncomeError("Maximum income allowed is $99,999.99");
+      return;
+    }
+
     setIncomeError("");
-    setIncome(`${cleaned}`);
+    setIncome(cleaned);
   };
+
   function handleDescriptionChange() {
     if (descriptionError) {
       setDescriptionError("");
@@ -479,9 +495,10 @@ export default function Income({ navigation, route }: Props) {
                   setEndDate={setEndDate}
                   Frequencymodal={Frequencymodal}
                   setFrequencyModal={setFrequencyModal}
+                  setswitch={setSwitch}
                 />
 
-                {Switchs && (frequency !="")&& (endAfter !="")&& (
+                {Switchs && frequency != "" && endAfter != "" && (
                   <View
                     style={{
                       width: "100%",

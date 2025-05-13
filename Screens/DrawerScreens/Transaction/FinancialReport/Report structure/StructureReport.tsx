@@ -28,6 +28,7 @@ export default function FaceCard({ type, amount, detail, category, amount1, bg, 
   const { t } = useTranslation();
   const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);
+  const Category = categoryMap[category === "Transfer" ? "Transfer" : category];
   return (
     <View style={[styles.card, { backgroundColor: bg }]}>
       <View style={styles.cardMonth}>
@@ -67,10 +68,7 @@ export default function FaceCard({ type, amount, detail, category, amount1, bg, 
                 borderRadius: 20,
               }}
             >
-              <Image
-                style={{ width: 40, height: 40 }}
-                source={categoryMap[category === "Transfer" ? "Transfer" : category]}
-              />
+              <Category height={40} width={40} />
               <Text
                 style={{
                   paddingLeft: 5,

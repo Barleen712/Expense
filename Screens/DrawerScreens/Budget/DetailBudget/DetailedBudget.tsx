@@ -48,6 +48,7 @@ export default function DetailedBudget({ navigation, route }: Props) {
   const convertRate = Rates.Rate[currency];
   const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);
+  const Category = categoryMap[category === "Transfer" ? "Transfer" : category];
   return (
     <View style={styles.container}>
       <Header
@@ -85,10 +86,7 @@ export default function DetailedBudget({ navigation, route }: Props) {
               borderRadius: 20,
             }}
           >
-            <Image
-              style={{ width: 40, height: 40 }}
-              source={categoryMap[category === "Transfer" ? "Transfer" : category]}
-            />
+            <Category width={40} height={40} />
             <Text
               style={{
                 paddingLeft: 5,
