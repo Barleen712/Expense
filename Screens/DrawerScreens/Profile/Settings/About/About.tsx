@@ -48,11 +48,29 @@ export default function AboutUs({ navigation }) {
   const render = ({ item }) => {
     return (
       <View style={styles.carouselItem}>
-        <Text style={{ fontSize: 26, fontWeight: "bold", textAlign: "center" }}>{item.title}</Text>
-        <Image style={{ height: "70%", width: "70%" }} source={item.image}></Image>
-        <Text style={{ fontSize: 20, textAlign: "center", fontWeight: "bold", width: "90%", marginBottom: 10 }}>
-          {item.des}
-        </Text>
+        <View style={{ height: "20%", justifyContent: "center", width: "90%" }}>
+          <Text
+            style={{
+              fontSize: 26,
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+          >
+            {item.title}
+          </Text>
+        </View>
+        <Image style={{ height: "60%", width: "70%" }} source={item.image}></Image>
+        <View style={{ height: "20%", justifyContent: "center", width: "90%", marginBottom: 5 }}>
+          <Text
+            style={{
+              fontSize: 20,
+              textAlign: "center",
+              fontWeight: "bold",
+            }}
+          >
+            {item.des}
+          </Text>
+        </View>
       </View>
     );
   };

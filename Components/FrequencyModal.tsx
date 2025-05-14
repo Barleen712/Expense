@@ -23,7 +23,7 @@ const EndAfter = ["Date", "Never"].map((item) => ({
   label: item,
   value: item,
 }));
-
+const ShortM = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 const date = Array.from({ length: 31 }, (_, i) => ({
   label: (i + 1).toString(),
   value: (i + 1).toString(),
@@ -111,7 +111,7 @@ export default function FrequencyModal({
                     <DropdownComponent
                       data={Month}
                       value={month}
-                      name={Month[month].label}
+                      name={ShortM[month]}
                       styleButton={styles.textinput}
                       onSelectItem={(item) => {
                         setMonth(item);

@@ -33,6 +33,7 @@ import { auth } from "../../../FirebaseConfig";
 import { updateDocument } from "../../../FirestoreHandler";
 import { updateTransaction } from "../../../../Slice/IncomeSlice";
 import { ThemeContext } from "../../../../Context/ThemeContext";
+import TransferImg from "../../../../assets/transfer.svg";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -287,10 +288,18 @@ export default function Income({ navigation, route }: Props) {
                       handleFocus={handleToFromChange}
                     />
                   </View>
-                  <Image
+                  <TransferImg
+                    height={40}
+                    style={{
+                      position: "absolute",
+                      top: "25%",
+                      left: "45%",
+                    }}
+                  />
+                  {/* <Image
                     style={{ width: 40, height: 40, position: "absolute", top: "25%", left: "45%" }}
                     source={require("../../../../assets/Transfer.png")}
-                  />
+                  /> */}
                 </View>
                 {toError !== "" && (
                   <Text

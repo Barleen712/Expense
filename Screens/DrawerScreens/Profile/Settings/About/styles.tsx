@@ -49,7 +49,6 @@ export default function getStyles(colors) {
     carouselItem: {
       alignItems: "center",
       flex: 1,
-      justifyContent: "space-evenly",
       backgroundColor: "rgba(220, 234, 233, 0.6)",
       marginTop: 10,
       marginBottom: 10,

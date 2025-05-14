@@ -82,7 +82,7 @@ export default function CategoryList({ category, totalExpense }: CategoryListPro
             }}
             style={{
               backgroundColor: "rgba(214, 224, 220, 0.24)",
-              width: width - 40,
+              width: width - 60,
               height: 15,
               borderRadius: 20,
               marginTop: 10,

@@ -47,7 +47,6 @@ export default function Currency({ navigation }: Props) {
             <TouchableOpacity
               onPress={() => {
                 setSelectedCurrency(item.code);
-                dispatch(setCurrencycode(item.code));
                 dispatch(changeCurrency(item.code));
                 dispatch(updatePreferences("currency", item.code));
               }}

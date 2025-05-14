@@ -63,13 +63,15 @@ export default function FinancialReport({ navigation }: Props) {
     .sort((a, b) => {
       return new Date(b.Date) - new Date(a.Date);
     })
-    .filter((item) => Month[new Date(item.Date).getMonth()].value === month);
+    .filter((item) => Month[new Date(item.Date).getMonth()].value === month && new Date(item.Date) <= new Date());
   const sortedExpense = [...expensesAndTransfers]
     .sort((a, b) => {
       return new Date(b.Date) - new Date(a.Date);
     })
-    .filter((item) => Month[new Date(item.Date).getMonth()].value === month);
-  const sortedTrans = [...transaction].filter((item) => Month[new Date(item.Date).getMonth()].value === month);
+    .filter((item) => Month[new Date(item.Date).getMonth()].value === month && new Date(item.Date) <= new Date());
+  const sortedTrans = [...transaction].filter(
+    (item) => Month[new Date(item.Date).getMonth()].value === month && new Date(item.Date) <= new Date()
+  );
   const GraphExpenses = useMemo(
     () =>
       sortedTrans
@@ -96,21 +98,22 @@ export default function FinancialReport({ navigation }: Props) {
   );
   const categoryExpense = useSelector(CategoryExpense);
   const monthIndex = Month.findIndex((item) => item.value === month);
-
-  const CategorytDataForMonthExpense = categoryExpense[monthIndex] || [];
+  const monthKey = `${new Date().getFullYear()}-${String(monthIndex + 1).padStart(2, "0")}`;
+  const CategorytDataForMonthExpense = categoryExpense[monthKey] || [];
   const pieDataExpense = CategorytDataForMonthExpense.map((item) => ({
     percentage: item.total,
     color: CATEGORY_COLORS[item.category],
   }));
   const categoryIncome = useSelector(CategoryIncome);
-  const CategorytDataForMonthIncome = categoryIncome[monthIndex] || [];
+
+  const CategorytDataForMonthIncome = categoryIncome[monthKey] || [];
   const pieDataIncome = CategorytDataForMonthIncome.map((item) => ({
     percentage: item.total,
     color: CATEGORY_COLORS[item.category],
   }));
   const { t } = useTranslation();
   const Rates = useSelector((state) => state.Rates);
-  const currency = Rates.selectedCurrencyCode;
+  const currency = useSelector((state) => state.Money.preferences.currency);
   const convertRate = Rates.Rate[currency];
   const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);

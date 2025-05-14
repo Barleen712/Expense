@@ -22,7 +22,7 @@ export const DonutChart = ({
   const circumference = 2 * Math.PI * radius;
   let previousPercentage = 0;
   const Rates = useSelector((state) => state.Rates);
-  const currency = Rates.selectedCurrencyCode;
+  const currency = useSelector((state) => state.Money.preferences.currency);
   const convertRate = Rates.Rate[currency];
   const { colors } = useContext(ThemeContext);
   return (

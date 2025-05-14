@@ -18,7 +18,7 @@ interface Report {
 const width = Dimensions.get("window").width;
 export default function FaceCard({ type, amount, detail, category, amount1, bg, progress }: Report) {
   const Rates = useSelector((state) => state.Rates);
-  const currency = Rates.selectedCurrencyCode;
+  const currency = useSelector((state) => state.Money.preferences.currency);
   let convertRate;
   if (currency === "USD") {
     convertRate = 1;

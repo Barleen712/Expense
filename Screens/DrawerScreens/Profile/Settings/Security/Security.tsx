@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import { getStyles} from "./styles"
+import { getStyles } from "./styles";
 import { Ionicons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../../Navigation/StackList";
@@ -9,6 +9,8 @@ import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { changeSecurity } from "../../../../../Slice/IncomeSlice";
 import { ThemeContext } from "../../../../../Context/ThemeContext";
+import { updatePreferences } from "../../../../../Slice/IncomeSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 type SecurityProp = StackNavigationProp<StackParamList, "Account">;
 
 interface Props {
@@ -17,14 +19,19 @@ interface Props {
 export default function Security({ navigation }: Props) {
   const dispatch = useDispatch();
   const security = useSelector((state) => state.Money.preferences.security);
-  const currencies = ["PIN", "Fingerprint", "Face ID"];
+  const currencies = ["PIN", "Fingerprint"];
   const [selected, setSelected] = useState(security);
   const { t } = useTranslation();
-  const {colors}=useContext(ThemeContext)
-  const styles=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
-      <Header title="Security" press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color}/>
+      <Header
+        title="Security"
+        press={() => navigation.goBack()}
+        bgcolor={colors.backgroundColor}
+        color={colors.color}
+      />
       <View style={styles.Line}></View>
       <FlatList
         style={styles.settings}
@@ -32,9 +39,15 @@ export default function Security({ navigation }: Props) {
         renderItem={({ item }) => (
           <View>
             <TouchableOpacity
-              onPress={() => {
+              onPress={async () => {
                 setSelected(item);
                 dispatch(changeSecurity(item));
+                dispatch(updatePreferences("security", item));
+                if (item === "Fingerprint" || item === "Face ID") {
+                  await AsyncStorage.setItem("biometricEnabled", "true");
+                } else if (item === "PIN") {
+                  await AsyncStorage.setItem("biometricEnabled", "false");
+                }
               }}
               style={styles.items}
             >

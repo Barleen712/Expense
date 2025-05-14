@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../Store/Store";
+import i18n from "../i18n/i18next";
 interface IncomeEntry {
   amount: number;
   description: string;
@@ -70,7 +71,7 @@ const initialState: IncomeState = {
   notification: [],
   signup: { name: "", email: "", password: "", google: false },
   googleSign: { id: "", username: "", google: false, photo: "" },
-  preferences: { currency: "USD", language: "English", theme: "Light", security: "Fingerprint" },
+  preferences: { currency: "USD", language: "English", theme: "Light", security: "PIN" },
   exceedNotification: false,
   expenseAlert: false,
   badgeCount: 0,
@@ -240,6 +241,17 @@ export const loadPreferences = () => async (dispatch: AppDispatch) => {
       dispatch(changeCurrency(prefs.currency));
       dispatch(changeLanguages(prefs.language));
       dispatch(changeSecurity(prefs.security));
+      // 🔥 Add this line to actually apply the language in i18n:
+      const langMap = {
+        English: "en",
+        Spanish: "es",
+        Italian: "it",
+        Hindi: "hi",
+        Arabic: "ar",
+        Chinese: "zh",
+      };
+      const langCode = langMap[prefs.language];
+      if (langCode) i18n.changeLanguage(langCode);
     }
   } catch (error) {
     console.error("Failed to load preferences:", error);

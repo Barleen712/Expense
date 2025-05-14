@@ -61,13 +61,13 @@ export default function Home({ navigation }: Props) {
   useBudgetListener();
   useNotificationListener();
   const language = useSelector((state) => state.Money.preferences.language);
+  const currency = useSelector((state) => state.Money.preferences.currency);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [photo, setPhoto] = useState("");
   const height = Dimensions.get("window").height * 0.2;
   const { t } = useTranslation();
   const Flat = ["Today", "Week", "Month", "Year"];
   const Rates = useSelector((state: RootState) => state.Rates);
-  const currency = Rates.selectedCurrencyCode;
   const [selectedMonth_Year, setSelectionMonth_Year] = useState(new Date());
   const [show, setShow] = useState(false);
   const today = new Date(selectedMonth_Year);
@@ -78,16 +78,20 @@ export default function Home({ navigation }: Props) {
     convertRate = Rates.Rate[currency];
   }
   const transaction = useSelector(selectTransactions);
-  const sortedTransactions = [...transaction].sort((a, b) => {
-    return new Date(b.Date) - new Date(a.Date);
-  });
+  const currentDate = new Date();
+
+  const filteredAndSortedTransactions = [...transaction]
+    .filter((item) => new Date(item.Date) <= currentDate)
+    .sort((a, b) => new Date(b.Date) - new Date(a.Date));
   const income = useSelector(selectIncomeTotal);
   const expense = useSelector(selectExpenseTotal);
   const { colors } = useContext(ThemeContext);
   const badgeCount = useSelector((state) => state.Money.badgeCount);
   const GraphExpenses = useMemo(() => {
-    const expense = transaction.filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer");
-
+    const expense = transaction.filter(
+      (item) =>
+        (item.moneyCategory === "Expense" || item.moneyCategory === "Transfer") && new Date(item.Date) <= new Date()
+    );
     const mapToAmountAndDate = (items) =>
       items
         .map((item) => ({
@@ -139,8 +143,7 @@ export default function Home({ navigation }: Props) {
       default:
         return [];
     }
-  }, [transaction, selectedIndex, selectedMonth_Year]);
-
+  }, [filteredAndSortedTransactions, selectedIndex, selectedMonth_Year]);
   const langindex = lang.find((item) => item.name === language);
   const loading = useSelector((state: RootState) => state.Money.loading);
   const onValueChange = (event: string, newDate?: Date) => {
@@ -210,7 +213,10 @@ export default function Home({ navigation }: Props) {
           )}
           <View style={{ padding: 8, alignItems: "center" }}>
             <Text style={styles.username}>{t(StringConstants.AccountBalance)}</Text>
-            <Text style={styles.heading}>${(94500 + income - expense).toFixed(4)}</Text>
+            <Text style={styles.heading}>
+              {currencies[currency]}
+              {((94500 + income - expense) * convertRate).toFixed(2)}
+            </Text>
           </View>
           <View style={styles.homeHeadView}>
             <TouchableOpacity
@@ -230,7 +236,7 @@ export default function Home({ navigation }: Props) {
                 <Text style={styles.homeTitle}>{t(StringConstants.Income)}</Text>
                 <Text
                   style={{
-                    fontSize: Platform.OS === "ios" ? 21 : 22,
+                    fontSize: Platform.OS === "ios" ? 21 : 18,
                     color: "white",
                     fontWeight: "bold",
                   }}
@@ -255,7 +261,7 @@ export default function Home({ navigation }: Props) {
               <Expense />
               <View style={{ padding: 5 }}>
                 <Text style={styles.homeTitle}>{t(StringConstants.Expense)}</Text>
-                <Text style={{ fontSize: Platform.OS === "ios" ? 21 : 22, color: "white", fontWeight: "bold" }}>
+                <Text style={{ fontSize: Platform.OS === "ios" ? 21 : 18, color: "white", fontWeight: "bold" }}>
                   {currencies[currency]}
                   {(expense * convertRate).toFixed(2)}
                 </Text>
@@ -297,7 +303,7 @@ export default function Home({ navigation }: Props) {
             </TouchableOpacity>
           </View>
           {/* <TransactionList data={sortedTransactions.slice(0,3)}/> */}
-          {sortedTransactions.length === 0 ? (
+          {filteredAndSortedTransactions.length === 0 ? (
             <View
               style={{
                 flex: 0.6,
@@ -313,7 +319,7 @@ export default function Home({ navigation }: Props) {
             </View>
           ) : (
             <View style={{ width: "90%", flex: 1 }}>
-              <TransactionList data={sortedTransactions.slice(0, 5)} />
+              <TransactionList data={filteredAndSortedTransactions.slice(0, 5)} />
             </View>
           )}
         </View>

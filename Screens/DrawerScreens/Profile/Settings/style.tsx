@@ -16,14 +16,15 @@ export const getStyles = (colors: any) =>
       margin: Platform.OS === "ios" ? 20 : 15,
     },
     settingtitle: {
-      flex: 0.8,
+      flex: 0.7,
       alignItems: "center",
       fontSize: Platform.OS === "ios" ? 16 : 18,
       color: colors.color,
     },
     titleoption: {
-      flex: 0.15,
+      flex: 0.25,
       justifyContent: "center",
+      alignItems: "flex-end",
     },
     arrows: {
       flex: 0.05,

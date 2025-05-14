@@ -24,12 +24,12 @@ import { ThemeContext } from "../../../../Context/ThemeContext";
 let Year = [];
 
 for (let i = 0; i < 31; i++) {
-  Year.push(2020+ i);
+  Year.push(2020 + i);
 }
 
 Year = Year.map((item) => ({
   label: item.toString(),
-  value: item
+  value: item,
 }));
 
 interface Props {
@@ -64,13 +64,14 @@ export default function Budget({ navigation }: Props) {
     }
   }
   const Rates = useSelector((state) => state.Rates);
-  const currency = Rates.selectedCurrencyCode;
+  const currency = useSelector((state) => state.Money.preferences.currency);
   const convertRate = Rates.Rate[currency];
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
-  const [year,selectedYear]=useState("2025")
+  const [year, selectedYear] = useState("2025");
   const { colors, setTheme, theme } = useContext(ThemeContext);
-  const budgetDataForMonth = Budgetcat[month] || [];
+  const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
+  const budgetDataForMonth = Budgetcat[monthKey] || [];
   const renderBudgetItems = useCallback(
     ({ item, index }) => {
       let remaining = item.budgetvalue - item.amountSpent;
@@ -181,21 +182,19 @@ export default function Budget({ navigation }: Props) {
       </View>
     );
   }
-  console.log(year)
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>
       <View style={styles.add}>
-          <DropdownComponent
-                  data={Year}
-                  value={year}
-                  name={year}
-                  styleButton={styles.budgetYear}
-                  onSelectItem={(item) => {
-                    selectedYear(item);
-
-                  }}
-                />
+        <DropdownComponent
+          data={Year}
+          value={year}
+          name={year}
+          styleButton={styles.budgetYear}
+          onSelectItem={(item) => {
+            selectedYear(item);
+          }}
+        />
         <View style={styles.budgetMonth}>
           <TouchableOpacity onPress={handleprev}>
             <Image source={require("../../../../assets/arrowLeftWhite.png")} />
@@ -227,7 +226,8 @@ export default function Budget({ navigation }: Props) {
             </View>
           )}
           <View style={styles.budgetButton}>
-            {month >= new Date().getMonth() && (
+            {(parseInt(year) > new Date().getFullYear() ||
+              (parseInt(year) === new Date().getFullYear() && parseInt(month) >= new Date().getMonth() + 1)) && (
               <CustomButton
                 title={t(StringConstants.CreateaBudget)}
                 bg="rgb(42, 124, 118)"
@@ -241,7 +241,7 @@ export default function Budget({ navigation }: Props) {
                     edit: false,
                     header: "Create Budget",
                     month: month,
-                    year: new Date().getFullYear(),
+                    year: year,
                   })
                 }
               />

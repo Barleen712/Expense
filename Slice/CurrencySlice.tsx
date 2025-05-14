@@ -20,16 +20,13 @@ const Currency_Convert = createSlice({
       state.Loading = true;
     },
     fetchRatesSuccess: (state, action) => {
-      state.Loading = false
-      state.Rate = action.payload.rates
+      state.Loading = false;
+      state.Rate = action.payload.rates;
     },
     fetchRatesFailure: (state, action) => {
       (state.Loading = false), (state.error = action.payload);
     },
-    setCurrencycode: (state, action) => {
-      state.selectedCurrencyCode = action.payload
-    },
   },
 });
-export const { fetchRates, fetchRatesFailure, fetchRatesSuccess, setCurrencycode } = Currency_Convert.actions;
+export const { fetchRates, fetchRatesFailure, fetchRatesSuccess } = Currency_Convert.actions;
 export default Currency_Convert.reducer;

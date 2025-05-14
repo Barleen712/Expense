@@ -24,7 +24,7 @@ interface TransactionListProps {
 
 export default function TransactionList({ data }: TransactionListProps) {
   const Rates = useSelector((state) => state.Rates);
-  const currency = Rates.selectedCurrencyCode;
+  const currency = useSelector((state) => state.Money.preferences.currency);
   const convertRate = Rates.Rate[currency];
   const navigation = useNavigation();
   function navigateFunc({ item }) {
@@ -87,13 +87,13 @@ export default function TransactionList({ data }: TransactionListProps) {
         }}
       >
         <View style={{ margin: 10 }}>{CategoryIcon && <CategoryIcon width={60} height={60} />}</View>
-        <View style={{ width: "52%", justifyContent: "space-between", height: "70%" }}>
+        <View style={{ width: "50%", justifyContent: "space-between", height: "70%" }}>
           <Text style={styles.balance}>{t(item.category)}</Text>
           <Text style={[styles.categoryText, { color: "rgba(145, 145, 159, 1)" }]} numberOfLines={1}>
             {item.description}
           </Text>
         </View>
-        <View style={{ alignItems: "flex-end", width: "20%" }}>
+        <View style={{ alignItems: "flex-end" }}>
           <Text
             style={[
               styles.categoryText,

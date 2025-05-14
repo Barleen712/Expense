@@ -75,7 +75,7 @@ export function TabScreens({ initial = "EnterPin" }: { initial?: keyof StackPara
   const navigation = useNavigation<StackNavigationProp<StackParamList>>();
   useEffect(() => {
     //handleBiometricAuth(navigation);
-    //dispatch(fetchRates());
+    dispatch(fetchRates());
     dispatch(loadPreferences());
   }, []);
   return (

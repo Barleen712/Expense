@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Modal, TouchableWithoutFeedback,ScrollView } from "react-native";
+import { View, Text, Image, TouchableOpacity, Modal, TouchableWithoutFeedback, ScrollView } from "react-native";
 import { getStyles } from "./styles";
 import Header from "../../../../Components/Header";
 import { CustomButton } from "../../../../Components/CustomButton";
@@ -56,7 +56,7 @@ function DetailTransaction({
   }
   const { t } = useTranslation();
   const Rates = useSelector((state) => state.Rates);
-  const currency = Rates.selectedCurrencyCode;
+  const currency = useSelector((state) => state.Money.preferences.currency);
   const convertRate = Rates.Rate[currency];
   function EditTransaction() {
     if (type === "Income") {
@@ -111,7 +111,6 @@ function DetailTransaction({
         <ScrollView>
           <Text style={[styles.exportText, { paddingLeft: 0 }]}>{title}</Text>
         </ScrollView>
-        
       </View>
       <View style={styles.attachView}>
         {uri && (
@@ -214,7 +213,7 @@ export function DetailTransaction_Transfer({ navigation, route }) {
       type={From}
       category={To}
       wallet="Transfer"
-      des={value.description}
+      title={value.description}
       id={value.id}
       uri={value.attachment.uri}
     />

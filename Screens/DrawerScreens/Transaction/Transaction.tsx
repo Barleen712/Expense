@@ -58,9 +58,10 @@ export default function Transaction({ navigation }: Props) {
   }
 
   const transactions = useSelector(selectTransactions);
-  const sortedTransactions = [...transactions].sort((a, b) => {
-    return new Date(b.Date) - new Date(a.Date);
-  });
+  const currentDate = new Date();
+  const sortedTransactions = [...transactions]
+    .filter((item) => new Date(item.Date) <= currentDate)
+    .sort((a, b) => new Date(b.Date) - new Date(a.Date));
   const { t } = useTranslation();
   const [FilterTrans, setFilterTrans] = useState(transactions);
   useEffect(() => {

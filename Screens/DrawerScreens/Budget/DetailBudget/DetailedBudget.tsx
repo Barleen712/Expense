@@ -44,7 +44,7 @@ export default function DetailedBudget({ navigation, route }: Props) {
   }
   const { t } = useTranslation();
   const Rates = useSelector((state) => state.Rates);
-  const currency = Rates.selectedCurrencyCode;
+  const currency = useSelector((state) => state.Money.preferences.currency);
   const convertRate = Rates.Rate[currency];
   const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);

@@ -96,9 +96,8 @@ export default function Expense({ navigation, route }: Props) {
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
-  const today = new Date();
-  const currentMonth = today.getMonth();
-  const monthlyBudget = budget[currentMonth] || [];
+  const monthKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+  const monthlyBudget = budget[monthKey] || [];
   const openDocument = async () => {
     if (!document) return;
 
@@ -568,7 +567,7 @@ export default function Expense({ navigation, route }: Props) {
                       <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.color }}>{t("Frequency")}</Text>
                       <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
                         {frequency}
-                        {frequency === "Yearly" && ` - ${Month[month]} ${startDate} ` + new Date().getFullYear()}
+                        {frequency === "Yearly" && ` - ${month} ${startDate} ` + new Date().getFullYear()}
                         {frequency === "Monthly" &&
                           " - " + Month[new Date().getMonth()] + ` ${startDate} ` + new Date().getFullYear()}
                         {frequency === "Weekly" && ` - ${week}`}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, Text, FlatList } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import styles from "../../Stylesheet";
@@ -9,6 +9,7 @@ import StackParamList from "../../../Navigation/StackList";
 import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { getUseNamerDocument, getUserDocument } from "../../../Saga/BudgetSaga";
+import { handleBiometricAuth } from "../../Constants";
 type pinProp = StackNavigationProp<StackParamList, "Setpin">;
 
 interface Props {
@@ -27,12 +28,15 @@ export default function EnterPin({ navigation }: Props) {
       if (pin.length !== 4) {
         alert("enter pin");
       } else {
-        setpin("")   
+        setpin("");
         alert("Wrong Pin!");
-           }
+      }
     }
   }
   const { t } = useTranslation();
+  useEffect(() => {
+    handleBiometricAuth(navigation);
+  }, []);
   return (
     <View style={{ backgroundColor: "#2A7C76", flex: 1, alignItems: "center", justifyContent: "center" }}>
       <View style={[styles.setup, { justifyContent: "center" }]}>

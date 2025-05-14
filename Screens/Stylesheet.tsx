@@ -568,7 +568,7 @@ const styles = StyleSheet.create({
   },
   customThumb: {
     position: "absolute",
-    top: -1,
+    top: -15,
     left: -25,
     width: 50,
     height: 30,

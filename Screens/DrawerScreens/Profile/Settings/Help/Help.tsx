@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet, Platform, StatusBar } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Collapsible from "react-native-collapsible";
@@ -7,6 +7,18 @@ import { ThemeContext } from "../../../../../Context/ThemeContext";
 
 const HelpScreen = ({ navigation }) => {
   const [activeFaq, setActiveFaq] = useState(null);
+  const isToggling = useRef(false);
+
+  const toggleFaq = (index) => {
+    if (isToggling.current) return;
+    isToggling.current = true;
+
+    setActiveFaq((prev) => (prev === index ? null : index));
+
+    setTimeout(() => {
+      isToggling.current = false;
+    }, 250);
+  };
 
   const faqs = [
     {
@@ -41,20 +53,12 @@ const HelpScreen = ({ navigation }) => {
         'Yes, You can!, navigate to Profile tab click on the edit icon and a pop appears, press the "Add Your Custom Profile Picture"butoon, attch image and save the changes',
     },
     {
-      question: "Can I add my own profile picture?",
-      answer:
-        'Yes, You can!, navigate to Profile tab click on the edit icon and a pop appears, press the "Add Your Custom Profile Picture"butoon, attch image and save the changes',
-    },
-    {
       question: "How can I see transactions of previous month?",
       answer:
         'Navigate to "Transaction" tab and select the desires month from the month dropdown. This will diplay all the transactions of that particular month.',
     },
   ];
 
-  const toggleFaq = (index) => {
-    setActiveFaq(activeFaq === index ? null : index);
-  };
   const { colors } = useContext(ThemeContext);
   return (
     <View style={styles.container}>

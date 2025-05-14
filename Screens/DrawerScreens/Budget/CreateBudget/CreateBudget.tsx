@@ -108,6 +108,7 @@ export default function CreateBudget({ navigation, route }: Props) {
       notification: Expense,
       userId: user.uid,
       notified: false,
+      year: parameters.year,
     });
     navigation.goBack();
   }
