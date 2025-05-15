@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useContext } from "react";
-import { View, Text, Image, Touchable, TouchableOpacity, Dimensions } from "react-native";
+import React, { useState, useMemo, useContext, useCallback } from "react";
+import { View, Text, Image, Touchable, TouchableOpacity, Dimensions, BackHandler } from "react-native";
 
 import Header from "../../../../Components/Header";
 import { getStyles } from "./styles";
@@ -26,6 +26,7 @@ import TransactionList from "../../Home/TransactionList/TransactionsList";
 import CategoryList from "./CategoryList";
 import { CATEGORY_COLORS } from "../../../Constants";
 import { ThemeContext } from "../../../../Context/ThemeContext";
+import { useFocusEffect } from "@react-navigation/native";
 const height = Dimensions.get("window").height * 0.22;
 
 type financialProp = StackNavigationProp<StackParamList, "FinancialReport">;
@@ -117,15 +118,22 @@ export default function FinancialReport({ navigation }: Props) {
   const convertRate = Rates.Rate[currency];
   const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        navigation.popToTop();
+        return true;
+      };
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+      return () => BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [navigation])
+  );
   return (
     <View style={styles.container}>
       <Header
         title={t(StringConstants.FinancialReport)}
         press={() => {
-          navigation.goBack();
-          navigation.goBack();
-          navigation.goBack();
-          navigation.goBack();
+          navigation.popToTop();
         }}
         bgcolor={colors.backgroundColor}
         color={colors.color}

@@ -202,6 +202,12 @@ export default function Income({ navigation, route }: Props) {
     //     },
     //   })
     // );
+    //     const key = await generateKey(user?.uid, user?.providerId, 15000, 128);
+    // const data = await encryptData(JSON.stringify(addTrans), key);
+    // AddTransaction({
+    //   data: data,
+    //   user: user.uid,
+    // });
     AddTransaction({
       amount: numericIncome,
       description: Description,
@@ -312,9 +318,9 @@ export default function Income({ navigation, route }: Props) {
             <View style={[styles.add, { backgroundColor: "rgba(0, 168, 107, 1)" }]}>
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
-                <TouchableOpacity activeOpacity={1}>
-                  <View style={{ flexDirection: "row" }}>
-                    <Text style={styles.amount}>$</Text>
+                <View style={{ flexDirection: "row" }}>
+                  <Text style={styles.amount}>$</Text>
+                  <TouchableOpacity activeOpacity={1} style={{ width: "90%" }}>
                     <TextInput
                       value={Income}
                       keyboardType="numeric"
@@ -322,8 +328,8 @@ export default function Income({ navigation, route }: Props) {
                       style={styles.amount}
                       onFocus={handleFocus}
                     ></TextInput>
-                  </View>
-                </TouchableOpacity>
+                  </TouchableOpacity>
+                </View>
                 {incomeError !== "" && <Text style={styles.error}>*{incomeError}</Text>}
               </View>
               <View style={[styles.selection]}>

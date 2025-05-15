@@ -183,6 +183,7 @@ export const ExpenseTrackerSlice = createSlice({
       state.googleSign.google = false;
       (state.googleSign.id = ""), (state.googleSign.photo = "");
       state.googleSign.username = "";
+      state.badgeCount = 0;
     },
   },
 });

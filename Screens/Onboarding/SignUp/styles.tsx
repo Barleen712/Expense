@@ -22,7 +22,7 @@ export const getStyles = (colors: any) =>
       alignItems: "center",
       //  marginTop: Platform.OS === "ios" ? 20 : 30,
       width: "100%",
-      marginTop: 70,
+      marginTop: 10,
     },
     or: {
       color: "rgb(145, 145, 159)",

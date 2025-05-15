@@ -241,7 +241,7 @@ export default function Income({ navigation, route }: Props) {
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
                 <View style={{ flexDirection: "row" }}>
                   <Text style={styles.amount}>$</Text>
-                  <TouchableOpacity activeOpacity={1}>
+                  <TouchableOpacity activeOpacity={1} style={{ width: "90%" }}>
                     <TextInput
                       value={Transfer}
                       keyboardType="numeric"

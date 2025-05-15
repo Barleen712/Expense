@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, TouchableOpacity, Text, FlatList } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { View, Text, TouchableOpacity } from "react-native";
 import styles from "../../Stylesheet";
 import Keypad from "../../../Components/Keypad";
 import Pin from "../../../Components/Pin";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
-import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
-import { getUseNamerDocument, getUserDocument } from "../../../Saga/BudgetSaga";
+import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
 import { handleBiometricAuth } from "../../Constants";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 type pinProp = StackNavigationProp<StackParamList, "Setpin">;
 
 interface Props {
@@ -20,13 +20,17 @@ export default function EnterPin({ navigation }: Props) {
     setpin(pin.slice(0, pin.length - 1));
   };
   const [pin, setpin] = useState("");
+  const [opendots, setopendots] = useState(false);
+  const [reset, setreset] = useState(false);
   async function handlenext() {
     const Pin = await getUseNamerDocument();
-    if (Pin.pin === pin) {
+    if (Pin.pin === pin && reset === false) {
       navigation.replace("MainScreen");
+    } else if (Pin.pin === pin && reset === true) {
+      navigation.navigate("Setpin");
     } else {
       if (pin.length !== 4) {
-        alert("enter pin");
+        alert("Enter pin");
       } else {
         setpin("");
         alert("Wrong Pin!");
@@ -40,7 +44,60 @@ export default function EnterPin({ navigation }: Props) {
   return (
     <View style={{ backgroundColor: "#2A7C76", flex: 1, alignItems: "center", justifyContent: "center" }}>
       <View style={[styles.setup, { justifyContent: "center" }]}>
-        <Text style={styles.setuptext}>Enter your Pin</Text>
+        <Text style={styles.setuptext}>{reset ? "Confirm your Pin" : "Enter your Pin"}</Text>
+        <TouchableOpacity
+          style={{ position: "absolute", top: "35%", right: "3%", height: "100%" }}
+          onPress={() => setopendots(!opendots)}
+        >
+          <MaterialCommunityIcons name="dots-vertical" size={28} color="white" />
+        </TouchableOpacity>
+        {opendots && (
+          <View
+            style={{
+              backgroundColor: "white",
+              width: "30%",
+              position: "absolute",
+              right: "6%",
+              top: "75%",
+              height: "80%",
+              elevation: 100,
+              shadowColor: "red",
+              shadowOpacity: 1,
+              shadowOffset: { width: 0, height: 2 },
+              shadowRadius: 4,
+              borderColor: "gray",
+              borderWidth: 1,
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                height: "50%",
+                marginLeft: 5,
+              }}
+              onPress={() => navigation.navigate("ForgotPin")}
+            >
+              <MaterialCommunityIcons name="lock-question" size={24} color="black" />
+              <Text style={{ fontWeight: "bold" }}>Forgot Pin?</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                height: "50%",
+                marginLeft: 5,
+              }}
+              onPress={() => {
+                setreset(true);
+                setopendots(false);
+              }}
+            >
+              <MaterialIcons name="lock-reset" size={24} color="black" />
+              <Text style={{ fontWeight: "bold" }}> Reset Pin?</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
       <Pin pin={pin} />
       <View style={styles.keypad}>

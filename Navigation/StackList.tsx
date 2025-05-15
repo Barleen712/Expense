@@ -59,5 +59,6 @@ type StackParamList = {
   AboutUs: undefined;
   Help: undefined;
   Tutorial: undefined;
+  ForgotPin: undefined;
 };
 export default StackParamList;

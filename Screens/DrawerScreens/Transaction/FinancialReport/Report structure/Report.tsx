@@ -49,7 +49,7 @@ export default function FinancialReportExpense({ navigation }: Props) {
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
-        navigation.navigate("Help");
+        navigation.goBack();
         return true;
       };
       BackHandler.addEventListener("hardwareBackPress", onBackPress);
@@ -84,7 +84,7 @@ export function FinancialReportIncome({ navigation }: Props) {
     const screenWidth = Dimensions.get("window").width;
 
     if (pageX < screenWidth * 0.5) {
-      navigation.replace("FinancialReportExpense");
+      navigation.goBack();
     }
     if (pageX > screenWidth * 0.5) {
       navigation.navigate("FinancialReportBudget");
@@ -94,7 +94,7 @@ export function FinancialReportIncome({ navigation }: Props) {
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
-        navigation.replace("Transfer");
+        navigation.popToTop();
         return true;
       };
       BackHandler.addEventListener("hardwareBackPress", onBackPress);
@@ -134,7 +134,7 @@ export function FinancialReportBudget({ navigation }: Props) {
     const screenWidth = Dimensions.get("window").width;
 
     if (pageX < screenWidth * 0.5) {
-      navigation.replace("FinancialReportIncome");
+      navigation.goBack();
     }
     if (pageX > screenWidth * 0.5) {
       navigation.navigate("FinancialReportQuote");
@@ -144,7 +144,7 @@ export function FinancialReportBudget({ navigation }: Props) {
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
-        navigation.replace("Transfer");
+        navigation.popToTop();
         return true;
       };
       BackHandler.addEventListener("hardwareBackPress", onBackPress);
@@ -154,7 +154,7 @@ export function FinancialReportBudget({ navigation }: Props) {
 
   return (
     <View onStartShouldSetResponder={() => true} onResponderRelease={handleSwipe} style={{ flex: 1 }}>
-      <View style={[styles.card, { backgroundColor: "rgba(0, 119, 255, 1)" }]}>
+      <View style={[styles.card, { backgroundColor: "rgba(0, 119, 255, 1)", marginTop: 10 }]}>
         <View style={styles.cardMonth}>
           <ProgressBar
             progress={0.75}
@@ -223,14 +223,14 @@ export function FinancialReportQuote({ navigation }: Props) {
     const screenWidth = Dimensions.get("window").width;
 
     if (pageX < screenWidth * 0.8) {
-      navigation.replace("FinancialReportBudget");
+      navigation.goBack();
     }
   };
 
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
-        navigation.replace("Transfer");
+        navigation.popToTop();
         return true;
       };
       BackHandler.addEventListener("hardwareBackPress", onBackPress);
@@ -248,6 +248,7 @@ export function FinancialReportQuote({ navigation }: Props) {
             justifyContent: "space-between",
             alignItems: "center",
             padding: 30,
+            marginTop: 10,
           },
         ]}
       >

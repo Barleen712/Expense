@@ -48,6 +48,7 @@ import Privacy from "../Screens/Onboarding/Terms&Services/Privacy/Privacy";
 import AboutUs from "../Screens/DrawerScreens/Profile/Settings/About/About";
 import HelpScreen from "../Screens/DrawerScreens/Profile/Settings/Help/Help";
 import Tutorial from "../Screens/DrawerScreens/Profile/Settings/Help/Tutorial";
+import ForgotPin from "../Screens/DrawerScreens/Home/ForgotPin/ForgotPin";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
@@ -112,6 +113,7 @@ export function TabScreens({ initial = "EnterPin" }: { initial?: keyof StackPara
       <Stack.Screen name="AboutUs" component={AboutUs} />
       <Stack.Screen name="Help" component={HelpScreen} />
       <Stack.Screen name="Tutorial" component={Tutorial} />
+      <Stack.Screen name="ForgotPin" component={ForgotPin} />
     </Stack2.Navigator>
   );
 }

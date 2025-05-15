@@ -18,8 +18,9 @@ import { auth } from "../../FirebaseConfig";
 import { raiseToast } from "../../Constants";
 import { AddUser } from "../../FirestoreHandler";
 import { GoogleAuthProvider } from "@firebase/auth";
-import Setpin from "../Setpin/SetupPin01";
-
+import * as DocumentPicker from "expo-document-picker";
+import { uploadImage } from "../../Constants";
+import { ScrollView } from "react-native-gesture-handler";
 type SignupProp = StackNavigationProp<StackParamList, "SignUp">;
 interface Props {
   navigation: SignupProp;
@@ -39,6 +40,7 @@ export default function SignUp({ navigation }: Props) {
   const [email, setemail] = useState({ email: "", emailError: "" });
   const [password, setpass] = useState({ password: "", passwordError: "" });
   const [checked, setChecked] = useState({ state: false, error: "" });
+  const [photo, setPhoto] = useState(require("../../../assets/user.png"));
   function handleChange() {
     setname({ ...name, nameError: "" });
     setemail({ ...email, emailError: "" });
@@ -91,12 +93,13 @@ export default function SignUp({ navigation }: Props) {
       if (user) {
         await sendEmailVerification(user.user);
         await auth.signOut();
+        const url = await uploadImage(photo.uri);
         AddUser({
           User: name.name,
           userid: user.user.uid,
           pinSet: false,
           Photo: {
-            uri: "",
+            uri: url,
           },
         });
         raiseToast("success", "Email Verification", "verify");
@@ -114,7 +117,25 @@ export default function SignUp({ navigation }: Props) {
     setChecked({ state: false, error: "" });
   }
   const { t } = useTranslation();
+  const pickImageFromGallery = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "image/*",
+        multiple: false,
+        copyToCacheDirectory: true,
+      });
 
+      if (!result.canceled) {
+        console.log("Image selected:", result.assets[0].uri);
+        //setPhoto({ uri: result.assets[0].uri });
+        setPhoto({ uri: result.assets[0].uri });
+      } else {
+        console.log("User cancelled image selection.");
+      }
+    } catch (err) {
+      console.error("Error while picking image:", err);
+    }
+  };
   async function GoogleSignIn() {
     const { id, name, photo } = await handleGoogleSignIn();
     dispatch(
@@ -144,136 +165,148 @@ export default function SignUp({ navigation }: Props) {
         bgcolor={colors.backgroundColor}
         color={colors.color}
       ></Header>
-      <View style={style.input}>
-        <Input
-          ref={nameRef}
-          title={t(StringConstants.Name)}
-          color="rgb(56, 88, 85)"
-          css={style.textinput}
-          name={name.name}
-          // handleFocus={handleChange}
-          onchange={(data) => {
-            const onlyAlphabets = data.replace(/[^a-zA-Z\s]/g, "");
-            setname({ nameError: "", name: onlyAlphabets });
-          }}
-          isPass={false}
-        />
+      <ScrollView style={{ width: "100%" }}>
+        <View style={{ alignItems: "center" }}>
+          <View style={{ height: "20%", marginTop: 5, width: "100%", alignItems: "center" }}>
+            <View style={{ flex: 0.8, width: "90%", alignItems: "center" }}>
+              <Image style={{ width: "28%", height: "100%", borderRadius: 100 }} source={photo} />
+            </View>
+            <TouchableOpacity style={{ flex: 0.2, justifyContent: "center" }} onPress={() => pickImageFromGallery()}>
+              <Text style={{ color: colors.color }}> Add Profile Picture</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={style.input}>
+            <Input
+              ref={nameRef}
+              title={t(StringConstants.Name)}
+              color="rgb(56, 88, 85)"
+              css={style.textinput}
+              name={name.name}
+              // handleFocus={handleChange}
+              onchange={(data) => {
+                const onlyAlphabets = data.replace(/[^a-zA-Z\s]/g, "");
+                setname({ nameError: "", name: onlyAlphabets });
+              }}
+              isPass={false}
+            />
 
-        {name.nameError !== "" && (
-          <Text
-            style={{
-              color: "rgb(255, 0, 17)",
-              marginTop: 4,
-              marginLeft: 10,
-              fontFamily: "Inter",
-              width: "90%",
-            }}
-          >
-            {name.nameError}*
-          </Text>
-        )}
-        <Input
-          ref={emailRef}
-          title={t(StringConstants.Email)}
-          color="rgb(56, 88, 85)"
-          css={style.textinput}
-          name={email.email}
-          handleFocus={() => {
-            if (!name.name.trim()) {
-              setname({ ...name, nameError: "Name is required" });
-              nameRef.current?.focus();
-            }
-          }}
-          onchange={(data) => {
-            setemail({ emailError: "", email: data });
-          }}
-          isPass={false}
-        />
+            {name.nameError !== "" && (
+              <Text
+                style={{
+                  color: "rgb(255, 0, 17)",
+                  marginTop: 4,
+                  marginLeft: 10,
+                  fontFamily: "Inter",
+                  width: "90%",
+                }}
+              >
+                {name.nameError}*
+              </Text>
+            )}
+            <Input
+              ref={emailRef}
+              title={t(StringConstants.Email)}
+              color="rgb(56, 88, 85)"
+              css={style.textinput}
+              name={email.email}
+              handleFocus={() => {
+                if (!name.name.trim()) {
+                  setname({ ...name, nameError: "Name is required" });
+                  nameRef.current?.focus();
+                }
+              }}
+              onchange={(data) => {
+                setemail({ emailError: "", email: data });
+              }}
+              isPass={false}
+            />
 
-        {email.emailError !== "" && (
-          <Text
-            style={{
-              color: "rgb(255, 0, 17)",
-              marginTop: 4,
-              marginLeft: 10,
-              fontFamily: "Inter",
-              width: "90%",
-            }}
-          >
-            {email.emailError}*
-          </Text>
-        )}
-        <Input
-          ref={passwordRef}
-          title={t(StringConstants.Password)}
-          color="rgb(56, 88, 85)"
-          css={style.textinput}
-          isPass={true}
-          name={password.password}
-          handleFocus={() => {
-            if (!email.email.trim()) {
-              setemail({ ...email, emailError: "Email is required" });
-              emailRef.current?.focus();
-            }
-          }}
-          onchange={(data) => {
-            setpass({ password: data, passwordError: "" });
-          }}
-        />
+            {email.emailError !== "" && (
+              <Text
+                style={{
+                  color: "rgb(255, 0, 17)",
+                  marginTop: 4,
+                  marginLeft: 10,
+                  fontFamily: "Inter",
+                  width: "90%",
+                }}
+              >
+                {email.emailError}*
+              </Text>
+            )}
+            <Input
+              ref={passwordRef}
+              title={t(StringConstants.Password)}
+              color="rgb(56, 88, 85)"
+              css={style.textinput}
+              isPass={true}
+              name={password.password}
+              handleFocus={() => {
+                if (!email.email.trim()) {
+                  setemail({ ...email, emailError: "Email is required" });
+                  emailRef.current?.focus();
+                }
+              }}
+              onchange={(data) => {
+                setpass({ password: data, passwordError: "" });
+              }}
+            />
 
-        {password.passwordError !== "" && (
-          <Text
-            style={{
-              color: "rgb(255, 0, 17)",
-              marginTop: 4,
-              marginLeft: 10,
-              fontFamily: "Inter",
-              width: "90%",
-            }}
-          >
-            {password.passwordError}*
-          </Text>
-        )}
-      </View>
-      <View style={{ flexDirection: "row", margin: 20, width: "90%", justifyContent: "space-evenly" }}>
-        <View style={{ borderWidth: Platform.OS === "ios" ? 1 : 0, flex: 0.1 }}>
-          <Checkbox
-            status={checked.state ? "checked" : "unchecked"}
-            onPress={() => setChecked({ state: !checked.state, error: checked.state ? checked.error : "" })}
-            color="rgb(57, 112, 109)"
-          />
+            {password.passwordError !== "" && (
+              <Text
+                style={{
+                  color: "rgb(255, 0, 17)",
+                  marginTop: 4,
+                  marginLeft: 10,
+                  fontFamily: "Inter",
+                  width: "90%",
+                }}
+              >
+                {password.passwordError}*
+              </Text>
+            )}
+          </View>
+          <View style={{ flexDirection: "row", margin: 20, width: "90%", justifyContent: "space-evenly" }}>
+            <View style={{ borderWidth: Platform.OS === "ios" ? 1 : 0, flex: 0.1 }}>
+              <Checkbox
+                status={checked.state ? "checked" : "unchecked"}
+                onPress={() => setChecked({ state: !checked.state, error: checked.state ? checked.error : "" })}
+                color="rgb(57, 112, 109)"
+              />
+            </View>
+            <Text style={{ flex: 0.9, color: colors.color }}>
+              {t(StringConstants.Bysigningupyouagreetothe)}{" "}
+              <Text onPress={() => navigation.navigate("Terms&Services")} style={{ color: "rgb(57, 112, 109)" }}>
+                {t(StringConstants.TermsofServiceandPrivacyPolicy)}
+              </Text>
+            </Text>
+          </View>
+          {checked.error !== "" && (
+            <Text
+              style={{
+                color: "rgb(255, 0, 17)",
+                marginTop: 4,
+                marginLeft: 10,
+                fontFamily: "Inter",
+                width: "90%",
+              }}
+            >
+              {checked.error}*
+            </Text>
+          )}
+          <GradientButton title="Sign Up" handles={handleSignUp} />
+          <Text style={style.or}>{t(StringConstants.orwith)}</Text>
+          <TouchableOpacity style={style.GoogleView} onPress={GoogleSignIn}>
+            <Image style={style.Google} source={require("../../../assets/Google.png")} />
+            <Text style={style.textGoogle}>{t(StringConstants.SignUpwithGoogle)}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.replace("Login")}>
+            <Text style={style.account}>
+              {t(StringConstants.Alreadyhaveanaccount)} <Text style={style.span}>{t(StringConstants.Login)}</Text>
+            </Text>
+          </TouchableOpacity>
         </View>
-        <Text style={{ flex: 0.9, color: colors.color }}>
-          {t(StringConstants.Bysigningupyouagreetothe)}{" "}
-          <Text onPress={() => navigation.navigate("Terms&Services")} style={{ color: "rgb(57, 112, 109)" }}>
-            {t(StringConstants.TermsofServiceandPrivacyPolicy)}
-          </Text>
-        </Text>
-      </View>
-      {checked.error !== "" && (
-        <Text
-          style={{
-            color: "rgb(255, 0, 17)",
-            marginTop: 4,
-            marginLeft: 10,
-            fontFamily: "Inter",
-            width: "90%",
-          }}
-        >
-          {checked.error}*
-        </Text>
-      )}
-      <GradientButton title="Sign Up" handles={handleSignUp} />
-      <Text style={style.or}>{t(StringConstants.orwith)}</Text>
-      <TouchableOpacity style={style.GoogleView} onPress={GoogleSignIn}>
-        <Image style={style.Google} source={require("../../../assets/Google.png")} />
-        <Text style={style.textGoogle}>{t(StringConstants.SignUpwithGoogle)}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.replace("Login")}>
-        <Text style={style.account}>
-          {t(StringConstants.Alreadyhaveanaccount)} <Text style={style.span}>{t(StringConstants.Login)}</Text>
-        </Text>
-      </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 }

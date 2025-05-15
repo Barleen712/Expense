@@ -25,13 +25,14 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { clearData } from "../../../Slice/IncomeSlice";
 import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+
 import { updateUserDoc } from "../../FirestoreHandler";
 import * as DocumentPicker from "expo-document-picker";
 import { uploadImage } from "../../Constants";
 import { getStyles } from "./styles";
 import { ThemeContext } from "../../../Context/ThemeContext";
 import Feather from "@expo/vector-icons/Feather";
+import ProfileModal from "../../../Components/ProfileModal";
 type Profileprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
@@ -57,6 +58,7 @@ export default function Profile({ navigation }: Props) {
     []
   );
   const [selectedindex, setselectedindex] = useState();
+  console.log("fwgiug");
   async function getData() {
     const user = await getUseNamerDocument();
     setuser(user?.Name);
@@ -71,9 +73,9 @@ export default function Profile({ navigation }: Props) {
       setPhoto(user?.Photo);
       setmodalPhoto(user?.Photo);
     }
-    if (user?.Photo.uri === "") {
-      setPhoto(profilepics[1]);
-      setmodalPhoto(profilepics[1]);
+    if (user?.Photo.uri === null) {
+      setPhoto(require("../../../assets/user.png"));
+      setmodalPhoto(require("../../../assets/user.png"));
     }
   }
   useEffect(() => {
@@ -203,165 +205,21 @@ export default function Profile({ navigation }: Props) {
             </View>
           </TouchableWithoutFeedback>
         </Modal>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={editProfile}
-          onRequestClose={() => seteditProfile(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View
-              style={{
-                width: "90%",
-                height: "80%",
-                backgroundColor: colors.backgroundColor,
-                marginBottom: 70,
-                borderRadius: 20,
-                padding: 20,
-              }}
-            >
-              <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                  <ScrollView
-                    ref={scrollRef}
-                    scrollEnabled={Platform.OS === "ios" ? false : true}
-                    contentContainerStyle={{ flexGrow: 1 }}
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                    style={{ height: "100%", width: "100%" }}
-                  >
-                    <TouchableOpacity style={{ position: "absolute", right: "3%" }} onPress={Discard}>
-                      <MaterialIcons name="cancel" size={26} color={colors.editColor} />
-                    </TouchableOpacity>
-                    <View
-                      style={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                        // padding: 20,
-                        flex: 0.3,
-                        //backgroundColor: "blue",
-                      }}
-                    >
-                      <Image
-                        style={{
-                          width: 150,
-                          height: 150,
-                          borderRadius: 80,
-                          borderWidth: 3,
-                        }}
-                        source={modalPhoto}
-                      />
-                    </View>
-                    <View style={{ margin: 10, flex: 0.4 }}>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          flexWrap: "wrap",
-                          justifyContent: "space-evenly",
-                          flex: 1,
-                        }}
-                      >
-                        {profilepics.map((item, index) => (
-                          <TouchableOpacity
-                            key={index}
-                            style={{
-                              marginBottom: 5,
-                              width: "31%",
-                              height: "46%",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              borderRadius: 45,
-                              backgroundColor: selectedindex === index ? colors.selected : colors.backgroundColor,
-                            }}
-                            onPress={() => {
-                              setmodalPhoto(profilepics[index]);
-                              setselectedindex(index);
-                            }}
-                          >
-                            <Image
-                              style={{
-                                width: 80,
-                                height: 80,
-                                borderRadius: 50,
-                                borderWidth: 2,
-                                resizeMode: "contain",
-                              }}
-                              source={item}
-                            />
-                          </TouchableOpacity>
-                        ))}
-                      </View>
-                    </View>
-                    <TouchableOpacity
-                      style={{
-                        marginTop: 5,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flex: 0.1,
-                        backgroundColor: colors.seeall,
-                        padding: 5,
-                        borderRadius: 20,
-                      }}
-                      onPress={() => pickImageFromGallery()}
-                    >
-                      <Text style={{ color: colors.editColor, fontWeight: "bold", fontSize: 18, textAlign: "center" }}>
-                        {t("Add Your Custom Profile Picture")}
-                      </Text>
-                    </TouchableOpacity>
-
-                    <View style={{ paddingLeft: 10, justifyContent: "space-evenly", flex: 0.1, marginTop: 10 }}>
-                      <Text style={{ fontFamily: "Inter", fontSize: 16, color: colors.editColor }}>
-                        {t("Username")}
-                      </Text>
-                      <TextInput
-                        placeholder={username}
-                        value={modalUser}
-                        maxLength={25}
-                        onFocus={() => scrollRef.current?.scrollToEnd({ animated: true })}
-                        onChangeText={setModalUser}
-                        style={{
-                          fontFamily: "Inter",
-                          fontWeight: "600",
-                          fontSize: Platform.OS === "ios" ? 24 : 24,
-                          color: colors.editColor,
-                          borderBottomColor: colors.editColor,
-                          borderBottomWidth: 2,
-                        }}
-                        placeholderTextColor="rgba(4, 73, 69, 0.38)"
-                      />
-                    </View>
-                    <TouchableOpacity
-                      disabled={modalPhoto === photo && modalUser === username}
-                      onPress={saveChanges}
-                      style={{
-                        marginTop: 20,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flex: 0.1,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: modalPhoto === photo && modalUser === username ? "gray" : colors.editColor,
-                          fontWeight: "bold",
-                          fontSize: 16,
-                          textAlign: "center",
-                          padding: 5,
-                          borderRadius: 18,
-                          width: "50%",
-                          backgroundColor:
-                            modalPhoto === photo && modalUser === username ? "rgba(158, 158, 163, 0.9)" : colors.seeall,
-                        }}
-                      >
-                        {t("Save Changes")}
-                      </Text>
-                    </TouchableOpacity>
-                  </ScrollView>
-                </TouchableWithoutFeedback>
-              </KeyboardAvoidingView>
-            </View>
-          </View>
-        </Modal>
+        <ProfileModal
+          editProfile={editProfile}
+          seteditProfile={seteditProfile}
+          photo={photo}
+          setPhoto={setPhoto}
+          modalPhoto={modalPhoto}
+          setmodalPhoto={setmodalPhoto}
+          selectedindex={selectedindex}
+          setselectedindex={setselectedindex}
+          profilepics={profilepics}
+          username={username}
+          modalUser={modalUser}
+          setModalUser={setModalUser}
+          saveChanges={saveChanges}
+        />
       </ImageBackground>
     </SafeAreaView>
   );

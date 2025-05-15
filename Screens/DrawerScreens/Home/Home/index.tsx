@@ -48,8 +48,8 @@ export default function Home({ navigation }: Props) {
     } else {
       setPhoto(user?.Photo);
     }
-    if (user?.Photo.uri === "") {
-      setPhoto(profilepics[1]);
+    if (user?.Photo.uri === null) {
+      setPhoto(require("../../../../assets/user.png"));
     }
   }
   useEffect(() => {

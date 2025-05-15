@@ -62,6 +62,8 @@ export const getStyles = (colors: any) =>
       paddingLeft: 20,
     },
     icons: {
+      alignItems: "center",
+      justifyContent: "center",
       padding: 5,
       marginRight: 5,
       flex: 0.12,

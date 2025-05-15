@@ -57,7 +57,7 @@ export const CATEGORY_COLORS: Record<string, string> = {
   Bills: "purple",
   Miscellaneous: "#2A7C6C",
   Salary: "rgba(0, 168, 107, 1)",
-  "Passive Income": "rgba(13, 14, 15, 1)",
+  "Passive Income": "rgb(231, 199, 14)",
 };
 export const uploadImage = async (imageUri: string) => {
   try {

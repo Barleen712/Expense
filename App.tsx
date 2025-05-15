@@ -12,11 +12,9 @@ import { TabScreens } from "./Navigation/StackNavigation";
 import { ActivityIndicator } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import { getUseNamerDocument, getUserDocument } from "./Saga/BudgetSaga";
-import { raiseToast } from "./Screens/Constants";
 import StackParamList from "./Navigation/StackList";
-import Setpin02 from "./Screens/Onboarding/SetupPin02";
-import Setpin from "./Screens/Onboarding/Setpin/SetupPin01";
-import Tutorial from "./Screens/DrawerScreens/Profile/Settings/Help/Tutorial";
+import NetInfo from "@react-native-community/netinfo";
+
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -42,7 +40,6 @@ const checkApplicationPermission = async () => {
 
 export default function App() {
   const [user, setUser] = useState("");
-  const [loading, setLoading] = useState(true);
   const [initialRoute, setinitialRoute] = useState<keyof StackParamList | undefined>(undefined);
   useEffect(() => {
     checkApplicationPermission();
@@ -65,18 +62,13 @@ export default function App() {
       } else {
         setUser(null);
       }
-      setLoading(false);
+      NetInfo.fetch().then((state) => {
+        console.log("Connection type", state.type);
+        console.log("Is connected?", state.isConnected);
+      });
     });
     return () => unsubscribe();
   }, []);
-  {
-    if (loading)
-      return (
-        <View style={{ height: "100%", alignItems: "center", justifyContent: "center" }}>
-          <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
-        </View>
-      );
-  }
   return (
     <Provider store={Store}>
       <NavigationContainer>

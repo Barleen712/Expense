@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     flex: 0.45,
     height: "100%",
     paddingTop: "20%",
+    marginTop: 10,
     alignItems: "flex-start",
     // alignItems: "center",
     //   backgroundColor: "blue",
@@ -106,7 +107,6 @@ const styles = StyleSheet.create({
   textinput: {
     width: "90%",
     height: 56,
-    color: "black",
     borderRadius: 16,
     borderColor: "rgba(133, 126, 126, 0.89)",
     borderWidth: 1,

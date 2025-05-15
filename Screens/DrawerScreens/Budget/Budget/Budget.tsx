@@ -227,7 +227,7 @@ export default function Budget({ navigation }: Props) {
           )}
           <View style={styles.budgetButton}>
             {(parseInt(year) > new Date().getFullYear() ||
-              (parseInt(year) === new Date().getFullYear() && parseInt(month) >= new Date().getMonth() + 1)) && (
+              (parseInt(year) === new Date().getFullYear() && month >= new Date().getMonth())) && (
               <CustomButton
                 title={t(StringConstants.CreateaBudget)}
                 bg="rgb(42, 124, 118)"
