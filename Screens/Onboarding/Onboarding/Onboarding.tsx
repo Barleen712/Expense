@@ -28,8 +28,8 @@ export default function Onboarding({ navigation }: Props) {
     navigation.navigate("Login");
   }
   const { t } = useTranslation();
-  const {colors}=useContext(ThemeContext)
-  const style=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const style = getStyles(colors);
   return (
     <SafeAreaView style={style.container}>
       <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
@@ -59,9 +59,9 @@ export default function Onboarding({ navigation }: Props) {
             </LinearGradient>
           </TouchableOpacity>
         </View>
-        <View style={style.text}> 
+        <View style={style.text}>
           <TouchableOpacity onPress={handlePress}>
-            <Text style={{color:colors.color}}>
+            <Text style={{ color: colors.color }}>
               {t(StringConstants.Alreadyhaveanaccount)}
               <Text style={style.login}> {t(StringConstants.Login)}</Text>
             </Text>
@@ -71,5 +71,3 @@ export default function Onboarding({ navigation }: Props) {
     </SafeAreaView>
   );
 }
-
- 

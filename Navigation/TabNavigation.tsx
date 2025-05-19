@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Animated, StyleSheet, TouchableOpacity, Text, View, Image, ActivityIndicator } from "react-native";
+import { Animated, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { CurvedBottomBarExpo } from "react-native-curved-bottom-bar";
 import { Ionicons } from "@expo/vector-icons";
 import Home from "../Screens/DrawerScreens/Home/Home";
@@ -22,7 +22,7 @@ interface Props {
   navigation: BottomTabprop;
 }
 
-export default function Tabscreens({ navigation }: Props) {
+export default function Tabscreens({ navigation }: Readonly<Props>) {
   const loading = useSelector((state: RootState) => state.Money.loading);
   const [plus, setplus] = useState(true);
   const [cross, setcross] = useState(false);
@@ -67,14 +67,6 @@ export default function Tabscreens({ navigation }: Props) {
       </Text>
     </TouchableOpacity>
   );
-
-  // if (loading) {
-  //   return (
-  //     <View style={styles.loadingContainer}>
-  //       <ActivityIndicator size="large" color="rgb(42, 124, 118)" />
-  //     </View>
-  //   );
-  // }
   return (
     <CurvedBottomBarExpo.Navigator
       type="DOWN"

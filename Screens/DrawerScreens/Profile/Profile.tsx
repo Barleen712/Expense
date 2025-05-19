@@ -22,10 +22,10 @@ import { CustomButton } from "../../../Components/CustomButton";
 import { auth } from "../../FirebaseConfig";
 import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { clearData } from "../../../Slice/IncomeSlice";
 import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
-
+import { persistor } from "../../../Store/Store";
 import { updateUserDoc } from "../../FirestoreHandler";
 import * as DocumentPicker from "expo-document-picker";
 import { uploadImage } from "../../Constants";
@@ -33,6 +33,10 @@ import { getStyles } from "./styles";
 import { ThemeContext } from "../../../Context/ThemeContext";
 import Feather from "@expo/vector-icons/Feather";
 import ProfileModal from "../../../Components/ProfileModal";
+import { profilepics } from "../../Constants";
+import { clearUserData } from "../../../utils/userStorage";
+import { getRealm, deleteRealmDatabase } from "../../../Realm/realm";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 type Profileprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
@@ -45,26 +49,14 @@ export default function Profile({ navigation }: Props) {
   const [modalPhoto, setmodalPhoto] = useState("");
   const [modalUser, setModalUser] = useState("");
   const [id, setUserId] = useState("");
-  const scrollRef = useRef<ScrollView>(null);
-
-  const profilepics = useMemo(
-    () => [
-      require("../../../assets/women3.jpg"),
-      require("../../../assets/man1.jpg"),
-      require("../../../assets/Women2.jpg"),
-      require("../../../assets/man2.jpg"),
-      require("../../../assets/women1.jpg"),
-    ],
-    []
-  );
   const [selectedindex, setselectedindex] = useState();
-  console.log("fwgiug");
+  const user = useSelector((state) => state.Money.signup);
   async function getData() {
-    const user = await getUseNamerDocument();
-    setuser(user?.Name);
-    setModalUser(user?.Name);
+    const userD = await getUseNamerDocument();
+    setuser(user?.User);
+    setModalUser(user?.User);
     setmodalPhoto(user?.Photo);
-    setUserId(user?.ID);
+    setUserId(userD?.ID);
     if (typeof user?.Photo.uri === "number") {
       setPhoto(profilepics[user?.Index]);
       setselectedindex(user?.Index);
@@ -87,14 +79,53 @@ export default function Profile({ navigation }: Props) {
     setModalVisible(!modalVisible);
   }
   async function handleLogout() {
+    toggleModal(); // show spinner/modal immediately
+
     try {
-      toggleModal();
+      // Step 1: Sign out from Firebase first
+      try {
+        await auth.signOut();
+        console.log("✅ Firebase signOut successful");
+      } catch (err) {
+        console.warn("❌ Firebase signOut failed (possibly offline):", err.message);
+        // Optionally show a toast or retry prompt here
+        return;
+      }
+
+      // Step 2: Clear Redux & persisted data
       dispatch(clearData());
-      await auth.signOut();
+      await clearUserData();
+      await persistor.purge();
+      console.log("🧹 Redux + persisted data cleared");
+      await AsyncStorage.clear();
+      // Step 3: Safely close Realm
+      try {
+        const realm = await getRealm();
+        if (realm && !realm.isClosed) {
+          realm.close();
+          console.log("📁 Realm closed");
+        }
+      } catch (realmErr) {
+        console.error("⚠️ Error closing Realm:", realmErr);
+      }
+
+      // Step 4: Delete Realm database file
+      try {
+        await deleteRealmDatabase();
+        console.log("🗑️ Realm database file deleted");
+      } catch (deleteErr) {
+        console.error("⚠️ Error deleting Realm file:", deleteErr);
+      }
+
+      console.log("🚪 User fully logged out");
     } catch (error) {
-      alert("Their was some error");
+      console.error("❌ Logout error:", error);
+      alert("There was some error during logout.");
+    } finally {
+      toggleModal(); // hide spinner/modal
     }
   }
+
   const widths = Dimensions.get("window");
   const { t } = useTranslation();
   async function saveChanges() {

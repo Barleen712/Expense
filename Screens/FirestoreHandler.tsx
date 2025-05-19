@@ -4,8 +4,11 @@ import { collection, query, getDocs, where, onSnapshot, deleteDoc, doc, updateDo
 export async function AddTransaction(transactionData) {
   try {
     const docRef = await addDoc(collection(db, "Transactions"), transactionData);
+    console.log("added");
+    return true;
   } catch (e) {
     console.log(e);
+    return false;
   }
 }
 

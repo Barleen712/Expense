@@ -1,4 +1,4 @@
-import { createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator, StackNavigationProp } from "@react-navigation/stack";
 import Onboarding from "../Screens/Onboarding/Onboarding/Onboarding";
 import Login from "../Screens/Onboarding/Login/Login";
 import Setpin from "../Screens/Onboarding/Setpin/SetupPin01";
@@ -19,14 +19,14 @@ import Theme from "../Screens/DrawerScreens/Profile/Settings/Theme/Theme";
 import Security from "../Screens/DrawerScreens/Profile/Settings/Security/Security";
 import Language from "../Screens/DrawerScreens/Profile/Settings/Language/Language";
 import Notification from "../Screens/DrawerScreens/Profile/Settings/Notification/Notification";
-import DetailTransaction_Expense from "../Screens/DrawerScreens/Home/DetailTransaction/DetailTransaction";
-import { DetailTransaction_Income } from "../Screens/DrawerScreens/Home/DetailTransaction/DetailTransaction";
-import { DetailTransaction_Transfer } from "../Screens/DrawerScreens/Home/DetailTransaction/DetailTransaction";
+import DetailTransaction_Expense, {
+  DetailTransaction_Income,
+  DetailTransaction_Transfer,
+} from "../Screens/DrawerScreens/Home/DetailTransaction/DetailTransaction";
 import CreateBudget from "../Screens/DrawerScreens/Budget/CreateBudget/CreateBudget";
 import Expense from "../Screens/DrawerScreens/Home/Expense/Expense";
 import Income from "../Screens/DrawerScreens/Home/Income/Income";
 import Transfer from "../Screens/DrawerScreens/Home/Transfer/Transfer";
-import { handleBiometricAuth } from "../Screens/Constants";
 import FinancialReportExpense, {
   FinancialReportBudget,
   FinancialReportIncome,
@@ -40,8 +40,6 @@ import { useDispatch } from "react-redux";
 import { fetchRates } from "../Slice/CurrencySlice";
 import DisplayNotification from "../Screens/DrawerScreens/Home/DisplayNotification";
 import EnterPin from "../Screens/DrawerScreens/Home/EnterPin";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { loadPreferences } from "../Slice/IncomeSlice";
 import Terms_Condition from "../Screens/Onboarding/Terms&Services/Terms&Services";
 import Privacy from "../Screens/Onboarding/Terms&Services/Privacy/Privacy";
@@ -71,12 +69,10 @@ export default function Screens() {
   );
 }
 const Stack2 = createStackNavigator<StackParamList>();
-export function TabScreens({ initial = "EnterPin" }: { initial?: keyof StackParamList }) {
+export function TabScreens({ initial = "EnterPin" }: Readonly<{ initial?: keyof StackParamList }>) {
   const dispatch = useDispatch();
-  const navigation = useNavigation<StackNavigationProp<StackParamList>>();
   useEffect(() => {
-    //handleBiometricAuth(navigation);
-    dispatch(fetchRates());
+    // dispatch(fetchRates());
     dispatch(loadPreferences());
   }, []);
   return (

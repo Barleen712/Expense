@@ -10,7 +10,7 @@ import Header from "../../../Components/Header";
 import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "./../../FirebaseConfig";
+import { auth } from "../../FirebaseConfig";
 import { ThemeContext } from "../../../Context/ThemeContext";
 type ForgotPasswordProp = StackNavigationProp<StackParamList, "ForgotPassword">;
 
@@ -39,11 +39,16 @@ export default function ForgotPass({ navigation }: Props) {
     }
     navigation.navigate("EmailSent", { email: email });
   };
-  const {colors}=useContext(ThemeContext)
-  const styles=getStyles(colors)
+  const { colors } = useContext(ThemeContext);
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
-      <Header title={t(StringConstants.ForgotPassword)} press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color} />
+      <Header
+        title={t(StringConstants.ForgotPassword)}
+        press={() => navigation.goBack()}
+        bgcolor={colors.backgroundColor}
+        color={colors.color}
+      />
       <View style={styles.ForgotTitle}>
         <Text style={styles.ForgotDes}>
           {t(StringConstants.DontWorry)}

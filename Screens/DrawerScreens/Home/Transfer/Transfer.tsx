@@ -23,18 +23,19 @@ import StackParamList from "../../../../Navigation/StackList";
 import Header from "../../../../Components/Header";
 import Entypo from "@expo/vector-icons/Entypo";
 import Input from "../../../../Components/CustomTextInput";
-import SelectImageWithDocumentPicker from ".././Attachment";
+import SelectImageWithDocumentPicker from "../Attachment";
 import { addTransaction } from "../../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
 import { uploadImage, StringConstants } from "../../../Constants";
 import { useTranslation } from "react-i18next";
-import { AddTransaction } from "../../../FirestoreHandler";
 import { auth } from "../../../FirebaseConfig";
 import { updateDocument } from "../../../FirestoreHandler";
 import { updateTransaction } from "../../../../Slice/IncomeSlice";
 import { ThemeContext } from "../../../../Context/ThemeContext";
 import TransferImg from "../../../../assets/transfer.svg";
-
+import { getRealm } from "../../../../Realm/realm";
+import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
+import NetInfo from "@react-native-community/netinfo";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -133,6 +134,7 @@ export default function Income({ navigation, route }: Props) {
     }
   }
   async function add() {
+    const realm = await getRealm();
     const numericIncome = parseFloat(Transfer.replace("$", "") || "0");
     let supabaseImageUrl = null;
     if (numericIncome === 0) {
@@ -169,18 +171,46 @@ export default function Income({ navigation, route }: Props) {
     //     },
     //   })
     // );
-    AddTransaction({
+    // AddTransaction({
+    //   amount: numericIncome,
+    //   description: Description,
+    //   category: From + " -> " + To,
+    //   moneyCategory: "Transfer",
+    //   Date: new Date().toISOString(),
+    //   userId: user.uid,
+    //   attachment: {
+    //     type: "image",
+    //     uri: supabaseImageUrl,
+    //   },
+    // });
+    const transaction = {
+      _id: new Date().toISOString(),
       amount: numericIncome,
       description: Description,
       category: From + " -> " + To,
+      wallet: "",
       moneyCategory: "Transfer",
+      Frequency: "",
+      endAfter: null,
+      weekly: null,
+      endDate: null,
+      repeat: false,
       Date: new Date().toISOString(),
-      userId: user.uid,
-      attachment: {
-        type: "image",
-        uri: supabaseImageUrl,
-      },
-    });
+      synced: false,
+    };
+
+    try {
+      realm.write(() => {
+        realm.create("Transaction", transaction);
+        dispatch(addTransaction(transaction));
+      });
+    } catch (error) {
+      console.log(error, "1234");
+    }
+    const { isConnected } = await NetInfo.fetch();
+    if (isConnected) {
+      syncUnsyncedTransactions(); // Start syncing if online
+    }
     setLoading(false);
     navigation.goBack();
   }

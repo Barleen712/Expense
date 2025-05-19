@@ -1,5 +1,5 @@
 import React, { useState, useRef, useContext } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Platform, ActivityIndicator, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Input from "../../../Components/CustomTextInput";
 import GradientButton from "../../../Components/CustomButton";
@@ -12,7 +12,9 @@ import { useTranslation } from "react-i18next";
 import { raiseToast, StringConstants } from "../../Constants";
 import { ThemeContext } from "../../../Context/ThemeContext";
 import { getStyles } from "./styles";
-
+import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
+import { useSelector, useDispatch } from "react-redux";
+import { addUser } from "../../../Slice/IncomeSlice";
 type LoginProp = StackNavigationProp<StackParamList, "Login">;
 
 interface Props {
@@ -24,6 +26,7 @@ export default function Login({ navigation }: Props) {
   const [email, setemail] = useState({ email: "", emailError: "" });
   const [password, setpass] = useState({ password: "", passwordError: "" });
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   function handleChange() {
     setemail({ ...email, emailError: "" });
     setpass({ ...password, passwordError: "" });
@@ -59,6 +62,15 @@ export default function Login({ navigation }: Props) {
         setpass({ password: "", passwordError: "" });
         return;
       }
+      const userDoc = await getUseNamerDocument();
+      dispatch(
+        addUser({
+          User: userDoc.Name,
+          Photo: userDoc?.Photo,
+          index: userDoc?.Index,
+          pin: userDoc?.pin,
+        })
+      );
       // setLoading(false);
       // navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
     } catch (error: any) {

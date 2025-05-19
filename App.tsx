@@ -3,7 +3,8 @@ import { View, PermissionsAndroid, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import Screens from "./Navigation/StackNavigation";
 import { Provider } from "react-redux";
-import Store from "./Store/Store";
+import { store, persistor } from "./Store/Store";
+import { PersistGate } from "redux-persist/integration/react";
 import { ThemeProvider } from "./Context/ThemeContext";
 import notifee, { AuthorizationStatus } from "@notifee/react-native";
 import { onAuthStateChanged } from "firebase/auth";
@@ -11,10 +12,13 @@ import { auth } from "./Screens/FirebaseConfig";
 import { TabScreens } from "./Navigation/StackNavigation";
 import { ActivityIndicator } from "react-native-paper";
 import Toast from "react-native-toast-message";
-import { getUseNamerDocument, getUserDocument } from "./Saga/BudgetSaga";
+import { getUseNamerDocument } from "./Saga/BudgetSaga";
 import StackParamList from "./Navigation/StackList";
 import NetInfo from "@react-native-community/netinfo";
-
+import SplashScreen from "react-native-splash-screen";
+import { CachedUser, saveUserData, getCachedUser, clearUserData } from "./utils/userStorage";
+import { syncUnsyncedTransactions } from "./Realm/Sync";
+import { syncPendingDeletes } from "./Realm/realm";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -39,46 +43,104 @@ const checkApplicationPermission = async () => {
 };
 
 export default function App() {
-  const [user, setUser] = useState("");
-  const [initialRoute, setinitialRoute] = useState<keyof StackParamList | undefined>(undefined);
+  const [user, setUser] = useState<CachedUser | null>(null);
+  const [initialRoute, setInitialRoute] = useState<keyof StackParamList | undefined>(undefined);
+  const [checkingAuth, setCheckingAuth] = useState(true); // 🆕
+
+  useEffect(() => {
+    if (Platform.OS === "android") SplashScreen.hide();
+  }, []);
+
   useEffect(() => {
     checkApplicationPermission();
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        await currentUser.reload();
-        if (currentUser.emailVerified) {
-          const userdetails = await getUseNamerDocument();
-          if (userdetails?.pinSet === false) {
-            setinitialRoute("Setpin");
-          } else {
-            setinitialRoute("EnterPin");
-            //  deleteRealmDatabase();
-          }
-          setUser(currentUser);
-        } else {
-          auth.signOut();
-          setUser(null);
-        }
-      } else {
-        setUser(null);
+
+    const initAuth = async () => {
+      const cached = await getCachedUser();
+
+      if (cached) {
+        setInitialRoute(cached.pinSet ? "EnterPin" : "Setpin");
+        setUser(cached);
       }
-      NetInfo.fetch().then((state) => {
-        console.log("Connection type", state.type);
-        console.log("Is connected?", state.isConnected);
+
+      const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        if (currentUser) {
+          try {
+            await currentUser.reload();
+
+            if (currentUser.emailVerified) {
+              const userdetails = await getUseNamerDocument();
+
+              const updatedUser: CachedUser = {
+                uid: currentUser.uid,
+                pinSet: userdetails?.pinSet ?? false,
+              };
+
+              await saveUserData(updatedUser);
+
+              setInitialRoute(updatedUser.pinSet ? "EnterPin" : "Setpin");
+              setUser(updatedUser);
+            } else {
+              await auth.signOut();
+              await clearUserData();
+              setUser(null);
+            }
+          } catch (err) {
+            console.error("Auth error:", err);
+          }
+        } else {
+          if (!cached) {
+            setUser(null);
+          }
+        }
+
+        setCheckingAuth(false);
       });
-    });
-    return () => unsubscribe();
+      return unsubscribe;
+    };
+
+    initAuth();
   }, []);
+  useEffect(() => {
+    let hasFetchedInitially = false;
+
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      if (state.isConnected && hasFetchedInitially) {
+        syncUnsyncedTransactions();
+        syncPendingDeletes();
+      }
+    });
+
+    NetInfo.fetch().then((state) => {
+      if (state.isConnected && !hasFetchedInitially) {
+        hasFetchedInitially = true;
+        syncUnsyncedTransactions();
+        syncPendingDeletes();
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  if (checkingAuth) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
-    <Provider store={Store}>
-      <NavigationContainer>
-        <ThemeProvider>
-          {user ? <TabScreens initial={initialRoute} /> : <Screens />}
-          {/* <Tutorial /> */}
-          {/* <Setpin /> */}
-          <Toast />
-        </ThemeProvider>
-      </NavigationContainer>
+    <Provider store={store}>
+      <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
+        <NavigationContainer>
+          <ThemeProvider>
+            {user ? <TabScreens initial={initialRoute} /> : <Screens />}
+            <Toast />
+          </ThemeProvider>
+        </NavigationContainer>
+      </PersistGate>
     </Provider>
   );
 }

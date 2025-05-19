@@ -1,10 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import { Image, View, Text } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { getStyles } from "./styles";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
-import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "../../../Context/ThemeContext";
 type AllSetProp = StackNavigationProp<StackParamList, "AllSet">;

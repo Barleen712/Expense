@@ -125,7 +125,7 @@ export default function TransactionList({ data }: TransactionListProps) {
         paddingBottom: 50,
       }}
       showsVerticalScrollIndicator={false}
-      keyExtractor={(item, index) => item.id.toString() + index.toString()}
+      //keyExtractor={(item, index) => item.id.toString() + index.toString()}
       renderItem={renderItem}
       renderSectionHeader={({ section }) => (
         <View>

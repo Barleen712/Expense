@@ -1,5 +1,15 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
-import { View, Text, TouchableOpacity, TextInput, Platform, Image, SafeAreaView, StatusBar } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Platform,
+  Image,
+  SafeAreaView,
+  StatusBar,
+  ActivityIndicator,
+} from "react-native";
 import GradientButton from "../../../Components/CustomButton";
 import Input from "../../../Components/CustomTextInput";
 import { Checkbox } from "react-native-paper";
@@ -41,6 +51,7 @@ export default function SignUp({ navigation }: Props) {
   const [password, setpass] = useState({ password: "", passwordError: "" });
   const [checked, setChecked] = useState({ state: false, error: "" });
   const [photo, setPhoto] = useState(require("../../../assets/user.png"));
+  const [loading, setloading] = useState(false);
   function handleChange() {
     setname({ ...name, nameError: "" });
     setemail({ ...email, emailError: "" });
@@ -78,15 +89,6 @@ export default function SignUp({ navigation }: Props) {
       setChecked({ ...checked, error: "Kindly agree to the Terms and Policy" });
       return;
     }
-    dispatch(
-      addUser({
-        name: name.name,
-        email: email.email,
-        password: password.password,
-        google: false,
-        photo: "",
-      })
-    );
     try {
       const user = await createUserWithEmailAndPassword(auth, email.email, password.password);
       raiseToast("success", "Sign Up Success", "done");
@@ -146,16 +148,32 @@ export default function SignUp({ navigation }: Props) {
         Photo: photo,
       })
     );
+    setloading(true);
     const googleCredential = GoogleAuthProvider.credential(id);
     const creds = await signInWithCredential(auth, googleCredential);
-    raiseToast("success", "Sign Up Success", "done");
     const user = creds.user;
+    raiseToast("success", "Sign Up Success", "done");
     AddUser({ User: name, Photo: { uri: photo }, userid: user.uid, index: null, pinSet: false });
+    setloading(false);
+
     //  raiseToast("success", "Email Verification", "verify");
     //  navigation.navigate("Setpin")
   }
   const { colors } = useContext(ThemeContext);
   const style = getStyles(colors);
+  if (loading)
+    return (
+      <View
+        style={{
+          height: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: colors.backgroundColor,
+        }}
+      >
+        <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
+      </View>
+    );
   return (
     <SafeAreaView style={[style.container, { alignItems: "center" }]}>
       <StatusBar translucent={true} backgroundColor="black" barStyle="default" />

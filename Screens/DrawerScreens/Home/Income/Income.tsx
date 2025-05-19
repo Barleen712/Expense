@@ -31,15 +31,15 @@ import Input from "../../../../Components/CustomTextInput";
 import { ThemeContext } from "../../../../Context/ThemeContext";
 import { useSelector, useDispatch } from "react-redux";
 import SelectImageWithDocumentPicker from "../Attachment";
-
+import NetInfo from "@react-native-community/netinfo";
 import { uploadImage, Weeks } from "../../../Constants";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../../Constants";
-import { updateTransaction } from "../../../../Slice/IncomeSlice";
-import { AddTransaction } from "../../../FirestoreHandler";
+import { updateTransaction, addTransaction } from "../../../../Slice/IncomeSlice";
 import FrequencyModal from "../../../../Components/FrequencyModal";
 import DropdownComponent from "../../../../Components/DropDown";
 import { getStyles } from "./styles";
+import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -135,18 +135,15 @@ export default function Income({ navigation, route }: Props) {
     const integerPart = parts[0];
     const decimalPart = parts[1] || "";
 
-    // Limit to 2 decimal digits
     if (decimalPart.length > 2) {
       setIncomeError("Maximum income allowed is $99,999.99");
       return;
     }
 
-    // Limit total digits (excluding the decimal point) to 7
     if ((integerPart + decimalPart).length > 7) {
       setIncomeError("Maximum income allowed is $99,999.99");
       return;
     }
-
     const numericValue = parseFloat(cleaned);
     if (numericValue > 99999.99) {
       setIncomeError("Maximum income allowed is $99,999.99");
@@ -166,7 +163,7 @@ export default function Income({ navigation, route }: Props) {
   const dispatch = useDispatch();
   const user = auth.currentUser;
   async function add() {
-    // const realm = await getRealm();
+    const realm = await getRealm();
     const numericIncome = parseFloat(Income.replace("$", "") || "0");
     let supabaseImageUrl = null;
     if (numericIncome === 0) {
@@ -189,72 +186,60 @@ export default function Income({ navigation, route }: Props) {
       setLoading(true);
       supabaseImageUrl = await uploadImage(image);
     }
-    // dispatch(
-    //   addTransaction({
-    //     amount: numericIncome,
-    //     description: Description,
-    //     category: selectedCategory,
-    //     wallet: selectedWallet,
-    //     moneyCategory: "Income",
-    //     attachment: {
-    //       type: "image",
-    //       uri: supabaseImageUrl,
-    //     },
-    //   })
-    // );
-    //     const key = await generateKey(user?.uid, user?.providerId, 15000, 128);
-    // const data = await encryptData(JSON.stringify(addTrans), key);
+    const { isConnected } = await NetInfo.fetch();
+
     // AddTransaction({
-    //   data: data,
-    //   user: user.uid,
-    // });
-    AddTransaction({
-      amount: numericIncome,
-      description: Description,
-      category: selectedCategory,
-      wallet: selectedWallet,
-      moneyCategory: "Income",
-      Date: new Date().toISOString(),
-      userId: user.uid,
-      attachment: {
-        type: "image",
-        uri: supabaseImageUrl,
-      },
-      Frequency: frequency,
-      endAfter: endAfter,
-      weekly: week,
-      endDate: endDate.toISOString(),
-      startDate: startDate,
-      startMonth: month,
-      startYear: new Date().getFullYear(),
-    });
-    // const transaction = {
-    //   _id: new Date().toISOString(),
     //   amount: numericIncome,
     //   description: Description,
     //   category: selectedCategory,
     //   wallet: selectedWallet,
     //   moneyCategory: "Income",
+    //   Date: new Date().toISOString(),
+    //   userId: user.uid,
+    //   attachment: {
+    //     type: "image",
+    //     uri: supabaseImageUrl,
+    //   },
     //   Frequency: frequency,
-    //   endAfter: endAfter || null,
-    //   weekly: week || null,
-    //   endDate: endDate || null,
-    //   repeat: Switchs,
+    //   endAfter: endAfter,
+    //   weekly: week,
+    //   endDate: endDate.toISOString(),
     //   startDate: startDate,
     //   startMonth: month,
     //   startYear: new Date().getFullYear(),
-    //   Date: new Date().toISOString(),
-    // };
+    // });
+    const transaction = {
+      _id: new Date().toISOString(),
+      amount: numericIncome,
+      description: Description,
+      category: selectedCategory,
+      wallet: selectedWallet,
+      moneyCategory: "Income",
+      Frequency: frequency,
+      endAfter: endAfter || null,
+      weekly: week || null,
+      endDate: endDate || null,
+      repeat: Switchs,
+      startDate: startDate,
+      startMonth: month,
+      startYear: new Date().getFullYear(),
+      Date: new Date().toISOString(),
+      synced: false,
+    };
 
-    // try {
-    //   realm.write(() => {
-    //     realm.create("Transaction", transaction);
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      realm.write(() => {
+        realm.create("Transaction", transaction);
+        dispatch(addTransaction(transaction));
+      });
+    } catch (error) {
+      console.log(error, "1234");
+    }
 
-    setLoading(false);
+    if (isConnected) {
+      syncUnsyncedTransactions(); // Start syncing if online
+    }
+
     navigation.goBack();
   }
   function editIncome() {

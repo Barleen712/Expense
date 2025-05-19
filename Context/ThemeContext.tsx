@@ -45,14 +45,22 @@ export const ThemeProvider = ({ children }) => {
       selected: "rgb(39, 176, 192)",
     },
   };
+  let selectedThemeName;
 
-  const selectedThemeName = theme === "Using device theme" ? (deviceTheme === "dark" ? "Dark" : "Light") : theme;
+  if (theme === "Using device theme") {
+    selectedThemeName = deviceTheme === "dark" ? "Dark" : "Light";
+  } else {
+    selectedThemeName = theme;
+  }
 
-  const selectedColors = useMemo(() => themes[selectedThemeName] || themes.Light, [selectedThemeName]);
+  // Wrap the ENTIRE context value in useMemo
+  const contextValue = useMemo(() => {
+    const selectedColors = themes[selectedThemeName] || themes.Light;
+    return {
+      theme: selectedThemeName,
+      colors: selectedColors,
+    };
+  }, [selectedThemeName]);
 
-  return (
-    <ThemeContext.Provider value={{ theme: selectedThemeName, colors: selectedColors }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 };

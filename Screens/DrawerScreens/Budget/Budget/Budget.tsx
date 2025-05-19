@@ -1,23 +1,20 @@
 import React, { useCallback, useContext, useState } from "react";
-import { View, Text, Button, Image, TouchableOpacity, FlatList, Dimensions } from "react-native";
-import CategoryList from "../../Transaction/FinancialReport/CategoryList";
+import { View, Text, Image, TouchableOpacity, FlatList, Dimensions } from "react-native";
 import { getStyles } from "./style";
 import { CustomButton } from "../../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
-import { currencies, Month } from "../../../Constants";
+import { currencies, Month, CATEGORY_COLORS, StringConstants } from "../../../Constants";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { selectBudget, CategoryExpense, BudgetCategory } from "../../../../Slice/Selectors";
+import { BudgetCategory } from "../../../../Slice/Selectors";
 import { useSelector } from "react-redux";
-import { CATEGORY_COLORS } from "../../../Constants";
 import { ProgressBar } from "react-native-paper";
 import DropdownComponent from "../../../../Components/DropDown";
 const width = Dimensions.get("window").width * 0.8;
 const date = new Date();
 const MonthIndex = date.getMonth();
-import { useSSR, useTranslation } from "react-i18next";
-import { StringConstants } from "../../../Constants";
-import useBudgetListener from "../../../../Saga/BudgetSaga";
+import { useTranslation } from "react-i18next";
+
 type Budgetprop = StackNavigationProp<StackParamList, "MainScreen">;
 import { ActivityIndicator } from "react-native";
 import { ThemeContext } from "../../../../Context/ThemeContext";
@@ -37,19 +34,6 @@ interface Props {
 }
 export default function Budget({ navigation }: Props) {
   const loading = useSelector((state: RootState) => state.Money.loading);
-  // if (loading)
-  //   return (
-  //     <View
-  //       style={{
-  //         height: "100%",
-  //         alignItems: "center",
-  //         justifyContent: "center",
-  //         backgroundColor: "rgba(0, 0, 0, 0.5)",
-  //       }}
-  //     >
-  //       <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
-  //     </View>
-  //   );
 
   function handleprev() {
     setmonth(month - 1);
@@ -69,7 +53,7 @@ export default function Budget({ navigation }: Props) {
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
   const [year, selectedYear] = useState("2025");
-  const { colors, setTheme, theme } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext);
   const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
   const budgetDataForMonth = Budgetcat[monthKey] || [];
   const renderBudgetItems = useCallback(

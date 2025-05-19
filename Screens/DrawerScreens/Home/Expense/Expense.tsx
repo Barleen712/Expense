@@ -22,14 +22,14 @@ import StackParamList from "../../../../Navigation/StackList";
 import Header from "../../../../Components/Header";
 import Entypo from "@expo/vector-icons/Entypo";
 import Input from "../../../../Components/CustomTextInput";
-import SelectImageWithDocumentPicker from ".././Attachment";
+import SelectImageWithDocumentPicker from "../Attachment";
 import { useDispatch, useSelector } from "react-redux";
 import FrequencyModal from "../../../../Components/FrequencyModal";
 import { uploadImage } from "../../../Constants";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../../Constants";
 import { updateBudget, updateTransaction } from "../../../../Slice/IncomeSlice";
-import { AddTransaction } from "../../../FirestoreHandler";
+import { addTransaction } from "../../../../Slice/IncomeSlice";
 import { auth } from "../../../FirebaseConfig";
 import { BudgetCategory } from "../../../../Slice/Selectors";
 import { onDisplayNotification } from "../../Budget/TestNotification";
@@ -37,6 +37,9 @@ import { ActivityIndicator } from "react-native-paper";
 import DropdownComponent from "../../../../Components/DropDown";
 import { ThemeContext } from "../../../../Context/ThemeContext";
 import { getStyles } from "./styles";
+import { getRealm } from "../../../../Realm/realm";
+import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
+import NetInfo from "@react-native-community/netinfo";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -163,6 +166,7 @@ export default function Expense({ navigation, route }: Props) {
   const dispatch = useDispatch();
   const user = auth.currentUser;
   async function add() {
+    const realm = await getRealm();
     const numericExpense = parseFloat(Expenses.replace("$", "") || "0");
     let supabaseImageUrl = null;
     if (numericExpense === 0) {
@@ -198,27 +202,57 @@ export default function Expense({ navigation, route }: Props) {
     //     },
     //   })
     // );
-    AddTransaction({
+    // AddTransaction({
+    //   amount: numericExpense,
+    //   description: Description,
+    //   category: selectedCategory,
+    //   wallet: selectedWallet,
+    //   moneyCategory: "Expense",
+    //   Date: new Date().toISOString(),
+    //   userId: user.uid,
+    //   attachment: {
+    //     type: "image",
+    //     uri: supabaseImageUrl,
+    //   },
+    //   Frequency: frequency,
+    //   endAfter: endAfter,
+    //   weekly: week,
+    //   endDate: endDate.toISOString(),
+    //   startDate: startDate,
+    //   startMonth: month,
+    //   startYear: new Date().getFullYear(),
+    // });
+    const transaction = {
+      _id: new Date().toISOString(),
       amount: numericExpense,
       description: Description,
       category: selectedCategory,
       wallet: selectedWallet,
       moneyCategory: "Expense",
-      Date: new Date().toISOString(),
-      userId: user.uid,
-      attachment: {
-        type: "image",
-        uri: supabaseImageUrl,
-      },
       Frequency: frequency,
-      endAfter: endAfter,
-      weekly: week,
-      endDate: endDate.toISOString(),
+      endAfter: endAfter || null,
+      weekly: week || null,
+      endDate: endDate || null,
+      repeat: Switchs,
       startDate: startDate,
       startMonth: month,
       startYear: new Date().getFullYear(),
-    });
+      Date: new Date().toISOString(),
+      synced: false,
+    };
 
+    try {
+      realm.write(() => {
+        realm.create("Transaction", transaction);
+        dispatch(addTransaction(transaction));
+      });
+    } catch (error) {
+      console.log(error, "1234");
+    }
+    const { isConnected } = await NetInfo.fetch();
+    if (isConnected) {
+      syncUnsyncedTransactions(); // Start syncing if online
+    }
     const Budget = monthlyBudget.some((item) => item.category === selectedCategory);
     if (Budget) {
       const Budget = monthlyBudget.find((item) => item.category === selectedCategory);

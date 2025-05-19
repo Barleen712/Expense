@@ -6,10 +6,10 @@ import Pin from "../../../Components/Pin";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { useTranslation } from "react-i18next";
-import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
 import { handleBiometricAuth } from "../../Constants";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useSelector } from "react-redux";
 type pinProp = StackNavigationProp<StackParamList, "Setpin">;
 
 interface Props {
@@ -22,11 +22,11 @@ export default function EnterPin({ navigation }: Props) {
   const [pin, setpin] = useState("");
   const [opendots, setopendots] = useState(false);
   const [reset, setreset] = useState(false);
+  const user = useSelector((state) => state.Money.signup);
   async function handlenext() {
-    const Pin = await getUseNamerDocument();
-    if (Pin.pin === pin && reset === false) {
+    if (user.pin === pin && reset === false) {
       navigation.replace("MainScreen");
-    } else if (Pin.pin === pin && reset === true) {
+    } else if (user.pin === pin && reset === true) {
       navigation.navigate("Setpin");
     } else {
       if (pin.length !== 4) {

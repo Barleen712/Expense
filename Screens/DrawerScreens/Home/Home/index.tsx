@@ -31,8 +31,12 @@ import { ThemeContext } from "../../../../Context/ThemeContext";
 import { getStyles } from "./styles";
 import Expense from "../../../../assets/ExpenseHome.svg";
 import Income from "../../../../assets/IncomeHome.svg";
-
+import { retrieveOldTransactions } from "../../../../Realm/realm";
+import { loadTransactionsFromRealm } from "../../../../Realm/realm";
+import { useDispatch } from "react-redux";
 export default function Home({ navigation }: Props) {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.Money.signup);
   const lang = [
     { name: "Arabic", code: "AR", tc: "ar" },
     { name: "Chinese", code: "ZH", tc: "zh" },
@@ -42,7 +46,6 @@ export default function Home({ navigation }: Props) {
     { name: "Hindi", code: "HI", tc: "hi" },
   ];
   async function getData() {
-    const user = await getUseNamerDocument();
     if (typeof user?.Photo.uri === "number") {
       setPhoto(profilepics[user?.Index]);
     } else {
@@ -54,9 +57,10 @@ export default function Home({ navigation }: Props) {
   }
   useEffect(() => {
     getData();
-    //retrieveOldTransactions();
-  }, []);
+    retrieveOldTransactions();
+  }, [navigation]);
   const index = new Date().getMonth();
+  //loadTransactionsFromRealm(dispatch);
   useTransactionListener();
   useBudgetListener();
   useNotificationListener();
@@ -171,7 +175,6 @@ export default function Home({ navigation }: Props) {
         <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
       </View>
     );
-
   const styles = getStyles(colors);
   return (
     <View style={{ flex: 1 }}>

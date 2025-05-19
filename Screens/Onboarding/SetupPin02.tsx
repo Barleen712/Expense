@@ -7,11 +7,10 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
 import { raiseToast, StringConstants } from "../Constants";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUserDoc } from "../FirestoreHandler";
 import { Ionicons } from "@expo/vector-icons";
-
-import { RootState } from "../../Store/Store";
+import { addUser } from "../../Slice/IncomeSlice";
 import { getUseNamerDocument } from "../../Saga/BudgetSaga";
 type PinProp = StackNavigationProp<StackParamList, "Setpin1">;
 
@@ -24,17 +23,24 @@ interface Props {
   };
 }
 export default function Setpin02({ navigation, route }: Props) {
-  const { email, password, name } = useSelector((state: RootState) => state.Money.signup);
-  const { id, google, username, photo } = useSelector((state: RootState) => state.Money.googleSign);
   const [pin, setpin] = useState("");
+  const dispatch = useDispatch();
   const handleClear = () => {
     setpin(pin.slice(0, pin.length - 1));
   };
   async function handlenext() {
     if (route.params.FirstPin === pin) {
       try {
-        const { ID } = await getUseNamerDocument();
-        await updateUserDoc(ID, { pinSet: true, pin: pin });
+        const user = await getUseNamerDocument();
+        await updateUserDoc(user.ID, { pinSet: true, pin: pin });
+        dispatch(
+          addUser({
+            User: user.Name,
+            Photo: user?.Photo,
+            index: user?.Index,
+            pin: pin,
+          })
+        );
         navigation.replace("MainScreen");
       } catch (error: any) {
         raiseToast("Sign Up Failed", error.code);

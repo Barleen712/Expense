@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity, Modal, TouchableWithoutFeedback, S
 import { getStyles } from "./styles";
 import Header from "../../../../Components/Header";
 import { CustomButton } from "../../../../Components/CustomButton";
-
+import { deleteTransactionFromLocalDB, getRealm, markPendingDeleteOrDelete } from "../../../../Realm/realm";
 import { deleteTransaction } from "../../../../Slice/IncomeSlice";
 import { useSelector, useDispatch } from "react-redux";
 import CustomModal from "../../../../Components/Modal/Modal";
@@ -50,9 +50,11 @@ function DetailTransaction({
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
-  function deleteTransactions() {
+  async function deleteTransactions() {
+    const realm = await getRealm();
+    await markPendingDeleteOrDelete(realm, id);
     dispatch(deleteTransaction(id));
-    deleteDocument("Transactions", id);
+    //deleteDocument("Transactions", id);
   }
   const { t } = useTranslation();
   const Rates = useSelector((state) => state.Rates);
@@ -113,7 +115,7 @@ function DetailTransaction({
         </ScrollView>
       </View>
       <View style={styles.attachView}>
-        {uri && (
+        {/* {uri && (
           <View>
             <Text style={styles.username}>{t("Attachment")}</Text>
 
@@ -125,7 +127,7 @@ function DetailTransaction({
               />
             </TouchableOpacity>
           </View>
-        )}
+        )} */}
       </View>
       <View style={[styles.Apply, { flex: 0.1 }]}>
         <CustomButton title={t("Edit")} bg={bg} color="white" press={EditTransaction} />
@@ -174,9 +176,9 @@ export default function DetailTransaction_Expense({ navigation, route }) {
       type="Expense"
       category={value.category}
       wallet={value.wallet}
-      id={value.id}
+      id={value._id}
       title={value.description}
-      uri={value.attachment.uri}
+      //  uri={value.attachment.uri}
     />
   );
 }
@@ -193,8 +195,8 @@ export function DetailTransaction_Income({ navigation, route }) {
       type="Income"
       category={value.category}
       wallet={value.wallet}
-      id={value.id}
-      uri={value.attachment.uri}
+      id={value._id}
+      // uri={value.attachment.uri}
     />
   );
 }
@@ -214,8 +216,8 @@ export function DetailTransaction_Transfer({ navigation, route }) {
       category={To}
       wallet="Transfer"
       title={value.description}
-      id={value.id}
-      uri={value.attachment.uri}
+      id={value._id}
+      //  uri={value.attachment.uri}
     />
   );
 }

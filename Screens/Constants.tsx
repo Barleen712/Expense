@@ -291,17 +291,20 @@ export const handleGoogleSignIn = async () => {
     Alert.alert("Error", error.message || "Google Sign-In failed");
   }
 };
-export const profilepics = [
-  require("../assets/women3.jpg"),
-  require("../assets/man1.jpg"),
-  require("../assets/Women2.jpg"),
-  require("../assets/man2.jpg"),
-  require("../assets/women1.jpg"),
-];
+const pics = {
+  0: require("../assets/women3.jpg"),
+  1: require("../assets/man1.jpg"),
+  2: require("../assets/Women2.jpg"),
+  3: require("../assets/man2.jpg"),
+  4: require("../assets/women1.jpg"),
+};
+export const profilepics = [pics[0], pics[1], pics[2], pics[3], pics[4]];
+
 export const FirebaseErrors: Record<string, string> = {
   "auth/invalid-credential": "Check Your Credentials",
   "auth/too-many-requests": "You have exceeded the request limit",
   "auth/email-already-in-use": "The provided email is already in use",
+  "auth/network-request-failed": "No internet. Please reconnect and try again.",
   done: "You have successfully registered",
   verify: "Please check your inbox to verify your email.",
   fail: "Email not verified. Please check your inbox.",

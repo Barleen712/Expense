@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../Store/Store";
 import i18n from "../i18n/i18next";
+import { act } from "react";
 interface IncomeEntry {
   amount: number;
   description: string;
@@ -34,10 +35,10 @@ interface notificationEntry {
   id: string;
 }
 interface Signup {
-  name: string;
-  email: string;
-  password: string;
-  google: boolean;
+  Photo: { uri: string };
+  user: string;
+  index: null | number;
+  pin: string;
 }
 interface GoogleSign {
   id: string;
@@ -69,7 +70,7 @@ const initialState: IncomeState = {
   budget: [],
   loading: false,
   notification: [],
-  signup: { name: "", email: "", password: "", google: false },
+  signup: { Photo: { uri: "" }, user: "", index: null, pin: "" },
   googleSign: { id: "", username: "", google: false, photo: "" },
   preferences: { currency: "USD", language: "English", theme: "Light", security: "PIN" },
   exceedNotification: false,
@@ -85,14 +86,15 @@ export const ExpenseTrackerSlice = createSlice({
       state.loading = action.payload;
     },
     addTransaction: (state, action) => {
-      const existingTransaction = state.amount.find((transaction) => transaction.id === action.payload.id);
+      const existingTransaction = state.amount.find((transaction) => transaction._id === action.payload._id);
       if (!existingTransaction) {
         state.amount.push(action.payload);
       }
     },
     deleteTransaction: (state, action) => {
       const id = action.payload;
-      const index = state.amount.findIndex((item) => item.id === id);
+      console.log(action.payload);
+      const index = state.amount.findIndex((item) => item._id === id);
       state.amount = [...state.amount.slice(0, index), ...state.amount.slice(index + 1)];
     },
     updateTransaction: (state, action) => {
@@ -145,10 +147,7 @@ export const ExpenseTrackerSlice = createSlice({
       state.badgeCount += 1;
     },
     addUser: (state, action) => {
-      const { name, email, password } = action.payload;
-      state.signup.name = name;
-      state.signup.email = email;
-      state.signup.password = password;
+      state.signup = action.payload;
     },
     addGoogleUser: (state, action) => {
       const { id, google, username, photo } = action.payload;
@@ -177,12 +176,11 @@ export const ExpenseTrackerSlice = createSlice({
       state.budget = [];
       state.loading = false;
       state.notification = [];
-      state.signup.name = "";
-      state.signup.email = "";
-      state.signup.password = "";
-      state.googleSign.google = false;
-      (state.googleSign.id = ""), (state.googleSign.photo = "");
-      state.googleSign.username = "";
+      state.signup = { Photo: { uri: "" }, user: "", index: null, pin: "" };
+      state.googleSign = { id: "", username: "", google: false, photo: "" };
+      state.preferences = { currency: "USD", language: "English", theme: "Light", security: "PIN" };
+      state.exceedNotification = false;
+      state.expenseAlert = false;
       state.badgeCount = 0;
     },
   },
