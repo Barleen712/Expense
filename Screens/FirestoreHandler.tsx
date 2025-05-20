@@ -15,8 +15,10 @@ export async function AddTransaction(transactionData) {
 export async function AddBudget(budgetData) {
   try {
     await addDoc(collection(db, "Budgets"), budgetData);
+    return true;
   } catch (e) {
     console.log(e);
+    return false;
   }
 }
 export async function AddNotification(notificationData) {

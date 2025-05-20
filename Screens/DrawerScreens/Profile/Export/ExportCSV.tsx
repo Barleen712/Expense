@@ -3,7 +3,7 @@ import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { RootState } from "../../../../Store/Store";
 import { selectIncomeTotal, selectExpenseTotal, selectTransactions, BudgetCategory } from "../../../../Slice/Selectors";
-import store from "../../../../Store/Store";
+import { store } from "../../../../Store/Store";
 
 const data = [
   { label: "Income", value: "0" },
@@ -26,11 +26,9 @@ export const GenerateCSVReport = async (exportdata: string, dateRange: string) =
   const incomeTotal = selectIncomeTotal(state);
   const expenseTotal = selectExpenseTotal(state);
   const budgetData = BudgetCategory(state);
-
   const filterOption = data.find((item) => item.value === exportdata);
   const now = new Date();
   let startDate: Date;
-
   switch (dateRange) {
     case "0":
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -56,7 +54,6 @@ export const GenerateCSVReport = async (exportdata: string, dateRange: string) =
     const matchDate = itemDate >= startDate;
     return matchCategory && matchDate;
   });
-
   let csvContent = "Financial Report\n";
 
   if (filterOption?.value !== "3") {

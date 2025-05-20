@@ -21,3 +21,20 @@ export const TransactionSchema = {
   },
   primaryKey: "_id",
 };
+export const BudgetSchema = {
+  name: "Budget",
+  properties: {
+    _id: "string",
+    category: "string",
+    amount: "int",
+    month: "int",
+    percentage: "int",
+    notified: "bool",
+    year: "string",
+    notification: "bool",
+    synced: { type: "bool", default: false },
+    pendingDelete: { type: "bool", default: false },
+    pendingUpdate: { type: "bool", default: false },
+  },
+  primaryKey: "_id",
+};

@@ -4,7 +4,7 @@ import { RootState } from "../../../../Store/Store";
 import { Platform } from "react-native";
 import * as IntentLauncher from "expo-intent-launcher";
 import { selectTransactions, selectExpenseTotal, selectIncomeTotal, BudgetCategory } from "../../../../Slice/Selectors";
-import store from "../../../../Store/Store";
+import { store } from "../../../../Store/Store";
 
 const data = [
   { label: "Income", value: "0" },

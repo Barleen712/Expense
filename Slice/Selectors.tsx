@@ -150,7 +150,6 @@ export const CategoryExpense = createSelector([selectExpensesAndTransfers], (tra
       }))
       .sort((a, b) => b.total - a.total);
   }
-
   return result;
 });
 export const CategoryIncome = createSelector([selectIncome], (transactions) => {
@@ -189,7 +188,6 @@ export const CategoryIncome = createSelector([selectIncome], (transactions) => {
 });
 export const BudgetCategory = createSelector([selectBudget, CategoryExpense], (budgetItems, categoryByMonth) => {
   const result: Record<string, any[]> = {};
-
   for (const item of budgetItems) {
     // Ensure month is 0-indexed (0–11), adjust accordingly if not
     const monthNumber = typeof item.month === "number" ? item.month : parseInt(item.month, 10);
@@ -200,7 +198,7 @@ export const BudgetCategory = createSelector([selectBudget, CategoryExpense], (b
     const spentAmount = categorySpent ? categorySpent.amount : 0;
 
     const budgetEntry = {
-      id: item.id,
+      id: item._id,
       category: item.category,
       budgetvalue: item.amount,
       amountSpent: spentAmount,
@@ -214,6 +212,5 @@ export const BudgetCategory = createSelector([selectBudget, CategoryExpense], (b
     if (!result[monthKey]) result[monthKey] = [];
     result[monthKey].push(budgetEntry);
   }
-
   return result;
 });

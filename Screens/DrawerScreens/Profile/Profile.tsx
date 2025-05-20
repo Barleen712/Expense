@@ -53,7 +53,7 @@ export default function Profile({ navigation }: Props) {
     setuser(user?.User);
     setModalUser(user?.User);
     setmodalPhoto(user?.Photo);
-    setUserId(userD?.ID);
+    setUserId(user.ID);
     if (typeof user?.Photo.uri === "number") {
       setPhoto(profilepics[user?.Index]);
       setselectedindex(user?.Index);

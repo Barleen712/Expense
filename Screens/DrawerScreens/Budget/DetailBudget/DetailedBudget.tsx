@@ -16,6 +16,8 @@ import { deleteBudget } from "../../../../Slice/IncomeSlice";
 import { useTranslation } from "react-i18next";
 import { deleteDocument } from "../../../FirestoreHandler";
 import { ThemeContext } from "../../../../Context/ThemeContext";
+import { getRealm, markPendingDeleteOrDelete } from "../../../../Realm/realm";
+import { markPendingDeleteOrDeleteBudget } from "../../../../Realm/Budgetrealm";
 type DetailedBudget = StackNavigationProp<StackParamList, "DetailBudget">;
 
 interface Props {
@@ -36,11 +38,14 @@ interface Props {
 const width = Dimensions.get("window").width - 60;
 export default function DetailedBudget({ navigation, route }: Props) {
   const { category, remaining, progress, exceeded, index, total, percentage, alert } = route.params;
+  console.log(index);
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  function deleteBudgetFunction() {
+  async function deleteBudgetFunction() {
+    const realm = await getRealm();
+    markPendingDeleteOrDeleteBudget(realm, index);
     dispatch(deleteBudget(index));
-    deleteDocument("Budgets", index);
+    //deleteDocument("Budgets", index);
   }
   const { t } = useTranslation();
   const Rates = useSelector((state) => state.Rates);

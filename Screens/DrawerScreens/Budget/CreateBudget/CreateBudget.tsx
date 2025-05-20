@@ -17,7 +17,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
 import Header from "../../../../Components/Header";
 import CustomSlider from "../../../../Components/Slider";
-import { updateBudget } from "../../../../Slice/IncomeSlice";
+import { addBudget, updateBudget } from "../../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../../Constants";
@@ -28,6 +28,10 @@ import { ThemeContext } from "../../../../Context/ThemeContext";
 import { useSelector } from "react-redux";
 import { BudgetCategory } from "../../../../Slice/Selectors";
 import { ScrollView } from "react-native-gesture-handler";
+import { getRealm } from "../../../../Realm/realm";
+import { syncUnsyncedBudget } from "../../../../Realm/SyncBudget";
+import NetInfo from "@react-native-community/netinfo";
+import { updateTransactionRealmAndFirestoreBudget } from "../../../../Realm/Budgetrealm";
 type CreateBudgetProp = StackNavigationProp<StackParamList, "CreateBudget">;
 
 interface Props {
@@ -82,7 +86,7 @@ export default function CreateBudget({ navigation, route }: Props) {
   };
   const dispatch = useDispatch();
   const user = auth.currentUser;
-  function add() {
+  async function add() {
     const numericBudget = parseFloat(Budget.replace("$", "") || "0");
     if (numericBudget === 0) {
       setAmountError("Please enter a valid amount");
@@ -93,7 +97,7 @@ export default function CreateBudget({ navigation, route }: Props) {
       return;
     }
     const selectedMonthKey = `${parameters.year}-${String(parameters.month + 1).padStart(2, "0")}`;
-    const budgetDataForMonth = Budgetcat[parameters.month] || [];
+    const budgetDataForMonth = Budgetcat[selectedMonthKey] || [];
     const findCategory = budgetDataForMonth.find((item) => item.category === selectedCategory) || null;
     if (findCategory) {
       Alert.alert("Budget Exists", `Budget already exists for ${selectedCategory} for this month`);
@@ -103,28 +107,58 @@ export default function CreateBudget({ navigation, route }: Props) {
       setSliderValue(20);
       return;
     }
-    // dispatch(
-    //   addBudget({
-    //     category: selectedCategory,
-    //     amount: numericBudget,
-    //     percentage: Math.round(sliderValue),
-    //     notification: Expense,
-    //   })
-    // );
-    AddBudget({
+    const realm = await getRealm();
+    const BudgetData = {
       category: selectedCategory,
       amount: numericBudget,
       month: parameters.month,
       percentage: Math.round(sliderValue),
       notification: Expense,
-      userId: user.uid,
       notified: false,
       year: parameters.year,
-    });
+      _id: new Date().toISOString(),
+      synced: false,
+    };
+
+    try {
+      realm.write(() => {
+        realm.create("Budget", BudgetData);
+        dispatch(addBudget(BudgetData));
+      });
+    } catch (error) {
+      console.log(error, "1234");
+    }
+    const { isConnected } = await NetInfo.fetch();
+    if (isConnected) {
+      syncUnsyncedBudget();
+    }
+    // AddBudget({
+    //   category: selectedCategory,
+    //   amount: numericBudget,
+    //   month: parameters.month,
+    //   percentage: Math.round(sliderValue),
+    //   notification: Expense,
+    //   userId: user.uid,
+    //   notified: false,
+    //   year: parameters.year,
+    // });
     navigation.goBack();
   }
-  function editBudget() {
+  async function editBudget() {
     const numericBudget = parseFloat(Budget.replace("$", "") || "0");
+
+    const realm = await getRealm();
+    const updatedData = {
+      category: selectedCategory,
+      percentage: sliderValue,
+      amount: numericBudget,
+      id: parameters.index,
+      notification: Expense,
+      notified: false,
+    };
+    const { isConnected } = await NetInfo.fetch();
+    console.log("updat");
+    updateTransactionRealmAndFirestoreBudget(realm, user?.uid, parameters.index, updatedData, isConnected);
     dispatch(
       updateBudget({
         category: selectedCategory,
@@ -135,13 +169,6 @@ export default function CreateBudget({ navigation, route }: Props) {
         notified: false,
       })
     );
-    updateBudgetDocument("Budgets", parameters.index, {
-      category: selectedCategory,
-      percentage: sliderValue,
-      amount: numericBudget,
-      noti: Expense,
-      notified: false,
-    });
     navigation.goBack();
     navigation.goBack();
   }

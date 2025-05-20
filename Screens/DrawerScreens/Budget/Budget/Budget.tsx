@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, FlatList, Dimensions } from "react-native";
 import { getStyles } from "./style";
 import { CustomButton } from "../../../../Components/CustomButton";
@@ -18,6 +18,9 @@ import { useTranslation } from "react-i18next";
 type Budgetprop = StackNavigationProp<StackParamList, "MainScreen">;
 import { ActivityIndicator } from "react-native";
 import { ThemeContext } from "../../../../Context/ThemeContext";
+import { retrieveOldTransactions } from "../../../../Realm/Budgetrealm";
+import { clearData } from "../../../../Slice/IncomeSlice";
+import { syncUnsyncedBudget } from "../../../../Realm/SyncBudget";
 let Year = [];
 
 for (let i = 0; i < 31; i++) {
@@ -34,6 +37,12 @@ interface Props {
 }
 export default function Budget({ navigation }: Props) {
   const loading = useSelector((state: RootState) => state.Money.loading);
+  useEffect(() => {
+    // retrieveOldTransactions();
+    //console.log("oldTrrans");
+    // syncUnsyncedBudget();
+    clearData();
+  }, []);
 
   function handleprev() {
     setmonth(month - 1);
@@ -65,6 +74,7 @@ export default function Budget({ navigation }: Props) {
         progress = 1;
       }
       const exceeded = item.amountSpent > item.budgetvalue;
+      console.log(item);
       return (
         <TouchableOpacity
           onPress={() =>
@@ -151,7 +161,6 @@ export default function Budget({ navigation }: Props) {
     [navigation]
   );
   const { t } = useTranslation();
-
   if (loading) {
     return (
       <View
@@ -167,6 +176,7 @@ export default function Budget({ navigation }: Props) {
     );
   }
   const styles = getStyles(colors);
+  clearData();
   return (
     <View style={styles.container}>
       <View style={styles.add}>

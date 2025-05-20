@@ -112,19 +112,19 @@ export const ExpenseTrackerSlice = createSlice({
       state.expenseAlert = action.payload;
     },
     addBudget: (state, action) => {
-      const existingTransaction = state.budget.find((transaction) => transaction.id === action.payload.id);
+      const existingTransaction = state.budget.find((transaction) => transaction._id === action.payload._id);
       if (!existingTransaction) {
         state.budget.unshift(action.payload);
       }
     },
     deleteBudget: (state, action) => {
       const id = action.payload;
-      const index = state.budget.findIndex((item) => item.id === id);
+      const index = state.budget.findIndex((item) => item._id === id);
       state.budget = [...state.budget.slice(0, index), ...state.budget.slice(index + 1)];
     },
     updateBudget: (state, action) => {
       const { id, amount, category, percentage, notification, notified } = action.payload;
-      const index = state.budget.findIndex((item) => item.id === id);
+      const index = state.budget.findIndex((item) => item._id === id);
       if (index !== -1) {
         state.budget[index] = {
           ...state.budget[index],

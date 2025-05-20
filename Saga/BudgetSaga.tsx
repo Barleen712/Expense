@@ -3,6 +3,7 @@ import { addBudget, loadingTransaction } from "../Slice/IncomeSlice";
 import { useEffect } from "react";
 import { collection, query, where, onSnapshot, getDocs } from "firebase/firestore";
 import { db, auth } from "../Screens/FirebaseConfig";
+import { saveToRealmBudgets } from "../Realm/Budgetrealm";
 const useBudgetListener = () => {
   const dispatch = useDispatch();
 
@@ -19,6 +20,7 @@ const useBudgetListener = () => {
       }));
       data.forEach((transaction) => {
         dispatch(addBudget(transaction));
+        saveToRealmBudgets(transaction);
       });
       dispatch(loadingTransaction(false));
     });

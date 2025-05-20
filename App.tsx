@@ -17,6 +17,8 @@ import NetInfo from "@react-native-community/netinfo";
 import SplashScreen from "react-native-splash-screen";
 import { CachedUser, saveUserData, getCachedUser, clearUserData } from "./utils/userStorage";
 import { syncUnsyncedTransactions, syncPendingDeletes, syncPendingUpdatesToFirestore } from "./Realm/Sync";
+import { deleteRealmDatabase } from "./Realm/realm";
+import { syncPendingDeletesBudget, syncPendingUpdatesToFirestoreBudgets, syncUnsyncedBudget } from "./Realm/SyncBudget";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -86,15 +88,12 @@ export default function App() {
             console.error("Auth error:", err);
           }
         } else {
-          if (!cached) {
-            setUser(null);
-          } else {
-            console.log("catched");
-          }
+          setUser(null);
         }
 
         setCheckingAuth(false);
       });
+      //deleteRealmDatabase();
       return unsubscribe;
     };
 
@@ -108,6 +107,9 @@ export default function App() {
         syncUnsyncedTransactions();
         syncPendingDeletes();
         syncPendingUpdatesToFirestore();
+        syncUnsyncedBudget();
+        syncPendingDeletesBudget();
+        syncPendingUpdatesToFirestoreBudgets();
       }
     });
 
@@ -117,6 +119,9 @@ export default function App() {
         syncUnsyncedTransactions();
         syncPendingDeletes();
         syncPendingUpdatesToFirestore();
+        syncUnsyncedBudget();
+        syncPendingDeletesBudget();
+        syncPendingUpdatesToFirestoreBudgets();
       }
     });
 

@@ -1,24 +1,24 @@
 // src/database/realm.js
-import Realm from "realm";
-import { BudgetSchema, TransactionSchema } from "./Schema";
+// import Realm from "realm";
+// import { BudgetSchema } from "./Schema";
+import { getRealm } from "./realm";
+// let realm;
 
-let realm;
-
-export const getRealm = async () => {
-  try {
-    if (realm && !realm.isClosed) {
-      return realm;
-    }
-    // realm doesn't exist or was closed, open a new one
-    realm = await Realm.open({
-      schema: [TransactionSchema, BudgetSchema],
-      schemaVersion: 5,
-    });
-    return realm;
-  } catch (error) {
-    console.log(error);
-  }
-};
+// export const getRealm = async () => {
+//   try {
+//     if (realm && !realm.isClosed) {
+//       return realm;
+//     }
+//     // realm doesn't exist or was closed, open a new one
+//     realm = await Realm.open({
+//       schema: [BudgetSchema],
+//       schemaVersion: 1,
+//     });
+//     return realm;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 // export const retrieveOldTransactions = async () => {
 //   try {
@@ -33,21 +33,21 @@ export const getRealm = async () => {
 //     console.error("Error opening Realm:", error);
 //   }
 // };
-export const deleteRealmDatabase = async () => {
-  try {
-    Realm.deleteFile({ path: Realm.defaultPath });
-    console.log("✅ Realm file deleted");
-  } catch (error) {
-    console.error("❌ Failed to delete Realm file:", error);
-  }
-};
+// export const deleteRealmDatabase = async () => {
+//   try {
+//     Realm.deleteFile({ path: Realm.defaultPath });
+//     console.log("✅ Realm file deleted");
+//   } catch (error) {
+//     console.error("❌ Failed to delete Realm file:", error);
+//   }
+// };
 
 import NetInfo from "@react-native-community/netinfo";
 import { db } from "../Screens/FirebaseConfig";
 import { collection, query, getDocs, where, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
-export const markPendingDeleteOrDelete = async (realm, _id) => {
-  console.log(_id);
-  const transaction = realm.objectForPrimaryKey("Transaction", _id);
+import { BudgetSchema } from "./Schema";
+export const markPendingDeleteOrDeleteBudget = async (realm, _id) => {
+  const transaction = realm.objectForPrimaryKey("Budget", _id);
 
   if (!transaction) {
     console.warn("Transaction not found");
@@ -59,7 +59,7 @@ export const markPendingDeleteOrDelete = async (realm, _id) => {
   if (isConnected) {
     try {
       // ✅ Delete from Firestore
-      const q = query(collection(db, "Transactions"), where("_id", "==", _id));
+      const q = query(collection(db, "Budgets"), where("_id", "==", _id));
       const querySnapshot = await getDocs(q);
       const deletePromises = querySnapshot.docs.map((docSnapshot) => deleteDoc(docSnapshot.ref));
 
@@ -68,7 +68,7 @@ export const markPendingDeleteOrDelete = async (realm, _id) => {
         realm.delete(transaction);
       });
 
-      console.log("Transaction deleted from Firestore & Realm");
+      console.log("Budget deleted from Firestore & Realm");
     } catch (error) {
       console.error("Delete error:", error);
     } finally {
@@ -84,50 +84,25 @@ export const markPendingDeleteOrDelete = async (realm, _id) => {
   }
 };
 
-export const saveToRealmIfNotExists = async (input) => {
-  const realm = await getRealm();
-  const transactions = Array.isArray(input) ? input : [input];
-  realm.write(() => {
-    transactions.forEach((txn) => {
-      const exists = realm.objectForPrimaryKey("Transaction", txn._id);
-      if (!exists) {
-        const safeTxn = {
-          ...txn,
-          endDate: txn.endDate?.seconds ? new Date(txn.endDate.seconds * 1000) : null,
-          synced: true,
-          pendingDelete: false,
-        };
-
-        try {
-          realm.create("Transaction", safeTxn);
-        } catch (e) {
-          console.error("Failed to write transaction:", txn._id, e);
-        }
-      } else {
-        return;
-      }
-    });
-  });
-};
-export async function updateTransactionRealmAndFirestore(
+export async function updateTransactionRealmAndFirestoreBudget(
   realm: Realm,
   userID: string,
   transactionId: string,
-  updatedData: Partial<Omit<typeof TransactionSchema.properties, "_id">>,
+  updatedData: Partial<Omit<typeof BudgetSchema.properties, "_id">>,
   isOnline: boolean
 ) {
+  console.log(realm, userID, transactionId, updatedData, isOnline);
   try {
     if (isOnline) {
-      const q = query(collection(db, "Transactions"), where("_id", "==", transactionId));
+      const q = query(collection(db, "Budgets"), where("_id", "==", transactionId));
       const querySnapshot = await getDocs(q);
       const docSnap = querySnapshot.docs[0];
-      const docRef = doc(db, "Transactions", docSnap.id);
+      const docRef = doc(db, "Budgets", docSnap.id);
       await updateDoc(docRef, updatedData);
       const dataToUpdate = { ...updatedData, synced: true, pendingUpdate: false };
 
-      // Update Realm
       realm.write(() => {
-        const tx = realm.objectForPrimaryKey("Transaction", transactionId);
+        const tx = realm.objectForPrimaryKey("Budget", transactionId);
         if (tx) {
           Object.entries(dataToUpdate).forEach(([key, value]) => {
             (tx as any)[key] = value;
@@ -138,14 +113,14 @@ export async function updateTransactionRealmAndFirestore(
       return { success: true, message: "Updated online" };
     } else {
       realm.write(() => {
-        const tx = realm.objectForPrimaryKey("Transaction", transactionId);
+        const tx = realm.objectForPrimaryKey("Budget", transactionId);
         if (tx) {
           Object.entries(updatedData).forEach(([key, value]) => {
             (tx as any)[key] = value;
           });
           tx.pendingUpdate = true;
         } else {
-          realm.create("Transaction", {
+          realm.create("Budget", {
             _id: transactionId,
             ...updatedData,
             pendingUpdate: true,
@@ -161,3 +136,37 @@ export async function updateTransactionRealmAndFirestore(
     return { success: false, message: error.message };
   }
 }
+
+export const retrieveOldTransactions = async () => {
+  try {
+    const realm = await getRealm();
+    const transactions = realm.objects("Budget");
+    console.log(transactions, "dhj");
+  } catch (error) {
+    console.error("Error opening Realm:", error);
+  }
+};
+export const saveToRealmBudgets = async (input) => {
+  const realm = await getRealm();
+  const transactions = Array.isArray(input) ? input : [input];
+  realm.write(() => {
+    transactions.forEach((txn) => {
+      const exists = realm.objectForPrimaryKey("Budget", txn._id);
+      if (!exists) {
+        const safeTxn = {
+          ...txn,
+          synced: true,
+          pendingDelete: false,
+        };
+
+        try {
+          realm.create("Budget", safeTxn);
+        } catch (e) {
+          console.error("Failed to write transaction:", txn._id, e);
+        }
+      } else {
+        return;
+      }
+    });
+  });
+};
