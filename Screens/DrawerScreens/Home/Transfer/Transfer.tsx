@@ -29,7 +29,7 @@ import { useDispatch } from "react-redux";
 import { uploadImage, StringConstants } from "../../../Constants";
 import { useTranslation } from "react-i18next";
 import { auth } from "../../../FirebaseConfig";
-import { updateDocument } from "../../../FirestoreHandler";
+import { updateTransactionRealmAndFirestore } from "../../../../Realm/realm";
 import { updateTransaction } from "../../../../Slice/IncomeSlice";
 import { ThemeContext } from "../../../../Context/ThemeContext";
 import TransferImg from "../../../../assets/transfer.svg";
@@ -214,23 +214,19 @@ export default function Income({ navigation, route }: Props) {
     setLoading(false);
     navigation.goBack();
   }
-  function editTransfer() {
+  async function editTransfer() {
     const numericExpense = parseFloat(Transfer.replace("$", "") || "0");
-    dispatch(
-      updateTransaction({
-        amount: numericExpense,
-        description: Description,
-        category: From + " -> " + To,
-        id: id,
-        moneyCategory: "Expense",
-      })
-    );
-    updateDocument("Transactions", id, {
+    const realm = await getRealm();
+    const updateData = {
       amount: numericExpense,
       description: Description,
       category: From + " -> " + To,
+      id: id,
       moneyCategory: "Transfer",
-    });
+    };
+    const { isConnected } = await NetInfo.fetch();
+    dispatch(updateTransaction(updateData));
+    updateTransactionRealmAndFirestore(realm, user?.uid, id, updateData, isConnected);
     navigation.goBack();
     navigation.goBack();
   }

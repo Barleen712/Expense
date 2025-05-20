@@ -17,6 +17,7 @@ export const TransactionSchema = {
     startYear: "int?",
     synced: { type: "bool", default: false },
     pendingDelete: { type: "bool", default: false },
+    pendingUpdate: { type: "bool", default: false },
   },
   primaryKey: "_id",
 };

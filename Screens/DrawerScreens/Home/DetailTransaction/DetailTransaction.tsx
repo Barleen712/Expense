@@ -51,9 +51,10 @@ function DetailTransaction({
     setModalVisible(!modalVisible);
   }
   async function deleteTransactions() {
+    dispatch(deleteTransaction(id));
     const realm = await getRealm();
     await markPendingDeleteOrDelete(realm, id);
-    dispatch(deleteTransaction(id));
+
     //deleteDocument("Transactions", id);
   }
   const { t } = useTranslation();
@@ -66,7 +67,7 @@ function DetailTransaction({
     } else if (type === "Expense") {
       navigation.navigate("Expense", { amount, title, category, wallet, edit: true, id });
     } else {
-      navigation.navigate("Transfer", { amount, to: category, from: type, title: des, edit: true, id });
+      navigation.navigate("Transfer", { amount, to: category, from: type, title: title, edit: true, id });
     }
   }
   const DisplayDate = new Date(time);

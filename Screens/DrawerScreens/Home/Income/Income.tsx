@@ -40,6 +40,7 @@ import FrequencyModal from "../../../../Components/FrequencyModal";
 import DropdownComponent from "../../../../Components/DropDown";
 import { getStyles } from "./styles";
 import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
+import { updateTransactionRealmAndFirestore } from "../../../../Realm/realm";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -242,24 +243,20 @@ export default function Income({ navigation, route }: Props) {
 
     navigation.goBack();
   }
-  function editIncome() {
+  async function editIncome() {
+    const realm = await getRealm();
     const numericIncome = parseFloat(Income.replace("$", "") || "0");
-    dispatch(
-      updateTransaction({
-        amount: numericIncome,
-        description: Description,
-        category: selectedCategory,
-        wallet: selectedWallet,
-        id: parameters.id,
-        moneyCategory: "Income",
-      })
-    );
-    updateDocument("Transactions", parameters.id, {
+    const updateData = {
       amount: numericIncome,
       description: Description,
       category: selectedCategory,
       wallet: selectedWallet,
-    });
+      id: parameters.id,
+      moneyCategory: "Income",
+    };
+    const { isConnected } = await NetInfo.fetch();
+    dispatch(updateTransaction(updateData));
+    updateTransactionRealmAndFirestore(realm, user?.uid, parameters.id, updateData, isConnected);
     navigation.goBack();
     navigation.goBack();
   }

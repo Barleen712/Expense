@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { View, PermissionsAndroid, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import Screens from "./Navigation/StackNavigation";
+import Screens, { TabScreens } from "./Navigation/StackNavigation";
 import { Provider } from "react-redux";
 import { store, persistor } from "./Store/Store";
 import { PersistGate } from "redux-persist/integration/react";
@@ -9,7 +9,6 @@ import { ThemeProvider } from "./Context/ThemeContext";
 import notifee, { AuthorizationStatus } from "@notifee/react-native";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Screens/FirebaseConfig";
-import { TabScreens } from "./Navigation/StackNavigation";
 import { ActivityIndicator } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import { getUseNamerDocument } from "./Saga/BudgetSaga";
@@ -17,8 +16,7 @@ import StackParamList from "./Navigation/StackList";
 import NetInfo from "@react-native-community/netinfo";
 import SplashScreen from "react-native-splash-screen";
 import { CachedUser, saveUserData, getCachedUser, clearUserData } from "./utils/userStorage";
-import { syncUnsyncedTransactions } from "./Realm/Sync";
-import { syncPendingDeletes } from "./Realm/realm";
+import { syncUnsyncedTransactions, syncPendingDeletes, syncPendingUpdatesToFirestore } from "./Realm/Sync";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -90,6 +88,8 @@ export default function App() {
         } else {
           if (!cached) {
             setUser(null);
+          } else {
+            console.log("catched");
           }
         }
 
@@ -107,6 +107,7 @@ export default function App() {
       if (state.isConnected && hasFetchedInitially) {
         syncUnsyncedTransactions();
         syncPendingDeletes();
+        syncPendingUpdatesToFirestore();
       }
     });
 
@@ -115,6 +116,7 @@ export default function App() {
         hasFetchedInitially = true;
         syncUnsyncedTransactions();
         syncPendingDeletes();
+        syncPendingUpdatesToFirestore();
       }
     });
 

@@ -40,6 +40,7 @@ import { getStyles } from "./styles";
 import { getRealm } from "../../../../Realm/realm";
 import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
 import NetInfo from "@react-native-community/netinfo";
+import { updateTransactionRealmAndFirestore } from "../../../../Realm/realm";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -333,24 +334,20 @@ export default function Expense({ navigation, route }: Props) {
     setendAfter("");
   }
   const { t } = useTranslation();
-  function editExpense() {
+  async function editExpense() {
+    const realm = await getRealm();
     const numericExpense = parseFloat(Expenses.replace("$", "") || "0");
-    dispatch(
-      updateTransaction({
-        amount: numericExpense,
-        description: Description,
-        category: selectedCategory,
-        wallet: selectedWallet,
-        id: parameters.id,
-        moneyCategory: "Expense",
-      })
-    );
-    updateDocument("Transactions", parameters.id, {
+    const updateData = {
       amount: numericExpense,
       description: Description,
       category: selectedCategory,
       wallet: selectedWallet,
-    });
+      id: parameters.id,
+      moneyCategory: "Expense",
+    };
+    const { isConnected } = await NetInfo.fetch();
+    dispatch(updateTransaction(updateData));
+    updateTransactionRealmAndFirestore(realm, user?.uid, parameters.id, updateData, isConnected);
     navigation.goBack();
     navigation.goBack();
   }

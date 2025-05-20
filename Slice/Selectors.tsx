@@ -5,94 +5,94 @@ const currentDate = new Date();
 export const selectTransactions = createSelector([(state) => state.Money.amount], (transactions) => {
   const extendedTransactions = [];
 
-  // transactions.forEach((item) => {
-  //   let startMonthIndex;
-  //   if (typeof item.startMonth === "string") {
-  //     const date = new Date(`${item.startMonth} 1, ${item.startYear}`);
-  //     startMonthIndex = isNaN(date.getMonth()) ? new Date(item.Date).getMonth() : date.getMonth();
-  //   } else {
-  //     startMonthIndex = item.startMonth ?? new Date(item.Date).getMonth();
-  //   }
+  transactions.forEach((item) => {
+    let startMonthIndex;
+    if (typeof item.startMonth === "string") {
+      const date = new Date(`${item.startMonth} 1, ${item.startYear}`);
+      startMonthIndex = isNaN(date.getMonth()) ? new Date(item.Date).getMonth() : date.getMonth();
+    } else {
+      startMonthIndex = item.startMonth ?? new Date(item.Date).getMonth();
+    }
 
-  //   const startDate = new Date(
-  //     item.startYear ?? new Date(item.Date).getFullYear(),
-  //     startMonthIndex,
-  //     item.startDate ?? new Date(item.Date).getDate()
-  //   );
+    const startDate = new Date(
+      item.startYear ?? new Date(item.Date).getFullYear(),
+      startMonthIndex,
+      item.startDate ?? new Date(item.Date).getDate()
+    );
 
-  //   const addedDate = new Date(item.Date);
-  //   const addedTime = {
-  //     hours: addedDate.getHours(),
-  //     minutes: addedDate.getMinutes(),
-  //     seconds: addedDate.getSeconds(),
-  //     milliseconds: addedDate.getMilliseconds(),
-  //   };
+    const addedDate = new Date(item.Date);
+    const addedTime = {
+      hours: addedDate.getHours(),
+      minutes: addedDate.getMinutes(),
+      seconds: addedDate.getSeconds(),
+      milliseconds: addedDate.getMilliseconds(),
+    };
 
-  //   const endDate = item.endAfter === "Date" ? new Date(item.endDate) : null;
-  //   const maxRepeats = item.endAfter === "Never" ? 365 : 12;
-  //   const firstOccurrence = new Date(startDate);
-  //   firstOccurrence.setHours(addedTime.hours);
-  //   firstOccurrence.setMinutes(addedTime.minutes);
-  //   firstOccurrence.setSeconds(addedTime.seconds);
-  //   firstOccurrence.setMilliseconds(addedTime.milliseconds);
+    const endDate = item.endAfter === "Date" ? new Date(item.endDate) : null;
+    const maxRepeats = item.endAfter === "Never" ? 365 : 12;
+    const firstOccurrence = new Date(startDate);
+    firstOccurrence.setHours(addedTime.hours);
+    firstOccurrence.setMinutes(addedTime.minutes);
+    firstOccurrence.setSeconds(addedTime.seconds);
+    firstOccurrence.setMilliseconds(addedTime.milliseconds);
 
-  //   extendedTransactions.push({
-  //     ...item,
-  //     Date: firstOccurrence.toISOString(),
-  //   });
+    extendedTransactions.push({
+      ...item,
+      Date: firstOccurrence.toISOString(),
+    });
 
-  //   let repeatCount = 0;
-  //   let currentDate = new Date(firstOccurrence); // Start from the first occurrence
+    let repeatCount = 0;
+    let currentDate = new Date(firstOccurrence); // Start from the first occurrence
 
-  //   while (true) {
-  //     // If "Never" and maxRepeats reached, break the loop
-  //     if (item.endAfter === "Never" && repeatCount >= maxRepeats) break;
-  //     // If "Date" and we pass the endDate, break the loop
-  //     if (item.endAfter === "Date" && currentDate >= endDate) break;
+    while (true) {
+      // If "Never" and maxRepeats reached, break the loop
+      if (item.endAfter === "Never" && repeatCount >= maxRepeats) break;
+      // If "Date" and we pass the endDate, break the loop
+      if (item.endAfter === "Date" && currentDate >= endDate) break;
 
-  //     let nextDate = new Date(currentDate); // clone to avoid mutation
+      let nextDate = new Date(currentDate); // clone to avoid mutation
 
-  //     // Apply the exact time from the item.Date (when the transaction is added)
-  //     nextDate.setHours(addedTime.hours);
-  //     nextDate.setMinutes(addedTime.minutes);
-  //     nextDate.setSeconds(addedTime.seconds);
-  //     nextDate.setMilliseconds(addedTime.milliseconds);
+      // Apply the exact time from the item.Date (when the transaction is added)
+      nextDate.setHours(addedTime.hours);
+      nextDate.setMinutes(addedTime.minutes);
+      nextDate.setSeconds(addedTime.seconds);
+      nextDate.setMilliseconds(addedTime.milliseconds);
 
-  //     switch (item.Frequency) {
-  //       case "Daily":
-  //         nextDate.setDate(nextDate.getDate() + 1);
-  //         break;
-  //       case "Weekly":
-  //         nextDate.setDate(nextDate.getDate() + 7);
-  //         break;
-  //       case "Monthly":
-  //         nextDate.setMonth(nextDate.getMonth() + 1);
-  //         // Ensure it doesn't go out of bounds in a shorter month (e.g., February)
-  //         const day = nextDate.getDate();
-  //         const nextMonth = nextDate.getMonth() + 1;
-  //         const daysInNextMonth = new Date(nextDate.getFullYear(), nextMonth + 1, 0).getDate();
-  //         nextDate.setDate(Math.min(day, daysInNextMonth));
-  //         break;
-  //       case "Yearly":
-  //         nextDate.setFullYear(nextDate.getFullYear() + 1);
-  //         break;
-  //       default:
-  //         return;
-  //     }
+      switch (item.Frequency) {
+        case "Daily":
+          nextDate.setDate(nextDate.getDate() + 1);
+          break;
+        case "Weekly":
+          nextDate.setDate(nextDate.getDate() + 7);
+          break;
+        case "Monthly":
+          nextDate.setMonth(nextDate.getMonth() + 1);
+          // Ensure it doesn't go out of bounds in a shorter month (e.g., February)
+          const day = nextDate.getDate();
+          const nextMonth = nextDate.getMonth() + 1;
+          const daysInNextMonth = new Date(nextDate.getFullYear(), nextMonth + 1, 0).getDate();
+          nextDate.setDate(Math.min(day, daysInNextMonth));
+          break;
+        case "Yearly":
+          nextDate.setFullYear(nextDate.getFullYear() + 1);
+          break;
+        default:
+          return;
+      }
 
-  //     // Avoid pushing past endDate if "Date" is used
-  //     if (item.endAfter === "Date" && nextDate > endDate) break;
+      // Avoid pushing past endDate if "Date" is used
+      if (item.endAfter === "Date" && nextDate > endDate) break;
 
-  //     extendedTransactions.push({
-  //       ...item,
-  //       Date: nextDate.toISOString(),
-  //     });
+      extendedTransactions.push({
+        ...item,
+        Date: nextDate.toISOString(),
+      });
 
-  //     currentDate = nextDate;
-  //     repeatCount++;
-  //   }
-  // });
-  return transactions;
+      currentDate = nextDate;
+      repeatCount++;
+    }
+  });
+  return extendedTransactions;
 });
 
 export const selectBudget = createSelector([selectMoney], (money) => money.budget);

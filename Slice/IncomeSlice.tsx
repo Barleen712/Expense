@@ -99,7 +99,7 @@ export const ExpenseTrackerSlice = createSlice({
     },
     updateTransaction: (state, action) => {
       const { id, amount, category, wallet, description } = action.payload;
-      const index = state.amount.findIndex((item) => item.id === id);
+      const index = state.amount.findIndex((item) => item._id === id);
       state.amount[index].amount = amount;
       state.amount[index].category = category;
       state.amount[index].description = description;

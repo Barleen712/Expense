@@ -1,4 +1,4 @@
-import { createStackNavigator, StackNavigationProp } from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import Onboarding from "../Screens/Onboarding/Onboarding/Onboarding";
 import Login from "../Screens/Onboarding/Login/Login";
 import Setpin from "../Screens/Onboarding/Setpin/SetupPin01";

@@ -57,7 +57,7 @@ export default function Home({ navigation }: Props) {
   }
   useEffect(() => {
     getData();
-    retrieveOldTransactions();
+    //retrieveOldTransactions();
   }, [navigation]);
   const index = new Date().getMonth();
   //loadTransactionsFromRealm(dispatch);

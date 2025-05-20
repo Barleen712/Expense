@@ -301,13 +301,13 @@ const pics = {
 export const profilepics = [pics[0], pics[1], pics[2], pics[3], pics[4]];
 
 export const FirebaseErrors: Record<string, string> = {
-  "auth/invalid-credential": "Check Your Credentials",
-  "auth/too-many-requests": "You have exceeded the request limit",
-  "auth/email-already-in-use": "The provided email is already in use",
-  "auth/network-request-failed": "No internet. Please reconnect and try again.",
-  done: "You have successfully registered",
-  verify: "Please check your inbox to verify your email.",
-  fail: "Email not verified. Please check your inbox.",
+  "auth/invalid-credential": " ⚠️ Check Your Credentials",
+  "auth/too-many-requests": " ⚠️ You have exceeded the request limit",
+  "auth/email-already-in-use": "🚫 The provided email is already in use",
+  "auth/network-request-failed": "🚫 No internet. Please reconnect and try again.",
+  done: " ✅ You have successfully registered",
+  verify: "📧 Please check your inbox to verify your email.",
+  fail: "⚠️ Email not verified. Please check your inbox.",
 };
 export function raiseToast(type: string, text1: string, error: string) {
   Toast.show({

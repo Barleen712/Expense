@@ -3,16 +3,12 @@ import {
   View,
   Text,
   TouchableWithoutFeedback,
-  TextInput,
+  Alert,
   Image,
   TouchableOpacity,
   Modal,
   ImageBackground,
   Dimensions,
-  Keyboard,
-  Platform,
-  KeyboardAvoidingView,
-  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -37,6 +33,7 @@ import { profilepics } from "../../Constants";
 import { clearUserData } from "../../../utils/userStorage";
 import { getRealm, deleteRealmDatabase } from "../../../Realm/realm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import NetInfo from "@react-native-community/netinfo";
 type Profileprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
@@ -79,6 +76,14 @@ export default function Profile({ navigation }: Props) {
     setModalVisible(!modalVisible);
   }
   async function handleLogout() {
+    const netState = await NetInfo.fetch();
+
+    if (!netState.isConnected) {
+      Alert.alert("Network Error", "🚫 No internet connection. Please connect to the internet to log out.");
+      toggleModal();
+      return;
+    }
+
     toggleModal(); // show spinner/modal immediately
 
     try {
@@ -88,7 +93,6 @@ export default function Profile({ navigation }: Props) {
         console.log("✅ Firebase signOut successful");
       } catch (err) {
         console.warn("❌ Firebase signOut failed (possibly offline):", err.message);
-        // Optionally show a toast or retry prompt here
         return;
       }
 
@@ -98,6 +102,7 @@ export default function Profile({ navigation }: Props) {
       await persistor.purge();
       console.log("🧹 Redux + persisted data cleared");
       await AsyncStorage.clear();
+
       // Step 3: Safely close Realm
       try {
         const realm = await getRealm();
