@@ -1,6 +1,7 @@
 // src/database/realm.js
 import Realm from "realm";
 import { BudgetSchema, TransactionSchema } from "./Schema";
+import { uploadImage } from "../Screens/Constants";
 
 let realm;
 
@@ -118,11 +119,24 @@ export async function updateTransactionRealmAndFirestore(
 ) {
   try {
     if (isOnline) {
+      let supabaseurl = null;
+      if (updatedData.url) {
+        supabaseurl = await uploadImage(updatedData.url);
+      }
+      console.log(supabaseurl);
+      const Data = {
+        amount: updatedData.amount,
+        description: updatedData.description,
+        category: updatedData.category,
+        wallet: updatedData.wallet,
+        moneyCategory: updatedData.moneyCategory,
+        url: supabaseurl,
+      };
       const q = query(collection(db, "Transactions"), where("_id", "==", transactionId));
       const querySnapshot = await getDocs(q);
       const docSnap = querySnapshot.docs[0];
       const docRef = doc(db, "Transactions", docSnap.id);
-      await updateDoc(docRef, updatedData);
+      await updateDoc(docRef, Data);
       const dataToUpdate = { ...updatedData, synced: true, pendingUpdate: false };
 
       // Update Realm

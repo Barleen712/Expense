@@ -31,6 +31,7 @@ import { GoogleAuthProvider } from "@firebase/auth";
 import * as DocumentPicker from "expo-document-picker";
 import { uploadImage } from "../../Constants";
 import { ScrollView } from "react-native-gesture-handler";
+import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
 type SignupProp = StackNavigationProp<StackParamList, "SignUp">;
 interface Props {
   navigation: SignupProp;
@@ -152,12 +153,24 @@ export default function SignUp({ navigation }: Props) {
     const googleCredential = GoogleAuthProvider.credential(id);
     const creds = await signInWithCredential(auth, googleCredential);
     const user = creds.user;
+    const userDoc = await getUseNamerDocument();
+    if (userDoc) {
+      raiseToast("success", "Welcome Back", "login");
+      dispatch(
+        addUser({
+          User: userDoc.Name,
+          Photo: userDoc?.Photo,
+          index: userDoc?.Index,
+          pin: userDoc?.pin,
+        })
+      );
+      setloading(false);
+      return;
+    }
+
     raiseToast("success", "Sign Up Success", "done");
     AddUser({ User: name, Photo: { uri: photo }, userid: user.uid, index: null, pinSet: false });
     setloading(false);
-
-    //  raiseToast("success", "Email Verification", "verify");
-    //  navigation.navigate("Setpin")
   }
   const { colors } = useContext(ThemeContext);
   const style = getStyles(colors);
@@ -199,6 +212,7 @@ export default function SignUp({ navigation }: Props) {
               title={t(StringConstants.Name)}
               color="rgb(56, 88, 85)"
               css={style.textinput}
+              limit={25}
               name={name.name}
               // handleFocus={handleChange}
               onchange={(data) => {

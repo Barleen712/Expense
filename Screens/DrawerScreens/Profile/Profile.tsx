@@ -33,13 +33,20 @@ import { profilepics } from "../../Constants";
 import { clearUserData } from "../../../utils/userStorage";
 import { getRealm, deleteRealmDatabase } from "../../../Realm/realm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import NetInfo from "@react-native-community/netinfo";
+import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
+import { syncPendingDeletes, syncPendingUpdatesToFirestore, syncUnsyncedTransactions } from "../../../Realm/Sync";
+import {
+  syncPendingDeletesBudget,
+  syncUnsyncedBudget,
+  syncPendingUpdatesToFirestoreBudgets,
+} from "../../../Realm/SyncBudget";
 type Profileprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
   navigation: Profileprop;
 }
 export default function Profile({ navigation }: Props) {
+  const { isConnected } = useNetInfo();
   const [username, setuser] = useState("");
   const [photo, setPhoto] = useState("");
   const [editProfile, seteditProfile] = useState(false);
@@ -89,6 +96,12 @@ export default function Profile({ navigation }: Props) {
     try {
       // Step 1: Sign out from Firebase first
       try {
+        syncUnsyncedTransactions();
+        syncPendingDeletes({ isConnected });
+        syncPendingUpdatesToFirestore();
+        syncUnsyncedBudget();
+        syncPendingDeletesBudget({ isConnected });
+        syncPendingUpdatesToFirestoreBudgets();
         await auth.signOut();
         console.log("✅ Firebase signOut successful");
       } catch (err) {

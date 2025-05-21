@@ -3,14 +3,15 @@ import { View, Text, Image, TouchableOpacity, Modal, TouchableWithoutFeedback, S
 import { getStyles } from "./styles";
 import Header from "../../../../Components/Header";
 import { CustomButton } from "../../../../Components/CustomButton";
-import { deleteTransactionFromLocalDB, getRealm, markPendingDeleteOrDelete } from "../../../../Realm/realm";
+import { getRealm, markPendingDeleteOrDelete } from "../../../../Realm/realm";
 import { deleteTransaction } from "../../../../Slice/IncomeSlice";
 import { useSelector, useDispatch } from "react-redux";
 import CustomModal from "../../../../Components/Modal/Modal";
 import { useTranslation } from "react-i18next";
-import { deleteDocument } from "../../../FirestoreHandler";
+import FastImage from "react-native-fast-image";
 import { StringConstants, currencies, Month, Weeks } from "../../../Constants";
 import { ThemeContext } from "../../../../Context/ThemeContext";
+import { RootState } from "../../../../Store/Store";
 interface DetailTransactionProps {
   navigation: any;
   bg: string;
@@ -54,20 +55,18 @@ function DetailTransaction({
     dispatch(deleteTransaction(id));
     const realm = await getRealm();
     await markPendingDeleteOrDelete(realm, id);
-
-    //deleteDocument("Transactions", id);
   }
   const { t } = useTranslation();
-  const Rates = useSelector((state) => state.Rates);
-  const currency = useSelector((state) => state.Money.preferences.currency);
+  const Rates = useSelector((state: RootState) => state.Rates);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const convertRate = Rates.Rate[currency];
   function EditTransaction() {
     if (type === "Income") {
-      navigation.navigate("Income", { amount, title, category, wallet, edit: true, id });
+      navigation.navigate("Income", { amount, title, category, wallet, edit: true, id, path: uri });
     } else if (type === "Expense") {
-      navigation.navigate("Expense", { amount, title, category, wallet, edit: true, id });
+      navigation.navigate("Expense", { amount, title, category, wallet, edit: true, id, path: uri });
     } else {
-      navigation.navigate("Transfer", { amount, to: category, from: type, title: title, edit: true, id });
+      navigation.navigate("Transfer", { amount, to: category, from: type, title: title, edit: true, id, path: uri });
     }
   }
   const DisplayDate = new Date(time);
@@ -82,6 +81,7 @@ function DetailTransaction({
   const DisplayTime = `${day} ${getDate} ${month} ${year} ${getHours}:${getMinute}`;
   const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);
+  const [imageError, setimageError] = useState(false);
   return (
     <View style={styles.container}>
       <Header title={t("Detail Transaction")} press={() => navigation.goBack()} bgcolor={bg} color="white" />
@@ -116,19 +116,29 @@ function DetailTransaction({
         </ScrollView>
       </View>
       <View style={styles.attachView}>
-        {/* {uri && (
+        {uri && (
           <View>
             <Text style={styles.username}>{t("Attachment")}</Text>
 
-            <TouchableOpacity onPress={() => showImage(true)}>
-              <Image
-                style={styles.attachImg}
-                source={{ uri: uri }}
-                onError={() => console.log("Failed to load image")}
-              />
-            </TouchableOpacity>
+            {imageError ? (
+              <View
+                style={{
+                  width: "100%",
+                  alignItems: "center",
+                  height: "80%",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={{ color: "gray" }}>Network Error</Text>
+                <Text style={{ color: "gray" }}>🚫 No Internet Connection .</Text>
+              </View>
+            ) : (
+              <TouchableOpacity onPress={() => showImage(true)}>
+                <FastImage style={styles.attachImg} source={{ uri }} onError={() => setimageError(true)} />
+              </TouchableOpacity>
+            )}
           </View>
-        )} */}
+        )}
       </View>
       <View style={[styles.Apply, { flex: 0.1 }]}>
         <CustomButton title={t("Edit")} bg={bg} color="white" press={EditTransaction} />
@@ -151,11 +161,7 @@ function DetailTransaction({
         <TouchableWithoutFeedback onPress={() => showImage(false)}>
           <View style={[styles.modalOverlay, { backgroundColor: "rgba(24, 13, 13, 0.89)" }]}>
             <View style={{ height: "90%", position: "absolute", bottom: 0, width: "100%" }}>
-              <Image
-                style={{ height: "100%", resizeMode: "contain" }}
-                source={{ uri: uri }}
-                onError={() => console.log("Failed to load image")}
-              />
+              <FastImage style={{ height: "100%" }} resizeMode="contain" source={{ uri }} />
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -179,12 +185,13 @@ export default function DetailTransaction_Expense({ navigation, route }) {
       wallet={value.wallet}
       id={value._id}
       title={value.description}
-      //  uri={value.attachment.uri}
+      uri={value.url}
     />
   );
 }
 export function DetailTransaction_Income({ navigation, route }) {
   const { value } = route.params;
+  console.log(value);
   return (
     <DetailTransaction
       navigation={navigation}
@@ -197,7 +204,7 @@ export function DetailTransaction_Income({ navigation, route }) {
       category={value.category}
       wallet={value.wallet}
       id={value._id}
-      // uri={value.attachment.uri}
+      uri={value.url}
     />
   );
 }
@@ -218,7 +225,7 @@ export function DetailTransaction_Transfer({ navigation, route }) {
       wallet="Transfer"
       title={value.description}
       id={value._id}
-      //  uri={value.attachment.uri}
+      uri={value.url}
     />
   );
 }

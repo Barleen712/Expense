@@ -13,7 +13,7 @@ import { ActivityIndicator } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import { getUseNamerDocument } from "./Saga/BudgetSaga";
 import StackParamList from "./Navigation/StackList";
-import NetInfo from "@react-native-community/netinfo";
+import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 import SplashScreen from "react-native-splash-screen";
 import { CachedUser, saveUserData, getCachedUser, clearUserData } from "./utils/userStorage";
 import { syncUnsyncedTransactions, syncPendingDeletes, syncPendingUpdatesToFirestore } from "./Realm/Sync";
@@ -93,42 +93,21 @@ export default function App() {
 
         setCheckingAuth(false);
       });
-      //deleteRealmDatabase();
+      // deleteRealmDatabase();
       return unsubscribe;
     };
 
     initAuth();
   }, []);
+  const { isConnected } = useNetInfo();
   useEffect(() => {
-    let hasFetchedInitially = false;
-
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      if (state.isConnected && hasFetchedInitially) {
-        syncUnsyncedTransactions();
-        syncPendingDeletes();
-        syncPendingUpdatesToFirestore();
-        syncUnsyncedBudget();
-        syncPendingDeletesBudget();
-        syncPendingUpdatesToFirestoreBudgets();
-      }
-    });
-
-    NetInfo.fetch().then((state) => {
-      if (state.isConnected && !hasFetchedInitially) {
-        hasFetchedInitially = true;
-        syncUnsyncedTransactions();
-        syncPendingDeletes();
-        syncPendingUpdatesToFirestore();
-        syncUnsyncedBudget();
-        syncPendingDeletesBudget();
-        syncPendingUpdatesToFirestoreBudgets();
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+    syncUnsyncedTransactions();
+    syncPendingDeletes({ isConnected });
+    syncPendingUpdatesToFirestore();
+    syncUnsyncedBudget();
+    syncPendingDeletesBudget({ isConnected });
+    syncPendingUpdatesToFirestoreBudgets();
+  }, [isConnected]);
 
   if (checkingAuth) {
     return (

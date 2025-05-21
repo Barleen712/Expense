@@ -47,13 +47,11 @@ const modal = [
   require("../../../../assets/DocumentBlue.png"),
 ];
 export default function Income({ navigation, route }: Props) {
-  const { from, to, amount, id, edit, title } = route.params;
-
-  const [Expense, setExpense] = useState(false);
-  const [showAttach, setAttach] = useState(true);
-  const [image, setImage] = useState<string | null>(null);
+  const { from, to, amount, id, edit, title, path } = route.params;
+  const [showAttach, setAttach] = useState(!path);
+  const [image, setImage] = useState<string | null>(path);
   const [modalVisible, setModalVisible] = useState(false);
-  const [close, setclose] = useState(false);
+  const [close, setclose] = useState(path);
   const [document, setDocument] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
   const [Transfer, setTransfer] = useState<string>(`${amount}`);
@@ -63,8 +61,8 @@ export default function Income({ navigation, route }: Props) {
   const [loading, setLoading] = useState(false);
   const [TransferError, setTransferError] = useState("");
   const [toError, setToError] = useState("");
-  const [categoryError, setcategoryError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
+  const [localPath, setlocalPath] = useState({ type: "", path: path });
 
   function toggleModal() {
     setModalVisible(!modalVisible);
@@ -154,10 +152,10 @@ export default function Income({ navigation, route }: Props) {
       return;
     }
 
-    if (image) {
-      setLoading(true);
-      supabaseImageUrl = await uploadImage(image);
-    }
+    // if (image) {
+    //   setLoading(true);
+    //   supabaseImageUrl = await uploadImage(image);
+    // }
     // dispatch(
     //   addTransaction({
     //     amount: numericIncome,
@@ -197,6 +195,8 @@ export default function Income({ navigation, route }: Props) {
       repeat: false,
       Date: new Date().toISOString(),
       synced: false,
+      type: localPath.type,
+      url: localPath.path,
     };
 
     try {
@@ -223,6 +223,8 @@ export default function Income({ navigation, route }: Props) {
       category: From + " -> " + To,
       id: id,
       moneyCategory: "Transfer",
+      url: localPath.path,
+      wallet: "",
     };
     const { isConnected } = await NetInfo.fetch();
     dispatch(updateTransaction(updateData));
@@ -479,6 +481,7 @@ export default function Income({ navigation, route }: Props) {
                       modalItems={modal}
                       setPhoto={setPhoto}
                       close={close}
+                      setlocalPath={setlocalPath}
                     />
                   </TouchableOpacity>
                 </View>

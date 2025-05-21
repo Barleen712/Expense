@@ -1,25 +1,23 @@
-import Realm from "realm";
 import { AddTransaction } from "../Screens/FirestoreHandler";
-import { TransactionSchema } from "./Schema"; // adjust path
 import { auth, db } from "../Screens/FirebaseConfig";
-import NetInfo from "@react-native-community/netinfo";
 import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { getRealm } from "./realm";
-let isSyncing = false;
+import { uploadImage } from "../Screens/Constants";
 export async function syncUnsyncedTransactions() {
-  if (isSyncing) {
-    return;
-  }
-
-  isSyncing = true;
+  console.log("data");
+  console.log("hellllo");
+  console.log("dfjshdgj");
   console.log("✅ Starting sync function");
-  const realm = await Realm.open({
-    schema: [TransactionSchema],
-    schemaVersion: 1,
-  });
+  const realm = await getRealm();
   const unsynced = realm.objects("Transaction").filtered("synced == false");
+  console.log(unsynced, "trans");
   const user = auth.currentUser;
+  console.log(user.uid);
   for (const txn of unsynced) {
+    let supabaseImageUrl = "";
+    if (txn.url) {
+      supabaseImageUrl = await uploadImage(txn.url);
+    }
     const txnData = {
       _id: txn._id,
       amount: txn.amount,
@@ -36,20 +34,19 @@ export async function syncUnsyncedTransactions() {
       startMonth: txn.startMonth,
       startYear: txn.startYear,
       userId: user?.uid,
+      type: txn.type,
+      url: supabaseImageUrl,
     };
-
     const success = await AddTransaction(txnData);
-
+    console.log(success);
     if (success) {
       realm.write(() => {
         txn.synced = true;
       });
     }
   }
-  isSyncing = false;
 }
-export const syncPendingDeletes = async () => {
-  const isConnected = await NetInfo.fetch().then((state) => state.isConnected);
+export const syncPendingDeletes = async ({ isConnected }: { isConnected: boolean }) => {
   if (!isConnected) return;
   const realm = await getRealm();
   const pendingDeletes = realm.objects("Transaction").filtered("pendingDelete == true");
@@ -74,20 +71,16 @@ export const syncPendingDeletes = async () => {
 export async function syncPendingUpdatesToFirestore() {
   const realm = await getRealm();
   try {
-    // Filter all transactions with pendingUpdate = true
     const pendingTransactions = realm.objects("Transaction").filtered("pendingUpdate == true");
     for (const tx of pendingTransactions) {
       const transactionId = tx._id;
 
-      // Prepare the data (omit internal Realm metadata)
       const { _id, ...data } = tx.toJSON();
       const dataToUpdate = {
         ...data,
         synced: true,
         pendingUpdate: false,
       };
-
-      // Query Firestore to find document with matching _id
       const q = query(collection(db, "Transactions"), where("_id", "==", transactionId));
       const querySnapshot = await getDocs(q);
 
@@ -95,9 +88,7 @@ export async function syncPendingUpdatesToFirestore() {
         const docSnap = querySnapshot.docs[0];
         const docRef = doc(db, "Transactions", docSnap.id);
 
-        // Update Firestore
         await updateDoc(docRef, dataToUpdate);
-        // Update Realm to clear pendingUpdate flag
         realm.write(() => {
           const txToUpdate = realm.objectForPrimaryKey("Transaction", transactionId);
           if (txToUpdate) {

@@ -61,7 +61,7 @@ export default function Budget({ navigation }: Props) {
   const convertRate = Rates.Rate[currency];
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
-  const [year, selectedYear] = useState("2025");
+  const [year, selectedYear] = useState(2025);
   const { colors } = useContext(ThemeContext);
   const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
   const budgetDataForMonth = Budgetcat[monthKey] || [];

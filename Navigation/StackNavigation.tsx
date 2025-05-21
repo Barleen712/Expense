@@ -72,7 +72,7 @@ const Stack2 = createStackNavigator<StackParamList>();
 export function TabScreens({ initial = "EnterPin" }: Readonly<{ initial?: keyof StackParamList }>) {
   const dispatch = useDispatch();
   useEffect(() => {
-    // dispatch(fetchRates());
+    dispatch(fetchRates());
     dispatch(loadPreferences());
   }, []);
   return (

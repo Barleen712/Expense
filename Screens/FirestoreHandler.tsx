@@ -2,8 +2,11 @@ import { addDoc } from "firebase/firestore";
 import { db, auth } from "./FirebaseConfig";
 import { collection, query, getDocs, where, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
 export async function AddTransaction(transactionData) {
+  console.log(transactionData);
   try {
+    console.log("helllo");
     const docRef = await addDoc(collection(db, "Transactions"), transactionData);
+    console.log(docRef);
     console.log("added");
     return true;
   } catch (e) {

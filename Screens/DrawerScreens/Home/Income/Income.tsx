@@ -31,7 +31,7 @@ import Input from "../../../../Components/CustomTextInput";
 import { ThemeContext } from "../../../../Context/ThemeContext";
 import { useSelector, useDispatch } from "react-redux";
 import SelectImageWithDocumentPicker from "../Attachment";
-import NetInfo from "@react-native-community/netinfo";
+import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 import { uploadImage, Weeks } from "../../../Constants";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../../Constants";
@@ -71,10 +71,10 @@ for (let i = 0; i <= 31; i++) {
 export default function Income({ navigation, route }: Props) {
   const parameters = route.params;
   const [Switchs, setSwitch] = useState(false);
-  const [showAttach, setAttach] = useState(true);
-  const [image, setImage] = useState<string | null>(null);
+  const [showAttach, setAttach] = useState(!parameters.path);
+  const [image, setImage] = useState<string | null>(parameters.path);
   const [modalVisible, setModalVisible] = useState(false);
-  const [close, setclose] = useState(false);
+  const [close, setclose] = useState(parameters.path);
   const [document, setDocument] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
   const [Income, setIncome] = useState<string>(`${parameters.amount}`);
@@ -93,6 +93,8 @@ export default function Income({ navigation, route }: Props) {
   const [categoryError, setcategoryError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [walletError, setwalletError] = useState("");
+  const [localPath, setlocalPath] = useState({ type: "", path: parameters.path });
+  const { isConnected } = useNetInfo();
   const modal = [
     require("../../../../assets/Camera.png"),
     require("../../../../assets/Image.png"),
@@ -166,7 +168,6 @@ export default function Income({ navigation, route }: Props) {
   async function add() {
     const realm = await getRealm();
     const numericIncome = parseFloat(Income.replace("$", "") || "0");
-    let supabaseImageUrl = null;
     if (numericIncome === 0) {
       setIncomeError("Enter Amount");
       return;
@@ -183,11 +184,10 @@ export default function Income({ navigation, route }: Props) {
       setwalletError("Select Wallet");
       return;
     }
-    if (image) {
-      setLoading(true);
-      supabaseImageUrl = await uploadImage(image);
-    }
-    const { isConnected } = await NetInfo.fetch();
+    // if (image) {
+    //   setLoading(true);
+    //   supabaseImageUrl = await uploadImage(image);
+    // }
 
     // AddTransaction({
     //   amount: numericIncome,
@@ -226,23 +226,29 @@ export default function Income({ navigation, route }: Props) {
       startYear: new Date().getFullYear(),
       Date: new Date().toISOString(),
       synced: false,
+      type: localPath.type,
+      url: localPath.path,
     };
 
     try {
       realm.write(() => {
         realm.create("Transaction", transaction);
+        console.log("added");
         dispatch(addTransaction(transaction));
+        console.log("added to db");
       });
     } catch (error) {
       console.log(error, "1234");
     }
 
     if (isConnected) {
+      console.log("user is online");
       syncUnsyncedTransactions(); // Start syncing if online
     }
 
     navigation.goBack();
   }
+  console.log(localPath);
   async function editIncome() {
     const realm = await getRealm();
     const numericIncome = parseFloat(Income.replace("$", "") || "0");
@@ -253,6 +259,8 @@ export default function Income({ navigation, route }: Props) {
       wallet: selectedWallet,
       id: parameters.id,
       moneyCategory: "Income",
+      type: localPath.type,
+      url: localPath.path,
     };
     const { isConnected } = await NetInfo.fetch();
     dispatch(updateTransaction(updateData));
@@ -499,7 +507,7 @@ export default function Income({ navigation, route }: Props) {
                       <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.color }}>{t("Frequency")}</Text>
                       <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
                         {frequency}
-                        {frequency === "Yearly" && ` - ${month} ${startDate} ` + new Date().getFullYear()}
+                        {frequency === "Yearly" && ` - ${Month[month]} ${startDate} ` + new Date().getFullYear()}
                         {frequency === "Monthly" &&
                           " - " + Month[new Date().getMonth()] + ` ${startDate} ` + new Date().getFullYear()}
                         {frequency === "Weekly" && ` - ${Weeks[week]}`}
@@ -554,6 +562,7 @@ export default function Income({ navigation, route }: Props) {
                       modalItems={modal}
                       setPhoto={setPhoto}
                       close={close}
+                      setlocalPath={setlocalPath}
                     />
                   </TouchableOpacity>
                 </View>

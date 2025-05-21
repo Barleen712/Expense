@@ -74,12 +74,12 @@ export default function Expense({ navigation, route }: Props) {
   const exceeded = useSelector((state) => state.Money.exceedNotification);
   const expenseAlert = useSelector((state) => state.Money.expenseAlert);
   const parameters = route.params;
-  const [showAttach, setAttach] = useState(true);
-  const [image, setImage] = useState<string | null>(null);
+  const [showAttach, setAttach] = useState(!parameters.path);
+  const [image, setImage] = useState<string | null>(parameters.path);
   const [modalVisible, setModalVisible] = useState(false);
-  const [close, setclose] = useState(false);
+  const [close, setclose] = useState(parameters.path);
   const [document, setDocument] = useState<string | null>(null);
-  const [photo, setPhoto] = useState<string | null>(null);
+  const [photo, setPhoto] = useState<string | null>(parameters.path);
   const [Expenses, setExpenses] = useState<string>(`${parameters.amount}`);
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
@@ -97,6 +97,7 @@ export default function Expense({ navigation, route }: Props) {
   const [categoryError, setcategoryError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [walletError, setwalletError] = useState("");
+  const [localPath, setlocalPath] = useState({ type: "", path: parameters.url });
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -186,43 +187,6 @@ export default function Expense({ navigation, route }: Props) {
       setwalletError("Select Wallet");
       return;
     }
-    if (image) {
-      setLoading(true);
-      supabaseImageUrl = await uploadImage(image);
-    }
-    // dispatch(
-    //   addTransaction({
-    //     amount: numericExpense,
-    //     description: Description,
-    //     category: selectedCategory,
-    //     wallet: selectedWallet,
-    //     moneyCategory: "Expense",
-    //     attachment: {
-    //       type: "image",
-    //       uri: supabaseImageUrl,
-    //     },
-    //   })
-    // );
-    // AddTransaction({
-    //   amount: numericExpense,
-    //   description: Description,
-    //   category: selectedCategory,
-    //   wallet: selectedWallet,
-    //   moneyCategory: "Expense",
-    //   Date: new Date().toISOString(),
-    //   userId: user.uid,
-    //   attachment: {
-    //     type: "image",
-    //     uri: supabaseImageUrl,
-    //   },
-    //   Frequency: frequency,
-    //   endAfter: endAfter,
-    //   weekly: week,
-    //   endDate: endDate.toISOString(),
-    //   startDate: startDate,
-    //   startMonth: month,
-    //   startYear: new Date().getFullYear(),
-    // });
     const transaction = {
       _id: new Date().toISOString(),
       amount: numericExpense,
@@ -240,6 +204,8 @@ export default function Expense({ navigation, route }: Props) {
       startYear: new Date().getFullYear(),
       Date: new Date().toISOString(),
       synced: false,
+      type: localPath.type,
+      url: localPath.path,
     };
 
     try {
@@ -344,6 +310,7 @@ export default function Expense({ navigation, route }: Props) {
       wallet: selectedWallet,
       id: parameters.id,
       moneyCategory: "Expense",
+      url: localPath.path,
     };
     const { isConnected } = await NetInfo.fetch();
     dispatch(updateTransaction(updateData));
@@ -598,7 +565,7 @@ export default function Expense({ navigation, route }: Props) {
                       <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.color }}>{t("Frequency")}</Text>
                       <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
                         {frequency}
-                        {frequency === "Yearly" && ` - ${month} ${startDate} ` + new Date().getFullYear()}
+                        {frequency === "Yearly" && ` - ${Month[month]} ${startDate} ` + new Date().getFullYear()}
                         {frequency === "Monthly" &&
                           " - " + Month[new Date().getMonth()] + ` ${startDate} ` + new Date().getFullYear()}
                         {frequency === "Weekly" && ` - ${week}`}
@@ -649,6 +616,7 @@ export default function Expense({ navigation, route }: Props) {
                       modalItems={modal}
                       setPhoto={setPhoto}
                       close={close}
+                      setlocalPath={setlocalPath}
                     />
                   </TouchableOpacity>
                 </View>

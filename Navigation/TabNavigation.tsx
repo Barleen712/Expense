@@ -100,6 +100,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
                     id: " ",
                     edit: false,
                     title: "",
+                    path: "",
                   })
                 }
                 style={{
@@ -121,6 +122,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
                     edit: false,
                     title: "",
                     wallet: "Wallet",
+                    path: "",
                   })
                 }
                 style={{ position: "absolute", left: 55, bottom: 55 }}
@@ -137,6 +139,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
                     edit: false,
                     title: "",
                     wallet: "Wallet",
+                    path: "",
                   })
                 }
                 style={{ position: "absolute", right: 55, bottom: 55 }}

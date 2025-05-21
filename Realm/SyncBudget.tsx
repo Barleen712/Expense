@@ -35,8 +35,7 @@ export async function syncUnsyncedBudget() {
   }
   isSyncing = false;
 }
-export const syncPendingDeletesBudget = async () => {
-  const isConnected = await NetInfo.fetch().then((state) => state.isConnected);
+export const syncPendingDeletesBudget = async ({ isConnected }) => {
   if (!isConnected) return;
   const realm = await getRealm();
   const pendingDeletes = realm.objects("Budget").filtered("pendingDelete == true");

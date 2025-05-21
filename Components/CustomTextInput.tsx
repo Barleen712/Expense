@@ -10,11 +10,12 @@ interface InputProps {
   name?: string;
   onchange?: (text: string) => void;
   handleFocus?: () => void;
+  limit?: number;
 }
 const Input = forwardRef<TextInput, InputProps>(
-  ({ title, color, css, isPass, name, onchange, handleFocus }: InputProps, ref) => {
+  ({ title, color, css, isPass, name, onchange, handleFocus, limit }: InputProps, ref) => {
     const [Visible, setVisible] = useState(isPass);
-const {colors}=useContext(ThemeContext)
+    const { colors } = useContext(ThemeContext);
     return (
       <View style={{ width: "100%", alignItems: "center" }}>
         <TextInput
@@ -26,6 +27,7 @@ const {colors}=useContext(ThemeContext)
           value={name}
           onChangeText={onchange}
           onFocus={handleFocus}
+          maxLength={limit}
         />
         {isPass && (
           <TouchableOpacity style={styles.icon} onPress={() => setVisible(!Visible)}>
