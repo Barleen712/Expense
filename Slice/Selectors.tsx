@@ -30,29 +30,43 @@ export const selectTransactions = createSelector([(state) => state.Money.amount]
 
     const endDate = item.endAfter === "Date" ? new Date(item.endDate) : null;
     const maxRepeats = item.endAfter === "Never" ? 365 : 12;
+
+    // ✅ Always add today's transaction as it was added
+    const todayTransaction = new Date(item.Date);
+    todayTransaction.setHours(addedTime.hours);
+    todayTransaction.setMinutes(addedTime.minutes);
+    todayTransaction.setSeconds(addedTime.seconds);
+    todayTransaction.setMilliseconds(addedTime.milliseconds);
+
+    extendedTransactions.push({
+      ...item,
+      Date: todayTransaction.toISOString(),
+    });
+
+    // ✅ Repeat logic starting from startDate
     const firstOccurrence = new Date(startDate);
     firstOccurrence.setHours(addedTime.hours);
     firstOccurrence.setMinutes(addedTime.minutes);
     firstOccurrence.setSeconds(addedTime.seconds);
     firstOccurrence.setMilliseconds(addedTime.milliseconds);
 
-    extendedTransactions.push({
-      ...item,
-      Date: firstOccurrence.toISOString(),
-    });
-
     let repeatCount = 0;
-    let currentDate = new Date(firstOccurrence); // Start from the first occurrence
+    let currentDate = new Date(firstOccurrence);
 
     while (true) {
-      // If "Never" and maxRepeats reached, break the loop
       if (item.endAfter === "Never" && repeatCount >= maxRepeats) break;
-      // If "Date" and we pass the endDate, break the loop
-      if (item.endAfter === "Date" && currentDate >= endDate) break;
+      if (item.endAfter === "Date" && currentDate > endDate) break;
 
-      let nextDate = new Date(currentDate); // clone to avoid mutation
+      // Don't duplicate today's entry if startDate is today
+      if (currentDate.toISOString() !== todayTransaction.toISOString()) {
+        extendedTransactions.push({
+          ...item,
+          Date: currentDate.toISOString(),
+        });
+      }
 
-      // Apply the exact time from the item.Date (when the transaction is added)
+      // Calculate next repeat date
+      let nextDate = new Date(currentDate);
       nextDate.setHours(addedTime.hours);
       nextDate.setMinutes(addedTime.minutes);
       nextDate.setSeconds(addedTime.seconds);
@@ -67,7 +81,6 @@ export const selectTransactions = createSelector([(state) => state.Money.amount]
           break;
         case "Monthly":
           nextDate.setMonth(nextDate.getMonth() + 1);
-          // Ensure it doesn't go out of bounds in a shorter month (e.g., February)
           const day = nextDate.getDate();
           const nextMonth = nextDate.getMonth() + 1;
           const daysInNextMonth = new Date(nextDate.getFullYear(), nextMonth + 1, 0).getDate();
@@ -80,43 +93,79 @@ export const selectTransactions = createSelector([(state) => state.Money.amount]
           return;
       }
 
-      // Avoid pushing past endDate if "Date" is used
-      if (item.endAfter === "Date" && nextDate > endDate) break;
-
-      extendedTransactions.push({
-        ...item,
-        Date: nextDate.toISOString(),
-      });
-
       currentDate = nextDate;
       repeatCount++;
     }
   });
+
   return extendedTransactions;
 });
 
 export const selectBudget = createSelector([selectMoney], (money) => money.budget);
 
-export const selectIncomeTotal = createSelector([selectTransactions], (transactions) =>
-  transactions
-    .filter((item) => new Date(item.Date) <= new Date())
-    .reduce((acc, item) => (item.moneyCategory === "Income" ? acc + item.amount : acc), 0)
-);
+const getMonthYearKey = (dateStr) => {
+  const date = new Date(dateStr);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+};
 
-export const selectExpenseTotal = createSelector([selectTransactions], (transactions) =>
-  transactions
-    .filter((item) => new Date(item.Date) <= new Date())
-    .reduce(
-      (acc, item) => (item.moneyCategory === "Expense" || item.moneyCategory === "Transfer" ? acc + item.amount : acc),
-      0
-    )
-);
+// Monthly Income
+export const selectMonthlyIncomeTotals = createSelector([selectTransactions], (transactions) => {
+  const result = {};
+  transactions.forEach((item) => {
+    if (item.moneyCategory === "Income" && new Date(item.Date) <= new Date()) {
+      const key = getMonthYearKey(item.Date);
+      result[key] = (result[key] || 0) + item.amount;
+    }
+  });
+  return result;
+});
+
+// Monthly Expense (and Transfer)
+export const selectMonthlyExpenseTotals = createSelector([selectTransactions], (transactions) => {
+  const result = {};
+  transactions.forEach((item) => {
+    if ((item.moneyCategory === "Expense" || item.moneyCategory === "Transfer") && new Date(item.Date) <= new Date()) {
+      const key = getMonthYearKey(item.Date);
+      result[key] = (result[key] || 0) + item.amount;
+    }
+  });
+  return result;
+});
+
 export const selectExpensesAndTransfers = createSelector([selectTransactions], (transactions) =>
   transactions.filter((item) => item.moneyCategory === "Expense" || item.moneyCategory === "Transfer")
 );
 export const selectIncome = createSelector([selectTransactions], (transactions) =>
   transactions.filter((item) => item.moneyCategory === "Income")
 );
+export const groupedMonthlyExpensesAndTransfers = createSelector([selectExpensesAndTransfers], (transactions) => {
+  const grouped: Record<string, typeof transactions> = {};
+
+  transactions
+    .filter((item) => new Date(item.Date) <= new Date())
+    .forEach((item) => {
+      const date = new Date(item.Date);
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(item);
+    });
+
+  return grouped;
+});
+export const groupedMonthlyIncome = createSelector([selectIncome], (transactions) => {
+  const grouped: Record<string, typeof transactions> = {};
+
+  transactions
+    .filter((item) => new Date(item.Date) <= new Date())
+    .forEach((item) => {
+      const date = new Date(item.Date);
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(item);
+    });
+
+  return grouped;
+});
 
 export const CategoryExpense = createSelector([selectExpensesAndTransfers], (transactions) => {
   const monthlyData: Record<string, { [category: string]: number }> = {};

@@ -12,10 +12,12 @@ import { StringConstants, categoryMap } from "../../../../Constants";
 import { getStyles } from "./styles";
 import {
   selectIncome,
-  selectIncomeTotal,
-  selectExpenseTotal,
+  selectMonthlyExpenseTotals,
+  groupedMonthlyExpensesAndTransfers,
+  selectMonthlyIncomeTotals,
   selectExpensesAndTransfers,
   BudgetCategory,
+  groupedMonthlyIncome,
 } from "../../../../../Slice/Selectors";
 import { useSelector } from "react-redux";
 import { FlatList } from "react-native-gesture-handler";
@@ -28,8 +30,11 @@ interface Props {
 }
 
 export default function FinancialReportExpense({ navigation }: Props) {
-  const expense = useSelector(selectExpensesAndTransfers);
-  const total = useSelector(selectExpenseTotal);
+  const grouped = useSelector(groupedMonthlyExpensesAndTransfers);
+  const selectedKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+  const expense = grouped[selectedKey] || 0;
+  const expenses = useSelector(selectMonthlyExpenseTotals);
+  const total = expenses[selectedKey] || 0;
   const highestAmount = Math.max(...expense.map((t) => t.amount));
   const highestExpenseTransaction = expense.find((t) => t.amount === highestAmount);
 
@@ -73,8 +78,11 @@ export default function FinancialReportExpense({ navigation }: Props) {
 }
 
 export function FinancialReportIncome({ navigation }: Props) {
-  const income = useSelector(selectIncome);
-  const total = useSelector(selectIncomeTotal);
+  const grouped = useSelector(groupedMonthlyIncome);
+  const selectedKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+  const income = grouped[selectedKey] || 0;
+  const expenses = useSelector(selectMonthlyIncomeTotals);
+  const total = expenses[selectedKey] || 0;
   const highestAmount = Math.max(...income.map((t) => t.amount));
   const highestIncomeTransaction = income.find((t) => t.amount === highestAmount);
 
@@ -120,7 +128,7 @@ export function FinancialReportIncome({ navigation }: Props) {
 export function FinancialReportBudget({ navigation }: Props) {
   const { t } = useTranslation();
   const budgets = useSelector(BudgetCategory);
-  const selectedMonthKey = new Date().getMonth();
+  const selectedMonthKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
   const monthBudgets = budgets[selectedMonthKey] || [];
   const exceed = monthBudgets.filter((item) => item.amountSpent > item.budgetvalue) || [];
   const totalBudgets = monthBudgets.length;

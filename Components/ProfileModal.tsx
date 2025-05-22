@@ -17,6 +17,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { ThemeContext } from "../Context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import FastImage from "react-native-fast-image";
+import * as DocumentPicker from "expo-document-picker";
 // Props type
 type ProfileModalProps = {
   editProfile: boolean;

@@ -14,7 +14,7 @@ export default function Success({ navigation, route }: Props) {
   const { title } = route.params;
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.replace("MainScreen");
+      navigation.replace("EnterPin");
     }, 2000);
     return () => clearTimeout(timer);
   }, [navigation]);

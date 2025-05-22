@@ -55,7 +55,6 @@ export const getUseNamerDocument = async () => {
     const q = query(collection(db, "Names"), where("userid", "==", user.uid));
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
-      console.log("No user");
       return null;
     }
     const userDoc = querySnapshot.docs[0];

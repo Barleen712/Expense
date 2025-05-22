@@ -41,6 +41,7 @@ import { getRealm } from "../../../../Realm/realm";
 import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
 import NetInfo from "@react-native-community/netinfo";
 import { updateTransactionRealmAndFirestore } from "../../../../Realm/realm";
+import { Weeks } from "../../../Constants";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -74,24 +75,24 @@ export default function Expense({ navigation, route }: Props) {
   const exceeded = useSelector((state) => state.Money.exceedNotification);
   const expenseAlert = useSelector((state) => state.Money.expenseAlert);
   const parameters = route.params;
-  const [showAttach, setAttach] = useState(!parameters.path);
-  const [image, setImage] = useState<string | null>(parameters.path);
+  const [showAttach, setAttach] = useState(!parameters.url);
+  const [image, setImage] = useState<string | null>(parameters.url);
   const [modalVisible, setModalVisible] = useState(false);
-  const [close, setclose] = useState(parameters.path);
+  const [close, setclose] = useState(parameters.url);
   const [document, setDocument] = useState<string | null>(null);
-  const [photo, setPhoto] = useState<string | null>(parameters.path);
+  const [photo, setPhoto] = useState<string | null>(parameters.url);
   const [Expenses, setExpenses] = useState<string>(`${parameters.amount}`);
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
   const [loading, setLoading] = useState(false);
-  const [frequency, setFrequency] = useState("");
-  const [endAfter, setendAfter] = useState("");
-  const [month, setMonth] = useState(new Date().getMonth());
-  const [week, setWeek] = useState(new Date().getDay());
-  const [startDate, setStartDate] = useState(new Date().getDate());
-  const [endDate, setEndDate] = useState(new Date());
-  const [Switchs, setSwitch] = useState(false);
+  const [frequency, setFrequency] = useState(parameters.frequency);
+  const [endAfter, setendAfter] = useState(parameters.endAfter);
+  const [month, setMonth] = useState(parameters.startMonth);
+  const [week, setWeek] = useState(parameters.weekly);
+  const [startDate, setStartDate] = useState(parameters.startDate);
+  const [endDate, setEndDate] = useState(new Date(parameters.endDate));
+  const [Switchs, setSwitch] = useState(parameters.repeat);
   const [Frequencymodal, setFrequencyModal] = useState(false);
   const [expenseError, setExpenseError] = useState("");
   const [categoryError, setcategoryError] = useState("");
@@ -197,10 +198,11 @@ export default function Expense({ navigation, route }: Props) {
       Frequency: frequency,
       endAfter: endAfter || null,
       weekly: week || null,
-      endDate: endDate || null,
+      endDate: new Date(endDate).toISOString() || null,
       repeat: Switchs,
       startDate: startDate,
       startMonth: month,
+      Frequency: frequency,
       startYear: new Date().getFullYear(),
       Date: new Date().toISOString(),
       synced: false,
@@ -311,6 +313,15 @@ export default function Expense({ navigation, route }: Props) {
       id: parameters.id,
       moneyCategory: "Expense",
       url: localPath.path,
+      Frequency: frequency,
+      weekly: week || null,
+      endDate: new Date(endDate).toISOString() || null,
+      repeat: Switchs,
+      startDate: startDate,
+      startMonth: month,
+      startYear: new Date().getFullYear(),
+      synced: false,
+      endAfter: endAfter || null,
     };
     const { isConnected } = await NetInfo.fetch();
     dispatch(updateTransaction(updateData));
@@ -377,6 +388,8 @@ export default function Expense({ navigation, route }: Props) {
                     setSelectedCategory(item);
                     setcategoryError("");
                   }}
+                  position="bottom"
+                  height={180}
                 />
                 {categoryError !== "" && (
                   <Text
@@ -423,6 +436,8 @@ export default function Expense({ navigation, route }: Props) {
                     setSelectedWallet(item);
                     setwalletError("");
                   }}
+                  position="bottom"
+                  height={180}
                 />
                 {walletError !== "" && (
                   <Text
@@ -550,6 +565,7 @@ export default function Expense({ navigation, route }: Props) {
                     Frequencymodal={Frequencymodal}
                     setFrequencyModal={setFrequencyModal}
                     setswitch={setSwitch}
+                    edit={parameters.edit}
                   />
                 )}
                 {Switchs && (
@@ -568,7 +584,7 @@ export default function Expense({ navigation, route }: Props) {
                         {frequency === "Yearly" && ` - ${Month[month]} ${startDate} ` + new Date().getFullYear()}
                         {frequency === "Monthly" &&
                           " - " + Month[new Date().getMonth()] + ` ${startDate} ` + new Date().getFullYear()}
-                        {frequency === "Weekly" && ` - ${week}`}
+                        {frequency === "Weekly" && ` - ${Weeks[week]}`}
                       </Text>
                     </View>
                     <View style={{ flex: 1 }}>

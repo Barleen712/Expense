@@ -100,7 +100,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
                     id: " ",
                     edit: false,
                     title: "",
-                    path: "",
+                    url: "",
                   })
                 }
                 style={{
@@ -122,7 +122,14 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
                     edit: false,
                     title: "",
                     wallet: "Wallet",
-                    path: "",
+                    url: "",
+                    frequency: "",
+                    endDate: new Date().toISOString(),
+                    endAfter: "",
+                    repeat: false,
+                    startDate: new Date().getDate(),
+                    startMonth: new Date().getMonth(),
+                    weekly: "",
                   })
                 }
                 style={{ position: "absolute", left: 55, bottom: 55 }}
@@ -139,7 +146,14 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
                     edit: false,
                     title: "",
                     wallet: "Wallet",
-                    path: "",
+                    url: "",
+                    frequency: "",
+                    endDate: new Date().toISOString(),
+                    endAfter: "",
+                    repeat: false,
+                    startDate: new Date().getDate(),
+                    startMonth: new Date().getMonth(),
+                    weekly: "",
                   })
                 }
                 style={{ position: "absolute", right: 55, bottom: 55 }}

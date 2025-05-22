@@ -11,11 +11,12 @@ interface dropdown {
   data: DropdownItem[];
   name: string;
   styleButton: object;
-  styleItem?: object;
+  height: number;
+  position: "auto" | "top" | "bottom";
   onSelectItem: (selectedItem: string) => void;
 }
 
-const DropdownComponent = ({ name, data, styleButton, value, styleItem, onSelectItem }: dropdown) => {
+const DropdownComponent = ({ name, data, styleButton, value, position, height, onSelectItem }: dropdown) => {
   const { colors } = useContext(ThemeContext);
   const { t } = useTranslation();
   const translatedData = data.map((item) => ({
@@ -26,11 +27,12 @@ const DropdownComponent = ({ name, data, styleButton, value, styleItem, onSelect
     <Dropdown
       style={styleButton}
       data={translatedData}
-      maxHeight={300}
+      maxHeight={height}
       labelField="label"
       valueField="value"
       value={value}
       placeholder={name}
+      dropdownPosition={position}
       autoScroll={false}
       placeholderStyle={{ color: colors.color }}
       selectedTextStyle={{ color: colors.color }}

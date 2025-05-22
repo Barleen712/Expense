@@ -71,8 +71,8 @@ export default function Login({ navigation }: Props) {
           pin: userDoc?.pin,
         })
       );
-      // setLoading(false);
-      // navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
+      raiseToast("success", "Welcome Back", "login");
+      //navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
     } catch (error: any) {
       console.log(error);
       raiseToast("error", "Login Failed", error.code);

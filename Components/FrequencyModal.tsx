@@ -14,10 +14,12 @@ const Frequency = ["Yearly", "Monthly", "Weekly", "Daily"].map((item) => ({
   value: item,
 }));
 
-const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"].map((item) => ({
-  label: item,
-  value: item,
-}));
+const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"].map(
+  (item, index) => ({
+    label: item,
+    value: index,
+  })
+);
 
 const EndAfter = ["Date", "Never"].map((item) => ({
   label: item,
@@ -26,7 +28,7 @@ const EndAfter = ["Date", "Never"].map((item) => ({
 const ShortM = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 const date = Array.from({ length: 31 }, (_, i) => ({
   label: (i + 1).toString(),
-  value: (i + 1).toString(),
+  value: i + 1,
 }));
 const weekDropdownData = Weeks.map((day, index) => ({
   label: day,
@@ -52,6 +54,7 @@ export default function FrequencyModal({
   Frequencymodal,
   setFrequencyModal,
   setswitch,
+  edit,
 }) {
   const { t } = useTranslation();
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
@@ -70,6 +73,7 @@ export default function FrequencyModal({
     }
     if (endAfter === "") {
       setEndAfterError("Select an option");
+      return;
     }
     setFrequencyModal(false);
   }
@@ -84,8 +88,10 @@ export default function FrequencyModal({
     >
       <TouchableWithoutFeedback
         onPress={() => {
+          if (!edit) {
+            setswitch(false);
+          }
           setFrequencyModal(false);
-          setswitch(false);
         }}
       >
         <View style={styles.modalOverlay}>
@@ -104,6 +110,8 @@ export default function FrequencyModal({
                       setFrequency(item);
                       setFrequencyError("");
                     }}
+                    position="bottom"
+                    height={120}
                   />
                 </View>
                 {frequency === "Yearly" && (
@@ -116,6 +124,8 @@ export default function FrequencyModal({
                       onSelectItem={(item) => {
                         setMonth(item);
                       }}
+                      position="bottom"
+                      height={150}
                     />
                   </View>
                 )}
@@ -129,6 +139,8 @@ export default function FrequencyModal({
                       onSelectItem={(item) => {
                         setWeek(item);
                       }}
+                      position="bottom"
+                      height={150}
                     />
                   </View>
                 )}
@@ -136,12 +148,14 @@ export default function FrequencyModal({
                   <View style={{ flexDirection: "row", flex: 1 }}>
                     <DropdownComponent
                       data={date}
-                      value={startDate}
+                      value={startDate.toString()}
                       name={startDate}
                       styleButton={styles.textinput}
                       onSelectItem={(item) => {
                         setStartDate(item);
                       }}
+                      position="bottom"
+                      height={150}
                     />
                   </View>
                 )}
@@ -172,6 +186,8 @@ export default function FrequencyModal({
                       setendAfter(item);
                       setEndAfterError("");
                     }}
+                    position="top"
+                    height={120}
                   />
                 </View>
 

@@ -86,8 +86,6 @@ export default function FaceCard({ type, amount, detail, category, amount1, bg, 
               {currencies[currency]} {(amount1 * convertRate).toFixed(2)}
             </Text>
           </View>
-          {/* <Text style={styles.category}>{category}</Text>
-          <Text style={[styles.typeText, { color: "black" }]}>{amount1}</Text> */}
         </View>
       </View>
     </View>

@@ -94,7 +94,6 @@ export const saveToRealmIfNotExists = async (input) => {
       if (!exists) {
         const safeTxn = {
           ...txn,
-          endDate: txn.endDate?.seconds ? new Date(txn.endDate.seconds * 1000) : null,
           synced: true,
           pendingDelete: false,
         };
@@ -120,10 +119,20 @@ export async function updateTransactionRealmAndFirestore(
   try {
     if (isOnline) {
       let supabaseurl = null;
+
+      const isRemoteUrl = (url) => {
+        return url.startsWith("http://") || url.startsWith("https://");
+      };
+
       if (updatedData.url) {
-        supabaseurl = await uploadImage(updatedData.url);
+        if (isRemoteUrl(updatedData.url)) {
+          // Already remote URL, no upload needed
+          supabaseurl = updatedData.url;
+        } else {
+          // Local URI, upload image
+          supabaseurl = await uploadImage(updatedData.url);
+        }
       }
-      console.log(supabaseurl);
       const Data = {
         amount: updatedData.amount,
         description: updatedData.description,
@@ -131,6 +140,14 @@ export async function updateTransactionRealmAndFirestore(
         wallet: updatedData.wallet,
         moneyCategory: updatedData.moneyCategory,
         url: supabaseurl,
+        Frequency: updatedData.Frequency,
+        weekly: updatedData.weekly,
+        repeat: updatedData.repeat,
+        startDate: updatedData.startDate,
+        startMonth: updatedData.startMonth,
+        startYear: updatedData.startYear,
+        endAfter: updatedData.endAfter,
+        endDate: updatedData.endDate,
       };
       const q = query(collection(db, "Transactions"), where("_id", "==", transactionId));
       const querySnapshot = await getDocs(q);

@@ -39,12 +39,18 @@ function DetailTransaction({
   des,
   uri,
   id,
+  frequency,
+  endAfter,
+  endDate,
+  repeat,
+  startDate,
+  startMonth,
+  weekly,
 }: DetailTransactionProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [image, showImage] = useState(false);
   const [succes, setsuccess] = useState(false);
   const dispatch = useDispatch();
-
   function toggleSuccess() {
     setsuccess(!succes);
   }
@@ -62,11 +68,41 @@ function DetailTransaction({
   const convertRate = Rates.Rate[currency];
   function EditTransaction() {
     if (type === "Income") {
-      navigation.navigate("Income", { amount, title, category, wallet, edit: true, id, path: uri });
+      navigation.navigate("Income", {
+        amount,
+        title,
+        category,
+        wallet,
+        edit: true,
+        id,
+        url: uri,
+        frequency,
+        endAfter,
+        endDate,
+        repeat,
+        startDate,
+        startMonth,
+        weekly,
+      });
     } else if (type === "Expense") {
-      navigation.navigate("Expense", { amount, title, category, wallet, edit: true, id, path: uri });
+      navigation.navigate("Expense", {
+        amount,
+        title,
+        category,
+        wallet,
+        edit: true,
+        id,
+        url: uri,
+        frequency,
+        endAfter,
+        endDate,
+        repeat,
+        startDate,
+        startMonth,
+        weekly,
+      });
     } else {
-      navigation.navigate("Transfer", { amount, to: category, from: type, title: title, edit: true, id, path: uri });
+      navigation.navigate("Transfer", { amount, to: category, from: type, title: title, edit: true, id, url: uri });
     }
   }
   const DisplayDate = new Date(time);
@@ -160,7 +196,7 @@ function DetailTransaction({
       <Modal animationType="slide" transparent={true} visible={image} onRequestClose={() => showImage(false)}>
         <TouchableWithoutFeedback onPress={() => showImage(false)}>
           <View style={[styles.modalOverlay, { backgroundColor: "rgba(24, 13, 13, 0.89)" }]}>
-            <View style={{ height: "90%", position: "absolute", bottom: 0, width: "100%" }}>
+            <View style={{ height: "100%", position: "absolute", bottom: 0, width: "100%" }}>
               <FastImage style={{ height: "100%" }} resizeMode="contain" source={{ uri }} />
             </View>
           </View>
@@ -172,7 +208,6 @@ function DetailTransaction({
 
 export default function DetailTransaction_Expense({ navigation, route }) {
   const { value } = route.params;
-
   return (
     <DetailTransaction
       navigation={navigation}
@@ -186,12 +221,18 @@ export default function DetailTransaction_Expense({ navigation, route }) {
       id={value._id}
       title={value.description}
       uri={value.url}
+      frequency={value.Frequency}
+      endAfter={value.endAfter}
+      endDate={value.endDate}
+      repeat={value.repeat}
+      startDate={value.startDate}
+      startMonth={value.startMonth}
+      weekly={value.weekly}
     />
   );
 }
 export function DetailTransaction_Income({ navigation, route }) {
   const { value } = route.params;
-  console.log(value);
   return (
     <DetailTransaction
       navigation={navigation}
@@ -205,6 +246,13 @@ export function DetailTransaction_Income({ navigation, route }) {
       wallet={value.wallet}
       id={value._id}
       uri={value.url}
+      frequency={value.Frequency}
+      endAfter={value.endAfter}
+      endDate={value.endDate}
+      repeat={value.repeat}
+      startDate={value.startDate}
+      startMonth={value.startMonth}
+      weekly={value.weekly}
     />
   );
 }

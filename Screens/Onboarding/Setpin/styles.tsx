@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
-    paddingTop: 10,
+    marginTop: 10,
   },
   setuptext: {
     fontFamily: "Inter",
@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flex: 0.5,
-    //  backgroundColor: "red",
   },
 });
 export default styles;

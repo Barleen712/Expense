@@ -4,20 +4,13 @@ import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "fi
 import { getRealm } from "./realm";
 import { uploadImage } from "../Screens/Constants";
 export async function syncUnsyncedTransactions() {
-  console.log("data");
-  console.log("hellllo");
-  console.log("dfjshdgj");
   console.log("✅ Starting sync function");
   const realm = await getRealm();
   const unsynced = realm.objects("Transaction").filtered("synced == false");
-  console.log(unsynced, "trans");
   const user = auth.currentUser;
-  console.log(user.uid);
   for (const txn of unsynced) {
     let supabaseImageUrl = "";
-    if (txn.url) {
-      supabaseImageUrl = await uploadImage(txn.url);
-    }
+
     const txnData = {
       _id: txn._id,
       amount: txn.amount,

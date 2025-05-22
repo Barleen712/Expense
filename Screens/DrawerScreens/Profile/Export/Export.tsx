@@ -67,6 +67,8 @@ export default function Export({ navigation }: Props) {
             onSelectItem={(item) => {
               setselectedData(item);
             }}
+            position="bottom"
+            height={300}
           />
         </View>
         <Text style={styles.exportText}>{t("When date range?")}</Text>
@@ -79,6 +81,8 @@ export default function Export({ navigation }: Props) {
             onSelectItem={(item) => {
               setselecteddateRange(item);
             }}
+            position="bottom"
+            height={300}
           />
         </View>
         <Text style={styles.exportText}>{t("What format do you want to export?")}</Text>
@@ -91,6 +95,8 @@ export default function Export({ navigation }: Props) {
             onSelectItem={(item) => {
               setSelectedCategory(item);
             }}
+            position="bottom"
+            height={300}
           />
         </View>
       </View>

@@ -47,11 +47,11 @@ const modal = [
   require("../../../../assets/DocumentBlue.png"),
 ];
 export default function Income({ navigation, route }: Props) {
-  const { from, to, amount, id, edit, title, path } = route.params;
-  const [showAttach, setAttach] = useState(!path);
-  const [image, setImage] = useState<string | null>(path);
+  const { from, to, amount, id, edit, title, url } = route.params;
+  const [showAttach, setAttach] = useState(!url);
+  const [image, setImage] = useState<string | null>(url);
   const [modalVisible, setModalVisible] = useState(false);
-  const [close, setclose] = useState(path);
+  const [close, setclose] = useState(url);
   const [document, setDocument] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
   const [Transfer, setTransfer] = useState<string>(`${amount}`);
@@ -62,7 +62,7 @@ export default function Income({ navigation, route }: Props) {
   const [TransferError, setTransferError] = useState("");
   const [toError, setToError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
-  const [localPath, setlocalPath] = useState({ type: "", path: path });
+  const [localPath, setlocalPath] = useState({ type: "", path: url });
 
   function toggleModal() {
     setModalVisible(!modalVisible);

@@ -29,7 +29,7 @@ type StackParamList = {
     edit: boolean;
     header: string;
   };
-  Expense: { amount: number; category: string; edit: boolean; title: string; wallet: string; path: string };
+  Expense: { amount: number; category: string; edit: boolean; title: string; wallet: string; url: string };
   Income: { amount: number; category: string; edit: boolean; title: string; wallet: string; path: string };
   Transfer: { amount: number; to: string; from: string; edit: boolean; title: string; id: string; path: string };
   FinancialReportExpense: undefined;

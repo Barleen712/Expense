@@ -19,6 +19,8 @@ import { CachedUser, saveUserData, getCachedUser, clearUserData } from "./utils/
 import { syncUnsyncedTransactions, syncPendingDeletes, syncPendingUpdatesToFirestore } from "./Realm/Sync";
 import { deleteRealmDatabase } from "./Realm/realm";
 import { syncPendingDeletesBudget, syncPendingUpdatesToFirestoreBudgets, syncUnsyncedBudget } from "./Realm/SyncBudget";
+import Setpin from "./Screens/Onboarding/Setpin/SetupPin01";
+import Setpin02 from "./Screens/Onboarding/SetupPin02";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -93,7 +95,7 @@ export default function App() {
 
         setCheckingAuth(false);
       });
-      // deleteRealmDatabase();
+      //deleteRealmDatabase();
       return unsubscribe;
     };
 
@@ -123,6 +125,7 @@ export default function App() {
         <NavigationContainer>
           <ThemeProvider>
             {user ? <TabScreens initial={initialRoute} /> : <Screens />}
+
             <Toast />
           </ThemeProvider>
         </NavigationContainer>

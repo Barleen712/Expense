@@ -11,7 +11,7 @@ export const TransactionSchema = {
     repeat: "bool",
     Frequency: "string?",
     endAfter: "string?",
-    endDate: "date?",
+    endDate: "string?",
     startDate: "int?",
     startMonth: "int?",
     startYear: "int?",

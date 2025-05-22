@@ -19,6 +19,8 @@ import {
   CategoryExpense,
   CategoryIncome,
   selectTransactions,
+  selectMonthlyIncomeTotals,
+  selectMonthlyExpenseTotals,
 } from "../../../../Slice/Selectors";
 import { DonutChart } from "./Graph";
 import { Linearchart } from "./Graph";
@@ -55,8 +57,12 @@ export default function FinancialReport({ navigation }: Props) {
   const [Expense, setExpense] = useState(true);
   const [Income, setIncome] = useState(false);
   const [month, setMonth] = useState(Month[new Date().getMonth()].value);
-  const income = useSelector(selectIncomeTotal);
-  const expense = useSelector(selectExpenseTotal);
+  const monthIndex = Month.findIndex((item) => item.value === month);
+  const monthKey = `${new Date().getFullYear()}-${String(monthIndex + 1).padStart(2, "0")}`;
+  const incomes = useSelector(selectMonthlyIncomeTotals);
+  const income = incomes[monthKey] || 0;
+  const expenses = useSelector(selectMonthlyExpenseTotals);
+  const expense = expenses[monthKey] || 0;
   const transaction = useSelector(selectTransactions);
   const incomeValues = useSelector(selectIncome);
   const expensesAndTransfers = useSelector(selectExpensesAndTransfers);
@@ -98,8 +104,7 @@ export default function FinancialReport({ navigation }: Props) {
     [sortedTrans]
   );
   const categoryExpense = useSelector(CategoryExpense);
-  const monthIndex = Month.findIndex((item) => item.value === month);
-  const monthKey = `${new Date().getFullYear()}-${String(monthIndex + 1).padStart(2, "0")}`;
+
   const CategorytDataForMonthExpense = categoryExpense[monthKey] || [];
   const pieDataExpense = CategorytDataForMonthExpense.map((item) => ({
     percentage: item.total,

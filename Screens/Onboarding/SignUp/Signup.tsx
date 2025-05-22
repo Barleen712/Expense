@@ -156,6 +156,7 @@ export default function SignUp({ navigation }: Props) {
     const userDoc = await getUseNamerDocument();
     if (userDoc) {
       raiseToast("success", "Welcome Back", "login");
+      //navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
       dispatch(
         addUser({
           User: userDoc.Name,

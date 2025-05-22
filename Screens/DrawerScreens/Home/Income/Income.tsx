@@ -70,11 +70,11 @@ for (let i = 0; i <= 31; i++) {
 }
 export default function Income({ navigation, route }: Props) {
   const parameters = route.params;
-  const [Switchs, setSwitch] = useState(false);
-  const [showAttach, setAttach] = useState(!parameters.path);
-  const [image, setImage] = useState<string | null>(parameters.path);
+  const [Switchs, setSwitch] = useState(parameters.repeat);
+  const [showAttach, setAttach] = useState(!parameters.url);
+  const [image, setImage] = useState<string | null>(parameters.url);
   const [modalVisible, setModalVisible] = useState(false);
-  const [close, setclose] = useState(parameters.path);
+  const [close, setclose] = useState(parameters.url);
   const [document, setDocument] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
   const [Income, setIncome] = useState<string>(`${parameters.amount}`);
@@ -82,18 +82,18 @@ export default function Income({ navigation, route }: Props) {
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
   const [loading, setLoading] = useState(false);
-  const [frequency, setFrequency] = useState("");
-  const [endAfter, setendAfter] = useState("");
-  const [month, setMonth] = useState(new Date().getMonth());
-  const [week, setWeek] = useState(new Date().getDay());
-  const [startDate, setStartDate] = useState(new Date().getDate());
-  const [endDate, setEndDate] = useState(new Date());
+  const [frequency, setFrequency] = useState(parameters.frequency);
+  const [endAfter, setendAfter] = useState(parameters.endAfter);
+  const [month, setMonth] = useState(parameters.startMonth);
+  const [week, setWeek] = useState(parameters.weekly);
+  const [startDate, setStartDate] = useState(parameters.startDate);
+  const [endDate, setEndDate] = useState(new Date(parameters.endDate));
   const [Frequencymodal, setFrequencyModal] = useState(false);
   const [incomeError, setIncomeError] = useState("");
   const [categoryError, setcategoryError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [walletError, setwalletError] = useState("");
-  const [localPath, setlocalPath] = useState({ type: "", path: parameters.path });
+  const [localPath, setlocalPath] = useState({ type: "", path: parameters.url });
   const { isConnected } = useNetInfo();
   const modal = [
     require("../../../../assets/Camera.png"),
@@ -127,7 +127,6 @@ export default function Income({ navigation, route }: Props) {
     }
 
     const cleaned = text.replace(/[^0-9.]/g, "");
-
     const decimalCount = (cleaned.match(/\./g) || []).length;
     if (decimalCount > 1) {
       setIncomeError("Only one decimal point is allowed");
@@ -219,7 +218,7 @@ export default function Income({ navigation, route }: Props) {
       Frequency: frequency,
       endAfter: endAfter || null,
       weekly: week || null,
-      endDate: endDate || null,
+      endDate: new Date(endDate).toISOString() || null,
       repeat: Switchs,
       startDate: startDate,
       startMonth: month,
@@ -229,6 +228,7 @@ export default function Income({ navigation, route }: Props) {
       type: localPath.type,
       url: localPath.path,
     };
+    console.log(transaction);
 
     try {
       realm.write(() => {
@@ -248,7 +248,6 @@ export default function Income({ navigation, route }: Props) {
 
     navigation.goBack();
   }
-  console.log(localPath);
   async function editIncome() {
     const realm = await getRealm();
     const numericIncome = parseFloat(Income.replace("$", "") || "0");
@@ -261,6 +260,15 @@ export default function Income({ navigation, route }: Props) {
       moneyCategory: "Income",
       type: localPath.type,
       url: localPath.path,
+      Frequency: frequency,
+      endAfter: endAfter || null,
+      weekly: week || null,
+      endDate: new Date(endDate).toISOString() || null,
+      repeat: Switchs,
+      startDate: startDate,
+      startMonth: month,
+      startYear: new Date().getFullYear(),
+      synced: false,
     };
     const { isConnected } = await NetInfo.fetch();
     dispatch(updateTransaction(updateData));
@@ -332,6 +340,8 @@ export default function Income({ navigation, route }: Props) {
                     setSelectedCategory(item);
                     setcategoryError("");
                   }}
+                  position="bottom"
+                  height={180}
                 />
                 {categoryError !== "" && <Text style={styles.error}>*{categoryError}</Text>}
                 <Input
@@ -353,6 +363,8 @@ export default function Income({ navigation, route }: Props) {
                     setSelectedWallet(item);
                     setwalletError("");
                   }}
+                  position="bottom"
+                  height={180}
                 />
                 {walletError !== "" && <Text style={styles.error}>*{walletError}</Text>}
                 {showAttach && (
@@ -429,38 +441,6 @@ export default function Income({ navigation, route }: Props) {
                     )}
                   </View>
                 )}
-                {/* {close && (
-                  <>
-                    {(image || photo) && (
-                      <TouchableOpacity
-                        style={{ position: "absolute", bottom: Platform.OS === "ios" ? "35%" : "30%", left: "27%" }}
-                        onPress={() => {
-                          setImage(null);
-                          setPhoto(null);
-                          setAttach(!showAttach);
-                          setDocument(null);
-                          setclose(false);
-                        }}
-                      >
-                        <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
-                      </TouchableOpacity>
-                    )}
-
-                    {document && (
-                      <TouchableOpacity
-                        style={{ position: "absolute", bottom: Platform.OS === "ios" ? "30%" : "28%", right: "3%" }}
-                        onPress={() => {
-                          setImage(null);
-                          setAttach(!showAttach);
-                          setDocument(null);
-                          setclose(false);
-                        }}
-                      >
-                        <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
-                      </TouchableOpacity>
-                    )}
-                  </>
-                )} */}
                 <View style={styles.notiView}>
                   <View style={styles.noti}>
                     <Text style={styles.notiTitle}>{t("Repeat")}</Text>
@@ -492,6 +472,7 @@ export default function Income({ navigation, route }: Props) {
                   Frequencymodal={Frequencymodal}
                   setFrequencyModal={setFrequencyModal}
                   setswitch={setSwitch}
+                  edit={parameters.edit}
                 />
 
                 {Switchs && frequency != "" && endAfter != "" && (

@@ -2,7 +2,8 @@ import { Platform, StyleSheet, Dimensions, StatusBar } from "react-native";
 const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   setup: {
-    flex: 0.15,
+    flex: 0.1,
+    marginTop: 10,
     flexDirection: "row",
     alignItems: "center",
     // justifyContent: "space-between",

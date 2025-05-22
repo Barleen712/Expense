@@ -98,14 +98,45 @@ export const ExpenseTrackerSlice = createSlice({
       state.amount = [...state.amount.slice(0, index), ...state.amount.slice(index + 1)];
     },
     updateTransaction: (state, action) => {
-      const { id, amount, category, wallet, description, url } = action.payload;
+      const {
+        id,
+        amount,
+        category,
+        wallet,
+        description,
+        url,
+        Frequency,
+        weekly,
+        endDate,
+        repeat,
+        startDate,
+        startMonth,
+        startYear,
+        endAfter,
+      } = action.payload;
+
       const index = state.amount.findIndex((item) => item._id === id);
-      state.amount[index].amount = amount;
-      state.amount[index].category = category;
-      state.amount[index].description = description;
-      state.amount[index].wallet = wallet;
-      state.amount[index].url = url;
+
+      if (index !== -1) {
+        state.amount[index] = {
+          ...state.amount[index], // Preserve other properties
+          amount,
+          category,
+          wallet,
+          description,
+          url,
+          Frequency,
+          weekly,
+          endDate,
+          repeat,
+          startDate,
+          startMonth,
+          startYear,
+          endAfter,
+        };
+      }
     },
+
     updateExceed: (state, action) => {
       state.exceedNotification = action.payload;
     },

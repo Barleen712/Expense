@@ -222,6 +222,8 @@ export default function CreateBudget({ navigation, route }: Props) {
                   setSelectedCategory(item);
                   setCategoryError("");
                 }}
+                position="bottom"
+                height={150}
               />
               {categoryError !== "" && (
                 <Text

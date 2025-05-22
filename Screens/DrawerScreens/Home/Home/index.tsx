@@ -16,7 +16,7 @@ import { Month } from "../../../Constants";
 import { Linearchart } from "../../Transaction/FinancialReport/Graph";
 import { useSelector } from "react-redux";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { selectTransactions, selectIncomeTotal, selectExpenseTotal } from "../../../../Slice/Selectors";
+import { selectTransactions, selectMonthlyExpenseTotals, selectMonthlyIncomeTotals } from "../../../../Slice/Selectors";
 import TransactionList from "../TransactionList/TransactionsList";
 import { StringConstants, currencies, profilepics } from "../../../Constants";
 import { useTranslation } from "react-i18next";
@@ -58,10 +58,8 @@ export default function Home({ navigation }: Props) {
   useEffect(() => {
     getData();
     // retrieveOldTransactions();
-    console.log("db");
   }, [navigation]);
   const index = new Date().getMonth();
-  //loadTransactionsFromRealm(dispatch);
   useTransactionListener();
   useBudgetListener();
   useNotificationListener();
@@ -84,12 +82,17 @@ export default function Home({ navigation }: Props) {
   }
   const transaction = useSelector(selectTransactions);
   const currentDate = new Date();
-
+  const monthlyincome = useSelector(selectMonthlyIncomeTotals);
+  const monthlyexpense = useSelector(selectMonthlyExpenseTotals);
+  const selectedKey = `${selectedMonth_Year.getFullYear()}-${String(selectedMonth_Year.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}`;
+  const income = monthlyincome[selectedKey] || 0;
+  const expense = monthlyexpense[selectedKey] || 0;
   const filteredAndSortedTransactions = [...transaction]
     .filter((item) => new Date(item.Date) <= currentDate)
     .sort((a, b) => new Date(b.Date) - new Date(a.Date));
-  const income = useSelector(selectIncomeTotal);
-  const expense = useSelector(selectExpenseTotal);
   const { colors } = useContext(ThemeContext);
   const badgeCount = useSelector((state) => state.Money.badgeCount);
   const GraphExpenses = useMemo(() => {
@@ -231,6 +234,14 @@ export default function Home({ navigation }: Props) {
                   edit: false,
                   title: "",
                   wallet: "Wallet",
+                  url: "",
+                  frequency: "",
+                  endDate: new Date().toISOString(),
+                  endAfter: "",
+                  repeat: false,
+                  startDate: new Date().getDate(),
+                  startMonth: new Date().getMonth(),
+                  weekly: "",
                 })
               }
               style={[styles.headButton, { backgroundColor: "rgba(0, 168, 107, 1)" }]}
@@ -258,6 +269,14 @@ export default function Home({ navigation }: Props) {
                   edit: false,
                   title: "",
                   wallet: "Wallet",
+                  url: "",
+                  frequency: "",
+                  endDate: new Date().toISOString(),
+                  endAfter: "",
+                  repeat: false,
+                  startDate: new Date().getDate(),
+                  startMonth: new Date().getMonth(),
+                  weekly: "",
                 })
               }
               style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}
