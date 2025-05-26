@@ -12,6 +12,7 @@ import { updateUserDoc } from "../FirestoreHandler";
 import { Ionicons } from "@expo/vector-icons";
 import { addUser } from "../../Slice/IncomeSlice";
 import { getUseNamerDocument } from "../../Saga/BudgetSaga";
+import { auth } from "../FirebaseConfig";
 type PinProp = StackNavigationProp<StackParamList, "Setpin1">;
 
 interface Props {
@@ -32,10 +33,10 @@ export default function Setpin02({ navigation, route }: Props) {
     if (route.params.FirstPin === pin) {
       try {
         const user = await getUseNamerDocument();
-        await updateUserDoc(user.ID, { pinSet: true, pin: pin });
+        await updateUserDoc(auth.currentUser.uid, { pinSet: true, pin: pin });
         dispatch(
           addUser({
-            User: user.Name,
+            user: user.Name,
             Photo: user?.Photo,
             index: user?.Index,
             pin: pin,
@@ -43,9 +44,8 @@ export default function Setpin02({ navigation, route }: Props) {
         );
         navigation.replace("MainScreen");
       } catch (error: any) {
-        raiseToast("Sign Up Failed", error.code);
+        console.log(error);
       }
-      navigation.navigate("AllSet", { title: "You are set!" });
     } else {
       alert("PINS don't match. \nPlease Re-Enter your Pin");
       handleClear();

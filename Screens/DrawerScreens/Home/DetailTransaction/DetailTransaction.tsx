@@ -1,5 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Modal, TouchableWithoutFeedback, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
+  ScrollView,
+  Platform,
+  PermissionsAndroid,
+} from "react-native";
 import { getStyles } from "./styles";
 import Header from "../../../../Components/Header";
 import { CustomButton } from "../../../../Components/CustomButton";
@@ -12,6 +22,9 @@ import FastImage from "react-native-fast-image";
 import { StringConstants, currencies, Month, Weeks } from "../../../Constants";
 import { ThemeContext } from "../../../../Context/ThemeContext";
 import { RootState } from "../../../../Store/Store";
+import FileViewer from "react-native-file-viewer";
+import RNFS from "react-native-fs";
+import { setDoc } from "firebase/firestore";
 interface DetailTransactionProps {
   navigation: any;
   bg: string;
@@ -26,6 +39,28 @@ interface DetailTransactionProps {
   id: string;
   des?: string;
 }
+
+const isRemoteUrl = (url: string) => url.startsWith("http://") || url.startsWith("https://");
+
+const requestStoragePermission = async () => {
+  if (Platform.OS !== "android") return true;
+
+  // For Android 13 and below
+  if (Platform.Version < 33) {
+    const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
+      title: "Storage Permission Required",
+      message: "App needs access to your storage to open documents.",
+      buttonNeutral: "Ask Me Later",
+      buttonNegative: "Cancel",
+      buttonPositive: "OK",
+    });
+    return granted === PermissionsAndroid.RESULTS.GRANTED;
+  }
+
+  // Android 13+ (no READ_EXTERNAL_STORAGE permission needed for scoped storage)
+  return true;
+};
+
 function DetailTransaction({
   navigation,
   bg,
@@ -46,10 +81,14 @@ function DetailTransaction({
   startDate,
   startMonth,
   weekly,
+  isDoument,
 }: DetailTransactionProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [image, showImage] = useState(false);
   const [succes, setsuccess] = useState(false);
+  const [imageError, setimageError] = useState(false);
+  const [docError, setdocError] = useState(false);
+
   const dispatch = useDispatch();
   function toggleSuccess() {
     setsuccess(!succes);
@@ -83,6 +122,7 @@ function DetailTransaction({
         startDate,
         startMonth,
         weekly,
+        type: isDoument,
       });
     } else if (type === "Expense") {
       navigation.navigate("Expense", {
@@ -100,9 +140,19 @@ function DetailTransaction({
         startDate,
         startMonth,
         weekly,
+        type: isDoument,
       });
     } else {
-      navigation.navigate("Transfer", { amount, to: category, from: type, title: title, edit: true, id, url: uri });
+      navigation.navigate("Transfer", {
+        amount,
+        to: category,
+        from: type,
+        title: title,
+        edit: true,
+        id,
+        url: uri,
+        type: isDoument,
+      });
     }
   }
   const DisplayDate = new Date(time);
@@ -117,7 +167,43 @@ function DetailTransaction({
   const DisplayTime = `${day} ${getDate} ${month} ${year} ${getHours}:${getMinute}`;
   const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);
-  const [imageError, setimageError] = useState(false);
+  const openDocument = async (url: string, fileName: string = "document.pdf") => {
+    try {
+      const permissionGranted = await requestStoragePermission();
+      if (!permissionGranted) {
+        console.warn("Storage permission denied");
+        return;
+      }
+
+      let localPath = url;
+
+      if (isRemoteUrl(url)) {
+        // Download to temporary cache
+        localPath = `${RNFS.CachesDirectoryPath}/${fileName}`;
+
+        const result = await RNFS.downloadFile({
+          fromUrl: url,
+          toFile: localPath,
+        }).promise;
+
+        if (result.statusCode !== 200) {
+          console.warn("Download failed, status code:", result.statusCode);
+          return;
+        }
+      } else if (url.startsWith("file://")) {
+        // Remove `file://` prefix to get valid path for FileViewer
+        localPath = url.replace("file://", "");
+      }
+
+      await FileViewer.open(localPath, {
+        showOpenWithDialog: true,
+        displayName: fileName,
+      });
+    } catch (err) {
+      setdocError(true);
+    }
+  };
+  console.log(isDoument);
   return (
     <View style={styles.container}>
       <Header title={t("Detail Transaction")} press={() => navigation.goBack()} bgcolor={bg} color="white" />
@@ -152,7 +238,7 @@ function DetailTransaction({
         </ScrollView>
       </View>
       <View style={styles.attachView}>
-        {uri && (
+        {uri && isDoument === "image" && (
           <View>
             <Text style={styles.username}>{t("Attachment")}</Text>
 
@@ -175,8 +261,38 @@ function DetailTransaction({
             )}
           </View>
         )}
+        {uri && isDoument === "document" && (
+          // <View>
+          //   <Text style={styles.username}>{t("Attachment")}</Text>
+
+          //   <TouchableOpacity style={[styles.document, { backgroundColor: color }]} onPress={() => openDocument(uri)}>
+          //     <Text style={{ color: bg, fontSize: 16, fontFamily: "Inter" }}>View Document</Text>
+          //   </TouchableOpacity>
+          // </View>
+          <View>
+            <Text style={styles.username}>{t("Attachment")}</Text>
+
+            {docError ? (
+              <View
+                style={{
+                  width: "100%",
+                  alignItems: "center",
+                  height: "80%",
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={{ color: "gray" }}>Network Error</Text>
+                <Text style={{ color: "gray" }}>🚫 No Internet Connection .</Text>
+              </View>
+            ) : (
+              <TouchableOpacity style={[styles.document, { backgroundColor: color }]} onPress={() => openDocument(uri)}>
+                <Text style={{ color: bg, fontSize: 16, fontFamily: "Inter" }}>View Document</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
       </View>
-      <View style={[styles.Apply, { flex: 0.1 }]}>
+      <View style={[styles.Apply, { flex: 0.12, justifyContent: "center" }]}>
         <CustomButton title={t("Edit")} bg={bg} color="white" press={EditTransaction} />
       </View>
       <TouchableOpacity style={styles.Trash} onPress={toggleModal}>
@@ -228,11 +344,13 @@ export default function DetailTransaction_Expense({ navigation, route }) {
       startDate={value.startDate}
       startMonth={value.startMonth}
       weekly={value.weekly}
+      isDoument={value.type}
     />
   );
 }
 export function DetailTransaction_Income({ navigation, route }) {
   const { value } = route.params;
+  console.log(value);
   return (
     <DetailTransaction
       navigation={navigation}
@@ -253,6 +371,7 @@ export function DetailTransaction_Income({ navigation, route }) {
       startDate={value.startDate}
       startMonth={value.startMonth}
       weekly={value.weekly}
+      isDoument={value.type}
     />
   );
 }
@@ -274,6 +393,7 @@ export function DetailTransaction_Transfer({ navigation, route }) {
       title={value.description}
       id={value._id}
       uri={value.url}
+      isDoument={value.type}
     />
   );
 }

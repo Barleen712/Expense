@@ -39,6 +39,7 @@ interface Signup {
   user: string;
   index: null | number;
   pin: string;
+  Google: boolean;
 }
 interface GoogleSign {
   id: string;
@@ -70,7 +71,7 @@ const initialState: IncomeState = {
   budget: [],
   loading: false,
   notification: [],
-  signup: { Photo: { uri: "" }, user: "", index: null, pin: "" },
+  signup: { Photo: { uri: "" }, user: "", index: null, pin: "", Google: false },
   googleSign: { id: "", username: "", google: false, photo: "" },
   preferences: { currency: "USD", language: "English", theme: "Light", security: "PIN" },
   exceedNotification: false,
@@ -181,6 +182,12 @@ export const ExpenseTrackerSlice = createSlice({
     addUser: (state, action) => {
       state.signup = action.payload;
     },
+    updateUser: (state, action) => {
+      const { Photo, username, Index } = action.payload;
+
+      (state.signup.Photo.uri = Photo), (state.signup.user = username);
+      state.signup.index = Index;
+    },
     addGoogleUser: (state, action) => {
       const { id, google, username, photo } = action.payload;
       state.googleSign.id = id;
@@ -208,7 +215,7 @@ export const ExpenseTrackerSlice = createSlice({
       state.budget = [];
       state.loading = false;
       state.notification = [];
-      state.signup = { Photo: { uri: "" }, user: "", index: null, pin: "" };
+      state.signup = { Photo: { uri: "" }, user: "", index: null, pin: "", Google: false };
       state.googleSign = { id: "", username: "", google: false, photo: "" };
       state.preferences = { currency: "USD", language: "English", theme: "Light", security: "PIN" };
       state.exceedNotification = false;
@@ -238,6 +245,7 @@ export const {
   updateExpenseAlert,
   removeNotification,
   updateBadge,
+  updateUser,
 } = ExpenseTrackerSlice.actions;
 export default ExpenseTrackerSlice.reducer;
 export const updatePreferences =

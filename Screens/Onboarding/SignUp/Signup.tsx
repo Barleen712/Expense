@@ -104,6 +104,7 @@ export default function SignUp({ navigation }: Props) {
           Photo: {
             uri: url,
           },
+          Google: false,
         });
         raiseToast("success", "Email Verification", "verify");
       }
@@ -159,10 +160,11 @@ export default function SignUp({ navigation }: Props) {
       //navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
       dispatch(
         addUser({
-          User: userDoc.Name,
+          user: userDoc.Name,
           Photo: userDoc?.Photo,
           index: userDoc?.Index,
           pin: userDoc?.pin,
+          Google: userDoc?.Google,
         })
       );
       setloading(false);
@@ -170,7 +172,7 @@ export default function SignUp({ navigation }: Props) {
     }
 
     raiseToast("success", "Sign Up Success", "done");
-    AddUser({ User: name, Photo: { uri: photo }, userid: user.uid, index: null, pinSet: false });
+    AddUser({ User: name, Photo: { uri: photo }, userid: user.uid, index: null, pinSet: false, Google: true });
     setloading(false);
   }
   const { colors } = useContext(ThemeContext);

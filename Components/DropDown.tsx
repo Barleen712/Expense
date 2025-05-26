@@ -11,18 +11,20 @@ interface dropdown {
   data: DropdownItem[];
   name: string;
   styleButton: object;
-  height: number;
-  position: "auto" | "top" | "bottom";
+  height?: string;
+  position?: "auto" | "top" | "bottom";
   onSelectItem: (selectedItem: string) => void;
+  color?: string;
 }
 
-const DropdownComponent = ({ name, data, styleButton, value, position, height, onSelectItem }: dropdown) => {
+const DropdownComponent = ({ name, data, styleButton, value, position, height, onSelectItem, color }: dropdown) => {
   const { colors } = useContext(ThemeContext);
   const { t } = useTranslation();
   const translatedData = data.map((item) => ({
     ...item,
     label: t(item.label),
   }));
+  const resolvedColor = color || colors.color;
   return (
     <Dropdown
       style={styleButton}
@@ -34,8 +36,8 @@ const DropdownComponent = ({ name, data, styleButton, value, position, height, o
       placeholder={name}
       dropdownPosition={position}
       autoScroll={false}
-      placeholderStyle={{ color: colors.color }}
-      selectedTextStyle={{ color: colors.color }}
+      placeholderStyle={{ color: resolvedColor }}
+      selectedTextStyle={{ color: resolvedColor }}
       onChange={(selectedItem) => {
         onSelectItem(selectedItem.value);
       }}

@@ -3,14 +3,17 @@ import { auth, db } from "../Screens/FirebaseConfig";
 import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { getRealm } from "./realm";
 import { uploadImage } from "../Screens/Constants";
+import { generateKey, encryptData } from "../Encryption/encrption";
 export async function syncUnsyncedTransactions() {
-  console.log("✅ Starting sync function");
   const realm = await getRealm();
   const unsynced = realm.objects("Transaction").filtered("synced == false");
   const user = auth.currentUser;
   for (const txn of unsynced) {
     let supabaseImageUrl = "";
-
+    if (txn.url) {
+      supabaseImageUrl = await uploadImage(txn.url);
+    }
+    // const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
     const txnData = {
       _id: txn._id,
       amount: txn.amount,
@@ -30,6 +33,8 @@ export async function syncUnsyncedTransactions() {
       type: txn.type,
       url: supabaseImageUrl,
     };
+    // const encryptedData = await encryptData(JSON.stringify(txnData), key);
+    // console.log(encryptedData);
     const success = await AddTransaction(txnData);
     console.log(success);
     if (success) {
@@ -80,8 +85,39 @@ export async function syncPendingUpdatesToFirestore() {
       if (!querySnapshot.empty) {
         const docSnap = querySnapshot.docs[0];
         const docRef = doc(db, "Transactions", docSnap.id);
+        let supabaseurl = null;
 
-        await updateDoc(docRef, dataToUpdate);
+        const isRemoteUrl = (url) => {
+          return url.startsWith("http://") || url.startsWith("https://");
+        };
+
+        if (tx.url) {
+          if (isRemoteUrl(tx.url)) {
+            // Already remote URL, no upload needed
+            supabaseurl = tx.url;
+          } else {
+            // Local URI, upload image
+            supabaseurl = await uploadImage(tx.url);
+            console.log(supabaseurl);
+          }
+        }
+        const Data = {
+          amount: tx.amount,
+          description: tx.description,
+          category: tx.category,
+          wallet: tx.wallet,
+          moneyCategory: tx.moneyCategory,
+          url: supabaseurl,
+          Frequency: tx.Frequency,
+          weekly: tx.weekly,
+          repeat: tx.repeat,
+          startDate: tx.startDate,
+          startMonth: tx.startMonth,
+          startYear: tx.startYear,
+          endAfter: tx.endAfter,
+          endDate: tx.endDate,
+        };
+        await updateDoc(docRef, Data);
         realm.write(() => {
           const txToUpdate = realm.objectForPrimaryKey("Transaction", transactionId);
           if (txToUpdate) {

@@ -31,12 +31,11 @@ import { ThemeContext } from "../../../../Context/ThemeContext";
 import { getStyles } from "./styles";
 import Expense from "../../../../assets/ExpenseHome.svg";
 import Income from "../../../../assets/IncomeHome.svg";
-import { retrieveOldTransactions } from "../../../../Realm/realm";
-import { loadTransactionsFromRealm } from "../../../../Realm/realm";
 import { useDispatch } from "react-redux";
 export default function Home({ navigation }: Props) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.Money.signup);
+  console.log(user);
   const lang = [
     { name: "Arabic", code: "AR", tc: "ar" },
     { name: "Chinese", code: "ZH", tc: "zh" },
@@ -47,7 +46,7 @@ export default function Home({ navigation }: Props) {
   ];
   async function getData() {
     if (typeof user?.Photo.uri === "number") {
-      setPhoto(profilepics[user?.Index]);
+      setPhoto(profilepics[user?.index]);
     } else {
       setPhoto(user?.Photo);
     }

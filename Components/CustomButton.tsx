@@ -29,7 +29,7 @@ export function CustomButton({ title, bg, color, press }: CustomButton) {
         borderRadius: 16,
         alignItems: "center",
         justifyContent: "center",
-        marginTop: 10,
+        // marginTop: 10,
         backgroundColor: bg,
       }}
       onPress={press}

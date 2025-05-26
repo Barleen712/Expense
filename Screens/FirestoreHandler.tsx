@@ -4,10 +4,8 @@ import { collection, query, getDocs, where, onSnapshot, deleteDoc, doc, updateDo
 export async function AddTransaction(transactionData) {
   console.log(transactionData);
   try {
-    console.log("helllo");
     const docRef = await addDoc(collection(db, "Transactions"), transactionData);
     console.log(docRef);
-    console.log("added");
     return true;
   } catch (e) {
     console.log(e);
@@ -80,6 +78,15 @@ export const updateBudgetDocument = async (collection: string, id: string, data)
   });
 };
 export const updateUserDoc = async (id: string, data) => {
-  const userRef = doc(db, "Names", id);
-  const d = await updateDoc(userRef, data);
+  const q = query(collection(db, "Names"), where("userid", "==", id));
+  const snapshot = await getDocs(q);
+  const docRef = snapshot.docs[0].ref;
+  console.log(docRef);
+  try {
+    const updateData = { ...data };
+    delete updateData.userId;
+    await updateDoc(docRef, updateData);
+  } catch (error) {
+    console.log(error);
+  }
 };

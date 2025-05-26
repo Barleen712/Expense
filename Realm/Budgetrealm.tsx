@@ -67,8 +67,6 @@ export const markPendingDeleteOrDeleteBudget = async (realm, _id) => {
       realm.write(() => {
         realm.delete(transaction);
       });
-
-      console.log("Budget deleted from Firestore & Realm");
     } catch (error) {
       console.error("Delete error:", error);
     } finally {
@@ -79,8 +77,6 @@ export const markPendingDeleteOrDeleteBudget = async (realm, _id) => {
     realm.write(() => {
       transaction.pendingDelete = true;
     });
-
-    console.log("Marked transaction as pendingDelete");
   }
 };
 
@@ -91,7 +87,6 @@ export async function updateTransactionRealmAndFirestoreBudget(
   updatedData: Partial<Omit<typeof BudgetSchema.properties, "_id">>,
   isOnline: boolean
 ) {
-  console.log(realm, userID, transactionId, updatedData, isOnline);
   try {
     if (isOnline) {
       const q = query(collection(db, "Budgets"), where("_id", "==", transactionId));
@@ -109,7 +104,6 @@ export async function updateTransactionRealmAndFirestoreBudget(
           });
         }
       });
-      console.log("updated in databse");
       return { success: true, message: "Updated online" };
     } else {
       realm.write(() => {
@@ -126,7 +120,6 @@ export async function updateTransactionRealmAndFirestoreBudget(
             pendingUpdate: true,
           });
         }
-        console.log("updated offline");
       });
 
       return { success: true, message: "Updated offline - pending sync" };

@@ -29,7 +29,7 @@ export const getStyles = (colors: any) =>
       borderColor: "gray",
       borderRadius: 25,
       paddingLeft: 20,
-      padding:3
+      padding: 3,
     },
     budgetMonthtext: {
       fontFamily: "Inter",

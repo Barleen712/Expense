@@ -75,7 +75,7 @@ export default function Income({ navigation, route }: Props) {
   const [image, setImage] = useState<string | null>(parameters.url);
   const [modalVisible, setModalVisible] = useState(false);
   const [close, setclose] = useState(parameters.url);
-  const [document, setDocument] = useState<string | null>(null);
+  const [document, setDocument] = useState<string | null>(parameters.url);
   const [photo, setPhoto] = useState<string | null>(null);
   const [Income, setIncome] = useState<string>(`${parameters.amount}`);
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
@@ -93,7 +93,7 @@ export default function Income({ navigation, route }: Props) {
   const [categoryError, setcategoryError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [walletError, setwalletError] = useState("");
-  const [localPath, setlocalPath] = useState({ type: "", path: parameters.url });
+  const [localPath, setlocalPath] = useState({ type: parameters.type, path: parameters.url });
   const { isConnected } = useNetInfo();
   const modal = [
     require("../../../../assets/Camera.png"),
@@ -225,20 +225,17 @@ export default function Income({ navigation, route }: Props) {
       startYear: new Date().getFullYear(),
       Date: new Date().toISOString(),
       synced: false,
-      type: localPath.type,
-      url: localPath.path,
+      type: localPath.type || "document",
+      url: localPath.path || document,
     };
-    console.log(transaction);
 
     try {
       realm.write(() => {
         realm.create("Transaction", transaction);
-        console.log("added");
         dispatch(addTransaction(transaction));
-        console.log("added to db");
       });
     } catch (error) {
-      console.log(error, "1234");
+      console.log(error);
     }
 
     if (isConnected) {
@@ -258,8 +255,8 @@ export default function Income({ navigation, route }: Props) {
       wallet: selectedWallet,
       id: parameters.id,
       moneyCategory: "Income",
-      type: localPath.type,
-      url: localPath.path,
+      type: localPath.type || "document",
+      url: localPath.path || document,
       Frequency: frequency,
       endAfter: endAfter || null,
       weekly: week || null,
@@ -296,8 +293,9 @@ export default function Income({ navigation, route }: Props) {
     setEndDate(new Date());
     setendAfter("");
   }
-  const { colors, setTheme, theme } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);
+  console.log(image, document);
   return (
     <View style={styles.container}>
       <Header
@@ -364,7 +362,7 @@ export default function Income({ navigation, route }: Props) {
                     setwalletError("");
                   }}
                   position="bottom"
-                  height={180}
+                  height={"80%"}
                 />
                 {walletError !== "" && <Text style={styles.error}>*{walletError}</Text>}
                 {showAttach && (
@@ -373,7 +371,7 @@ export default function Income({ navigation, route }: Props) {
                     <Text style={{ color: colors.color }}>{t(StringConstants.Addattachment)}</Text>
                   </TouchableOpacity>
                 )}
-                {image && (
+                {localPath.type === "image" && image && (
                   <View style={{ width: "100%", marginLeft: 30 }}>
                     <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
                     {close && (
@@ -401,7 +399,7 @@ export default function Income({ navigation, route }: Props) {
                     )}
                   </View>
                 )}
-                {document && (
+                {localPath.type === "document" && document && (
                   <View
                     style={{
                       borderWidth: 0.5,

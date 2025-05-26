@@ -146,7 +146,7 @@ export default function Transaction({ navigation }: Props) {
             alignSelf: "flex-start",
             width: "38%",
           }}
-          styleItem={styles.dropdownItems}
+          // styleItem={styles.dropdownItems}
           onSelectItem={(item) => {
             setMonth(item);
           }}
@@ -265,13 +265,12 @@ export default function Transaction({ navigation }: Props) {
                           backgroundColor: item === sortBy ? "rgba(174, 225, 221, 0.6)" : "white",
                           width: "28%",
                           height: "35%",
+
                           margin: 5,
                         },
                       ]}
                     >
-                      <Text
-                        style={[styles.filterButtonText, { color: item === sortBy ? "rgb(42, 124, 118)" : "black" }]}
-                      >
+                      <Text style={{ color: item === sortBy ? "rgb(42, 124, 118)" : "black", fontWeight: "bold" }}>
                         {t(item)}
                       </Text>
                     </TouchableOpacity>

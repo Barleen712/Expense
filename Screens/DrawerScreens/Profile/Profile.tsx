@@ -19,11 +19,9 @@ import { auth } from "../../FirebaseConfig";
 import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { clearData } from "../../../Slice/IncomeSlice";
-import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
+import { clearData, updateUser } from "../../../Slice/IncomeSlice";
 import { persistor } from "../../../Store/Store";
 import { updateUserDoc } from "../../FirestoreHandler";
-import * as DocumentPicker from "expo-document-picker";
 import { uploadImage } from "../../Constants";
 import { getStyles } from "./styles";
 import { ThemeContext } from "../../../Context/ThemeContext";
@@ -52,19 +50,15 @@ export default function Profile({ navigation }: Props) {
   const [editProfile, seteditProfile] = useState(false);
   const [modalPhoto, setmodalPhoto] = useState("");
   const [modalUser, setModalUser] = useState("");
-  const [id, setUserId] = useState("");
   const [selectedindex, setselectedindex] = useState();
   const user = useSelector((state) => state.Money.signup);
   async function getData() {
-    const userD = await getUseNamerDocument();
-    setuser(user?.User);
-    setModalUser(user?.User);
-    setmodalPhoto(user?.Photo);
-    setUserId(user.ID);
+    setuser(user?.user);
+    setModalUser(user?.user);
     if (typeof user?.Photo.uri === "number") {
-      setPhoto(profilepics[user?.Index]);
-      setselectedindex(user?.Index);
-      setmodalPhoto(profilepics[user?.Index]);
+      setPhoto(profilepics[user?.index]);
+      setselectedindex(user?.index);
+      setmodalPhoto(profilepics[user?.index]);
     } else {
       setPhoto(user?.Photo);
       setmodalPhoto(user?.Photo);
@@ -155,10 +149,14 @@ export default function Profile({ navigation }: Props) {
     if (typeof modalPhoto === "object" && modalPhoto.uri && modalPhoto.uri.startsWith("file://")) {
       imageurl = await uploadImage(modalPhoto.uri);
     }
-    updateUserDoc(id, {
+    console.log(imageurl);
+    dispatch(updateUser({ Photo: imageurl, Index: selectedindex, username: modalUser }));
+    updateUserDoc(auth.currentUser?.uid, {
       User: modalUser,
       Photo: { uri: imageurl },
-      Index: selectedindex,
+      index: selectedindex || null,
+      pin: user.pin,
+      userId: auth.currentUser?.uid,
     });
   }
   function Discard() {
@@ -166,28 +164,9 @@ export default function Profile({ navigation }: Props) {
     setmodalPhoto(photo);
     setModalUser(username);
   }
-  const pickImageFromGallery = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: "image/*",
-        multiple: false,
-        copyToCacheDirectory: true,
-      });
-
-      if (!result.canceled) {
-        console.log("Image selected:", result.assets[0].uri);
-        //setPhoto({ uri: result.assets[0].uri });
-        setmodalPhoto({ uri: result.assets[0].uri });
-        setselectedindex("");
-      } else {
-        console.log("User cancelled image selection.");
-      }
-    } catch (err) {
-      console.error("Error while picking image:", err);
-    }
-  };
   const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);
+  console.log(user);
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground style={{ width: widths, height: 800 }} source={require("../../../assets/ProfileBack.png")}>

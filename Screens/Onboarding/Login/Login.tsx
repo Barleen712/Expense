@@ -15,6 +15,7 @@ import { getStyles } from "./styles";
 import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
 import { useSelector, useDispatch } from "react-redux";
 import { addUser } from "../../../Slice/IncomeSlice";
+import { ScrollView } from "react-native-gesture-handler";
 type LoginProp = StackNavigationProp<StackParamList, "Login">;
 
 interface Props {
@@ -100,71 +101,73 @@ export default function Login({ navigation }: Props) {
         bgcolor={colors.backgroundColor}
         color={colors.color}
       />
-      <View style={style.input}>
-        <Input
-          ref={emailRef}
-          title={t(StringConstants.Email)}
-          color="rgb(56, 88, 85)"
-          css={style.textinput}
-          name={email.email}
-          onchange={(data) => {
-            setemail({ emailError: "", email: data });
-          }}
-          isPass={false}
-        />
-        {email.emailError !== "" && (
-          <Text
-            style={{
-              color: "rgb(255, 0, 17)",
-              marginTop: 4,
-              marginLeft: 10,
-              fontFamily: "Inter",
-              width: "90%",
+      <ScrollView contentContainerStyle={{ alignItems: "center" }} style={{ width: "100%" }}>
+        <View style={style.input}>
+          <Input
+            ref={emailRef}
+            title={t(StringConstants.Email)}
+            color="rgb(56, 88, 85)"
+            css={style.textinput}
+            name={email.email}
+            onchange={(data) => {
+              setemail({ emailError: "", email: data });
             }}
-          >
-            {email.emailError}*
-          </Text>
-        )}
-        <Input
-          ref={passwordRef}
-          title={t(StringConstants.Password)}
-          color="rgb(56, 88, 85)"
-          css={style.textinput}
-          isPass={true}
-          name={password.password}
-          handleFocus={() => {
-            if (!email.email.trim()) {
-              setemail({ ...email, emailError: "Email is required" });
-              emailRef.current?.focus();
-            }
-          }}
-          onchange={(data) => {
-            setpass({ password: data, passwordError: "" });
-          }}
-        />
-        {password.passwordError !== "" && (
-          <Text
-            style={{
-              color: "rgb(255, 0, 17)",
-              marginTop: 4,
-              marginLeft: 10,
-              fontFamily: "Inter",
-              width: "90%",
+            isPass={false}
+          />
+          {email.emailError !== "" && (
+            <Text
+              style={{
+                color: "rgb(255, 0, 17)",
+                marginTop: 4,
+                marginLeft: 10,
+                fontFamily: "Inter",
+                width: "90%",
+              }}
+            >
+              {email.emailError}*
+            </Text>
+          )}
+          <Input
+            ref={passwordRef}
+            title={t(StringConstants.Password)}
+            color="rgb(56, 88, 85)"
+            css={style.textinput}
+            isPass={true}
+            name={password.password}
+            handleFocus={() => {
+              if (!email.email.trim()) {
+                setemail({ ...email, emailError: "Email is required" });
+                emailRef.current?.focus();
+              }
             }}
-          >
-            {password.passwordError}*
+            onchange={(data) => {
+              setpass({ password: data, passwordError: "" });
+            }}
+          />
+          {password.passwordError !== "" && (
+            <Text
+              style={{
+                color: "rgb(255, 0, 17)",
+                marginTop: 4,
+                marginLeft: 10,
+                fontFamily: "Inter",
+                width: "90%",
+              }}
+            >
+              {password.passwordError}*
+            </Text>
+          )}
+        </View>
+        <GradientButton title={t(StringConstants.Login)} handles={handlesLogin} />
+        <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+          <Text style={style.forgot}>{t(StringConstants.ForgotPassword)}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.replace("SignUp")}>
+          <Text style={style.account}>
+            {t(StringConstants.Donthaveanaccountyet)} <Text style={style.span}> {t(StringConstants.SignUp)}</Text>
           </Text>
-        )}
-      </View>
-      <GradientButton title={t(StringConstants.Login)} handles={handlesLogin} />
-      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-        <Text style={style.forgot}>{t(StringConstants.ForgotPassword)}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.replace("SignUp")}>
-        <Text style={style.account}>
-          {t(StringConstants.Donthaveanaccountyet)} <Text style={style.span}> {t(StringConstants.SignUp)}</Text>
-        </Text>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 }

@@ -4,6 +4,7 @@ export const getStyles = (colors: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
+
       backgroundColor: colors.backgroundColor,
       paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
@@ -82,12 +83,11 @@ export const getStyles = (colors: any) =>
     },
     Description: {
       flex: 0.3,
-      // backgroundColor:"red",
-      width: "95%",
+      width: "90%",
       marginLeft: "5%",
     },
     attachView: {
-      flex: 0.28,
+      flex: 0.3,
       width: "90%",
       marginLeft: "5%",
       marginTop: 10,
@@ -97,7 +97,7 @@ export const getStyles = (colors: any) =>
       width: "100%",
       marginTop: 10,
       borderRadius: 10,
-      height: 150,
+      height: "87%",
       borderWidth: 2,
       borderColor: "black",
     },
@@ -115,5 +115,13 @@ export const getStyles = (colors: any) =>
       fontSize: Platform.OS === "ios" ? 14 : 16,
       fontWeight: Platform.OS === "ios" ? 500 : "bold",
       color: colors.color,
+    },
+    document: {
+      backgroundColor: "red",
+      height: "45%",
+      borderRadius: 20,
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: 30,
     },
   });

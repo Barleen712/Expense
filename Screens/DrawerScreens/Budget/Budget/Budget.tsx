@@ -184,6 +184,7 @@ export default function Budget({ navigation }: Props) {
           data={Year}
           value={year}
           name={year}
+          color="white"
           styleButton={styles.budgetYear}
           onSelectItem={(item) => {
             selectedYear(item);

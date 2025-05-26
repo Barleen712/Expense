@@ -78,7 +78,7 @@ const SelectImageWithDocumentPicker = ({
         toggle();
         const fileName = `img_${Date.now()}.jpg`;
         const localPath = FileSystem.documentDirectory + fileName;
-        setlocalPath({ a: "document", b: localPath });
+        setlocalPath({ type: "document", path: localPath });
         await FileSystem.copyAsync({
           from: result.assets[0].uri,
           to: localPath,
@@ -114,7 +114,7 @@ const SelectImageWithDocumentPicker = ({
         setImage(image.path);
         setAttach(false);
         setclose(true);
-        setlocalPath({ a: "image", b: localPath });
+        setlocalPath({ type: "image", path: localPath });
         toggle();
       }
     } catch (error) {

@@ -1,4 +1,4 @@
-import { Platform } from "react-native";
+import { Platform, PermissionsAndroid } from "react-native";
 import { supabase } from "./SuperbaseConfig";
 import RNFS from "react-native-fs";
 import ReactNativeBiometrics, { FaceID } from "react-native-biometrics";
@@ -60,13 +60,17 @@ export const CATEGORY_COLORS: Record<string, string> = {
   "Passive Income": "rgb(231, 199, 14)",
 };
 export const uploadImage = async (imageUri: string) => {
+  console.log("adding image");
   try {
     if (!imageUri) {
       console.warn("No image URI to upload.");
+
       return null;
     }
+    console.log("adding image");
     const fileName = imageUri.split("/").pop() || `income_${Date.now()}.jpg`;
     const filePath = `income-images/${fileName}`;
+    console.log(filePath);
     let base64Image: string | null = null;
 
     // Convert image to Base64 (web or native)
@@ -97,7 +101,6 @@ export const uploadImage = async (imageUri: string) => {
       fileArray[i] = binaryString.charCodeAt(i);
     }
     const { data, error: uploadError } = await supabase.storage.from("expense-tracker").upload(filePath, fileArray, {
-      contentType: "image/jpeg", // Removed dynamic part for simplicity
       upsert: true,
     });
     if (uploadError) {
@@ -435,3 +438,36 @@ export const Privacy_Policy = [
       "If you have any questions about this Privacy Policy, please contact us at:\nEmail:support@montra.com\nAddress: Chicmic Studios ,F-273, Phase 8B, Industrial Area, Sector 74, Sahibzada Ajit Singh Nagar, Punjab 160071.",
   },
 ];
+
+// export const requestStoragePermission = async () => {
+//   if (Platform.OS === "android") {
+//     const version = Platform.Version;
+
+//     try {
+//       if (version >= 33) {
+//         // Android 13+ requires READ_MEDIA_* permissions
+//         const granted = await PermissionsAndroid.request(
+//           PermissionsAndroid.PERMISSIONS.READ_MEDIA_DOCUMENTS, // or READ_MEDIA_DOCUMENTS if available in your RN version
+//           {
+//             title: "Media Permission Required",
+//             message: "App needs access to open the downloaded file.",
+//             buttonPositive: "OK",
+//           }
+//         );
+//         return granted === PermissionsAndroid.RESULTS.GRANTED;
+//       } else {
+//         const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
+//           title: "Storage Permission Required",
+//           message: "App needs access to your storage to open files.",
+//           buttonPositive: "OK",
+//         });
+//         return granted === PermissionsAndroid.RESULTS.GRANTED;
+//       }
+//     } catch (err) {
+//       console.warn("Permission error:", err);
+//       return false;
+//     }
+//   } else {
+//     return true; // iOS doesn't require storage permission
+//   }
+// };

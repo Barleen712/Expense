@@ -47,12 +47,12 @@ const modal = [
   require("../../../../assets/DocumentBlue.png"),
 ];
 export default function Income({ navigation, route }: Props) {
-  const { from, to, amount, id, edit, title, url } = route.params;
+  const { from, to, amount, id, edit, title, url, type } = route.params;
   const [showAttach, setAttach] = useState(!url);
   const [image, setImage] = useState<string | null>(url);
   const [modalVisible, setModalVisible] = useState(false);
   const [close, setclose] = useState(url);
-  const [document, setDocument] = useState<string | null>(null);
+  const [document, setDocument] = useState<string | null>(url);
   const [photo, setPhoto] = useState<string | null>(null);
   const [Transfer, setTransfer] = useState<string>(`${amount}`);
   const [From, setFrom] = useState(`${from}`);
@@ -62,7 +62,7 @@ export default function Income({ navigation, route }: Props) {
   const [TransferError, setTransferError] = useState("");
   const [toError, setToError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
-  const [localPath, setlocalPath] = useState({ type: "", path: url });
+  const [localPath, setlocalPath] = useState({ type: type, path: url });
 
   function toggleModal() {
     setModalVisible(!modalVisible);
@@ -195,8 +195,8 @@ export default function Income({ navigation, route }: Props) {
       repeat: false,
       Date: new Date().toISOString(),
       synced: false,
-      type: localPath.type,
-      url: localPath.path,
+      type: localPath.type || "document",
+      url: localPath.path || document,
     };
 
     try {
@@ -223,7 +223,8 @@ export default function Income({ navigation, route }: Props) {
       category: From + " -> " + To,
       id: id,
       moneyCategory: "Transfer",
-      url: localPath.path,
+      type: localPath.type || "document",
+      url: localPath.path || document,
       wallet: "",
     };
     const { isConnected } = await NetInfo.fetch();
@@ -248,7 +249,6 @@ export default function Income({ navigation, route }: Props) {
   }
   const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);
-
   return (
     <View style={styles.container}>
       <Header
@@ -376,7 +376,7 @@ export default function Income({ navigation, route }: Props) {
                     <Text style={{ color: colors.color }}>{t(StringConstants.Addattachment)}</Text>
                   </TouchableOpacity>
                 )}
-                {image && (
+                {localPath.type === "image" && image && (
                   <View style={{ width: "100%", marginLeft: 30 }}>
                     <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
                     {close && (
@@ -404,7 +404,7 @@ export default function Income({ navigation, route }: Props) {
                     )}
                   </View>
                 )}
-                {document && (
+                {localPath.type === "document" && document && (
                   <View
                     style={{
                       borderWidth: 0.5,

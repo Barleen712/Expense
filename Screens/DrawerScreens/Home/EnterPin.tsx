@@ -6,6 +6,7 @@ import Pin from "../../../Components/Pin";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { useTranslation } from "react-i18next";
+import { Ionicons } from "@expo/vector-icons";
 import { handleBiometricAuth } from "../../Constants";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -23,6 +24,7 @@ export default function EnterPin({ navigation }: Props) {
   const [opendots, setopendots] = useState(false);
   const [reset, setreset] = useState(false);
   const user = useSelector((state) => state.Money.signup);
+
   async function handlenext() {
     if (user.pin === pin && reset === false) {
       navigation.replace("MainScreen");
@@ -44,13 +46,23 @@ export default function EnterPin({ navigation }: Props) {
   return (
     <View style={{ backgroundColor: "#2A7C76", flex: 1, alignItems: "center", justifyContent: "center" }}>
       <View style={[styles.setup, { justifyContent: "center" }]}>
+        {reset && (
+          <TouchableOpacity
+            style={[styles.iconContainer, { position: "absolute", left: "2%" }]}
+            onPress={() => setreset(false)}
+          >
+            <Ionicons name="arrow-back" size={30} color={"white"} />
+          </TouchableOpacity>
+        )}
         <Text style={styles.setuptext}>{reset ? "Confirm your Pin" : "Enter your Pin"}</Text>
-        <TouchableOpacity
-          style={{ position: "absolute", top: "35%", right: "3%", height: "100%" }}
-          onPress={() => setopendots(!opendots)}
-        >
-          <MaterialCommunityIcons name="dots-vertical" size={28} color="white" />
-        </TouchableOpacity>
+        {!user.Google && (
+          <TouchableOpacity
+            style={{ position: "absolute", top: "35%", right: "3%", height: "100%" }}
+            onPress={() => setopendots(!opendots)}
+          >
+            <MaterialCommunityIcons name="dots-vertical" size={28} color="white" />
+          </TouchableOpacity>
+        )}
         {opendots && (
           <View
             style={{
@@ -76,7 +88,10 @@ export default function EnterPin({ navigation }: Props) {
                 height: "50%",
                 marginLeft: 5,
               }}
-              onPress={() => navigation.navigate("ForgotPin")}
+              onPress={() => {
+                setpin("");
+                navigation.navigate("ForgotPin");
+              }}
             >
               <MaterialCommunityIcons name="lock-question" size={24} color="black" />
               <Text style={{ fontWeight: "bold" }}>Forgot Pin?</Text>
@@ -89,6 +104,7 @@ export default function EnterPin({ navigation }: Props) {
                 marginLeft: 5,
               }}
               onPress={() => {
+                setpin("");
                 setreset(true);
                 setopendots(false);
               }}

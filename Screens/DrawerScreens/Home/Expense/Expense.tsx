@@ -79,7 +79,7 @@ export default function Expense({ navigation, route }: Props) {
   const [image, setImage] = useState<string | null>(parameters.url);
   const [modalVisible, setModalVisible] = useState(false);
   const [close, setclose] = useState(parameters.url);
-  const [document, setDocument] = useState<string | null>(null);
+  const [document, setDocument] = useState<string | null>(parameters.url);
   const [photo, setPhoto] = useState<string | null>(parameters.url);
   const [Expenses, setExpenses] = useState<string>(`${parameters.amount}`);
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
@@ -98,7 +98,7 @@ export default function Expense({ navigation, route }: Props) {
   const [categoryError, setcategoryError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [walletError, setwalletError] = useState("");
-  const [localPath, setlocalPath] = useState({ type: "", path: parameters.url });
+  const [localPath, setlocalPath] = useState({ type: parameters.type, path: parameters.url });
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -206,8 +206,8 @@ export default function Expense({ navigation, route }: Props) {
       startYear: new Date().getFullYear(),
       Date: new Date().toISOString(),
       synced: false,
-      type: localPath.type,
-      url: localPath.path,
+      type: localPath.type || "document",
+      url: localPath.path || document,
     };
 
     try {
@@ -312,6 +312,7 @@ export default function Expense({ navigation, route }: Props) {
       wallet: selectedWallet,
       id: parameters.id,
       moneyCategory: "Expense",
+      type: localPath.type || "document",
       url: localPath.path,
       Frequency: frequency,
       weekly: week || null,
@@ -437,7 +438,7 @@ export default function Expense({ navigation, route }: Props) {
                     setwalletError("");
                   }}
                   position="bottom"
-                  height={180}
+                  height={"80%"}
                 />
                 {walletError !== "" && (
                   <Text
@@ -464,7 +465,7 @@ export default function Expense({ navigation, route }: Props) {
                     <Text style={{ color: colors.color }}>{t(StringConstants.Addattachment)}</Text>
                   </TouchableOpacity>
                 )}
-                {image && (
+                {localPath.type === "image" && image && (
                   <View style={{ width: "100%", marginLeft: 30 }}>
                     <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
                     {close && (
@@ -493,7 +494,7 @@ export default function Expense({ navigation, route }: Props) {
                   </View>
                 )}
 
-                {document && (
+                {localPath.type === "document" && document && (
                   <View
                     style={{
                       borderWidth: 0.5,

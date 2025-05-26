@@ -37,7 +37,6 @@ export const getRealm = async () => {
 export const deleteRealmDatabase = async () => {
   try {
     Realm.deleteFile({ path: Realm.defaultPath });
-    console.log("✅ Realm file deleted");
   } catch (error) {
     console.error("❌ Failed to delete Realm file:", error);
   }
@@ -47,7 +46,6 @@ import NetInfo from "@react-native-community/netinfo";
 import { db } from "../Screens/FirebaseConfig";
 import { collection, query, getDocs, where, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
 export const markPendingDeleteOrDelete = async (realm, _id) => {
-  console.log(_id);
   const transaction = realm.objectForPrimaryKey("Transaction", _id);
 
   if (!transaction) {
@@ -68,8 +66,6 @@ export const markPendingDeleteOrDelete = async (realm, _id) => {
       realm.write(() => {
         realm.delete(transaction);
       });
-
-      console.log("Transaction deleted from Firestore & Realm");
     } catch (error) {
       console.error("Delete error:", error);
     } finally {
@@ -80,8 +76,6 @@ export const markPendingDeleteOrDelete = async (realm, _id) => {
     realm.write(() => {
       transaction.pendingDelete = true;
     });
-
-    console.log("Marked transaction as pendingDelete");
   }
 };
 

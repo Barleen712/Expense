@@ -129,7 +129,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
                     repeat: false,
                     startDate: new Date().getDate(),
                     startMonth: new Date().getMonth(),
-                    weekly: "",
+                    weekly: new Date().getDay(),
                   })
                 }
                 style={{ position: "absolute", left: 55, bottom: 55 }}
@@ -153,7 +153,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
                     repeat: false,
                     startDate: new Date().getDate(),
                     startMonth: new Date().getMonth(),
-                    weekly: "",
+                    weekly: new Date().getDay(),
                   })
                 }
                 style={{ position: "absolute", right: 55, bottom: 55 }}
