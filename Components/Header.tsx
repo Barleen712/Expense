@@ -10,13 +10,13 @@ interface Header {
   color?: string;
 }
 
-export default function Header({ title, press, bgcolor, color }: Header) {
+export default function Header({ title, press, bgcolor, color }: Readonly<Header>) {
   return (
-    <View style={[styles.headerContainer, { backgroundColor: bgcolor || "white" }]}>
+    <View style={[styles.headerContainer, { backgroundColor: bgcolor ?? "white" }]}>
       <TouchableOpacity style={styles.iconContainer}>
         <Ionicons name="arrow-back" size={30} color={color} onPress={press} />
       </TouchableOpacity>
-      <Text style={[styles.headerText, { color: color || "black" }]}>{title}</Text>
+      <Text style={[styles.headerText, { color: color ?? "black" }]}>{title}</Text>
     </View>
   );
 }

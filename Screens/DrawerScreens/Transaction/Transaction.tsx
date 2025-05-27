@@ -219,31 +219,6 @@ export default function Transaction({ navigation }: Props) {
               </View>
               <View style={[styles.FilterOptions, { flex: 0.35 }]}>
                 <Text style={styles.notiTitle}>{t(StringConstants.SortBy)}</Text>
-                {/* <FlatList
-                  numColumns={3}
-                  contentContainerStyle={styles.flatListContainer}
-                  data={SortBy}
-                  renderItem={({ item }) => {
-                    return (
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (sortBy === item) setSortBy("");
-                          else setSortBy(item);
-                        }}
-                        style={[
-                          styles.filterButton,
-                          { backgroundColor: item === sortBy ? "rgba(174, 225, 221, 0.6)" : "white" },
-                        ]}
-                      >
-                        <Text
-                          style={[styles.filterButtonText, { color: item === sortBy ? "rgb(42, 124, 118)" : "black" }]}
-                        >
-                          {t(item)}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  }}
-                /> */}
                 <View
                   style={{
                     flexDirection: "row",

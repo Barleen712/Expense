@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, Dimensions } from "react-native";
+import { View, Text } from "react-native";
 import { Slider } from "@miblanchard/react-native-slider";
 import styles from "../Screens/Stylesheet";
 import { ThemeContext, ThemeContextType } from "../Context/ThemeContext";

@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
+import React from "react";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import styles from "../Screens/Stylesheet";
-interface keypad {
+interface KeypadProps {
   change: () => void;
   onKeyPress: (num: number) => void;
   onClear?: () => void;
 }
-export default function Keypad({ change, onKeyPress, onClear }: keypad) {
+export default function Keypad({ change, onKeyPress, onClear }: Readonly<KeypadProps>) {
   const keypad = [1, 2, 3, 4, 5, 6, 7, 8, 9, "C", 0, "A"];
   const handlePress = (item: number | string) => {
     if (typeof item === "number") {
@@ -23,11 +23,15 @@ export default function Keypad({ change, onKeyPress, onClear }: keypad) {
         data={keypad}
         scrollEnabled={false}
         numColumns={3}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity onPress={() => handlePress(item)} key={index} style={styles.keypad1}>
-            <Text style={styles.number}> {item === "C" ? "⌫" : item === "A" ? "➔" : item}</Text>
-          </TouchableOpacity>
-        )}
+        renderItem={({ item, index }) => {
+          const displayText = item === "C" ? "⌫" : item === "A" ? "➔" : item;
+
+          return (
+            <TouchableOpacity onPress={() => handlePress(item)} key={index} style={styles.keypad1}>
+              <Text style={styles.number}>{displayText}</Text>
+            </TouchableOpacity>
+          );
+        }}
       ></FlatList>
     </View>
   );

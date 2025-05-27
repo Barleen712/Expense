@@ -74,7 +74,7 @@ export default function FrequencyModal({
   setFrequencyModal,
   setswitch,
   edit,
-}: ModalProps) {
+}: Readonly<ModalProps>) {
   const { t } = useTranslation();
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [frequencyError, setFrequencyError] = useState("");

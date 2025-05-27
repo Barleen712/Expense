@@ -1,5 +1,5 @@
-import React, { useEffect, useContext, useCallback } from "react";
-import { View, Text, Dimensions, Image, BackHandler } from "react-native";
+import React, { useContext, useCallback } from "react";
+import { View, Text, Dimensions, BackHandler } from "react-native";
 import styles from "../../../../Stylesheet";
 import FaceCard from "./StructureReport";
 import { CustomButton } from "../../../../../Components/CustomButton";
@@ -11,11 +11,9 @@ import { useTranslation } from "react-i18next";
 import { StringConstants, categoryMap } from "../../../../Constants";
 import { getStyles } from "./styles";
 import {
-  selectIncome,
   selectMonthlyExpenseTotals,
   groupedMonthlyExpensesAndTransfers,
   selectMonthlyIncomeTotals,
-  selectExpensesAndTransfers,
   BudgetCategory,
   groupedMonthlyIncome,
 } from "../../../../../Slice/Selectors";
@@ -29,7 +27,7 @@ interface Props {
   navigation: Transactionprop;
 }
 
-export default function FinancialReportExpense({ navigation }: Props) {
+export default function FinancialReportExpense({ navigation }: Readonly<Props>) {
   const grouped = useSelector(groupedMonthlyExpensesAndTransfers);
   const selectedKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
   const expense = grouped[selectedKey] || 0;
@@ -77,7 +75,7 @@ export default function FinancialReportExpense({ navigation }: Props) {
   );
 }
 
-export function FinancialReportIncome({ navigation }: Props) {
+export function FinancialReportIncome({ navigation }: Readonly<Props>) {
   const grouped = useSelector(groupedMonthlyIncome);
   const selectedKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
   const income = grouped[selectedKey] || 0;
@@ -125,7 +123,7 @@ export function FinancialReportIncome({ navigation }: Props) {
   );
 }
 
-export function FinancialReportBudget({ navigation }: Props) {
+export function FinancialReportBudget({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const budgets = useSelector(BudgetCategory);
   const selectedMonthKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
@@ -221,7 +219,7 @@ export function FinancialReportBudget({ navigation }: Props) {
   );
 }
 
-export function FinancialReportQuote({ navigation }: Props) {
+export function FinancialReportQuote({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const { colors } = useContext(ThemeContext);
 

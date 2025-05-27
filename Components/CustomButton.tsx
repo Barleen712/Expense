@@ -5,7 +5,7 @@ interface Gradient {
   title: string;
   handles?: () => void;
 }
-export default function GradientButton({ title, handles }: Gradient) {
+export default function GradientButton({ title, handles }: Readonly<Gradient>) {
   return (
     <TouchableOpacity onPress={handles} style={styles.gradient}>
       <LinearGradient colors={["#69AEA9", "#3F8782"]} style={[styles.gradient, { width: "100%" }]}>
@@ -20,7 +20,7 @@ interface CustomButton {
   color: string;
   press?: () => void;
 }
-export function CustomButton({ title, bg, color, press }: CustomButton) {
+export function CustomButton({ title, bg, color, press }: Readonly<CustomButton>) {
   return (
     <TouchableOpacity
       style={{

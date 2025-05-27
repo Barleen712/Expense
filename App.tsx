@@ -13,14 +13,11 @@ import { ActivityIndicator } from "react-native-paper";
 import Toast from "react-native-toast-message";
 import { getUseNamerDocument } from "./Saga/BudgetSaga";
 import StackParamList from "./Navigation/StackList";
-import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
+import { useNetInfo } from "@react-native-community/netinfo";
 import SplashScreen from "react-native-splash-screen";
 import { CachedUser, saveUserData, getCachedUser, clearUserData } from "./utils/userStorage";
 import { syncUnsyncedTransactions, syncPendingDeletes, syncPendingUpdatesToFirestore } from "./Realm/Sync";
-import { deleteRealmDatabase } from "./Realm/realm";
 import { syncPendingDeletesBudget, syncPendingUpdatesToFirestoreBudgets, syncUnsyncedBudget } from "./Realm/SyncBudget";
-import Setpin from "./Screens/Onboarding/Setpin/SetupPin01";
-import Setpin02 from "./Screens/Onboarding/SetupPin02";
 const checkApplicationPermission = async () => {
   const settings = await notifee.requestPermission();
 
@@ -95,7 +92,6 @@ export default function App() {
 
         setCheckingAuth(false);
       });
-      // deleteRealmDatabase();
       return unsubscribe;
     };
 
