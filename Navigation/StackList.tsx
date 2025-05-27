@@ -28,6 +28,8 @@ type StackParamList = {
     index?: number;
     edit: boolean;
     header: string;
+    month: number;
+    year: number;
   };
   Expense: { amount: number; category: string; edit: boolean; title: string; wallet: string; url: string };
   Income: { amount: number; category: string; edit: boolean; title: string; wallet: string; path: string };
@@ -48,6 +50,7 @@ type StackParamList = {
     index: number;
     total: number;
     percentage: number;
+    alert: boolean;
   };
   DetailAccount: {
     wallet: number;

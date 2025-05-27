@@ -36,7 +36,7 @@ export default function Setpin02({ navigation, route }: Props) {
         await updateUserDoc(auth.currentUser.uid, { pinSet: true, pin: pin });
         dispatch(
           addUser({
-            user: user.Name,
+            User: user.Name,
             Photo: user?.Photo,
             index: user?.Index,
             pin: pin,

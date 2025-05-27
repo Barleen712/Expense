@@ -46,7 +46,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { db } from "../Screens/FirebaseConfig";
 import { collection, query, getDocs, where, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { BudgetSchema } from "./Schema";
-export const markPendingDeleteOrDeleteBudget = async (realm, _id) => {
+export const markPendingDeleteOrDeleteBudget = async (realm: Realm, _id: string) => {
   const transaction = realm.objectForPrimaryKey("Budget", _id);
 
   if (!transaction) {
@@ -126,7 +126,8 @@ export async function updateTransactionRealmAndFirestoreBudget(
     }
   } catch (error) {
     console.error("Failed to update transaction:", error);
-    return { success: false, message: error.message };
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return { success: false, message: errorMessage };
   }
 }
 
@@ -139,7 +140,7 @@ export const retrieveOldTransactions = async () => {
     console.error("Error opening Realm:", error);
   }
 };
-export const saveToRealmBudgets = async (input) => {
+export const saveToRealmBudgets = async (input: any) => {
   const realm = await getRealm();
   const transactions = Array.isArray(input) ? input : [input];
   realm.write(() => {

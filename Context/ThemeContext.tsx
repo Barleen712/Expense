@@ -1,11 +1,33 @@
 import React, { createContext, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useColorScheme } from "react-native";
-
-export const ThemeContext = createContext();
-
-export const ThemeProvider = ({ children }) => {
-  const theme = useSelector((state) => state.Money.preferences.theme);
+import { RootState } from "../Store/Store";
+export type ThemeContextType = {
+  theme: "Light" | "Dark";
+  colors: {
+    backgroundColor: string;
+    color?: string;
+    LinearGradient: string[];
+    textcolor: string;
+    borderColor: string;
+    listView: string;
+    budgetView: string;
+    profileView: string;
+    icon: string;
+    financialReport: string;
+    reportText: string;
+    line: string;
+    editColor: string;
+    nobutton: string;
+    seeall: string;
+    selected: string;
+    about: string;
+    gray: string;
+  };
+};
+export const ThemeContext = createContext<ThemeContextType | null>(null);
+export const ThemeProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+  const theme = useSelector((state: RootState) => state.Money.preferences.theme);
   const deviceTheme = useColorScheme();
   const themes = {
     Light: {
@@ -25,6 +47,8 @@ export const ThemeProvider = ({ children }) => {
       nobutton: "rgba(220, 234, 233, 0.6)",
       seeall: "rgba(220, 234, 233, 0.6)",
       selected: "rgba(4, 73, 69, 0.53)",
+      about: "#F9FAFB",
+      gray: "#666",
     },
     Dark: {
       backgroundColor: "#000",
@@ -43,14 +67,16 @@ export const ThemeProvider = ({ children }) => {
       nobutton: "rgba(255, 255, 255, 0.9)",
       seeall: "white",
       selected: "rgb(39, 176, 192)",
+      about: "rgba(0, 0, 0, 0.83)",
+      gray: "rgba(255, 255, 255, 0.9)",
     },
   };
-  let selectedThemeName;
+  let selectedThemeName: "Light" | "Dark";
 
   if (theme === "Using device theme") {
     selectedThemeName = deviceTheme === "dark" ? "Dark" : "Light";
   } else {
-    selectedThemeName = theme;
+    selectedThemeName = theme as "Light" | "Dark";
   }
 
   // Wrap the ENTIRE context value in useMemo

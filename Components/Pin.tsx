@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import styles from "../Screens/Stylesheet";
-export default function Pin({ pin }) {
+export default function Pin({ pin }: { pin: string }) {
   return (
     <View style={styles.pin}>
       {Array(4)

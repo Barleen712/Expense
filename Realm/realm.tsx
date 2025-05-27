@@ -13,7 +13,7 @@ export const getRealm = async () => {
     // realm doesn't exist or was closed, open a new one
     realm = await Realm.open({
       schema: [TransactionSchema, BudgetSchema],
-      schemaVersion: 5,
+      schemaVersion: 7,
     });
     return realm;
   } catch (error) {

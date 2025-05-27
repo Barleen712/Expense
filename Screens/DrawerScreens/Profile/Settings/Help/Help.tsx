@@ -3,13 +3,18 @@ import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet, Platform
 import Icon from "react-native-vector-icons/Ionicons";
 import Collapsible from "react-native-collapsible";
 import Header from "../../../../../Components/Header";
-import { ThemeContext } from "../../../../../Context/ThemeContext";
-
-const HelpScreen = ({ navigation }) => {
-  const [activeFaq, setActiveFaq] = useState(null);
+import { ThemeContext, ThemeContextType } from "../../../../../Context/ThemeContext";
+import { StackNavigationProp } from "@react-navigation/stack";
+import StackParamList from "../../../../../Navigation/StackList";
+type Helprop = StackNavigationProp<StackParamList, "Help">;
+interface Props {
+  navigation: Helprop;
+}
+const HelpScreen = ({ navigation }: Props) => {
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const isToggling = useRef(false);
 
-  const toggleFaq = (index) => {
+  const toggleFaq = (index: number | null) => {
     if (isToggling.current) return;
     isToggling.current = true;
 
@@ -59,7 +64,8 @@ const HelpScreen = ({ navigation }) => {
     },
   ];
 
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
       <Header title="Help" press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color} />
@@ -99,19 +105,6 @@ const HelpScreen = ({ navigation }) => {
           </View>
         </View>
 
-        {/* Feature Walkthrough */}
-        {/* <View style={styles.section}>
-          <Icon name="construct-outline" size={24} color="rgba(42, 124, 118, 1)" />
-          <View style={styles.sectionText}>
-            <Text style={styles.title}>Feature Walkthrough</Text>
-            <Text style={styles.description}>Discover recurring transactions, alerts, and insights.</Text>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Explore Features</Text>
-            </TouchableOpacity>
-          </View>
-        </View> */}
-
-        {/* Contact Support */}
         <View style={styles.section}>
           <Icon name="chatbox-ellipses-outline" size={24} color="rgba(42, 124, 118, 1)" />
           <View style={styles.sectionText}>
@@ -129,95 +122,97 @@ const HelpScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#F9FAFB",
-    flex: 1,
-    alignItems: "center",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "700",
-    marginVertical: 10,
-    color: "#333",
-  },
-  section: {
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 16,
-    marginVertical: 8,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-  },
-  sectionText: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 4,
-    color: "#222",
-  },
-  description: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 8,
-  },
-  button: {
-    backgroundColor: "rgba(42, 124, 118, 1)",
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    alignSelf: "flex-start",
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  buttonOutline: {
-    borderColor: "rgba(42, 124, 118, 1)",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    alignSelf: "flex-start",
-  },
-  buttonOutlineText: {
-    color: "rgba(42, 124, 118, 1)",
-    fontWeight: "600",
-  },
-  faqItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-  },
-  faqQuestion: {
-    fontWeight: "500",
-    color: "#333",
-    fontSize: 15,
-    flex: 1,
-  },
-  faqAnswer: {
-    color: "#666",
-    fontSize: 14,
-    paddingVertical: 4,
-    paddingLeft: 4,
-  },
-  footer: {
-    marginTop: 20,
-    textAlign: "center",
-    fontSize: 12,
-    color: "#999",
-  },
-  scroll: {
-    flex: 1,
-    width: "90%",
-  },
-});
+const getStyles = (color: any) => {
+  return StyleSheet.create({
+    container: {
+      backgroundColor: color.about,
+      flex: 1,
+      alignItems: "center",
+      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    },
+    header: {
+      fontSize: 24,
+      fontWeight: "700",
+      marginVertical: 10,
+      color: "#333",
+    },
+    section: {
+      flexDirection: "row",
+      backgroundColor: color.backgroundColor,
+      borderRadius: 12,
+      padding: 16,
+      marginVertical: 8,
+      elevation: 2,
+      shadowColor: "#000",
+      shadowOpacity: 0.05,
+      shadowRadius: 3,
+    },
+    sectionText: {
+      marginLeft: 12,
+      flex: 1,
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: "600",
+      marginBottom: 4,
+      color: color.color,
+    },
+    description: {
+      fontSize: 14,
+      color: color.gray,
+      marginBottom: 8,
+    },
+    button: {
+      backgroundColor: "rgba(42, 124, 118, 1)",
+      borderRadius: 8,
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      alignSelf: "flex-start",
+    },
+    buttonText: {
+      color: "#fff",
+      fontWeight: "600",
+    },
+    buttonOutline: {
+      borderColor: "rgba(42, 124, 118, 1)",
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      alignSelf: "flex-start",
+    },
+    buttonOutlineText: {
+      color: "rgba(42, 124, 118, 1)",
+      fontWeight: "600",
+    },
+    faqItem: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      paddingVertical: 10,
+    },
+    faqQuestion: {
+      fontWeight: "500",
+      color: color.color,
+      fontSize: 15,
+      flex: 1,
+    },
+    faqAnswer: {
+      color: color.gray,
+      fontSize: 14,
+      paddingVertical: 4,
+      paddingLeft: 4,
+    },
+    footer: {
+      marginTop: 20,
+      textAlign: "center",
+      fontSize: 12,
+      color: "#999",
+    },
+    scroll: {
+      flex: 1,
+      width: "90%",
+    },
+  });
+};
 
 export default HelpScreen;

@@ -23,7 +23,6 @@ import { useTranslation } from "react-i18next";
 import useTransactionListener from "../../../../Saga/TransactionSaga";
 import useBudgetListener from "../../../../Saga/BudgetSaga";
 import useNotificationListener from "../../../../Saga/NotificationSaga";
-import { getUseNamerDocument } from "../../../../Saga/BudgetSaga";
 import { RootState } from "../../../../Store/Store";
 import MonthPicker from "react-native-month-year-picker";
 import { Props } from "./types";
@@ -35,7 +34,6 @@ import { useDispatch } from "react-redux";
 export default function Home({ navigation }: Props) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.Money.signup);
-  console.log(user);
   const lang = [
     { name: "Arabic", code: "AR", tc: "ar" },
     { name: "Chinese", code: "ZH", tc: "zh" },

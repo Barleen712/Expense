@@ -26,7 +26,7 @@ import Input from "../../../../Components/CustomTextInput";
 import SelectImageWithDocumentPicker from "../Attachment";
 import { addTransaction } from "../../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
-import { uploadImage, StringConstants } from "../../../Constants";
+import { uploadImage, StringConstants, currencies } from "../../../Constants";
 import { useTranslation } from "react-i18next";
 import { auth } from "../../../FirebaseConfig";
 import { updateTransactionRealmAndFirestore } from "../../../../Realm/realm";
@@ -36,6 +36,7 @@ import TransferImg from "../../../../assets/transfer.svg";
 import { getRealm } from "../../../../Realm/realm";
 import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
 import NetInfo from "@react-native-community/netinfo";
+import { useSelector } from "react-redux";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -63,7 +64,14 @@ export default function Income({ navigation, route }: Props) {
   const [toError, setToError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [localPath, setlocalPath] = useState({ type: type, path: url });
-
+  const currency = useSelector((state) => state.Money.preferences.currency);
+  const Rates = useSelector((state: RootState) => state.Rates);
+  let convertRate: number;
+  if (currency === "USD") {
+    convertRate = 1;
+  } else {
+    convertRate = Rates.Rate[currency];
+  }
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -133,8 +141,7 @@ export default function Income({ navigation, route }: Props) {
   }
   async function add() {
     const realm = await getRealm();
-    const numericIncome = parseFloat(Transfer.replace("$", "") || "0");
-    let supabaseImageUrl = null;
+    const numericIncome = parseFloat(Transfer.replace("$", "") || "0") / convertRate;
     if (numericIncome === 0) {
       setTransferError("Add amount");
       return;
@@ -215,7 +222,7 @@ export default function Income({ navigation, route }: Props) {
     navigation.goBack();
   }
   async function editTransfer() {
-    const numericExpense = parseFloat(Transfer.replace("$", "") || "0");
+    const numericExpense = parseFloat(Transfer.replace("$", "") || "0") / convertRate;
     const realm = await getRealm();
     const updateData = {
       amount: numericExpense,
@@ -268,7 +275,7 @@ export default function Income({ navigation, route }: Props) {
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
                 <View style={{ flexDirection: "row" }}>
-                  <Text style={styles.amount}>$</Text>
+                  <Text style={styles.amount}>{currencies[currency]}</Text>
                   <TouchableOpacity activeOpacity={1} style={{ width: "90%" }}>
                     <TextInput
                       value={Transfer}

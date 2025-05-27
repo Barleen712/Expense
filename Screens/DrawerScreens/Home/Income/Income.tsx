@@ -21,7 +21,6 @@ import * as Sharing from "expo-sharing";
 import { getRealm } from "../../../../Realm/realm";
 import * as IntentLauncher from "expo-intent-launcher";
 import { auth } from "../../../FirebaseConfig";
-import { updateDocument } from "../../../FirestoreHandler";
 import { CustomButton } from "../../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
@@ -32,15 +31,16 @@ import { ThemeContext } from "../../../../Context/ThemeContext";
 import { useSelector, useDispatch } from "react-redux";
 import SelectImageWithDocumentPicker from "../Attachment";
 import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
-import { uploadImage, Weeks } from "../../../Constants";
+import { Weeks } from "../../../Constants";
 import { useTranslation } from "react-i18next";
-import { StringConstants } from "../../../Constants";
+import { StringConstants, currencies } from "../../../Constants";
 import { updateTransaction, addTransaction } from "../../../../Slice/IncomeSlice";
 import FrequencyModal from "../../../../Components/FrequencyModal";
 import DropdownComponent from "../../../../Components/DropDown";
 import { getStyles } from "./styles";
 import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
 import { updateTransactionRealmAndFirestore } from "../../../../Realm/realm";
+
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -95,6 +95,14 @@ export default function Income({ navigation, route }: Props) {
   const [walletError, setwalletError] = useState("");
   const [localPath, setlocalPath] = useState({ type: parameters.type, path: parameters.url });
   const { isConnected } = useNetInfo();
+  const currency = useSelector((state) => state.Money.preferences.currency);
+  const Rates = useSelector((state: RootState) => state.Rates);
+  let convertRate: number;
+  if (currency === "USD") {
+    convertRate = 1;
+  } else {
+    convertRate = Rates.Rate[currency];
+  }
   const modal = [
     require("../../../../assets/Camera.png"),
     require("../../../../assets/Image.png"),
@@ -166,7 +174,7 @@ export default function Income({ navigation, route }: Props) {
   const user = auth.currentUser;
   async function add() {
     const realm = await getRealm();
-    const numericIncome = parseFloat(Income.replace("$", "") || "0");
+    const numericIncome = parseFloat(Income.replace("$", "") || "0") / convertRate;
     if (numericIncome === 0) {
       setIncomeError("Enter Amount");
       return;
@@ -183,31 +191,6 @@ export default function Income({ navigation, route }: Props) {
       setwalletError("Select Wallet");
       return;
     }
-    // if (image) {
-    //   setLoading(true);
-    //   supabaseImageUrl = await uploadImage(image);
-    // }
-
-    // AddTransaction({
-    //   amount: numericIncome,
-    //   description: Description,
-    //   category: selectedCategory,
-    //   wallet: selectedWallet,
-    //   moneyCategory: "Income",
-    //   Date: new Date().toISOString(),
-    //   userId: user.uid,
-    //   attachment: {
-    //     type: "image",
-    //     uri: supabaseImageUrl,
-    //   },
-    //   Frequency: frequency,
-    //   endAfter: endAfter,
-    //   weekly: week,
-    //   endDate: endDate.toISOString(),
-    //   startDate: startDate,
-    //   startMonth: month,
-    //   startYear: new Date().getFullYear(),
-    // });
     const transaction = {
       _id: new Date().toISOString(),
       amount: numericIncome,
@@ -247,7 +230,7 @@ export default function Income({ navigation, route }: Props) {
   }
   async function editIncome() {
     const realm = await getRealm();
-    const numericIncome = parseFloat(Income.replace("$", "") || "0");
+    const numericIncome = parseFloat(Income.replace("$", "") || "0") / convertRate;
     const updateData = {
       amount: numericIncome,
       description: Description,
@@ -295,7 +278,6 @@ export default function Income({ navigation, route }: Props) {
   }
   const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);
-  console.log(image, document);
   return (
     <View style={styles.container}>
       <Header
@@ -315,7 +297,7 @@ export default function Income({ navigation, route }: Props) {
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
                 <View style={{ flexDirection: "row" }}>
-                  <Text style={styles.amount}>$</Text>
+                  <Text style={styles.amount}>{currencies[currency]}</Text>
                   <TouchableOpacity activeOpacity={1} style={{ width: "90%" }}>
                     <TextInput
                       value={Income}

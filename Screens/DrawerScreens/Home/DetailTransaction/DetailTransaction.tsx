@@ -203,7 +203,6 @@ function DetailTransaction({
       setdocError(true);
     }
   };
-  console.log(isDoument);
   return (
     <View style={styles.container}>
       <Header title={t("Detail Transaction")} press={() => navigation.goBack()} bgcolor={bg} color="white" />
@@ -350,7 +349,6 @@ export default function DetailTransaction_Expense({ navigation, route }) {
 }
 export function DetailTransaction_Income({ navigation, route }) {
   const { value } = route.params;
-  console.log(value);
   return (
     <DetailTransaction
       navigation={navigation}

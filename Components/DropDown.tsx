@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
-import { ThemeContext } from "../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../Context/ThemeContext";
 import { useTranslation } from "react-i18next";
 interface DropdownItem {
   label: string;
@@ -18,7 +18,7 @@ interface dropdown {
 }
 
 const DropdownComponent = ({ name, data, styleButton, value, position, height, onSelectItem, color }: dropdown) => {
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const { t } = useTranslation();
   const translatedData = data.map((item) => ({
     ...item,

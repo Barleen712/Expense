@@ -8,7 +8,7 @@ export const generateKey = async (password: string, salt: string, cost: number, 
   }
 };
 
-export const encryptData = async (text, key: string) => {
+export const encryptData = async (text: string, key: string) => {
   try {
     const iv = await Aes.randomKey(16);
     const cipher = await Aes.encrypt(text, key, iv, "aes-256-cbc");

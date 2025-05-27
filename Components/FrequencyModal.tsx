@@ -7,7 +7,7 @@ import { StringConstants, Weeks } from "../Screens/Constants";
 import { CustomButton } from "./CustomButton";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { ThemeContext } from "../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../Context/ThemeContext";
 
 const Frequency = ["Yearly", "Monthly", "Weekly", "Daily"].map((item) => ({
   label: item,
@@ -34,8 +34,27 @@ const weekDropdownData = Weeks.map((day, index) => ({
   label: day,
   value: index.toString(), // or just use 'day' as value if preferred
 }));
-
 const year = Array.from({ length: 32 }, (_, i) => new Date().getFullYear() + i);
+
+type ModalProps = {
+  frequency: string;
+  setFrequency: (a: string) => void;
+  endAfter: string;
+  setendAfter: (a: string) => void;
+  color: string;
+  month: number;
+  setMonth: (a: number) => void;
+  week: string;
+  setWeek: (a: string) => void;
+  startDate: number;
+  setStartDate: (a: number) => void;
+  endDate: Date;
+  setEndDate: (a: Date) => void;
+  Frequencymodal: boolean;
+  setFrequencyModal: (a: boolean) => void;
+  setswitch: (a: boolean) => void;
+  edit: boolean;
+};
 
 export default function FrequencyModal({
   frequency,
@@ -55,7 +74,7 @@ export default function FrequencyModal({
   setFrequencyModal,
   setswitch,
   edit,
-}) {
+}: ModalProps) {
   const { t } = useTranslation();
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [frequencyError, setFrequencyError] = useState("");
@@ -65,7 +84,7 @@ export default function FrequencyModal({
     if (Platform.OS === "android") setShowEndDatePicker(false);
     if (selectedDate) setEndDate(selectedDate);
   };
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   function Save() {
     if (frequency === "") {
       setFrequencyError("Select Frequency");

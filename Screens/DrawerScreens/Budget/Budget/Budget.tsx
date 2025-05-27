@@ -10,6 +10,7 @@ import { BudgetCategory } from "../../../../Slice/Selectors";
 import { useSelector } from "react-redux";
 import { ProgressBar } from "react-native-paper";
 import DropdownComponent from "../../../../Components/DropDown";
+import { RootState } from "../../../../Store/Store";
 const width = Dimensions.get("window").width * 0.8;
 const date = new Date();
 const MonthIndex = date.getMonth();
@@ -17,32 +18,20 @@ import { useTranslation } from "react-i18next";
 
 type Budgetprop = StackNavigationProp<StackParamList, "MainScreen">;
 import { ActivityIndicator } from "react-native";
-import { ThemeContext } from "../../../../Context/ThemeContext";
-import { retrieveOldTransactions } from "../../../../Realm/Budgetrealm";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { clearData } from "../../../../Slice/IncomeSlice";
-import { syncUnsyncedBudget } from "../../../../Realm/SyncBudget";
-let Year = [];
+type YearOption = { label: string; value: number };
+let Year: YearOption[] = [];
 
 for (let i = 0; i < 31; i++) {
-  Year.push(2020 + i);
+  Year.push({ label: (2020 + i).toString(), value: 2020 + i });
 }
-
-Year = Year.map((item) => ({
-  label: item.toString(),
-  value: item,
-}));
 
 interface Props {
   navigation: Budgetprop;
 }
 export default function Budget({ navigation }: Props) {
   const loading = useSelector((state: RootState) => state.Money.loading);
-  useEffect(() => {
-    // retrieveOldTransactions();
-    //console.log("oldTrrans");
-    // syncUnsyncedBudget();
-    clearData();
-  }, []);
 
   function handleprev() {
     setmonth(month - 1);
@@ -56,17 +45,27 @@ export default function Budget({ navigation }: Props) {
       setmonth(0);
     }
   }
-  const Rates = useSelector((state) => state.Rates);
-  const currency = useSelector((state) => state.Money.preferences.currency);
+  const { t } = useTranslation();
+  const Rates = useSelector((state: RootState) => state.Rates);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const convertRate = Rates.Rate[currency];
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
   const [year, selectedYear] = useState(2025);
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
   const budgetDataForMonth = Budgetcat[monthKey] || [];
+  type BudgetItem = {
+    id: number;
+    category: string;
+    budgetvalue: number;
+    amountSpent: number;
+    alertPercent: number;
+    notification: boolean;
+  };
+
   const renderBudgetItems = useCallback(
-    ({ item, index }) => {
+    ({ item, index }: { item: BudgetItem; index: number }) => {
       let remaining = item.budgetvalue - item.amountSpent;
       let progress = item.amountSpent / item.budgetvalue;
       if (remaining < 0) {
@@ -74,7 +73,6 @@ export default function Budget({ navigation }: Props) {
         progress = 1;
       }
       const exceeded = item.amountSpent > item.budgetvalue;
-      console.log(item);
       return (
         <TouchableOpacity
           onPress={() =>
@@ -158,9 +156,9 @@ export default function Budget({ navigation }: Props) {
         </TouchableOpacity>
       );
     },
-    [navigation]
+    [navigation, currency, convertRate, t, colors]
   );
-  const { t } = useTranslation();
+
   if (loading) {
     return (
       <View

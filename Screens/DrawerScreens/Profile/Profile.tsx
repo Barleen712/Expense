@@ -53,8 +53,8 @@ export default function Profile({ navigation }: Props) {
   const [selectedindex, setselectedindex] = useState();
   const user = useSelector((state) => state.Money.signup);
   async function getData() {
-    setuser(user?.user);
-    setModalUser(user?.user);
+    setuser(user?.User);
+    setModalUser(user?.User);
     if (typeof user?.Photo.uri === "number") {
       setPhoto(profilepics[user?.index]);
       setselectedindex(user?.index);
@@ -149,7 +149,7 @@ export default function Profile({ navigation }: Props) {
     if (typeof modalPhoto === "object" && modalPhoto.uri && modalPhoto.uri.startsWith("file://")) {
       imageurl = await uploadImage(modalPhoto.uri);
     }
-    console.log(imageurl);
+
     dispatch(updateUser({ Photo: imageurl, Index: selectedindex, username: modalUser }));
     updateUserDoc(auth.currentUser?.uid, {
       User: modalUser,
@@ -166,7 +166,6 @@ export default function Profile({ navigation }: Props) {
   }
   const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);
-  console.log(user);
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground style={{ width: widths, height: 800 }} source={require("../../../assets/ProfileBack.png")}>

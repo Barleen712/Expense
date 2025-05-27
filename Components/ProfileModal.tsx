@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import styles from "../Screens/Stylesheet";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { ThemeContext } from "../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../Context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import FastImage from "react-native-fast-image";
 import * as DocumentPicker from "expo-document-picker";
@@ -22,13 +22,13 @@ import * as DocumentPicker from "expo-document-picker";
 type ProfileModalProps = {
   editProfile: boolean;
   seteditProfile: (value: boolean) => void;
-  photo: ImageSourcePropType;
-  setPhoto: (photo: ImageSourcePropType) => void;
+  photo: string;
+  setPhoto: (photo: string) => void;
   modalPhoto: ImageSourcePropType;
   setmodalPhoto: (photo: ImageSourcePropType) => void;
   selectedindex: number | "";
   setselectedindex: (index: number | "") => void;
-  profilepics: ImageSourcePropType[];
+  profilepics: string[];
   username: string;
   modalUser: string;
   setModalUser: (value: string) => void;
@@ -106,7 +106,7 @@ function ProfileModal({
   saveChanges,
 }: Readonly<ProfileModalProps>) {
   const scrollRef = useRef<ScrollView>(null);
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const { t } = useTranslation();
 
   // Discard changes
@@ -255,7 +255,6 @@ function ProfileModal({
                 </Text>
               </TouchableOpacity>
             </ScrollView>
-            {/* </TouchableWithoutFeedback> */}
           </KeyboardAvoidingView>
         </View>
       </View>

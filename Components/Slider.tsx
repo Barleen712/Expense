@@ -2,15 +2,13 @@ import React, { useContext } from "react";
 import { View, Text, Dimensions } from "react-native";
 import { Slider } from "@miblanchard/react-native-slider";
 import styles from "../Screens/Stylesheet";
-import { ThemeContext } from "../Context/ThemeContext";
-
-const { width } = Dimensions.get("window");
+import { ThemeContext, ThemeContextType } from "../Context/ThemeContext";
 interface SliderInterface {
   value: number;
   setvalue: (a: number) => void;
 }
 export default function CustomSlider({ value, setvalue }: Readonly<SliderInterface>) {
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   return (
     <View style={[styles.container1, { backgroundColor: colors.backgroundColor }]}>
       <Slider

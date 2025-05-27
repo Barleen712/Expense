@@ -2,7 +2,12 @@ import { Alert } from "react-native";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { RootState } from "../../../../Store/Store";
-import { selectIncomeTotal, selectExpenseTotal, selectTransactions, BudgetCategory } from "../../../../Slice/Selectors";
+import {
+  selectMonthlyExpenseTotals,
+  selectMonthlyIncomeTotals,
+  selectTransactions,
+  BudgetCategory,
+} from "../../../../Slice/Selectors";
 import { store } from "../../../../Store/Store";
 
 const data = [
@@ -13,21 +18,18 @@ const data = [
   { label: "All", value: "4" },
 ];
 
-const date = [
-  { label: "Today", value: "0" },
-  { label: "Last 7 days", value: "1" },
-  { label: "Last 15 days", value: "2" },
-  { label: "This Month", value: "3" },
-];
-
 export const GenerateCSVReport = async (exportdata: string, dateRange: string) => {
   const state: RootState = store.getState();
   const transactions = selectTransactions(state);
-  const incomeTotal = selectIncomeTotal(state);
-  const expenseTotal = selectExpenseTotal(state);
+  const selectedKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+  const income = selectMonthlyIncomeTotals(state);
+  const incomeTotal = income[selectedKey] || 0;
+  const expense = selectMonthlyExpenseTotals(state);
+  const expenseTotal = expense[selectedKey] || 0;
   const budgetData = BudgetCategory(state);
   const filterOption = data.find((item) => item.value === exportdata);
   const now = new Date();
+
   let startDate: Date;
   switch (dateRange) {
     case "0":
@@ -54,6 +56,7 @@ export const GenerateCSVReport = async (exportdata: string, dateRange: string) =
     const matchDate = itemDate >= startDate;
     return matchCategory && matchDate;
   });
+
   let csvContent = "Financial Report\n";
 
   if (filterOption?.value !== "3") {
@@ -62,10 +65,16 @@ export const GenerateCSVReport = async (exportdata: string, dateRange: string) =
 
     csvContent += "Transactions:\n";
     csvContent += "Date,Type,Category,Amount,Description,Wallet\n";
-    filteredTransactions.forEach((t) => {
-      const date = new Date(t.Date).toLocaleDateString();
-      csvContent += `${date},${t.moneyCategory},${t.category},$${t.amount},${t.description},${t.wallet}\n`;
-    });
+
+    if (filteredTransactions.length === 0) {
+      csvContent += "No transactions available for the selected filter and date range.\n";
+    } else {
+      filteredTransactions.forEach((t) => {
+        const formattedDate = new Date(t.Date).toLocaleDateString();
+        csvContent += `${formattedDate},${t.moneyCategory},${t.category},$${t.amount},${t.description},${t.wallet}\n`;
+      });
+    }
+
     csvContent += "\n";
   }
 
@@ -75,20 +84,25 @@ export const GenerateCSVReport = async (exportdata: string, dateRange: string) =
     const currentMonthBudgets = budgetData[currentMonthKey] || [];
 
     csvContent += "Budget Summary:\n";
-    csvContent += "Category,Budget,Spent,Alert %\n";
-
-    currentMonthBudgets.forEach((b) => {
-      csvContent += `${b.category},$${b.budgetvalue},$${b.amountSpent},${b.alertPercent}%\n`;
-    });
+    if (currentMonthBudgets.length > 0) {
+      csvContent += "Category,Budget,Spent,Alert %\n";
+      currentMonthBudgets.forEach((b) => {
+        csvContent += `${b.category},$${b.budgetvalue},$${b.amountSpent},${b.alertPercent}%\n`;
+      });
+    } else {
+      csvContent += "Budgets not created\n";
+    }
   }
 
   const month = (now.getMonth() + 1).toString().padStart(2, "0");
   const year = now.getFullYear();
-  const fileName = `ExpenseTracker_${filterOption?.label}_${month}-${year}.csv`;
+  const label = filterOption?.label?.replace(/\s+/g, "_") || "Report";
+  const fileName = `ExpenseTracker_${label}_${month}-${year}.csv`;
   const fileUri = FileSystem.documentDirectory + fileName;
 
   try {
-    await FileSystem.writeAsStringAsync(fileUri, csvContent, {
+    const BOM = "\uFEFF"; // Add BOM for Excel compatibility
+    await FileSystem.writeAsStringAsync(fileUri, BOM + csvContent, {
       encoding: FileSystem.EncodingType.UTF8,
     });
 

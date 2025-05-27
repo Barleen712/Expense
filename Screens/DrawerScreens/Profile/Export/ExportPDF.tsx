@@ -3,7 +3,12 @@ import * as Sharing from "expo-sharing";
 import { RootState } from "../../../../Store/Store";
 import { Platform } from "react-native";
 import * as IntentLauncher from "expo-intent-launcher";
-import { selectTransactions, selectExpenseTotal, selectIncomeTotal, BudgetCategory } from "../../../../Slice/Selectors";
+import {
+  selectTransactions,
+  selectMonthlyIncomeTotals,
+  selectMonthlyExpenseTotals,
+  BudgetCategory,
+} from "../../../../Slice/Selectors";
 import { store } from "../../../../Store/Store";
 
 const data = [
@@ -23,10 +28,13 @@ const dateRanges = {
 
 export const generateReportPDF = async (exportdata: string, dateRange: string) => {
   const state: RootState = store.getState();
-
+  console.log("wfjg");
   const transactions = selectTransactions(state);
-  const incomeTotal = selectIncomeTotal(state);
-  const expenseTotal = selectExpenseTotal(state);
+  const selectedKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+  const income = selectMonthlyIncomeTotals(state);
+  const incomeTotal = income[selectedKey] || 0;
+  const expense = selectMonthlyExpenseTotals(state);
+  const expenseTotal = expense[selectedKey] || 0;
   const budgetMap = BudgetCategory(state); // Format: { "YYYY-MM": [...] }
 
   const now = new Date();
@@ -37,7 +45,7 @@ export const generateReportPDF = async (exportdata: string, dateRange: string) =
   const matchDate = (t) => new Date(t.Date) >= startDate;
 
   const filteredTransactions = transactions.filter((t) => matchCategory(t) && matchDate(t));
-
+  console.log(filteredTransactions);
   const transactionRows = filteredTransactions
     .map((t) => {
       const date = new Date(t.Date).toLocaleDateString();
@@ -130,17 +138,9 @@ export const generateReportPDF = async (exportdata: string, dateRange: string) =
     const { uri } = await printToFileAsync({ html, base64: false });
 
     await Sharing.shareAsync(uri, {
-      UTI: ".pdf",
-      mimeType: "application/pdf",
+      UTI: ".pdf", // iOS-specific
+      mimeType: "application/pdf", // Android-specific
     });
-
-    if (Platform.OS === "android") {
-      await IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
-        data: uri,
-        flags: 1,
-        type: "application/pdf",
-      });
-    }
   } catch (error) {
     console.error("Error generating PDF:", error);
   }

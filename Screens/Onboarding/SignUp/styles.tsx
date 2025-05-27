@@ -23,6 +23,7 @@ export const getStyles = (colors: any) =>
       //  marginTop: Platform.OS === "ios" ? 20 : 30,
       width: "100%",
       marginTop: 10,
+      height: "38%",
     },
     or: {
       color: "rgb(145, 145, 159)",

@@ -36,7 +36,7 @@ interface notificationEntry {
 }
 interface Signup {
   Photo: { uri: string };
-  user: string;
+  User: string;
   index: null | number;
   pin: string;
   Google: boolean;
@@ -71,7 +71,7 @@ const initialState: IncomeState = {
   budget: [],
   loading: false,
   notification: [],
-  signup: { Photo: { uri: "" }, user: "", index: null, pin: "", Google: false },
+  signup: { Photo: { uri: "" }, User: "", index: null, pin: "", Google: false },
   googleSign: { id: "", username: "", google: false, photo: "" },
   preferences: { currency: "USD", language: "English", theme: "Light", security: "PIN" },
   exceedNotification: false,
@@ -185,7 +185,7 @@ export const ExpenseTrackerSlice = createSlice({
     updateUser: (state, action) => {
       const { Photo, username, Index } = action.payload;
 
-      (state.signup.Photo.uri = Photo), (state.signup.user = username);
+      (state.signup.Photo.uri = Photo), (state.signup.User = username);
       state.signup.index = Index;
     },
     addGoogleUser: (state, action) => {

@@ -21,7 +21,6 @@ export default function Keypad({ change, onKeyPress, onClear }: keypad) {
     <View>
       <FlatList
         data={keypad}
-        //columnWrapperStyle={{ flex: 1, justifyContent: "space-around" }}
         scrollEnabled={false}
         numColumns={3}
         renderItem={({ item, index }) => (
@@ -30,9 +29,6 @@ export default function Keypad({ change, onKeyPress, onClear }: keypad) {
           </TouchableOpacity>
         )}
       ></FlatList>
-      {/* <TouchableOpacity onPress={change} style={styles.arrow}>
-        <Image style={{ width: 50, height: 40 }} source={require("../assets/right-arrow.png")} />
-      </TouchableOpacity> */}
     </View>
   );
 }

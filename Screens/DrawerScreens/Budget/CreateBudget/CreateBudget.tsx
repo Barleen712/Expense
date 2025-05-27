@@ -21,9 +21,7 @@ import { addBudget, updateBudget } from "../../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../../Constants";
-import { AddBudget } from "../../../FirestoreHandler";
 import { auth } from "../../../FirebaseConfig";
-import { updateBudgetDocument } from "../../../FirestoreHandler";
 import { ThemeContext } from "../../../../Context/ThemeContext";
 import { useSelector } from "react-redux";
 import { BudgetCategory } from "../../../../Slice/Selectors";
@@ -32,6 +30,7 @@ import { getRealm } from "../../../../Realm/realm";
 import { syncUnsyncedBudget } from "../../../../Realm/SyncBudget";
 import NetInfo from "@react-native-community/netinfo";
 import { updateTransactionRealmAndFirestoreBudget } from "../../../../Realm/Budgetrealm";
+import { currencies } from "../../../Constants";
 type CreateBudgetProp = StackNavigationProp<StackParamList, "CreateBudget">;
 
 interface Props {
@@ -66,8 +65,15 @@ export default function CreateBudget({ navigation, route }: Props) {
   const [Expense, setExpense] = useState(parameters.alert);
   const [sliderValue, setSliderValue] = useState(parameters.percentage);
   const [Budget, setBudget] = useState<string>(`${parameters.value}`);
-  const [missing, setmissing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
+  const currency = useSelector((state) => state.Money.preferences.currency);
+  const Rates = useSelector((state: RootState) => state.Rates);
+  let convertRate: number;
+  if (currency === "USD") {
+    convertRate = 1;
+  } else {
+    convertRate = Rates.Rate[currency];
+  }
   const handleFocus = () => {
     if (Budget === "0") {
       setBudget("");
@@ -87,7 +93,8 @@ export default function CreateBudget({ navigation, route }: Props) {
   const dispatch = useDispatch();
   const user = auth.currentUser;
   async function add() {
-    const numericBudget = parseFloat(Budget.replace("$", "") || "0");
+    const numericBudget = parseFloat(Budget.replace("$", "") || "0") / convertRate;
+    console.log(numericBudget);
     if (numericBudget === 0) {
       setAmountError("Please enter a valid amount");
       return;
@@ -145,7 +152,7 @@ export default function CreateBudget({ navigation, route }: Props) {
     navigation.goBack();
   }
   async function editBudget() {
-    const numericBudget = parseFloat(Budget.replace("$", "") || "0");
+    const numericBudget = parseFloat(Budget.replace("$", "") || "0") / convertRate;
 
     const realm = await getRealm();
     const updatedData = {
@@ -157,7 +164,6 @@ export default function CreateBudget({ navigation, route }: Props) {
       notified: false,
     };
     const { isConnected } = await NetInfo.fetch();
-    console.log("updat");
     updateTransactionRealmAndFirestoreBudget(realm, user?.uid, parameters.index, updatedData, isConnected);
     dispatch(
       updateBudget({
@@ -188,7 +194,7 @@ export default function CreateBudget({ navigation, route }: Props) {
             <View style={styles.balanceView}>
               <Text style={styles.balance}>{t("How much do you want to spend?")}</Text>
               <View style={{ flexDirection: "row" }}>
-                <Text style={styles.amount}>$</Text>
+                <Text style={styles.amount}>{currencies[currency]}</Text>
                 <TouchableOpacity activeOpacity={1} style={{ width: "90%" }}>
                   <TextInput
                     value={Budget}

@@ -17,6 +17,7 @@ export const TransactionSchema = {
     startYear: "int?",
     type: "string",
     url: "string",
+    weekly: "string",
     synced: { type: "bool", default: false },
     pendingDelete: { type: "bool", default: false },
     pendingUpdate: { type: "bool", default: false },
@@ -28,7 +29,7 @@ export const BudgetSchema = {
   properties: {
     _id: "string",
     category: "string",
-    amount: "int",
+    amount: "double",
     month: "int",
     percentage: "int",
     notified: "bool",

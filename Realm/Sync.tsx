@@ -9,7 +9,7 @@ export async function syncUnsyncedTransactions() {
   const unsynced = realm.objects("Transaction").filtered("synced == false");
   const user = auth.currentUser;
   for (const txn of unsynced) {
-    let supabaseImageUrl = "";
+    let supabaseImageUrl = null;
     if (txn.url) {
       supabaseImageUrl = await uploadImage(txn.url);
     }
@@ -32,6 +32,7 @@ export async function syncUnsyncedTransactions() {
       userId: user?.uid,
       type: txn.type,
       url: supabaseImageUrl,
+      weekly: txn.weekly,
     };
     // const encryptedData = await encryptData(JSON.stringify(txnData), key);
     // console.log(encryptedData);
@@ -44,7 +45,7 @@ export async function syncUnsyncedTransactions() {
     }
   }
 }
-export const syncPendingDeletes = async ({ isConnected }: { isConnected: boolean }) => {
+export const syncPendingDeletes = async ({ isConnected }: { isConnected: boolean | null }) => {
   if (!isConnected) return;
   const realm = await getRealm();
   const pendingDeletes = realm.objects("Transaction").filtered("pendingDelete == true");
@@ -101,6 +102,7 @@ export async function syncPendingUpdatesToFirestore() {
             console.log(supabaseurl);
           }
         }
+        console.log(tx);
         const Data = {
           amount: tx.amount,
           description: tx.description,

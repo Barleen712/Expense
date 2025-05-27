@@ -5,7 +5,7 @@ export default function getStyles(colors) {
     container: {
       flex: 1,
       alignItems: "center",
-      backgroundColor: "#F9FAFB",
+      backgroundColor: colors.about,
       //  backgroundColor: colors.backgroundColor,
       paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },

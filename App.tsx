@@ -95,7 +95,7 @@ export default function App() {
 
         setCheckingAuth(false);
       });
-      //deleteRealmDatabase();
+      // deleteRealmDatabase();
       return unsubscribe;
     };
 

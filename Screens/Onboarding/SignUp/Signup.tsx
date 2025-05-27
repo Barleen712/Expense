@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   StatusBar,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import GradientButton from "../../../Components/CustomButton";
 import Input from "../../../Components/CustomTextInput";
@@ -22,7 +23,7 @@ import { StringConstants, handleGoogleSignIn } from "../../Constants";
 import { addUser, addGoogleUser } from "../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { ThemeContext } from "../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithCredential } from "@firebase/auth";
 import { auth } from "../../FirebaseConfig";
 import { raiseToast } from "../../Constants";
@@ -36,6 +37,7 @@ type SignupProp = StackNavigationProp<StackParamList, "SignUp">;
 interface Props {
   navigation: SignupProp;
 }
+const height = Dimensions.get("screen").height;
 export default function SignUp({ navigation }: Props) {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -141,7 +143,13 @@ export default function SignUp({ navigation }: Props) {
     }
   };
   async function GoogleSignIn() {
-    const { id, name, photo } = await handleGoogleSignIn();
+    const googleResult = await handleGoogleSignIn();
+    if (!googleResult) {
+      raiseToast("error", "Google Sign In Failed", "no-data");
+      return;
+    }
+    const { id, name, photo }: { id: string; name: string | null | undefined; photo: string | null | undefined } =
+      googleResult;
     dispatch(
       addGoogleUser({
         id: id,
@@ -160,7 +168,7 @@ export default function SignUp({ navigation }: Props) {
       //navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
       dispatch(
         addUser({
-          user: userDoc.Name,
+          User: userDoc.Name,
           Photo: userDoc?.Photo,
           index: userDoc?.Index,
           pin: userDoc?.pin,
@@ -175,7 +183,7 @@ export default function SignUp({ navigation }: Props) {
     AddUser({ User: name, Photo: { uri: photo }, userid: user.uid, index: null, pinSet: false, Google: true });
     setloading(false);
   }
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const style = getStyles(colors);
   if (loading)
     return (
@@ -199,9 +207,9 @@ export default function SignUp({ navigation }: Props) {
         bgcolor={colors.backgroundColor}
         color={colors.color}
       ></Header>
-      <ScrollView style={{ width: "100%" }}>
-        <View style={{ alignItems: "center" }}>
-          <View style={{ height: "20%", marginTop: 5, width: "100%", alignItems: "center" }}>
+      <ScrollView style={{ width: "100%", height: height * 0.8 }}>
+        <View style={{ alignItems: "center", height: height * 0.8 }}>
+          <View style={{ height: height * 0.15, marginTop: 5, width: "100%", alignItems: "center" }}>
             <View style={{ flex: 0.8, width: "90%", alignItems: "center" }}>
               <Image style={{ width: "28%", height: "100%", borderRadius: 100 }} source={photo} />
             </View>
@@ -301,7 +309,15 @@ export default function SignUp({ navigation }: Props) {
               </Text>
             )}
           </View>
-          <View style={{ flexDirection: "row", margin: 20, width: "90%", justifyContent: "space-evenly" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 10,
+              width: "90%",
+              justifyContent: "space-evenly",
+              height: "5%",
+            }}
+          >
             <View style={{ borderWidth: Platform.OS === "ios" ? 1 : 0, flex: 0.1 }}>
               <Checkbox
                 status={checked.state ? "checked" : "unchecked"}
@@ -329,17 +345,19 @@ export default function SignUp({ navigation }: Props) {
               {checked.error}*
             </Text>
           )}
-          <GradientButton title="Sign Up" handles={handleSignUp} />
-          <Text style={style.or}>{t(StringConstants.orwith)}</Text>
-          <TouchableOpacity style={style.GoogleView} onPress={GoogleSignIn}>
-            <Image style={style.Google} source={require("../../../assets/Google.png")} />
-            <Text style={style.textGoogle}>{t(StringConstants.SignUpwithGoogle)}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.replace("Login")}>
-            <Text style={style.account}>
-              {t(StringConstants.Alreadyhaveanaccount)} <Text style={style.span}>{t(StringConstants.Login)}</Text>
-            </Text>
-          </TouchableOpacity>
+          <View style={{ height: "50%", width: "100%", alignItems: "center", marginTop: 5 }}>
+            <GradientButton title="Sign Up" handles={handleSignUp} />
+            <Text style={style.or}>{t(StringConstants.orwith)}</Text>
+            <TouchableOpacity style={style.GoogleView} onPress={GoogleSignIn}>
+              <Image style={style.Google} source={require("../../../assets/Google.png")} />
+              <Text style={style.textGoogle}>{t(StringConstants.SignUpwithGoogle)}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.replace("Login")}>
+              <Text style={style.account}>
+                {t(StringConstants.Alreadyhaveanaccount)} <Text style={style.span}>{t(StringConstants.Login)}</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

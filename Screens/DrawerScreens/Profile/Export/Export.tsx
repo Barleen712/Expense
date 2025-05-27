@@ -37,9 +37,7 @@ export default function Export({ navigation }: Props) {
   const [exportdata, setselectedData] = useState(data[4].value);
   const [dateRange, setselecteddateRange] = useState(date[3].value);
   async function exporting() {
-    console.log("export");
     if (selectedCategory === "0") {
-      console.log("CSV");
       await GenerateCSVReport(exportdata, dateRange);
     } else {
       generateReportPDF(exportdata, dateRange);

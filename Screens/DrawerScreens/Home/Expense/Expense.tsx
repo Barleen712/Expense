@@ -27,7 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 import FrequencyModal from "../../../../Components/FrequencyModal";
 import { uploadImage } from "../../../Constants";
 import { useTranslation } from "react-i18next";
-import { StringConstants } from "../../../Constants";
+import { StringConstants, currencies } from "../../../Constants";
 import { updateBudget, updateTransaction } from "../../../../Slice/IncomeSlice";
 import { addTransaction } from "../../../../Slice/IncomeSlice";
 import { auth } from "../../../FirebaseConfig";
@@ -99,6 +99,14 @@ export default function Expense({ navigation, route }: Props) {
   const [descriptionError, setDescriptionError] = useState("");
   const [walletError, setwalletError] = useState("");
   const [localPath, setlocalPath] = useState({ type: parameters.type, path: parameters.url });
+  const currency = useSelector((state) => state.Money.preferences.currency);
+  const Rates = useSelector((state: RootState) => state.Rates);
+  let convertRate: number;
+  if (currency === "USD") {
+    convertRate = 1;
+  } else {
+    convertRate = Rates.Rate[currency];
+  }
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
@@ -170,7 +178,7 @@ export default function Expense({ navigation, route }: Props) {
   const user = auth.currentUser;
   async function add() {
     const realm = await getRealm();
-    const numericExpense = parseFloat(Expenses.replace("$", "") || "0");
+    const numericExpense = parseFloat(Expenses.replace("$", "") || "0") / convertRate;
     let supabaseImageUrl = null;
     if (numericExpense === 0) {
       setExpenseError("Add amount");
@@ -197,19 +205,18 @@ export default function Expense({ navigation, route }: Props) {
       moneyCategory: "Expense",
       Frequency: frequency,
       endAfter: endAfter || null,
-      weekly: week || null,
+      weekly: week,
       endDate: new Date(endDate).toISOString() || null,
       repeat: Switchs,
       startDate: startDate,
       startMonth: month,
-      Frequency: frequency,
       startYear: new Date().getFullYear(),
       Date: new Date().toISOString(),
       synced: false,
       type: localPath.type || "document",
       url: localPath.path || document,
     };
-
+    console.log(transaction);
     try {
       realm.write(() => {
         realm.create("Transaction", transaction);
@@ -304,7 +311,7 @@ export default function Expense({ navigation, route }: Props) {
   const { t } = useTranslation();
   async function editExpense() {
     const realm = await getRealm();
-    const numericExpense = parseFloat(Expenses.replace("$", "") || "0");
+    const numericExpense = parseFloat(Expenses.replace("$", "") || "0") / convertRate;
     const updateData = {
       amount: numericExpense,
       description: Description,
@@ -355,7 +362,7 @@ export default function Expense({ navigation, route }: Props) {
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
                 <View style={{ flexDirection: "row" }}>
-                  <Text style={styles.amount}>$</Text>
+                  <Text style={styles.amount}>{currencies[currency]}</Text>
                   <TouchableOpacity activeOpacity={1} style={{ width: "90%" }}>
                     <TextInput
                       value={Expenses}
