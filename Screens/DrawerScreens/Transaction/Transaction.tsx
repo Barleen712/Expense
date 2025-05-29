@@ -5,7 +5,7 @@ import { CustomButton } from "../../../Components/CustomButton";
 import { useSelector } from "react-redux";
 import { getStyles } from "./styles";
 import DropdownComponent from "../../../Components/DropDown";
-import { ThemeContext } from "../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
 const Month = [
   { label: "January", value: "January" },
@@ -61,7 +61,7 @@ export default function Transaction({ navigation }: Props) {
   const currentDate = new Date();
   const sortedTransactions = [...transactions]
     .filter((item) => new Date(item.Date) <= currentDate)
-    .sort((a, b) => new Date(b.Date) - new Date(a.Date));
+    .sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
   const { t } = useTranslation();
   const [FilterTrans, setFilterTrans] = useState(transactions);
   useEffect(() => {
@@ -108,9 +108,9 @@ export default function Transaction({ navigation }: Props) {
             case "Lowest":
               return a.amount - b.amount;
             case "Newest":
-              return dateB - dateA;
+              return dateB.getTime() - dateA.getTime();
             case "Oldest":
-              return dateA - dateB;
+              return dateA.getTime() - dateB.getTime();
             default:
               return 0;
           }
@@ -125,7 +125,7 @@ export default function Transaction({ navigation }: Props) {
   };
   const containIncome = FilterTrans.some((item) => item.moneyCategory === "Income");
   const containExpense = FilterTrans.some((item) => item.moneyCategory === "Expense");
-  const { colors, setTheme, theme } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>

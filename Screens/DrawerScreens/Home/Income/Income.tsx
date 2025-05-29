@@ -2,23 +2,20 @@ import React, { useState, useContext } from "react";
 import {
   View,
   Text,
-  Button,
   Image,
   TouchableOpacity,
   Switch,
   Modal,
-  Linking,
   Platform,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Keyboard,
   ScrollView,
   TextInput,
-  StatusBar,
   ActivityIndicator,
 } from "react-native";
 import * as Sharing from "expo-sharing";
-import { getRealm } from "../../../../Realm/realm";
+import { getRealm, updateTransactionRealmAndFirestore } from "../../../../Realm/realm";
 import * as IntentLauncher from "expo-intent-launcher";
 import { auth } from "../../../FirebaseConfig";
 import { CustomButton } from "../../../../Components/CustomButton";
@@ -27,19 +24,18 @@ import StackParamList from "../../../../Navigation/StackList";
 import Header from "../../../../Components/Header";
 import Entypo from "@expo/vector-icons/Entypo";
 import Input from "../../../../Components/CustomTextInput";
-import { ThemeContext } from "../../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { useSelector, useDispatch } from "react-redux";
 import SelectImageWithDocumentPicker from "../Attachment";
 import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
-import { Weeks } from "../../../Constants";
 import { useTranslation } from "react-i18next";
-import { StringConstants, currencies } from "../../../Constants";
+import { StringConstants, currencies, Weeks } from "../../../Constants";
 import { updateTransaction, addTransaction } from "../../../../Slice/IncomeSlice";
 import FrequencyModal from "../../../../Components/FrequencyModal";
 import DropdownComponent from "../../../../Components/DropDown";
 import { getStyles } from "./styles";
 import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
-import { updateTransactionRealmAndFirestore } from "../../../../Realm/realm";
+import { RootState } from "../../../../Store/Store";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -70,8 +66,8 @@ for (let i = 0; i <= 31; i++) {
 }
 export default function Income({ navigation, route }: Props) {
   const parameters = route.params;
-  const [Switchs, setSwitch] = useState(parameters.repeat);
-  const [showAttach, setAttach] = useState(!parameters.url);
+  const [Switchs, setSwitchs] = useState(parameters.repeat);
+  const [showAttach, setshowAttach] = useState(!parameters.url);
   const [image, setImage] = useState<string | null>(parameters.url);
   const [modalVisible, setModalVisible] = useState(false);
   const [close, setclose] = useState(parameters.url);
@@ -95,7 +91,7 @@ export default function Income({ navigation, route }: Props) {
   const [walletError, setwalletError] = useState("");
   const [localPath, setlocalPath] = useState({ type: parameters.type, path: parameters.url });
   const { isConnected } = useNetInfo();
-  const currency = useSelector((state) => state.Money.preferences.currency);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const Rates = useSelector((state: RootState) => state.Rates);
   let convertRate: number;
   if (currency === "USD") {
@@ -200,7 +196,7 @@ export default function Income({ navigation, route }: Props) {
       moneyCategory: "Income",
       Frequency: frequency,
       endAfter: endAfter || null,
-      weekly: week || null,
+      weekly: week.toString(),
       endDate: new Date(endDate).toISOString() || null,
       repeat: Switchs,
       startDate: startDate,
@@ -218,7 +214,7 @@ export default function Income({ navigation, route }: Props) {
         dispatch(addTransaction(transaction));
       });
     } catch (error) {
-      console.log(error);
+      console.log(error, 12335);
     }
 
     if (isConnected) {
@@ -228,6 +224,7 @@ export default function Income({ navigation, route }: Props) {
 
     navigation.goBack();
   }
+  console.log(typeof week);
   async function editIncome() {
     const realm = await getRealm();
     const numericIncome = parseFloat(Income.replace("$", "") || "0") / convertRate;
@@ -242,7 +239,7 @@ export default function Income({ navigation, route }: Props) {
       url: localPath.path || document,
       Frequency: frequency,
       endAfter: endAfter || null,
-      weekly: week || null,
+      weekly: week.toString(),
       endDate: new Date(endDate).toISOString() || null,
       repeat: Switchs,
       startDate: startDate,
@@ -252,7 +249,11 @@ export default function Income({ navigation, route }: Props) {
     };
     const { isConnected } = await NetInfo.fetch();
     dispatch(updateTransaction(updateData));
-    updateTransactionRealmAndFirestore(realm, user?.uid, parameters.id, updateData, isConnected);
+    if (user) {
+      updateTransactionRealmAndFirestore(realm, user.uid, parameters.id, updateData, isConnected);
+    } else {
+      console.warn("User is not authenticated.");
+    }
     navigation.goBack();
     navigation.goBack();
   }
@@ -266,7 +267,7 @@ export default function Income({ navigation, route }: Props) {
     );
   }
   function opensModal() {
-    setSwitch(!Switchs);
+    setSwitchs(!Switchs);
     if (Switchs === false) {
       setFrequencyModal(!Frequencymodal);
     }
@@ -276,7 +277,7 @@ export default function Income({ navigation, route }: Props) {
     setEndDate(new Date());
     setendAfter("");
   }
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>
@@ -344,7 +345,7 @@ export default function Income({ navigation, route }: Props) {
                     setwalletError("");
                   }}
                   position="bottom"
-                  height={"80%"}
+                  height={180}
                 />
                 {walletError !== "" && <Text style={styles.error}>*{walletError}</Text>}
                 {showAttach && (
@@ -369,7 +370,7 @@ export default function Income({ navigation, route }: Props) {
                             onPress={() => {
                               setImage(null);
                               setPhoto(null);
-                              setAttach(!showAttach);
+                              setshowAttach(!showAttach);
                               setDocument(null);
                               setclose(false);
                             }}
@@ -409,7 +410,7 @@ export default function Income({ navigation, route }: Props) {
                             }}
                             onPress={() => {
                               setImage(null);
-                              setAttach(!showAttach);
+                              setshowAttach(!showAttach);
                               setDocument(null);
                               setclose(false);
                             }}
@@ -451,7 +452,7 @@ export default function Income({ navigation, route }: Props) {
                   setEndDate={setEndDate}
                   Frequencymodal={Frequencymodal}
                   setFrequencyModal={setFrequencyModal}
-                  setswitch={setSwitch}
+                  setswitch={setSwitchs}
                   edit={parameters.edit}
                 />
 
@@ -515,7 +516,7 @@ export default function Income({ navigation, route }: Props) {
                     <SelectImageWithDocumentPicker
                       toggle={toggleModal}
                       attach={showAttach}
-                      setAttach={setAttach}
+                      setAttach={setshowAttach}
                       image={image}
                       setImage={setImage}
                       setclose={setclose}

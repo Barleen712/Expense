@@ -5,20 +5,21 @@ import { ProgressBar, MD3Colors } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { StringConstants, categoryMap, currencies } from "../../../../Constants";
-import { ThemeContext } from "../../../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../../../Context/ThemeContext";
+import { RootState } from "../../../../../Store/Store";
 interface Report {
   type: string;
-  amount: string;
+  amount: number;
   detail: string;
   category: string;
-  amount1: string;
+  amount1: number;
   bg: string;
   progress: number;
 }
 const width = Dimensions.get("window").width;
 export default function FaceCard({ type, amount, detail, category, amount1, bg, progress }: Report) {
-  const Rates = useSelector((state) => state.Rates);
-  const currency = useSelector((state) => state.Money.preferences.currency);
+  const Rates = useSelector((state: RootState) => state.Rates);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   let convertRate;
   if (currency === "USD") {
     convertRate = 1;
@@ -26,9 +27,11 @@ export default function FaceCard({ type, amount, detail, category, amount1, bg, 
     convertRate = Rates.Rate[currency];
   }
   const { t } = useTranslation();
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
-  const Category = categoryMap[category === "Transfer" ? "Transfer" : category];
+  type CategoryKey = keyof typeof categoryMap;
+  const categoryKey: CategoryKey = (category === "Transfer" ? "Transfer" : category) as CategoryKey;
+  const Category = categoryMap[categoryKey];
   return (
     <View style={[styles.card, { backgroundColor: bg }]}>
       <View style={styles.cardMonth}>

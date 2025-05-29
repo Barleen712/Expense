@@ -8,7 +8,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { useTranslation } from "react-i18next";
 import { StringConstants } from "../../Constants";
-import { ThemeContext } from "../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
 import { getStyles } from "./styles";
 type GetstartedNavigationProp = StackNavigationProp<StackParamList, "GetStarted">;
 
@@ -21,7 +21,7 @@ interface CarouselItem {
   title: string;
   des: string;
 }
-export default function Getstarted({ navigation }: Props) {
+export default function Getstarted({ navigation }: Readonly<Props>) {
   function signup() {
     navigation.navigate("SignUp");
   }
@@ -59,7 +59,7 @@ export default function Getstarted({ navigation }: Props) {
       </View>
     );
   };
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <SafeAreaView style={styles.container}>

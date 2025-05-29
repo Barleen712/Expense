@@ -35,13 +35,14 @@ import { BudgetCategory } from "../../../../Slice/Selectors";
 import { onDisplayNotification } from "../../Budget/TestNotification";
 import { ActivityIndicator } from "react-native-paper";
 import DropdownComponent from "../../../../Components/DropDown";
-import { ThemeContext } from "../../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { getStyles } from "./styles";
 import { getRealm } from "../../../../Realm/realm";
 import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
 import NetInfo from "@react-native-community/netinfo";
 import { updateTransactionRealmAndFirestore } from "../../../../Realm/realm";
 import { Weeks } from "../../../Constants";
+import { RootState } from "../../../../Store/Store";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
@@ -99,7 +100,7 @@ export default function Expense({ navigation, route }: Props) {
   const [descriptionError, setDescriptionError] = useState("");
   const [walletError, setwalletError] = useState("");
   const [localPath, setlocalPath] = useState({ type: parameters.type, path: parameters.url });
-  const currency = useSelector((state) => state.Money.preferences.currency);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const Rates = useSelector((state: RootState) => state.Rates);
   let convertRate: number;
   if (currency === "USD") {
@@ -205,7 +206,7 @@ export default function Expense({ navigation, route }: Props) {
       moneyCategory: "Expense",
       Frequency: frequency,
       endAfter: endAfter || null,
-      weekly: week,
+      weekly: week.toString(),
       endDate: new Date(endDate).toISOString() || null,
       repeat: Switchs,
       startDate: startDate,
@@ -218,10 +219,14 @@ export default function Expense({ navigation, route }: Props) {
     };
     console.log(transaction);
     try {
-      realm.write(() => {
-        realm.create("Transaction", transaction);
-        dispatch(addTransaction(transaction));
-      });
+      if (realm) {
+        realm.write(() => {
+          realm.create("Transaction", transaction);
+          dispatch(addTransaction(transaction));
+        });
+      } else {
+        console.log("Realm is undefined");
+      }
     } catch (error) {
       console.log(error, "1234");
     }
@@ -262,7 +267,7 @@ export default function Expense({ navigation, route }: Props) {
           title: `${selectedCategory} budget has exceeded the percentage`,
           body: `Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`,
           date: new Date().toISOString(),
-          userId: user.uid,
+          userId: user ? user.uid : "",
         });
       }
 
@@ -277,7 +282,7 @@ export default function Expense({ navigation, route }: Props) {
             title: `${selectedCategory} budget has exceeded the limit`,
             body: `Your ${selectedCategory} budget has exceeded the limit i.e 100%`,
             date: new Date().toISOString(),
-            userId: user.uid,
+            userId: user ? user.uid : "",
           });
         }
       }
@@ -291,7 +296,7 @@ export default function Expense({ navigation, route }: Props) {
         title: `Added Expense`,
         body: `You added an expense of ${selectedCategory} of amount ${Expenses}`,
         date: new Date().toISOString(),
-        userId: user.uid,
+        userId: user ? user.uid : "",
       });
     }
     setLoading(false);
@@ -322,7 +327,7 @@ export default function Expense({ navigation, route }: Props) {
       type: localPath.type || "document",
       url: localPath.path,
       Frequency: frequency,
-      weekly: week || null,
+      weekly: week.toString(),
       endDate: new Date(endDate).toISOString() || null,
       repeat: Switchs,
       startDate: startDate,
@@ -337,7 +342,7 @@ export default function Expense({ navigation, route }: Props) {
     navigation.goBack();
     navigation.goBack();
   }
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   if (loading) {
     return (
@@ -445,7 +450,7 @@ export default function Expense({ navigation, route }: Props) {
                     setwalletError("");
                   }}
                   position="bottom"
-                  height={"80%"}
+                  height={180}
                 />
                 {walletError !== "" && (
                   <Text

@@ -11,7 +11,7 @@ import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../FirebaseConfig";
-import { ThemeContext } from "../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
 type ForgotPasswordProp = StackNavigationProp<StackParamList, "ForgotPassword">;
 
 interface Props {
@@ -26,8 +26,8 @@ export default function ForgotPass({ navigation }: Props) {
       alert("Please enter your email address.");
       return;
     }
-    const emailRegex =
-      /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!emailRegex.test(email)) {
       alert("Please Enter Valid Email");
       return;
@@ -39,7 +39,7 @@ export default function ForgotPass({ navigation }: Props) {
     }
     navigation.navigate("EmailSent", { email: email });
   };
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>

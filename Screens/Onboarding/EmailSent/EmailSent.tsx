@@ -7,7 +7,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
-import { ThemeContext } from "../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
 import { getStyles } from "./styles";
 type EmailSentProp = StackNavigationProp<StackParamList, "EmailSent">;
 
@@ -22,7 +22,7 @@ interface Props {
 export default function EmailSent({ navigation, route }: Props) {
   const { t } = useTranslation();
   const { email } = route.params;
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>

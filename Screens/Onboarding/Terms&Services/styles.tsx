@@ -1,6 +1,5 @@
-import { StyleSheet } from "react-native";
-import { Platform, StatusBar } from "react-native";
-export default function getStyles(colors) {
+import { Platform, StatusBar, StyleSheet } from "react-native";
+export default function getStyles(colors: any) {
   return StyleSheet.create({
     container: {
       flex: 1,

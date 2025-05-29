@@ -1,39 +1,26 @@
 // src/database/realm.js
-import Realm from "realm";
+import Realm, { type Configuration } from "realm";
 import { BudgetSchema, TransactionSchema } from "./Schema";
 import { uploadImage } from "../Screens/Constants";
 
-let realm;
+let realm: Realm | null = null;
 
-export const getRealm = async () => {
+export const getRealm = async (): Promise<Realm | undefined> => {
   try {
     if (realm && !realm.isClosed) {
       return realm;
     }
     // realm doesn't exist or was closed, open a new one
-    realm = await Realm.open({
+    const config: Configuration = {
       schema: [TransactionSchema, BudgetSchema],
       schemaVersion: 7,
-    });
+    };
+    realm = await Realm.open(config);
     return realm;
   } catch (error) {
     console.log(error);
   }
 };
-
-// export const retrieveOldTransactions = async () => {
-//   try {
-//     const realm = await Realm.open({
-//       schema: [TransactionSchema],
-//       schemaVersion: 1, // old version
-//     });
-
-//     const transactions = realm.objects("Transaction");
-//     console.log(transactions, "dhj");
-//   } catch (error) {
-//     console.error("Error opening Realm:", error);
-//   }
-// };
 export const deleteRealmDatabase = async () => {
   try {
     Realm.deleteFile({ path: Realm.defaultPath });
@@ -44,7 +31,7 @@ export const deleteRealmDatabase = async () => {
 
 import NetInfo from "@react-native-community/netinfo";
 import { db } from "../Screens/FirebaseConfig";
-import { collection, query, getDocs, where, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
 export const markPendingDeleteOrDelete = async (realm, _id) => {
   const transaction = realm.objectForPrimaryKey("Transaction", _id);
 

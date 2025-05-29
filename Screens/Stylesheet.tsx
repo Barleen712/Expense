@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
   dot: {
     width: "10%",
-    height: Platform.OS === "ios" ? "14%" : "14%",
+    height: "14%",
     borderRadius: 40,
     margin: 5,
     borderWidth: 3,
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   username: {
     fontFamily: "Inter",
     fontWeight: "bold",
-    fontSize: Platform.OS === "ios" ? 14 : 14,
+    fontSize: 14,
     color: "rgba(145, 145, 159, 1)",
   },
   manageProfile: {

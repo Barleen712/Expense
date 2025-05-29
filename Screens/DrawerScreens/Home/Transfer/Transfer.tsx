@@ -5,7 +5,6 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
-  Switch,
   Modal,
   Platform,
   TouchableWithoutFeedback,
@@ -26,7 +25,7 @@ import Input from "../../../../Components/CustomTextInput";
 import SelectImageWithDocumentPicker from "../Attachment";
 import { addTransaction } from "../../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
-import { uploadImage, StringConstants, currencies } from "../../../Constants";
+import { StringConstants, currencies } from "../../../Constants";
 import { useTranslation } from "react-i18next";
 import { auth } from "../../../FirebaseConfig";
 import { updateTransactionRealmAndFirestore } from "../../../../Realm/realm";
@@ -37,10 +36,12 @@ import { getRealm } from "../../../../Realm/realm";
 import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
 import NetInfo from "@react-native-community/netinfo";
 import { useSelector } from "react-redux";
+import { RootState } from "../../../../Store/Store";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
   navigation: IncomeProp;
+  route: any;
 }
 const modal = [
   require("../../../../assets/CameraBlue.png"),
@@ -64,7 +65,7 @@ export default function Income({ navigation, route }: Props) {
   const [toError, setToError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [localPath, setlocalPath] = useState({ type: type, path: url });
-  const currency = useSelector((state) => state.Money.preferences.currency);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const Rates = useSelector((state: RootState) => state.Rates);
   let convertRate: number;
   if (currency === "USD") {
@@ -158,36 +159,6 @@ export default function Income({ navigation, route }: Props) {
       setDescriptionError("Add description");
       return;
     }
-
-    // if (image) {
-    //   setLoading(true);
-    //   supabaseImageUrl = await uploadImage(image);
-    // }
-    // dispatch(
-    //   addTransaction({
-    //     amount: numericIncome,
-    //     description: Description,
-    //     category: From + " -> " + To,
-    //     moneyCategory: "Transfer",
-    //     wallet: "",
-    //     attachment: {
-    //       type: "image",
-    //       uri: supabaseImageUrl,
-    //     },
-    //   })
-    // );
-    // AddTransaction({
-    //   amount: numericIncome,
-    //   description: Description,
-    //   category: From + " -> " + To,
-    //   moneyCategory: "Transfer",
-    //   Date: new Date().toISOString(),
-    //   userId: user.uid,
-    //   attachment: {
-    //     type: "image",
-    //     uri: supabaseImageUrl,
-    //   },
-    // });
     const transaction = {
       _id: new Date().toISOString(),
       amount: numericIncome,
@@ -197,11 +168,14 @@ export default function Income({ navigation, route }: Props) {
       moneyCategory: "Transfer",
       Frequency: "",
       endAfter: null,
-      weekly: null,
+      weekly: "",
       endDate: null,
       repeat: false,
       Date: new Date().toISOString(),
       synced: false,
+      startDate: 0,
+      startMonth: 0,
+      startYear: new Date().getFullYear(),
       type: localPath.type || "document",
       url: localPath.path || document,
     };
@@ -229,7 +203,17 @@ export default function Income({ navigation, route }: Props) {
       description: Description,
       category: From + " -> " + To,
       id: id,
+      Frequency: "",
+      endAfter: null,
+      weekly: "",
+      endDate: null,
+      repeat: false,
       moneyCategory: "Transfer",
+      Date: new Date().toISOString(),
+      synced: false,
+      startDate: 0,
+      startMonth: 0,
+      startYear: new Date().getFullYear(),
       type: localPath.type || "document",
       url: localPath.path || document,
       wallet: "",
@@ -331,10 +315,6 @@ export default function Income({ navigation, route }: Props) {
                       left: "45%",
                     }}
                   />
-                  {/* <Image
-                    style={{ width: 40, height: 40, position: "absolute", top: "25%", left: "45%" }}
-                    source={require("../../../../assets/Transfer.png")}
-                  /> */}
                 </View>
                 {toError !== "" && (
                   <Text
@@ -451,20 +431,6 @@ export default function Income({ navigation, route }: Props) {
                     )}
                   </View>
                 )}
-                {/* <View style={styles.notiView}>
-                  <View style={styles.noti}>
-                    <Text style={styles.notiTitle}>{t("Repeat")}</Text>
-                    <Text style={styles.notiDes}>{t(StringConstants.RecentTransaction)}</Text>
-                  </View>
-                  <View style={styles.switch}>
-                    <Switch
-                      trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgb(42, 124, 118)" }}
-                      value={Expense}
-                      thumbColor={"white"}
-                      onValueChange={setExpense}
-                    />
-                  </View>
-                </View> */}
                 <CustomButton
                   title={t(StringConstants.Continue)}
                   bg="rgba(0, 119, 255, 1)"

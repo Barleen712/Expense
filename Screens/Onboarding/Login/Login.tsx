@@ -10,10 +10,10 @@ import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
 import { useTranslation } from "react-i18next";
 import { raiseToast, StringConstants } from "../../Constants";
-import { ThemeContext } from "../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
 import { getStyles } from "./styles";
 import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addUser } from "../../../Slice/IncomeSlice";
 import { ScrollView } from "react-native-gesture-handler";
 type LoginProp = StackNavigationProp<StackParamList, "Login">;
@@ -21,34 +21,34 @@ type LoginProp = StackNavigationProp<StackParamList, "Login">;
 interface Props {
   navigation: LoginProp;
 }
-export default function Login({ navigation }: Props) {
+export default function Login({ navigation }: Readonly<Props>) {
   const passwordRef = useRef<TextInput>(null);
   const emailRef = useRef<TextInput>(null);
   const [email, setemail] = useState({ email: "", emailError: "" });
-  const [password, setpass] = useState({ password: "", passwordError: "" });
+  const [password, setpassword] = useState({ password: "", passwordError: "" });
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   function handleChange() {
     setemail({ ...email, emailError: "" });
-    setpass({ ...password, passwordError: "" });
+    setpassword({ ...password, passwordError: "" });
   }
   async function handlesLogin() {
     if (email.email === "") {
       setemail({ ...email, emailError: "Email is required" });
       return;
     }
-    const emailRegex =
-      /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!emailRegex.test(email.email)) {
       setemail({ ...email, emailError: "Enter Valid Email" });
       return;
     }
     if (password.password === "") {
-      setpass({ ...password, passwordError: "Password is required" });
+      setpassword({ ...password, passwordError: "Password is required" });
       return;
     }
     if (password.password.length < 6) {
-      setpass({ ...password, passwordError: "Enter Password of length atleast 6" });
+      setpassword({ ...password, passwordError: "Enter Password of length atleast 6" });
       return;
     }
     try {
@@ -60,20 +60,23 @@ export default function Login({ navigation }: Props) {
         await auth.signOut();
         setLoading(false);
         setemail({ email: "", emailError: "" });
-        setpass({ password: "", passwordError: "" });
+        setpassword({ password: "", passwordError: "" });
         return;
       }
       const userDoc = await getUseNamerDocument();
-      dispatch(
-        addUser({
-          User: userDoc.Name,
-          Photo: userDoc?.Photo,
-          index: userDoc?.Index,
-          pin: userDoc?.pin,
-        })
-      );
-      raiseToast("success", "Welcome Back", "login");
-      //navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
+      if (userDoc) {
+        dispatch(
+          addUser({
+            User: userDoc.Name,
+            Photo: userDoc.Photo,
+            index: userDoc.Index,
+            pin: userDoc.pin,
+          })
+        );
+        raiseToast("success", "Welcome Back", "login");
+      } else {
+        raiseToast("error", "User document not found", "fail");
+      }
     } catch (error: any) {
       console.log(error);
       raiseToast("error", "Login Failed", error.code);
@@ -81,10 +84,10 @@ export default function Login({ navigation }: Props) {
       setLoading(false);
     }
     setemail({ email: "", emailError: "" });
-    setpass({ password: "", passwordError: "" });
+    setpassword({ password: "", passwordError: "" });
   }
   const { t } = useTranslation();
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const style = getStyles(colors);
   if (loading) {
     return (

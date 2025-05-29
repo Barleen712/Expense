@@ -11,7 +11,7 @@ interface DropdownC {
   data: DropdownItem[];
   name: string;
   styleButton: object;
-  height?: string;
+  height?: number;
   position?: "auto" | "top" | "bottom";
   onSelectItem: (selectedItem: string) => void;
   color?: string;

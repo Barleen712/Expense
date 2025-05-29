@@ -19,7 +19,7 @@ import {
 } from "../../../../../Slice/Selectors";
 import { useSelector } from "react-redux";
 import { FlatList } from "react-native-gesture-handler";
-import { ThemeContext } from "../../../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../../../Context/ThemeContext";
 import { useFocusEffect } from "@react-navigation/native";
 
 type Transactionprop = StackNavigationProp<StackParamList, "FinancialReportExpense">;
@@ -31,12 +31,18 @@ export default function FinancialReportExpense({ navigation }: Readonly<Props>) 
   const grouped = useSelector(groupedMonthlyExpensesAndTransfers);
   const selectedKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
   const expense = grouped[selectedKey] || 0;
-  const expenses = useSelector(selectMonthlyExpenseTotals);
+  const expenses = useSelector(selectMonthlyExpenseTotals) as Record<string, number>;
   const total = expenses[selectedKey] || 0;
   const highestAmount = Math.max(...expense.map((t) => t.amount));
   const highestExpenseTransaction = expense.find((t) => t.amount === highestAmount);
 
-  const handleSwipe = (evt) => {
+  interface SwipeEvent {
+    nativeEvent: {
+      pageX: number;
+    };
+  }
+
+  const handleSwipe = (evt: SwipeEvent) => {
     const { nativeEvent } = evt;
     const { pageX } = nativeEvent;
     const screenWidth = Dimensions.get("window").width;
@@ -79,12 +85,18 @@ export function FinancialReportIncome({ navigation }: Readonly<Props>) {
   const grouped = useSelector(groupedMonthlyIncome);
   const selectedKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
   const income = grouped[selectedKey] || 0;
-  const expenses = useSelector(selectMonthlyIncomeTotals);
+  const expenses = useSelector(selectMonthlyIncomeTotals) as Record<string, number>;
   const total = expenses[selectedKey] || 0;
   const highestAmount = Math.max(...income.map((t) => t.amount));
   const highestIncomeTransaction = income.find((t) => t.amount === highestAmount);
 
-  const handleSwipe = (evt) => {
+  interface SwipeEvent {
+    nativeEvent: {
+      pageX: number;
+    };
+  }
+
+  const handleSwipe = (evt: SwipeEvent) => {
     const { nativeEvent } = evt;
     const { pageX } = nativeEvent;
     const screenWidth = Dimensions.get("window").width;
@@ -131,10 +143,16 @@ export function FinancialReportBudget({ navigation }: Readonly<Props>) {
   const exceed = monthBudgets.filter((item) => item.amountSpent > item.budgetvalue) || [];
   const totalBudgets = monthBudgets.length;
   const exceedBudgets = exceed.length;
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
 
-  const handleSwipe = (evt) => {
+  interface SwipeEvent {
+    nativeEvent: {
+      pageX: number;
+    };
+  }
+
+  const handleSwipe = (evt: SwipeEvent): void => {
     const { nativeEvent } = evt;
     const { pageX } = nativeEvent;
     const screenWidth = Dimensions.get("window").width;
@@ -182,7 +200,10 @@ export function FinancialReportBudget({ navigation }: Readonly<Props>) {
             numColumns={2}
             contentContainerStyle={{ alignItems: "center" }}
             renderItem={({ item }) => {
-              const Category = categoryMap[item.category === "Transfer" ? "Transfer" : item.category];
+              const categoryKey = (
+                item.category === "Transfer" ? "Transfer" : item.category
+              ) as keyof typeof categoryMap;
+              const Category = categoryMap[categoryKey];
               return (
                 <View
                   style={{
@@ -221,9 +242,15 @@ export function FinancialReportBudget({ navigation }: Readonly<Props>) {
 
 export function FinancialReportQuote({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
 
-  const handleSwipe = (evt) => {
+  interface SwipeEvent {
+    nativeEvent: {
+      pageX: number;
+    };
+  }
+
+  const handleSwipe = (evt: SwipeEvent): void => {
     const { nativeEvent } = evt;
     const { pageX } = nativeEvent;
     const screenWidth = Dimensions.get("window").width;

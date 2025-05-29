@@ -19,18 +19,20 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
 import { useTranslation } from "react-i18next";
-import { StringConstants, handleGoogleSignIn } from "../../Constants";
+import { StringConstants, handleGoogleSignIn, raiseToast, uploadImage } from "../../Constants";
 import { addUser, addGoogleUser } from "../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
-import { createUserWithEmailAndPassword, sendEmailVerification, signInWithCredential } from "@firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signInWithCredential,
+  GoogleAuthProvider,
+} from "@firebase/auth";
 import { auth } from "../../FirebaseConfig";
-import { raiseToast } from "../../Constants";
 import { AddUser } from "../../FirestoreHandler";
-import { GoogleAuthProvider } from "@firebase/auth";
 import * as DocumentPicker from "expo-document-picker";
-import { uploadImage } from "../../Constants";
 import { ScrollView } from "react-native-gesture-handler";
 import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
 type SignupProp = StackNavigationProp<StackParamList, "SignUp">;
@@ -38,7 +40,7 @@ interface Props {
   navigation: SignupProp;
 }
 const height = Dimensions.get("screen").height;
-export default function SignUp({ navigation }: Props) {
+export default function SignUp({ navigation }: Readonly<Props>) {
   const dispatch = useDispatch();
   useEffect(() => {
     GoogleSignin.configure({
@@ -51,14 +53,14 @@ export default function SignUp({ navigation }: Props) {
   const passwordRef = useRef<TextInput>(null);
   const [name, setname] = useState({ name: "", nameError: "" });
   const [email, setemail] = useState({ email: "", emailError: "" });
-  const [password, setpass] = useState({ password: "", passwordError: "" });
+  const [password, setpassword] = useState({ password: "", passwordError: "" });
   const [checked, setChecked] = useState({ state: false, error: "" });
   const [photo, setPhoto] = useState(require("../../../assets/user.png"));
   const [loading, setloading] = useState(false);
   function handleChange() {
     setname({ ...name, nameError: "" });
     setemail({ ...email, emailError: "" });
-    setpass({ ...password, passwordError: "" });
+    setpassword({ ...password, passwordError: "" });
   }
   async function handleSignUp() {
     if (name.name === "") {
@@ -69,19 +71,19 @@ export default function SignUp({ navigation }: Props) {
       setemail({ ...email, emailError: "Email is required" });
       return;
     }
-    const emailRegex =
-      /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!emailRegex.test(email.email)) {
       setemail({ ...email, emailError: "Enter Valid Email" });
       return;
     }
     if (password.password === "") {
-      setpass({ ...password, passwordError: "Password is required" });
+      setpassword({ ...password, passwordError: "Password is required" });
       return;
     }
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&()_+^#])[A-Za-z\d@$!%*?&()_+^#]{8,}$/;
     if (!passwordRegex.test(password.password)) {
-      setpass({
+      setpassword({
         ...password,
         passwordError:
           "Password must be at least 8 characters, include uppercase, lowercase, number, and special character.",
@@ -119,7 +121,7 @@ export default function SignUp({ navigation }: Props) {
     navigation.navigate("Login");
     setname({ name: "", nameError: "" });
     setemail({ email: "", emailError: "" });
-    setpass({ password: "", passwordError: "" });
+    setpassword({ password: "", passwordError: "" });
     setChecked({ state: false, error: "" });
   }
   const { t } = useTranslation();
@@ -133,7 +135,6 @@ export default function SignUp({ navigation }: Props) {
 
       if (!result.canceled) {
         console.log("Image selected:", result.assets[0].uri);
-        //setPhoto({ uri: result.assets[0].uri });
         setPhoto({ uri: result.assets[0].uri });
       } else {
         console.log("User cancelled image selection.");
@@ -165,7 +166,6 @@ export default function SignUp({ navigation }: Props) {
     const userDoc = await getUseNamerDocument();
     if (userDoc) {
       raiseToast("success", "Welcome Back", "login");
-      //navigation.navigate("AllSet", { title: "Log In SUCCESS!" });
       dispatch(
         addUser({
           User: userDoc.Name,
@@ -291,7 +291,7 @@ export default function SignUp({ navigation }: Props) {
                 }
               }}
               onchange={(data) => {
-                setpass({ password: data, passwordError: "" });
+                setpassword({ password: data, passwordError: "" });
               }}
             />
 

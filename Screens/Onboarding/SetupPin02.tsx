@@ -5,9 +5,9 @@ import Keypad from "../../Components/Keypad";
 import Pin from "../../Components/Pin";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../Navigation/StackList";
-import { raiseToast, StringConstants } from "../Constants";
+import { StringConstants } from "../Constants";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateUserDoc } from "../FirestoreHandler";
 import { Ionicons } from "@expo/vector-icons";
 import { addUser } from "../../Slice/IncomeSlice";
@@ -23,7 +23,7 @@ interface Props {
     };
   };
 }
-export default function Setpin02({ navigation, route }: Props) {
+export default function Setpin02({ navigation, route }: Readonly<Props>) {
   const [pin, setpin] = useState("");
   const dispatch = useDispatch();
   const handleClear = () => {
@@ -33,16 +33,24 @@ export default function Setpin02({ navigation, route }: Props) {
     if (route.params.FirstPin === pin) {
       try {
         const user = await getUseNamerDocument();
-        await updateUserDoc(auth.currentUser.uid, { pinSet: true, pin: pin });
-        dispatch(
-          addUser({
-            User: user.Name,
-            Photo: user?.Photo,
-            index: user?.Index,
-            pin: pin,
-          })
-        );
-        navigation.replace("MainScreen");
+        if (auth.currentUser) {
+          await updateUserDoc(auth.currentUser.uid, { pinSet: true, pin: pin });
+          if (user) {
+            dispatch(
+              addUser({
+                User: user.Name,
+                Photo: user?.Photo,
+                index: user?.Index,
+                pin: pin,
+              })
+            );
+            navigation.replace("MainScreen");
+          } else {
+            alert("User data not found. Please try again.");
+          }
+        } else {
+          alert("User not authenticated. Please log in again.");
+        }
       } catch (error: any) {
         console.log(error);
       }
