@@ -1,52 +1,8 @@
-// src/database/realm.js
-// import Realm from "realm";
-// import { BudgetSchema } from "./Schema";
 import { getRealm } from "./realm";
-// let realm;
-
-// export const getRealm = async () => {
-//   try {
-//     if (realm && !realm.isClosed) {
-//       return realm;
-//     }
-//     // realm doesn't exist or was closed, open a new one
-//     realm = await Realm.open({
-//       schema: [BudgetSchema],
-//       schemaVersion: 1,
-//     });
-//     return realm;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-// export const retrieveOldTransactions = async () => {
-//   try {
-//     const realm = await Realm.open({
-//       schema: [TransactionSchema],
-//       schemaVersion: 1, // old version
-//     });
-
-//     const transactions = realm.objects("Transaction");
-//     console.log(transactions, "dhj");
-//   } catch (error) {
-//     console.error("Error opening Realm:", error);
-//   }
-// };
-// export const deleteRealmDatabase = async () => {
-//   try {
-//     Realm.deleteFile({ path: Realm.defaultPath });
-//     console.log("✅ Realm file deleted");
-//   } catch (error) {
-//     console.error("❌ Failed to delete Realm file:", error);
-//   }
-// };
-
 import NetInfo from "@react-native-community/netinfo";
 import { db } from "../Screens/FirebaseConfig";
-import { collection, query, getDocs, where, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { BudgetSchema } from "./Schema";
-export const markPendingDeleteOrDeleteBudget = async (realm: Realm, _id: string) => {
+import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
+export const markPendingDeleteOrDeleteBudget = async (realm: any, _id: string) => {
   const transaction = realm.objectForPrimaryKey("Budget", _id);
 
   if (!transaction) {
@@ -79,13 +35,26 @@ export const markPendingDeleteOrDeleteBudget = async (realm: Realm, _id: string)
     });
   }
 };
+export interface BudgetType {
+  _id: string;
+  category: string;
+  amount: number;
+  month: number;
+  percentage: number;
+  notified: boolean;
+  year: number;
+  notification: boolean;
+  synced: boolean;
+  pendingDelete: boolean;
+  pendingUpdate: boolean;
+}
 
 export async function updateTransactionRealmAndFirestoreBudget(
-  realm: Realm,
+  realm: any,
   userID: string,
   transactionId: string,
-  updatedData: Partial<Omit<typeof BudgetSchema.properties, "_id">>,
-  isOnline: boolean
+  updatedData: Partial<Omit<BudgetType, "_id">>,
+  isOnline: boolean | null
 ) {
   try {
     if (isOnline) {
@@ -100,7 +69,7 @@ export async function updateTransactionRealmAndFirestoreBudget(
         const tx = realm.objectForPrimaryKey("Budget", transactionId);
         if (tx) {
           Object.entries(dataToUpdate).forEach(([key, value]) => {
-            (tx as any)[key] = value;
+            tx[key] = value;
           });
         }
       });
@@ -110,7 +79,7 @@ export async function updateTransactionRealmAndFirestoreBudget(
         const tx = realm.objectForPrimaryKey("Budget", transactionId);
         if (tx) {
           Object.entries(updatedData).forEach(([key, value]) => {
-            (tx as any)[key] = value;
+            tx[key] = value;
           });
           tx.pendingUpdate = true;
         } else {
@@ -134,6 +103,10 @@ export async function updateTransactionRealmAndFirestoreBudget(
 export const retrieveOldTransactions = async () => {
   try {
     const realm = await getRealm();
+    if (!realm) {
+      console.error("Realm instance is undefined");
+      return;
+    }
     const transactions = realm.objects("Budget");
     console.log(transactions, "dhj");
   } catch (error) {
@@ -143,6 +116,10 @@ export const retrieveOldTransactions = async () => {
 export const saveToRealmBudgets = async (input: any) => {
   const realm = await getRealm();
   const transactions = Array.isArray(input) ? input : [input];
+  if (!realm) {
+    console.error("Realm instance is undefined");
+    return;
+  }
   realm.write(() => {
     transactions.forEach((txn) => {
       const exists = realm.objectForPrimaryKey("Budget", txn._id);

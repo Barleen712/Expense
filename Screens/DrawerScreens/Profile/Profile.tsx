@@ -20,11 +20,11 @@ import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { clearData, updateUser } from "../../../Slice/IncomeSlice";
-import { persistor } from "../../../Store/Store";
+import { persistor, RootState } from "../../../Store/Store";
 import { updateUserDoc } from "../../FirestoreHandler";
 import { uploadImage } from "../../Constants";
 import { getStyles } from "./styles";
-import { ThemeContext } from "../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
 import Feather from "@expo/vector-icons/Feather";
 import ProfileModal from "../../../Components/ProfileModal";
 import { profilepics } from "../../Constants";
@@ -46,19 +46,21 @@ interface Props {
 export default function Profile({ navigation }: Props) {
   const { isConnected } = useNetInfo();
   const [username, setuser] = useState("");
-  const [photo, setPhoto] = useState("");
+  const [photo, setPhoto] = useState<string | { uri: string } | number>("");
   const [editProfile, seteditProfile] = useState(false);
-  const [modalPhoto, setmodalPhoto] = useState("");
+  const [modalPhoto, setmodalPhoto] = useState<string | { uri: string } | number>("");
   const [modalUser, setModalUser] = useState("");
-  const [selectedindex, setselectedindex] = useState();
-  const user = useSelector((state) => state.Money.signup);
+  const [selectedindex, setselectedindex] = useState<number | undefined>();
+  const user = useSelector((state: RootState) => state.Money.signup);
   async function getData() {
     setuser(user?.User);
     setModalUser(user?.User);
     if (typeof user?.Photo.uri === "number") {
-      setPhoto(profilepics[user?.index]);
-      setselectedindex(user?.index);
-      setmodalPhoto(profilepics[user?.index]);
+      if (typeof user?.index === "number") {
+        setPhoto(profilepics[user.index]);
+        setselectedindex(user.index);
+        setmodalPhoto(profilepics[user.index]);
+      }
     } else {
       setPhoto(user?.Photo);
       setmodalPhoto(user?.Photo);
@@ -97,48 +99,37 @@ export default function Profile({ navigation }: Props) {
         syncPendingDeletesBudget({ isConnected });
         syncPendingUpdatesToFirestoreBudgets();
         await auth.signOut();
-        console.log("✅ Firebase signOut successful");
       } catch (err) {
-        console.warn("❌ Firebase signOut failed (possibly offline):", err.message);
         return;
       }
 
-      // Step 2: Clear Redux & persisted data
       dispatch(clearData());
       await clearUserData();
       await persistor.purge();
-      console.log("🧹 Redux + persisted data cleared");
+
       await AsyncStorage.clear();
 
-      // Step 3: Safely close Realm
       try {
         const realm = await getRealm();
         if (realm && !realm.isClosed) {
           realm.close();
-          console.log("📁 Realm closed");
         }
       } catch (realmErr) {
         console.error("⚠️ Error closing Realm:", realmErr);
       }
-
-      // Step 4: Delete Realm database file
       try {
         await deleteRealmDatabase();
-        console.log("🗑️ Realm database file deleted");
       } catch (deleteErr) {
         console.error("⚠️ Error deleting Realm file:", deleteErr);
       }
-
-      console.log("🚪 User fully logged out");
     } catch (error) {
-      console.error("❌ Logout error:", error);
       alert("There was some error during logout.");
     } finally {
-      toggleModal(); // hide spinner/modal
+      toggleModal();
     }
   }
 
-  const widths = Dimensions.get("window");
+  const widths = Dimensions.get("window").width;
   const { t } = useTranslation();
   async function saveChanges() {
     setPhoto(modalPhoto);
@@ -147,31 +138,37 @@ export default function Profile({ navigation }: Props) {
 
     let imageurl = modalPhoto;
     if (typeof modalPhoto === "object" && modalPhoto.uri && modalPhoto.uri.startsWith("file://")) {
-      imageurl = await uploadImage(modalPhoto.uri);
+      const uploaded = await uploadImage(modalPhoto.uri);
+      imageurl = uploaded ?? "";
     }
 
     dispatch(updateUser({ Photo: imageurl, Index: selectedindex, username: modalUser }));
-    updateUserDoc(auth.currentUser?.uid, {
-      User: modalUser,
-      Photo: { uri: imageurl },
-      index: selectedindex || null,
-      pin: user.pin,
-      userId: auth.currentUser?.uid,
-    });
+    if (auth.currentUser?.uid) {
+      updateUserDoc(auth.currentUser.uid, {
+        User: modalUser,
+        Photo: { uri: imageurl },
+        index: selectedindex || null,
+        pin: user.pin,
+        userId: auth.currentUser.uid,
+      });
+    }
   }
   function Discard() {
     seteditProfile(!editProfile);
     setmodalPhoto(photo);
     setModalUser(username);
   }
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground style={{ width: widths, height: 800 }} source={require("../../../assets/ProfileBack.png")}>
         <View style={styles.profile}>
           <View style={styles.userphoto}>
-            <Image style={{ width: 80, height: 80, borderRadius: 50, borderWidth: 3 }} source={photo} />
+            <Image
+              style={{ width: 80, height: 80, borderRadius: 50, borderWidth: 3 }}
+              source={typeof photo === "string" ? require("../../../assets/user.png") : photo}
+            />
           </View>
           <View style={styles.details}>
             <Text style={styles.username}>{t("Username")}</Text>

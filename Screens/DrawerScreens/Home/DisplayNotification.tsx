@@ -1,23 +1,30 @@
 import React, { useContext, useState } from "react";
-import { View, FlatList, Text, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import { View, FlatList, Text, TouchableOpacity } from "react-native";
 import Header from "../../../Components/Header";
 import styles from "../../Stylesheet";
 import { useDispatch, useSelector } from "react-redux";
 import Entypo from "@expo/vector-icons/Entypo";
-import { removeNotification } from "../../../Slice/IncomeSlice";
+import { removeNotification, updateBadge } from "../../../Slice/IncomeSlice";
 import { deleteAllUserNotifications } from "../../FirestoreHandler";
 import { auth } from "../../FirebaseConfig";
-import { updateBadge } from "../../../Slice/IncomeSlice";
-import { ThemeContext } from "../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
 import { useTranslation } from "react-i18next";
-export default function DisplayNotification({ navigation }) {
-  const NotificationData = useSelector((state) => state.Money.notification);
+import { StackNavigationProp } from "@react-navigation/stack";
+import StackParamList from "../../../Navigation/StackList";
+import { RootState } from "../../../Store/Store";
+type NotificationProp = StackNavigationProp<StackParamList, "Notification">;
+
+interface Notification {
+  navigation: NotificationProp;
+}
+export default function DisplayNotification({ navigation }: Readonly<Notification>) {
+  const NotificationData = useSelector((state: RootState) => state.Money.notification);
   const sortedNotification = [...NotificationData].sort((a, b) => {
-    return new Date(b.date) - new Date(a.date);
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
   const [show, setShow] = useState(false);
   const dispatch = useDispatch();
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const { t } = useTranslation();
   return (
     <View style={styles.container}>

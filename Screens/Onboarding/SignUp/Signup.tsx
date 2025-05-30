@@ -53,14 +53,15 @@ export default function SignUp({ navigation }: Readonly<Props>) {
   const passwordRef = useRef<TextInput>(null);
   const [name, setname] = useState({ name: "", nameError: "" });
   const [email, setemail] = useState({ email: "", emailError: "" });
-  const [password, setpassword] = useState({ password: "", passwordError: "" });
+  const [password, setpassword] = useState({ password: "", error: "" });
   const [checked, setChecked] = useState({ state: false, error: "" });
   const [photo, setPhoto] = useState(require("../../../assets/user.png"));
   const [loading, setloading] = useState(false);
+  const error = "Enter your password";
   function handleChange() {
     setname({ ...name, nameError: "" });
     setemail({ ...email, emailError: "" });
-    setpassword({ ...password, passwordError: "" });
+    setpassword({ ...password, error: "" });
   }
   async function handleSignUp() {
     if (name.name === "") {
@@ -71,22 +72,21 @@ export default function SignUp({ navigation }: Readonly<Props>) {
       setemail({ ...email, emailError: "Email is required" });
       return;
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (!emailRegex.test(email.email)) {
       setemail({ ...email, emailError: "Enter Valid Email" });
       return;
     }
     if (password.password === "") {
-      setpassword({ ...password, passwordError: "Password is required" });
+      setpassword({ ...password, error: error });
       return;
     }
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&()_+^#])[A-Za-z\d@$!%*?&()_+^#]{8,}$/;
     if (!passwordRegex.test(password.password)) {
       setpassword({
         ...password,
-        passwordError:
-          "Password must be at least 8 characters, include uppercase, lowercase, number, and special character.",
+        error: "Password must be at least 8 characters, include uppercase, lowercase, number, and special character.",
       });
       return;
     }
@@ -121,7 +121,7 @@ export default function SignUp({ navigation }: Readonly<Props>) {
     navigation.navigate("Login");
     setname({ name: "", nameError: "" });
     setemail({ email: "", emailError: "" });
-    setpassword({ password: "", passwordError: "" });
+    setpassword({ password: "", error: "" });
     setChecked({ state: false, error: "" });
   }
   const { t } = useTranslation();
@@ -291,11 +291,11 @@ export default function SignUp({ navigation }: Readonly<Props>) {
                 }
               }}
               onchange={(data) => {
-                setpassword({ password: data, passwordError: "" });
+                setpassword({ password: data, error: "" });
               }}
             />
 
-            {password.passwordError !== "" && (
+            {password.error !== "" && (
               <Text
                 style={{
                   color: "rgb(255, 0, 17)",
@@ -305,7 +305,7 @@ export default function SignUp({ navigation }: Readonly<Props>) {
                   width: "90%",
                 }}
               >
-                {password.passwordError}*
+                {password.error}*
               </Text>
             )}
           </View>
@@ -315,7 +315,7 @@ export default function SignUp({ navigation }: Readonly<Props>) {
               marginTop: 10,
               width: "90%",
               justifyContent: "space-evenly",
-              height: "5%",
+              height: "5.5%",
             }}
           >
             <View style={{ borderWidth: Platform.OS === "ios" ? 1 : 0, flex: 0.1 }}>

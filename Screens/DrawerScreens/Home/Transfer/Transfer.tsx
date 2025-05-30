@@ -23,19 +23,16 @@ import Header from "../../../../Components/Header";
 import Entypo from "@expo/vector-icons/Entypo";
 import Input from "../../../../Components/CustomTextInput";
 import SelectImageWithDocumentPicker from "../Attachment";
-import { addTransaction } from "../../../../Slice/IncomeSlice";
-import { useDispatch } from "react-redux";
+import { addTransaction, updateTransaction } from "../../../../Slice/IncomeSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { StringConstants, currencies } from "../../../Constants";
 import { useTranslation } from "react-i18next";
 import { auth } from "../../../FirebaseConfig";
-import { updateTransactionRealmAndFirestore } from "../../../../Realm/realm";
-import { updateTransaction } from "../../../../Slice/IncomeSlice";
-import { ThemeContext } from "../../../../Context/ThemeContext";
+import { updateTransactionRealmAndFirestore, getRealm } from "../../../../Realm/realm";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import TransferImg from "../../../../assets/transfer.svg";
-import { getRealm } from "../../../../Realm/realm";
 import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
 import NetInfo from "@react-native-community/netinfo";
-import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/Store";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
@@ -48,9 +45,9 @@ const modal = [
   require("../../../../assets/ImageBlue.png"),
   require("../../../../assets/DocumentBlue.png"),
 ];
-export default function Income({ navigation, route }: Props) {
+export default function Income({ navigation, route }: Readonly<Props>) {
   const { from, to, amount, id, edit, title, url, type } = route.params;
-  const [showAttach, setAttach] = useState(!url);
+  const [showAttach, setshowAttach] = useState(!url);
   const [image, setImage] = useState<string | null>(url);
   const [modalVisible, setModalVisible] = useState(false);
   const [close, setclose] = useState(url);
@@ -67,6 +64,7 @@ export default function Income({ navigation, route }: Props) {
   const [localPath, setlocalPath] = useState({ type: type, path: url });
   const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const Rates = useSelector((state: RootState) => state.Rates);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   let convertRate: number;
   if (currency === "USD") {
     convertRate = 1;
@@ -176,7 +174,7 @@ export default function Income({ navigation, route }: Props) {
       startDate: 0,
       startMonth: 0,
       startYear: new Date().getFullYear(),
-      type: localPath.type || "document",
+      type: localPath.type,
       url: localPath.path || document,
     };
 
@@ -214,7 +212,7 @@ export default function Income({ navigation, route }: Props) {
       startDate: 0,
       startMonth: 0,
       startYear: new Date().getFullYear(),
-      type: localPath.type || "document",
+      type: localPath.type,
       url: localPath.path || document,
       wallet: "",
     };
@@ -238,7 +236,7 @@ export default function Income({ navigation, route }: Props) {
       setToError("");
     }
   }
-  const { colors } = useContext(ThemeContext);
+
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>
@@ -250,11 +248,7 @@ export default function Income({ navigation, route }: Props) {
       />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView
-            scrollEnabled={Platform.OS === "ios" ? false : true}
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-          >
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
             <View style={[styles.add, { backgroundColor: "rgba(0, 119, 255, 1)" }]}>
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
@@ -368,7 +362,7 @@ export default function Income({ navigation, route }: Props) {
                     <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
                     {close && (
                       <>
-                        {(image || photo) && (
+                        {(!!image || !!photo) && (
                           <TouchableOpacity
                             style={{
                               position: "absolute",
@@ -379,7 +373,7 @@ export default function Income({ navigation, route }: Props) {
                             onPress={() => {
                               setImage(null);
                               setPhoto(null);
-                              setAttach(!showAttach);
+                              setshowAttach(!showAttach);
                               setDocument(null);
                               setclose(false);
                             }}
@@ -409,7 +403,7 @@ export default function Income({ navigation, route }: Props) {
                     </TouchableOpacity>
                     {close && (
                       <>
-                        {document && (
+                        {!!document && (
                           <TouchableOpacity
                             style={{
                               position: "absolute",
@@ -419,7 +413,7 @@ export default function Income({ navigation, route }: Props) {
                             }}
                             onPress={() => {
                               setImage(null);
-                              setAttach(!showAttach);
+                              setshowAttach(!showAttach);
                               setDocument(null);
                               setclose(false);
                             }}
@@ -446,7 +440,7 @@ export default function Income({ navigation, route }: Props) {
                     <SelectImageWithDocumentPicker
                       toggle={toggleModal}
                       attach={showAttach}
-                      setAttach={setAttach}
+                      setAttach={setshowAttach}
                       image={image}
                       setImage={setImage}
                       setclose={setclose}

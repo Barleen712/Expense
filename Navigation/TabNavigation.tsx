@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Animated, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { Animated, StyleSheet, TouchableOpacity, Text, Dimensions } from "react-native";
 import { CurvedBottomBarExpo } from "react-native-curved-bottom-bar";
 import { Ionicons } from "@expo/vector-icons";
 import Home from "../Screens/DrawerScreens/Home/Home";
@@ -11,7 +11,7 @@ import StackParamList from "./StackList";
 import { useSelector } from "react-redux";
 import { RootState } from "../Store/Store";
 import { useTranslation } from "react-i18next";
-import { ThemeContext } from "../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../Context/ThemeContext";
 import Expense from "../assets/Expense.svg";
 import Income from "../assets/Income.svg";
 import Transfer from "../assets/Transaction.svg";
@@ -27,7 +27,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
   const [plus, setplus] = useState(true);
   const [cross, setcross] = useState(false);
   const { t } = useTranslation();
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getstyles(colors);
 
   useEffect(() => {
@@ -69,14 +69,22 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
   );
   return (
     <CurvedBottomBarExpo.Navigator
+      id="main"
+      circlePosition="CENTER"
       type="DOWN"
+      width={Dimensions.get("window").width}
       style={[styles.bottomBar, loading && { display: "none" }]}
       shadowStyle={styles.shadow}
       height={70}
       circleWidth={56}
       bgColor="transparent"
       initialRouteName="Home"
+      screenListeners={{}}
       borderTopLeftRight
+      backBehavior="initialRoute"
+      borderColor={"gray"}
+      borderWidth={0}
+      defaultScreenOptions={{ headerShown: false }}
       screenOptions={{ headerShown: false }}
       renderCircle={() => (
         <Animated.View style={styles.btnCircleUp}>
@@ -101,6 +109,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
                     edit: false,
                     title: "",
                     url: "",
+                    type: "",
                   })
                 }
                 style={{
@@ -130,6 +139,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
                     startDate: new Date().getDate(),
                     startMonth: new Date().getMonth(),
                     weekly: new Date().getDay().toString(),
+                    type: "",
                   })
                 }
                 style={{ position: "absolute", left: 55, bottom: 55 }}
@@ -154,6 +164,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
                     startDate: new Date().getDate(),
                     startMonth: new Date().getMonth(),
                     weekly: new Date().getDay().toString(),
+                    type: "",
                   })
                 }
                 style={{ position: "absolute", right: 55, bottom: 55 }}
@@ -174,7 +185,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
   );
 }
 
-function getstyles(colors) {
+function getstyles(colors: any) {
   return StyleSheet.create({
     shadow: {
       shadowColor: "#DDDDDD",

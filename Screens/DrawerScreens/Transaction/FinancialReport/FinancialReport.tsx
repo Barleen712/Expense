@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useContext, useCallback } from "react";
-import { View, Text, Image, Touchable, TouchableOpacity, Dimensions, BackHandler } from "react-native";
-
+import { View, Text, TouchableOpacity, Dimensions, BackHandler } from "react-native";
 import Header from "../../../../Components/Header";
 import { getStyles } from "./styles";
 import Fontisto from "@expo/vector-icons/Fontisto";
@@ -12,8 +11,6 @@ import { useTranslation } from "react-i18next";
 import DropdownComponent from "../../../../Components/DropDown";
 import { currencies, StringConstants } from "../../../Constants";
 import {
-  selectIncomeTotal,
-  selectExpenseTotal,
   selectExpensesAndTransfers,
   selectIncome,
   CategoryExpense,
@@ -27,8 +24,9 @@ import { Linearchart } from "./Graph";
 import TransactionList from "../../Home/TransactionList/TransactionsList";
 import CategoryList from "./CategoryList";
 import { CATEGORY_COLORS } from "../../../Constants";
-import { ThemeContext } from "../../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { useFocusEffect } from "@react-navigation/native";
+import { RootState } from "../../../../Store/Store";
 const height = Dimensions.get("window").height * 0.22;
 
 type financialProp = StackNavigationProp<StackParamList, "FinancialReport">;
@@ -59,21 +57,21 @@ export default function FinancialReport({ navigation }: Props) {
   const [month, setMonth] = useState(Month[new Date().getMonth()].value);
   const monthIndex = Month.findIndex((item) => item.value === month);
   const monthKey = `${new Date().getFullYear()}-${String(monthIndex + 1).padStart(2, "0")}`;
-  const incomes = useSelector(selectMonthlyIncomeTotals);
+  const incomes = useSelector(selectMonthlyIncomeTotals) as { [key: string]: number };
   const income = incomes[monthKey] || 0;
-  const expenses = useSelector(selectMonthlyExpenseTotals);
+  const expenses = useSelector(selectMonthlyExpenseTotals) as { [key: string]: number };
   const expense = expenses[monthKey] || 0;
   const transaction = useSelector(selectTransactions);
   const incomeValues = useSelector(selectIncome);
   const expensesAndTransfers = useSelector(selectExpensesAndTransfers);
   const sortedIncome = [...incomeValues]
     .sort((a, b) => {
-      return new Date(b.Date) - new Date(a.Date);
+      return new Date(b.Date).getTime() - new Date(a.Date).getTime();
     })
     .filter((item) => Month[new Date(item.Date).getMonth()].value === month && new Date(item.Date) <= new Date());
   const sortedExpense = [...expensesAndTransfers]
     .sort((a, b) => {
-      return new Date(b.Date) - new Date(a.Date);
+      return new Date(b.Date).getTime() - new Date(a.Date).getTime();
     })
     .filter((item) => Month[new Date(item.Date).getMonth()].value === month && new Date(item.Date) <= new Date());
   const sortedTrans = [...transaction].filter(
@@ -88,7 +86,7 @@ export default function FinancialReport({ navigation }: Props) {
             (item.moneyCategory === "Transfer" && Month[new Date(item.Date).getMonth()].value === month)
         )
         .sort((a, b) => {
-          return new Date(a.Date) - new Date(b.Date);
+          return new Date(a.Date).getTime() - new Date(b.Date).getTime();
         })
         .map((expense) => ({ value: expense.amount, date: expense.Date })),
     [sortedTrans]
@@ -98,7 +96,7 @@ export default function FinancialReport({ navigation }: Props) {
       sortedTrans
         .filter((item) => item.moneyCategory === "Income" && Month[new Date(item.Date).getMonth()].value === month)
         .sort((a, b) => {
-          return new Date(a.Date) - new Date(b.Date);
+          return new Date(a.Date).getTime() - new Date(b.Date).getTime();
         })
         .map((income) => ({ value: income.amount, date: income.Date })),
     [sortedTrans]
@@ -118,10 +116,10 @@ export default function FinancialReport({ navigation }: Props) {
     color: CATEGORY_COLORS[item.category],
   }));
   const { t } = useTranslation();
-  const Rates = useSelector((state) => state.Rates);
-  const currency = useSelector((state) => state.Money.preferences.currency);
+  const Rates = useSelector((state: RootState) => state.Rates);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const convertRate = Rates.Rate[currency];
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   useFocusEffect(
     useCallback(() => {
@@ -161,7 +159,6 @@ export default function FinancialReport({ navigation }: Props) {
             alignSelf: "flex-start",
             width: "38%",
           }}
-          styleItem={styles.dropdownItems}
           onSelectItem={(item) => {
             setMonth(item);
           }}

@@ -1,9 +1,8 @@
-import { Platform, PermissionsAndroid } from "react-native";
+import { Platform, Alert } from "react-native";
 import { supabase } from "./SuperbaseConfig";
 import RNFS from "react-native-fs";
-import ReactNativeBiometrics, { FaceID } from "react-native-biometrics";
+import ReactNativeBiometrics from "react-native-biometrics";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 const rnBiometrics = new ReactNativeBiometrics();
@@ -68,7 +67,7 @@ export const uploadImage = async (imageUri: string) => {
       return null;
     }
     console.log("adding image");
-    const fileName = imageUri.split("/").pop() || `income_${Date.now()}.jpg`;
+    const fileName = imageUri.split("/").pop() ?? `income_${Date.now()}.jpg`;
     const filePath = `income-images/${fileName}`;
     console.log(filePath);
     let base64Image: string | null = null;
@@ -83,10 +82,10 @@ export const uploadImage = async (imageUri: string) => {
           if (typeof reader.result === "string") {
             resolve(reader.result.split(",")[1]);
           } else {
-            reject("Failed to read as Data URL");
+            reject(new Error("Failed to read as Data URL")); // ✅ correct
           }
         };
-        reader.onerror = reject;
+        reader.onerror = () => reject(new Error("FileReader encountered an error")); // Optional but safer
         reader.readAsDataURL(blob);
       });
     } else {
@@ -100,7 +99,7 @@ export const uploadImage = async (imageUri: string) => {
     for (let i = 0; i < binaryString.length; i++) {
       fileArray[i] = binaryString.charCodeAt(i);
     }
-    const { data, error: uploadError } = await supabase.storage.from("expense-tracker").upload(filePath, fileArray, {
+    const { error: uploadError } = await supabase.storage.from("expense-tracker").upload(filePath, fileArray, {
       upsert: true,
     });
     if (uploadError) {
@@ -229,30 +228,34 @@ export const handleBiometricAuth = async (navigation: any) => {
     }
 
     const biometricEnabled = await AsyncStorage.getItem("biometricEnabled");
+
     if (biometricEnabled === null) {
       Alert.alert("Enable Biometric Login?", "Would you like to use fingerprint/face recognition to log in?", [
         {
           text: "No",
-          onPress: async () => {
-            await AsyncStorage.setItem("biometricEnabled", "false");
-            navigation.navigate("EnterPin");
+          onPress: () => {
+            AsyncStorage.setItem("biometricEnabled", "false").then(() => {
+              navigation.navigate("EnterPin");
+            });
           },
           style: "cancel",
         },
         {
           text: "Yes",
-          onPress: async () => {
-            await AsyncStorage.setItem("biometricEnabled", "true");
-            const { success } = await rnBiometrics.simplePrompt({
-              promptMessage: "Confirm your identity",
-              cancelButtonText: "Use PIN Instead",
-            });
+          onPress: () => {
+            (async () => {
+              await AsyncStorage.setItem("biometricEnabled", "true");
+              const { success } = await rnBiometrics.simplePrompt({
+                promptMessage: "Confirm your identity",
+                cancelButtonText: "Use PIN Instead",
+              });
 
-            if (success) {
-              navigation.navigate("MainScreen");
-            } else {
-              navigation.navigate("EnterPin");
-            }
+              if (success) {
+                navigation.navigate("MainScreen");
+              } else {
+                navigation.navigate("EnterPin");
+              }
+            })();
           },
         },
       ]);
@@ -287,8 +290,6 @@ export const handleGoogleSignIn = async () => {
       name: userInfo.data?.user.name,
       photo: userInfo.data?.user.photo,
     };
-    // const googleCredential = GoogleAuthProvider.credential(tokens.idToken);
-    // const creds = await signInWithCredential(auth, googleCredential);
   } catch (error: any) {
     console.error("Google Sign-In Error:", error);
     Alert.alert("Error", error.message || "Google Sign-In failed");
@@ -438,36 +439,3 @@ export const Privacy_Policy = [
       "If you have any questions about this Privacy Policy, please contact us at:\nEmail:support@montra.com\nAddress: Chicmic Studios ,F-273, Phase 8B, Industrial Area, Sector 74, Sahibzada Ajit Singh Nagar, Punjab 160071.",
   },
 ];
-
-// export const requestStoragePermission = async () => {
-//   if (Platform.OS === "android") {
-//     const version = Platform.Version;
-
-//     try {
-//       if (version >= 33) {
-//         // Android 13+ requires READ_MEDIA_* permissions
-//         const granted = await PermissionsAndroid.request(
-//           PermissionsAndroid.PERMISSIONS.READ_MEDIA_DOCUMENTS, // or READ_MEDIA_DOCUMENTS if available in your RN version
-//           {
-//             title: "Media Permission Required",
-//             message: "App needs access to open the downloaded file.",
-//             buttonPositive: "OK",
-//           }
-//         );
-//         return granted === PermissionsAndroid.RESULTS.GRANTED;
-//       } else {
-//         const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
-//           title: "Storage Permission Required",
-//           message: "App needs access to your storage to open files.",
-//           buttonPositive: "OK",
-//         });
-//         return granted === PermissionsAndroid.RESULTS.GRANTED;
-//       }
-//     } catch (err) {
-//       console.warn("Permission error:", err);
-//       return false;
-//     }
-//   } else {
-//     return true; // iOS doesn't require storage permission
-//   }
-// };

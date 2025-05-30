@@ -12,7 +12,6 @@ import {
   Keyboard,
   ScrollView,
   TextInput,
-  ActivityIndicator,
 } from "react-native";
 import * as Sharing from "expo-sharing";
 import { getRealm, updateTransactionRealmAndFirestore } from "../../../../Realm/realm";
@@ -41,6 +40,7 @@ type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
   navigation: IncomeProp;
+  route: any;
 }
 const wallet = [
   { value: "PayPal", label: "PayPal" },
@@ -55,15 +55,6 @@ const category = [
   { value: "Passive Income", label: "Passive Income" },
 ];
 const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
-
-const date = [];
-for (let i = 1; i <= 31; i++) {
-  date.push(i);
-}
-const year = [];
-for (let i = 0; i <= 31; i++) {
-  year.push(new Date().getFullYear() + i);
-}
 export default function Income({ navigation, route }: Props) {
   const parameters = route.params;
   const [Switchs, setSwitchs] = useState(parameters.repeat);
@@ -77,14 +68,13 @@ export default function Income({ navigation, route }: Props) {
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
-  const [loading, setLoading] = useState(false);
   const [frequency, setFrequency] = useState(parameters.frequency);
   const [endAfter, setendAfter] = useState(parameters.endAfter);
   const [month, setMonth] = useState(parameters.startMonth);
   const [week, setWeek] = useState(parameters.weekly);
   const [startDate, setStartDate] = useState(parameters.startDate);
   const [endDate, setEndDate] = useState(new Date(parameters.endDate));
-  const [Frequencymodal, setFrequencyModal] = useState(false);
+  const [Frequencymodal, setFrequencymodal] = useState(false);
   const [incomeError, setIncomeError] = useState("");
   const [categoryError, setcategoryError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
@@ -93,6 +83,7 @@ export default function Income({ navigation, route }: Props) {
   const { isConnected } = useNetInfo();
   const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const Rates = useSelector((state: RootState) => state.Rates);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   let convertRate: number;
   if (currency === "USD") {
     convertRate = 1;
@@ -204,15 +195,19 @@ export default function Income({ navigation, route }: Props) {
       startYear: new Date().getFullYear(),
       Date: new Date().toISOString(),
       synced: false,
-      type: localPath.type || "document",
-      url: localPath.path || document,
+      type: localPath.type,
+      url: localPath.path,
     };
 
     try {
-      realm.write(() => {
-        realm.create("Transaction", transaction);
-        dispatch(addTransaction(transaction));
-      });
+      if (realm) {
+        realm.write(() => {
+          realm.create("Transaction", transaction);
+          dispatch(addTransaction(transaction));
+        });
+      } else {
+        console.warn("Realm instance is undefined.");
+      }
     } catch (error) {
       console.log(error, 12335);
     }
@@ -224,7 +219,7 @@ export default function Income({ navigation, route }: Props) {
 
     navigation.goBack();
   }
-  console.log(typeof week);
+  console.log(localPath);
   async function editIncome() {
     const realm = await getRealm();
     const numericIncome = parseFloat(Income.replace("$", "") || "0") / convertRate;
@@ -235,7 +230,7 @@ export default function Income({ navigation, route }: Props) {
       wallet: selectedWallet,
       id: parameters.id,
       moneyCategory: "Income",
-      type: localPath.type || "document",
+      type: localPath.type,
       url: localPath.path || document,
       Frequency: frequency,
       endAfter: endAfter || null,
@@ -250,34 +245,29 @@ export default function Income({ navigation, route }: Props) {
     const { isConnected } = await NetInfo.fetch();
     dispatch(updateTransaction(updateData));
     if (user) {
-      updateTransactionRealmAndFirestore(realm, user.uid, parameters.id, updateData, isConnected);
+      if (realm) {
+        updateTransactionRealmAndFirestore(realm, user.uid, parameters.id, updateData, isConnected);
+      } else {
+        console.warn("Realm instance is undefined.");
+      }
     } else {
       console.warn("User is not authenticated.");
     }
     navigation.goBack();
     navigation.goBack();
   }
-  if (loading) {
-    return (
-      <View
-        style={{ flex: 1, backgroundColor: "rgba(228, 225, 225, 0.5)", alignItems: "center", justifyContent: "center" }}
-      >
-        <ActivityIndicator size="large" color="rgba(0, 168, 107, 1)" />
-      </View>
-    );
-  }
   function opensModal() {
     setSwitchs(!Switchs);
     if (Switchs === false) {
-      setFrequencyModal(!Frequencymodal);
+      setFrequencymodal(!Frequencymodal);
     }
-    setFrequency(""), setMonth(new Date().getMonth());
+    setFrequency("");
+    setMonth(new Date().getMonth());
     setStartDate(new Date().getDate());
     setWeek(new Date().getDay());
     setEndDate(new Date());
     setendAfter("");
   }
-  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>
@@ -289,11 +279,7 @@ export default function Income({ navigation, route }: Props) {
       />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView
-            scrollEnabled={Platform.OS === "ios" ? false : true}
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-          >
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
             <View style={[styles.add, { backgroundColor: "rgba(0, 168, 107, 1)" }]}>
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
@@ -359,7 +345,7 @@ export default function Income({ navigation, route }: Props) {
                     <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
                     {close && (
                       <>
-                        {(image || photo) && (
+                        {(!!image || !!photo) && (
                           <TouchableOpacity
                             style={{
                               position: "absolute",
@@ -400,7 +386,7 @@ export default function Income({ navigation, route }: Props) {
                     </TouchableOpacity>
                     {close && (
                       <>
-                        {document && (
+                        {!!document && (
                           <TouchableOpacity
                             style={{
                               position: "absolute",
@@ -451,7 +437,7 @@ export default function Income({ navigation, route }: Props) {
                   endDate={endDate}
                   setEndDate={setEndDate}
                   Frequencymodal={Frequencymodal}
-                  setFrequencyModal={setFrequencyModal}
+                  setFrequencyModal={setFrequencymodal}
                   setswitch={setSwitchs}
                   edit={parameters.edit}
                 />
@@ -483,7 +469,7 @@ export default function Income({ navigation, route }: Props) {
                       </Text>
                     </View>
                     <TouchableOpacity
-                      onPress={() => setFrequencyModal(!Frequencymodal)}
+                      onPress={() => setFrequencymodal(!Frequencymodal)}
                       style={{
                         backgroundColor: "rgba(56, 184, 176, 0.23)",
                         padding: 10,
@@ -522,7 +508,6 @@ export default function Income({ navigation, route }: Props) {
                       setclose={setclose}
                       setDocument={setDocument}
                       modalItems={modal}
-                      setPhoto={setPhoto}
                       close={close}
                       setlocalPath={setlocalPath}
                     />

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { View, Text, Image, TouchableOpacity, FlatList, Dimensions } from "react-native";
 import { getStyles } from "./style";
 import { CustomButton } from "../../../../Components/CustomButton";
@@ -11,28 +11,35 @@ import { useSelector } from "react-redux";
 import { ProgressBar } from "react-native-paper";
 import DropdownComponent from "../../../../Components/DropDown";
 import { RootState } from "../../../../Store/Store";
+import type { ListRenderItem } from "react-native";
+
 const width = Dimensions.get("window").width * 0.8;
 const date = new Date();
 const MonthIndex = date.getMonth();
 import { useTranslation } from "react-i18next";
 
 type Budgetprop = StackNavigationProp<StackParamList, "MainScreen">;
-import { ActivityIndicator } from "react-native";
 import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { clearData } from "../../../../Slice/IncomeSlice";
-type YearOption = { label: string; value: number };
+type YearOption = { label: string; value: string };
 let Year: YearOption[] = [];
 
 for (let i = 0; i < 31; i++) {
-  Year.push({ label: (2020 + i).toString(), value: 2020 + i });
+  Year.push({ label: (2020 + i).toString(), value: (2020 + i).toString() });
 }
 
 interface Props {
   navigation: Budgetprop;
 }
-export default function Budget({ navigation }: Props) {
-  const loading = useSelector((state: RootState) => state.Money.loading);
-
+type BudgetItem = {
+  id: number;
+  category: string;
+  budgetvalue: number;
+  amountSpent: number;
+  alertPercent: number;
+  notification: boolean;
+};
+export default function Budget({ navigation }: Readonly<Props>) {
   function handleprev() {
     setmonth(month - 1);
     if (month == 0) {
@@ -51,21 +58,13 @@ export default function Budget({ navigation }: Props) {
   const convertRate = Rates.Rate[currency];
   const [month, setmonth] = useState(MonthIndex);
   const Budgetcat = useSelector(BudgetCategory);
-  const [year, selectedYear] = useState(2025);
+  const [year, setyear] = useState("2025");
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
   const budgetDataForMonth = Budgetcat[monthKey] || [];
-  type BudgetItem = {
-    id: number;
-    category: string;
-    budgetvalue: number;
-    amountSpent: number;
-    alertPercent: number;
-    notification: boolean;
-  };
 
-  const renderBudgetItems = useCallback(
-    ({ item, index }: { item: BudgetItem; index: number }) => {
+  const renderBudgetItems: ListRenderItem<BudgetItem> = useCallback(
+    ({ item }) => {
       let remaining = item.budgetvalue - item.amountSpent;
       let progress = item.amountSpent / item.budgetvalue;
       if (remaining < 0) {
@@ -159,20 +158,6 @@ export default function Budget({ navigation }: Props) {
     [navigation, currency, convertRate, t, colors]
   );
 
-  if (loading) {
-    return (
-      <View
-        style={{
-          height: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-        }}
-      >
-        <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
-      </View>
-    );
-  }
   const styles = getStyles(colors);
   clearData();
   return (
@@ -185,7 +170,7 @@ export default function Budget({ navigation }: Props) {
           color="white"
           styleButton={styles.budgetYear}
           onSelectItem={(item) => {
-            selectedYear(item);
+            setyear(item);
           }}
         />
         <View style={styles.budgetMonth}>
@@ -219,8 +204,8 @@ export default function Budget({ navigation }: Props) {
             </View>
           )}
           <View style={styles.budgetButton}>
-            {(parseInt(year) > new Date().getFullYear() ||
-              (parseInt(year) === new Date().getFullYear() && month >= new Date().getMonth())) && (
+            {(Number(year) > new Date().getFullYear() ||
+              (Number(year) === new Date().getFullYear() && month >= new Date().getMonth())) && (
               <CustomButton
                 title={t(StringConstants.CreateaBudget)}
                 bg="rgb(42, 124, 118)"
@@ -234,7 +219,7 @@ export default function Budget({ navigation }: Props) {
                     edit: false,
                     header: "Create Budget",
                     month: month,
-                    year: year,
+                    year: Number(year),
                   })
                 }
               />

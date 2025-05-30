@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
-import { View, Text, Dimensions, Image } from "react-native";
+import { View, Text, Dimensions } from "react-native";
 import { getStyles } from "./styles";
-import { ProgressBar, MD3Colors } from "react-native-paper";
+import { ProgressBar } from "react-native-paper";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { StringConstants, categoryMap, currencies } from "../../../../Constants";
+import { categoryMap, currencies } from "../../../../Constants";
 import { ThemeContext, ThemeContextType } from "../../../../../Context/ThemeContext";
 import { RootState } from "../../../../../Store/Store";
 interface Report {
@@ -17,7 +17,7 @@ interface Report {
   progress: number;
 }
 const width = Dimensions.get("window").width;
-export default function FaceCard({ type, amount, detail, category, amount1, bg, progress }: Report) {
+export default function FaceCard({ type, amount, detail, category, amount1, bg, progress }: Readonly<Report>) {
   const Rates = useSelector((state: RootState) => state.Rates);
   const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   let convertRate;

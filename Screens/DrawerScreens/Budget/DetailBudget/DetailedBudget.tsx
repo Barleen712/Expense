@@ -1,23 +1,22 @@
 import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, Image, Dimensions } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
 import Header from "../../../../Components/Header";
 import { getStyles } from "./styles";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { categoryMap, currencies } from "../../../Constants";
+import { categoryMap, currencies, CATEGORY_COLORS, StringConstants } from "../../../Constants";
 import { ProgressBar } from "react-native-paper";
-import { CATEGORY_COLORS, StringConstants } from "../../../Constants";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { CustomButton } from "../../../../Components/CustomButton";
 import CustomModal from "../../../../Components/Modal/Modal";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteBudget } from "../../../../Slice/IncomeSlice";
 import { useTranslation } from "react-i18next";
-import { deleteDocument } from "../../../FirestoreHandler";
-import { ThemeContext } from "../../../../Context/ThemeContext";
-import { getRealm, markPendingDeleteOrDelete } from "../../../../Realm/realm";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
+import { getRealm } from "../../../../Realm/realm";
 import { markPendingDeleteOrDeleteBudget } from "../../../../Realm/Budgetrealm";
+import { RootState } from "../../../../Store/Store";
 type DetailedBudget = StackNavigationProp<StackParamList, "DetailBudget">;
 
 interface Props {
@@ -36,7 +35,7 @@ interface Props {
   };
 }
 const width = Dimensions.get("window").width - 60;
-export default function DetailedBudget({ navigation, route }: Props) {
+export default function DetailedBudget({ navigation, route }: Readonly<Props>) {
   const { category, remaining, progress, exceeded, index, total, percentage, alert } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
@@ -44,15 +43,18 @@ export default function DetailedBudget({ navigation, route }: Props) {
     const realm = await getRealm();
     markPendingDeleteOrDeleteBudget(realm, index);
     dispatch(deleteBudget(index));
-    //deleteDocument("Budgets", index);
   }
   const { t } = useTranslation();
-  const Rates = useSelector((state) => state.Rates);
-  const currency = useSelector((state) => state.Money.preferences.currency);
+  const Rates = useSelector((state: RootState) => state.Rates);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const convertRate = Rates.Rate[currency];
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
-  const Category = categoryMap[category === "Transfer" ? "Transfer" : category];
+
+  type CategoryKey = keyof typeof categoryMap;
+  const categoryKey = (category === "Transfer" ? "Transfer" : category) as CategoryKey;
+  const Category = categoryMap[categoryKey];
+
   return (
     <View style={styles.container}>
       <Header
@@ -85,7 +87,6 @@ export default function DetailedBudget({ navigation, route }: Props) {
               borderWidth: 0.3,
               padding: 10,
               margin: 15,
-              // marginTop: 5,
               backgroundColor: "rgba(254, 255, 255, 0.85)",
               borderRadius: 20,
             }}

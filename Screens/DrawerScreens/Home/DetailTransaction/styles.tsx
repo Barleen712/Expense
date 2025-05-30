@@ -32,7 +32,7 @@ export const getStyles = (colors: any) =>
     username: {
       fontFamily: "Inter",
       fontWeight: "bold",
-      fontSize: Platform.OS === "ios" ? 14 : 14,
+      fontSize: 14,
       color: "rgba(145, 145, 159, 1)",
     },
     exportText: {

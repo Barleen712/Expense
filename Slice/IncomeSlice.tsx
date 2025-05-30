@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { RootState } from "../Store/Store";
+import { RootState, AppDispatch } from "../Store/Store";
 import i18n from "../i18n/i18next";
-import { act } from "react";
 interface IncomeEntry {
   amount: number;
   description: string;
@@ -10,7 +9,7 @@ interface IncomeEntry {
   wallet: string;
   moneyCategory: string;
   Date: string;
-  id: string;
+  _id: string;
   repeat: boolean;
   Frequency?: string;
   endAfter?: string;
@@ -18,17 +17,19 @@ interface IncomeEntry {
   startDate?: number;
   startMonth?: string;
   startYear?: string;
+  url?: string;
+  weekly?: string;
 }
 interface BudgetEntry {
   Date: string;
   amount: number;
-  category: number;
+  category: string;
   percentage: number;
   notification: boolean;
-  id: string;
+  _id: string;
   notified?: boolean;
 }
-interface notificationEntry {
+interface NotificationEntry {
   title: string;
   body: string;
   date: string;
@@ -57,7 +58,7 @@ interface IncomeState {
   amount: IncomeEntry[];
   budget: BudgetEntry[];
   loading: boolean;
-  notification: notificationEntry[];
+  notification: NotificationEntry[];
   signup: Signup;
   googleSign: GoogleSign;
   preferences: Preferences;
@@ -184,8 +185,8 @@ export const ExpenseTrackerSlice = createSlice({
     },
     updateUser: (state, action) => {
       const { Photo, username, Index } = action.payload;
-
-      (state.signup.Photo.uri = Photo), (state.signup.User = username);
+      state.signup.Photo.uri = Photo;
+      state.signup.User = username;
       state.signup.index = Index;
     },
     addGoogleUser: (state, action) => {
@@ -215,7 +216,7 @@ export const ExpenseTrackerSlice = createSlice({
       state.budget = [];
       state.loading = false;
       state.notification = [];
-      state.signup = { Photo: { uri: "" }, user: "", index: null, pin: "", Google: false };
+      state.signup = { Photo: { uri: "" }, User: "", index: null, pin: "", Google: false };
       state.googleSign = { id: "", username: "", google: false, photo: "" };
       state.preferences = { currency: "USD", language: "English", theme: "Light", security: "PIN" };
       state.exceedNotification = false;
@@ -279,8 +280,6 @@ export const loadPreferences = () => async (dispatch: AppDispatch) => {
       dispatch(changeTheme(prefs.theme));
       dispatch(changeCurrency(prefs.currency));
       dispatch(changeLanguages(prefs.language));
-      dispatch(changeSecurity(prefs.security));
-      // 🔥 Add this line to actually apply the language in i18n:
       const langMap = {
         English: "en",
         Spanish: "es",
@@ -289,7 +288,7 @@ export const loadPreferences = () => async (dispatch: AppDispatch) => {
         Arabic: "ar",
         Chinese: "zh",
       };
-      const langCode = langMap[prefs.language];
+      const langCode = langMap[prefs.language as keyof typeof langMap];
       if (langCode) i18n.changeLanguage(langCode);
     }
   } catch (error) {

@@ -16,7 +16,7 @@ import {
 import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
 import { CustomButton } from "../../../../Components/CustomButton";
-import { AddNotification, updateBudgetDocument, updateDocument } from "../../../FirestoreHandler";
+import { AddNotification, updateBudgetDocument } from "../../../FirestoreHandler";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
 import Header from "../../../../Components/Header";
@@ -25,11 +25,9 @@ import Input from "../../../../Components/CustomTextInput";
 import SelectImageWithDocumentPicker from "../Attachment";
 import { useDispatch, useSelector } from "react-redux";
 import FrequencyModal from "../../../../Components/FrequencyModal";
-import { uploadImage } from "../../../Constants";
 import { useTranslation } from "react-i18next";
-import { StringConstants, currencies } from "../../../Constants";
-import { updateBudget, updateTransaction } from "../../../../Slice/IncomeSlice";
-import { addTransaction } from "../../../../Slice/IncomeSlice";
+import { StringConstants, currencies, Weeks } from "../../../Constants";
+import { updateBudget, updateTransaction, addTransaction } from "../../../../Slice/IncomeSlice";
 import { auth } from "../../../FirebaseConfig";
 import { BudgetCategory } from "../../../../Slice/Selectors";
 import { onDisplayNotification } from "../../Budget/TestNotification";
@@ -37,16 +35,15 @@ import { ActivityIndicator } from "react-native-paper";
 import DropdownComponent from "../../../../Components/DropDown";
 import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { getStyles } from "./styles";
-import { getRealm } from "../../../../Realm/realm";
 import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
 import NetInfo from "@react-native-community/netinfo";
-import { updateTransactionRealmAndFirestore } from "../../../../Realm/realm";
-import { Weeks } from "../../../Constants";
+import { updateTransactionRealmAndFirestore, getRealm } from "../../../../Realm/realm";
 import { RootState } from "../../../../Store/Store";
 type IncomeProp = StackNavigationProp<StackParamList, "Income">;
 
 interface Props {
   navigation: IncomeProp;
+  route: any;
 }
 const category = [
   { label: "Shopping", value: "Shopping" },
@@ -71,12 +68,12 @@ const modal = [
   require("../../../../assets/DocumentRed.png"),
 ];
 const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
-export default function Expense({ navigation, route }: Props) {
+export default function Expense({ navigation, route }: Readonly<Props>) {
   const budget = useSelector(BudgetCategory);
   const exceeded = useSelector((state) => state.Money.exceedNotification);
   const expenseAlert = useSelector((state) => state.Money.expenseAlert);
   const parameters = route.params;
-  const [showAttach, setAttach] = useState(!parameters.url);
+  const [showAttach, setshowAttach] = useState(!parameters.url);
   const [image, setImage] = useState<string | null>(parameters.url);
   const [modalVisible, setModalVisible] = useState(false);
   const [close, setclose] = useState(parameters.url);
@@ -93,8 +90,8 @@ export default function Expense({ navigation, route }: Props) {
   const [week, setWeek] = useState(parameters.weekly);
   const [startDate, setStartDate] = useState(parameters.startDate);
   const [endDate, setEndDate] = useState(new Date(parameters.endDate));
-  const [Switchs, setSwitch] = useState(parameters.repeat);
-  const [Frequencymodal, setFrequencyModal] = useState(false);
+  const [Switchs, setSwitchs] = useState(parameters.repeat);
+  const [Frequencymodal, setFrequencymodal] = useState(false);
   const [expenseError, setExpenseError] = useState("");
   const [categoryError, setcategoryError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
@@ -180,7 +177,6 @@ export default function Expense({ navigation, route }: Props) {
   async function add() {
     const realm = await getRealm();
     const numericExpense = parseFloat(Expenses.replace("$", "") || "0") / convertRate;
-    let supabaseImageUrl = null;
     if (numericExpense === 0) {
       setExpenseError("Add amount");
       return;
@@ -214,7 +210,7 @@ export default function Expense({ navigation, route }: Props) {
       startYear: new Date().getFullYear(),
       Date: new Date().toISOString(),
       synced: false,
-      type: localPath.type || "document",
+      type: localPath.type,
       url: localPath.path || document,
     };
     console.log(transaction);
@@ -303,11 +299,12 @@ export default function Expense({ navigation, route }: Props) {
     navigation.goBack();
   }
   function opensModal() {
-    setSwitch(!Switchs);
+    setSwitchs(!Switchs);
     if (Switchs === false) {
-      setFrequencyModal(!Frequencymodal);
+      setFrequencymodal(!Frequencymodal);
     }
-    setFrequency(""), setMonth(new Date().getMonth());
+    setFrequency("");
+    setMonth(new Date().getMonth());
     setStartDate(new Date().getDate());
     setWeek(new Date().getDay());
     setEndDate(new Date());
@@ -324,7 +321,7 @@ export default function Expense({ navigation, route }: Props) {
       wallet: selectedWallet,
       id: parameters.id,
       moneyCategory: "Expense",
-      type: localPath.type || "document",
+      type: localPath.type,
       url: localPath.path,
       Frequency: frequency,
       weekly: week.toString(),
@@ -338,7 +335,11 @@ export default function Expense({ navigation, route }: Props) {
     };
     const { isConnected } = await NetInfo.fetch();
     dispatch(updateTransaction(updateData));
-    updateTransactionRealmAndFirestore(realm, user?.uid, parameters.id, updateData, isConnected);
+    if (realm) {
+      updateTransactionRealmAndFirestore(realm, user?.uid ?? "", parameters.id, updateData, isConnected);
+    } else {
+      console.error("Realm is undefined, cannot update transaction.");
+    }
     navigation.goBack();
     navigation.goBack();
   }
@@ -358,11 +359,7 @@ export default function Expense({ navigation, route }: Props) {
       <Header title={t("Expense")} press={() => navigation.goBack()} bgcolor="rgba(253, 60, 74, 1)" color="white" />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView
-            scrollEnabled={Platform.OS === "ios" ? false : true}
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-          >
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
             <View style={[styles.add, { backgroundColor: "rgba(253, 60, 74, 1)" }]}>
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
@@ -482,7 +479,7 @@ export default function Expense({ navigation, route }: Props) {
                     <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
                     {close && (
                       <>
-                        {(image || photo) && (
+                        {(!!image || !photo) && (
                           <TouchableOpacity
                             style={{
                               position: "absolute",
@@ -493,7 +490,7 @@ export default function Expense({ navigation, route }: Props) {
                             onPress={() => {
                               setImage(null);
                               setPhoto(null);
-                              setAttach(!showAttach);
+                              setshowAttach(!showAttach);
                               setDocument(null);
                               setclose(false);
                             }}
@@ -524,7 +521,7 @@ export default function Expense({ navigation, route }: Props) {
                     </TouchableOpacity>
                     {close && (
                       <>
-                        {document && (
+                        {!!document && (
                           <TouchableOpacity
                             style={{
                               position: "absolute",
@@ -534,7 +531,7 @@ export default function Expense({ navigation, route }: Props) {
                             }}
                             onPress={() => {
                               setImage(null);
-                              setAttach(!showAttach);
+                              setshowAttach(!showAttach);
                               setDocument(null);
                               setclose(false);
                             }}
@@ -576,8 +573,8 @@ export default function Expense({ navigation, route }: Props) {
                     endDate={endDate}
                     setEndDate={setEndDate}
                     Frequencymodal={Frequencymodal}
-                    setFrequencyModal={setFrequencyModal}
-                    setswitch={setSwitch}
+                    setFrequencyModal={setFrequencymodal}
+                    setswitch={setSwitchs}
                     edit={parameters.edit}
                   />
                 )}
@@ -608,7 +605,7 @@ export default function Expense({ navigation, route }: Props) {
                       </Text>
                     </View>
                     <TouchableOpacity
-                      onPress={() => setFrequencyModal(!Frequencymodal)}
+                      onPress={() => setFrequencymodal(!Frequencymodal)}
                       style={{
                         backgroundColor: "rgba(56, 184, 176, 0.23)",
                         padding: 10,
@@ -637,13 +634,12 @@ export default function Expense({ navigation, route }: Props) {
                     <SelectImageWithDocumentPicker
                       toggle={toggleModal}
                       attach={showAttach}
-                      setAttach={setAttach}
+                      setAttach={setshowAttach}
                       image={image}
                       setImage={setImage}
                       setclose={setclose}
                       setDocument={setDocument}
                       modalItems={modal}
-                      setPhoto={setPhoto}
                       close={close}
                       setlocalPath={setlocalPath}
                     />

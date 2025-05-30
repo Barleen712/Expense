@@ -75,11 +75,6 @@ export async function syncPendingUpdatesToFirestore() {
       const transactionId = tx._id;
 
       const { _id, ...data } = tx.toJSON();
-      const dataToUpdate = {
-        ...data,
-        synced: true,
-        pendingUpdate: false,
-      };
       const q = query(collection(db, "Transactions"), where("_id", "==", transactionId));
       const querySnapshot = await getDocs(q);
 
@@ -88,11 +83,11 @@ export async function syncPendingUpdatesToFirestore() {
         const docRef = doc(db, "Transactions", docSnap.id);
         let supabaseurl = null;
 
-        const isRemoteUrl = (url) => {
+        const isRemoteUrl = (url: string) => {
           return url.startsWith("http://") || url.startsWith("https://");
         };
 
-        if (tx.url) {
+        if (tx.url && typeof tx.url === "string") {
           if (isRemoteUrl(tx.url)) {
             // Already remote URL, no upload needed
             supabaseurl = tx.url;

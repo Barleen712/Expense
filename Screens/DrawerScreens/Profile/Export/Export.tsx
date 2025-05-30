@@ -8,7 +8,7 @@ import Header from "../../../../Components/Header";
 import { useTranslation } from "react-i18next";
 import { GenerateCSVReport } from "./ExportCSV";
 import { generateReportPDF } from "./ExportPDF";
-import { ThemeContext } from "../../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import DropdownComponent from "../../../../Components/DropDown";
 type ExportProp = StackNavigationProp<StackParamList, "Export">;
 interface Props {
@@ -31,11 +31,11 @@ const date = [
   { label: "Last 15 days", value: "2" },
   { label: "This Month", value: "3" },
 ];
-export default function Export({ navigation }: Props) {
+export default function Export({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState(category[0].value);
-  const [exportdata, setselectedData] = useState(data[4].value);
-  const [dateRange, setselecteddateRange] = useState(date[3].value);
+  const [exportdata, setexportdata] = useState(data[4].value);
+  const [dateRange, setdateRange] = useState(date[3].value);
   async function exporting() {
     if (selectedCategory === "0") {
       await GenerateCSVReport(exportdata, dateRange);
@@ -43,7 +43,7 @@ export default function Export({ navigation }: Props) {
       generateReportPDF(exportdata, dateRange);
     }
   }
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>
@@ -63,7 +63,7 @@ export default function Export({ navigation }: Props) {
             name={exportdata}
             styleButton={styles.textinput}
             onSelectItem={(item) => {
-              setselectedData(item);
+              setexportdata(item);
             }}
             position="bottom"
             height={300}
@@ -77,7 +77,7 @@ export default function Export({ navigation }: Props) {
             styleButton={styles.textinput}
             name={dateRange}
             onSelectItem={(item) => {
-              setselecteddateRange(item);
+              setdateRange(item);
             }}
             position="bottom"
             height={300}

@@ -1,14 +1,13 @@
 import { Alert } from "react-native";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
-import { RootState } from "../../../../Store/Store";
+import { RootState, store } from "../../../../Store/Store";
 import {
   selectMonthlyExpenseTotals,
   selectMonthlyIncomeTotals,
   selectTransactions,
   BudgetCategory,
 } from "../../../../Slice/Selectors";
-import { store } from "../../../../Store/Store";
 
 const data = [
   { label: "Income", value: "0" },
@@ -22,9 +21,9 @@ export const GenerateCSVReport = async (exportdata: string, dateRange: string) =
   const state: RootState = store.getState();
   const transactions = selectTransactions(state);
   const selectedKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
-  const income = selectMonthlyIncomeTotals(state);
+  const income = selectMonthlyIncomeTotals(state) as { [key: string]: number };
   const incomeTotal = income[selectedKey] || 0;
-  const expense = selectMonthlyExpenseTotals(state);
+  const expense = selectMonthlyExpenseTotals(state) as { [key: string]: number };
   const expenseTotal = expense[selectedKey] || 0;
   const budgetData = BudgetCategory(state);
   const filterOption = data.find((item) => item.value === exportdata);
@@ -96,7 +95,7 @@ export const GenerateCSVReport = async (exportdata: string, dateRange: string) =
 
   const month = (now.getMonth() + 1).toString().padStart(2, "0");
   const year = now.getFullYear();
-  const label = filterOption?.label?.replace(/\s+/g, "_") || "Report";
+  const label = filterOption?.label?.replace(/\s+/g, "_") ?? "Report";
   const fileName = `ExpenseTracker_${label}_${month}-${year}.csv`;
   const fileUri = FileSystem.documentDirectory + fileName;
 

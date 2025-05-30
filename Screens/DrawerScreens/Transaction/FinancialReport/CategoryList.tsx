@@ -1,7 +1,5 @@
 import React from "react";
 import { View, FlatList, Dimensions, Text } from "react-native";
-import styles from "../../../Stylesheet";
-import { useSelector } from "react-redux";
 import { ProgressBar } from "react-native-paper";
 import { CATEGORY_COLORS } from "../../../Constants";
 const width = Dimensions.get("window").width;
@@ -9,6 +7,7 @@ import { useTranslation } from "react-i18next";
 interface CategoryItem {
   category: string;
   total: number;
+  amount?: number;
 }
 
 interface CategoryListProps {
@@ -69,7 +68,7 @@ export default function CategoryList({ category, totalExpense }: CategoryListPro
               }}
             >
               <Text style={{ fontSize: 10, color: "white", fontWeight: "bold" }}>
-                {item.amount.toFixed(2)}/{totalExpense.toFixed(2)}
+                {(item.amount ?? 0).toFixed(2)}/{totalExpense.toFixed(2)}
               </Text>
               <Text style={{ fontSize: 10, color: "white", fontWeight: "bold" }}>{item.total.toFixed(2)}%</Text>
             </View>

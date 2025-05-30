@@ -26,7 +26,7 @@ export default function ForgotPass({ navigation }: Props) {
       alert("Please enter your email address.");
       return;
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (!emailRegex.test(email)) {
       alert("Please Enter Valid Email");

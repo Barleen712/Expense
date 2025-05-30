@@ -18,24 +18,23 @@ import { ThemeContext, ThemeContextType } from "../Context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import FastImage from "react-native-fast-image";
 import * as DocumentPicker from "expo-document-picker";
-// Props type
-type ProfileModalProps = {
+type ProfilePhotoSource = string | number | { uri: string };
+
+interface ProfileModalProps {
   editProfile: boolean;
   seteditProfile: (value: boolean) => void;
-  photo: string;
-  setPhoto: (photo: string) => void;
-  modalPhoto: ImageSourcePropType;
-  setmodalPhoto: (photo: ImageSourcePropType) => void;
-  selectedindex: number | "";
-  setselectedindex: (index: number | "") => void;
-  profilepics: string[];
+  photo: ProfilePhotoSource;
+  setPhoto: (value: string | number | { uri: string }) => void;
+  modalPhoto: ProfilePhotoSource;
+  setmodalPhoto: (value: string | number | { uri: string }) => void;
+  selectedindex: number | undefined;
+  setselectedindex: (value: number | undefined | string) => void;
+  profilepics: any[];
   username: string;
   modalUser: string;
   setModalUser: (value: string) => void;
   saveChanges: () => void;
-};
-
-// Memoized image to prevent re-render flickers
+}
 const MemoizedImage = React.memo(({ source }: { source: ImageSourcePropType }) => {
   return (
     <Image
@@ -61,7 +60,11 @@ const Thumbnail = React.memo(
     index: number;
     selectedindex: number | "";
     onPress: () => void;
-    colors: Object;
+    colors: {
+      selected: string;
+      backgroundColor: string;
+      [key: string]: any;
+    };
   }) => {
     return (
       <Pressable
@@ -83,7 +86,14 @@ const Thumbnail = React.memo(
             borderRadius: 50,
             borderWidth: 2,
           }}
-          source={item}
+          source={
+            typeof item === "number"
+              ? item
+              : {
+                  ...(typeof item === "object" && !Array.isArray(item) ? item : { uri: String(item) }),
+                  cache: "immutable",
+                }
+          }
           resizeMode={FastImage.resizeMode.contain}
         />
       </Pressable>
@@ -164,7 +174,7 @@ function ProfileModal({
               </TouchableOpacity>
 
               <View style={{ alignItems: "center", justifyContent: "center", flex: 0.3 }}>
-                <MemoizedImage source={modalPhoto} />
+                <MemoizedImage source={typeof modalPhoto === "string" ? { uri: modalPhoto } : modalPhoto} />
               </View>
 
               <View style={{ margin: 10, flex: 0.4 }}>
@@ -178,11 +188,11 @@ function ProfileModal({
                 >
                   {profilepics.map((item, index) => (
                     <Thumbnail
-                      key={index}
+                      key={typeof item === "string" ? item : JSON.stringify(item)}
                       item={item}
                       index={index}
                       colors={colors}
-                      selectedindex={selectedindex}
+                      selectedindex={selectedindex ?? ""}
                       onPress={() => {
                         setmodalPhoto(item);
                         setselectedindex(index);

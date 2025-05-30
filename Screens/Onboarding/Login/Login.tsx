@@ -25,30 +25,30 @@ export default function Login({ navigation }: Readonly<Props>) {
   const passwordRef = useRef<TextInput>(null);
   const emailRef = useRef<TextInput>(null);
   const [email, setemail] = useState({ email: "", emailError: "" });
-  const [password, setpassword] = useState({ password: "", passwordError: "" });
+  const [password, setpassword] = useState({ password: "", error: "" });
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   function handleChange() {
     setemail({ ...email, emailError: "" });
-    setpassword({ ...password, passwordError: "" });
+    setpassword({ ...password, error: "" });
   }
   async function handlesLogin() {
     if (email.email === "") {
       setemail({ ...email, emailError: "Email is required" });
       return;
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (!emailRegex.test(email.email)) {
       setemail({ ...email, emailError: "Enter Valid Email" });
       return;
     }
     if (password.password === "") {
-      setpassword({ ...password, passwordError: "Password is required" });
+      setpassword({ ...password, error: "Password is required" });
       return;
     }
     if (password.password.length < 6) {
-      setpassword({ ...password, passwordError: "Enter Password of length atleast 6" });
+      setpassword({ ...password, error: "Enter Password of length atleast 6" });
       return;
     }
     try {
@@ -60,7 +60,7 @@ export default function Login({ navigation }: Readonly<Props>) {
         await auth.signOut();
         setLoading(false);
         setemail({ email: "", emailError: "" });
-        setpassword({ password: "", passwordError: "" });
+        setpassword({ password: "", error: "" });
         return;
       }
       const userDoc = await getUseNamerDocument();
@@ -84,7 +84,7 @@ export default function Login({ navigation }: Readonly<Props>) {
       setLoading(false);
     }
     setemail({ email: "", emailError: "" });
-    setpassword({ password: "", passwordError: "" });
+    setpassword({ password: "", error: "" });
   }
   const { t } = useTranslation();
   const { colors } = useContext(ThemeContext) as ThemeContextType;
@@ -144,10 +144,10 @@ export default function Login({ navigation }: Readonly<Props>) {
               }
             }}
             onchange={(data) => {
-              setpass({ password: data, passwordError: "" });
+              setpassword({ password: data, error: "" });
             }}
           />
-          {password.passwordError !== "" && (
+          {password.error !== "" && (
             <Text
               style={{
                 color: "rgb(255, 0, 17)",
@@ -157,7 +157,7 @@ export default function Login({ navigation }: Readonly<Props>) {
                 width: "90%",
               }}
             >
-              {password.passwordError}*
+              {password.error}*
             </Text>
           )}
         </View>

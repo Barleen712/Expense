@@ -24,7 +24,12 @@ export default function Keypad({ change, onKeyPress, onClear }: Readonly<KeypadP
         scrollEnabled={false}
         numColumns={3}
         renderItem={({ item, index }) => {
-          const displayText = item === "C" ? "⌫" : item === "A" ? "➔" : item;
+          let displayText = item;
+          if (item === "C") {
+            displayText = "⌫";
+          } else if (item === "A") {
+            displayText = "➔";
+          }
 
           return (
             <TouchableOpacity onPress={() => handlePress(item)} key={index} style={styles.keypad1}>

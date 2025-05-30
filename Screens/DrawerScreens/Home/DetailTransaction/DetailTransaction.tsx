@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -20,16 +20,23 @@ import CustomModal from "../../../../Components/Modal/Modal";
 import { useTranslation } from "react-i18next";
 import FastImage from "react-native-fast-image";
 import { StringConstants, currencies, Month, Weeks } from "../../../Constants";
-import { ThemeContext } from "../../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { RootState } from "../../../../Store/Store";
 import FileViewer from "react-native-file-viewer";
 import RNFS from "react-native-fs";
-import { setDoc } from "firebase/firestore";
+import { StackNavigationProp } from "@react-navigation/stack";
+import StackParamList from "../../../../Navigation/StackList";
+type DetailtransProp = StackNavigationProp<StackParamList, "DetailTransaction_Income">;
+
+interface Props {
+  navigation: DetailtransProp;
+  route: any;
+}
 interface DetailTransactionProps {
   navigation: any;
   bg: string;
   color: string;
-  amount: string;
+  amount: number;
   title?: string;
   time: string;
   type: string;
@@ -38,6 +45,14 @@ interface DetailTransactionProps {
   uri: string;
   id: string;
   des?: string;
+  frequency?: string;
+  endAfter?: number;
+  endDate?: string;
+  repeat?: string;
+  startDate?: string;
+  startMonth?: string;
+  weekly?: string;
+  isDoument?: string;
 }
 
 const isRemoteUrl = (url: string) => url.startsWith("http://") || url.startsWith("https://");
@@ -56,8 +71,6 @@ const requestStoragePermission = async () => {
     });
     return granted === PermissionsAndroid.RESULTS.GRANTED;
   }
-
-  // Android 13+ (no READ_EXTERNAL_STORAGE permission needed for scoped storage)
   return true;
 };
 
@@ -82,16 +95,16 @@ function DetailTransaction({
   startMonth,
   weekly,
   isDoument,
-}: DetailTransactionProps) {
+}: Readonly<DetailTransactionProps>) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [image, showImage] = useState(false);
-  const [succes, setsuccess] = useState(false);
+  const [image, setimage] = useState(false);
+  const [succes, setsucces] = useState(false);
   const [imageError, setimageError] = useState(false);
   const [docError, setdocError] = useState(false);
 
   const dispatch = useDispatch();
   function toggleSuccess() {
-    setsuccess(!succes);
+    setsucces(!succes);
   }
   function toggleModal() {
     setModalVisible(!modalVisible);
@@ -165,7 +178,7 @@ function DetailTransaction({
   const getHours = DisplayDate.getHours();
   const getMinute = DisplayDate.getMinutes();
   const DisplayTime = `${day} ${getDate} ${month} ${year} ${getHours}:${getMinute}`;
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   const openDocument = async (url: string, fileName: string = "document.pdf") => {
     try {
@@ -178,7 +191,6 @@ function DetailTransaction({
       let localPath = url;
 
       if (isRemoteUrl(url)) {
-        // Download to temporary cache
         localPath = `${RNFS.CachesDirectoryPath}/${fileName}`;
 
         const result = await RNFS.downloadFile({
@@ -191,7 +203,6 @@ function DetailTransaction({
           return;
         }
       } else if (url.startsWith("file://")) {
-        // Remove `file://` prefix to get valid path for FileViewer
         localPath = url.replace("file://", "");
       }
 
@@ -237,7 +248,7 @@ function DetailTransaction({
         </ScrollView>
       </View>
       <View style={styles.attachView}>
-        {uri && isDoument === "image" && (
+        {!!uri && isDoument === "image" && (
           <View>
             <Text style={styles.username}>{t("Attachment")}</Text>
 
@@ -254,20 +265,13 @@ function DetailTransaction({
                 <Text style={{ color: "gray" }}>🚫 No Internet Connection .</Text>
               </View>
             ) : (
-              <TouchableOpacity onPress={() => showImage(true)}>
+              <TouchableOpacity onPress={() => setimage(true)}>
                 <FastImage style={styles.attachImg} source={{ uri }} onError={() => setimageError(true)} />
               </TouchableOpacity>
             )}
           </View>
         )}
-        {uri && isDoument === "document" && (
-          // <View>
-          //   <Text style={styles.username}>{t("Attachment")}</Text>
-
-          //   <TouchableOpacity style={[styles.document, { backgroundColor: color }]} onPress={() => openDocument(uri)}>
-          //     <Text style={{ color: bg, fontSize: 16, fontFamily: "Inter" }}>View Document</Text>
-          //   </TouchableOpacity>
-          // </View>
+        {!!uri && isDoument === "document" && (
           <View>
             <Text style={styles.username}>{t("Attachment")}</Text>
 
@@ -308,8 +312,8 @@ function DetailTransaction({
         navigation={navigation}
         deleteT={deleteTransactions}
       />
-      <Modal animationType="slide" transparent={true} visible={image} onRequestClose={() => showImage(false)}>
-        <TouchableWithoutFeedback onPress={() => showImage(false)}>
+      <Modal animationType="slide" transparent={true} visible={image} onRequestClose={() => setimage(false)}>
+        <TouchableWithoutFeedback onPress={() => setimage(false)}>
           <View style={[styles.modalOverlay, { backgroundColor: "rgba(24, 13, 13, 0.89)" }]}>
             <View style={{ height: "100%", position: "absolute", bottom: 0, width: "100%" }}>
               <FastImage style={{ height: "100%" }} resizeMode="contain" source={{ uri }} />
@@ -321,7 +325,7 @@ function DetailTransaction({
   );
 }
 
-export default function DetailTransaction_Expense({ navigation, route }) {
+export default function DetailTransaction_Expense({ navigation, route }: Readonly<Props>) {
   const { value } = route.params;
   return (
     <DetailTransaction
@@ -347,8 +351,9 @@ export default function DetailTransaction_Expense({ navigation, route }) {
     />
   );
 }
-export function DetailTransaction_Income({ navigation, route }) {
+export function DetailTransaction_Income({ navigation, route }: Readonly<Props>) {
   const { value } = route.params;
+  console.log(value);
   return (
     <DetailTransaction
       navigation={navigation}
@@ -373,7 +378,7 @@ export function DetailTransaction_Income({ navigation, route }) {
     />
   );
 }
-export function DetailTransaction_Transfer({ navigation, route }) {
+export function DetailTransaction_Transfer({ navigation, route }: Readonly<Props>) {
   const { value } = route.params;
   const arrow = value.category.indexOf("->");
   const From = value.category.slice(0, arrow);

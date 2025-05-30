@@ -146,7 +146,6 @@ export default function Transaction({ navigation }: Props) {
             alignSelf: "flex-start",
             width: "38%",
           }}
-          // styleItem={styles.dropdownItems}
           onSelectItem={(item) => {
             setMonth(item);
           }}
@@ -233,7 +232,7 @@ export default function Transaction({ navigation }: Props) {
                         if (sortBy === item) setSortBy("");
                         else setSortBy(item);
                       }}
-                      key={index}
+                      key={item}
                       style={[
                         styles.filterButton,
                         {

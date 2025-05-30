@@ -1,7 +1,6 @@
 import React from "react";
-import { View, TouchableOpacity, Image, StyleSheet, Alert } from "react-native";
+import { TouchableOpacity, Image } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
-//import * as ImagePicker from "expo-image-picker";
 import ImagePicker from "react-native-image-crop-picker";
 import * as FileSystem from "expo-file-system";
 
@@ -12,11 +11,10 @@ interface Images {
   setImage: (uri: string) => void;
   setDocument: (uri: string) => void;
   modalItems: Array<any>;
-  setPhoto: (uri: string) => void;
   attach: boolean;
   close: boolean;
   setclose: (a: boolean) => void;
-  setlocalPath: ({ type, path }) => void;
+  setlocalPath: ({ type, path }: { type: string; path: string }) => void;
 }
 
 const SelectImageWithDocumentPicker = ({
@@ -85,7 +83,6 @@ const SelectImageWithDocumentPicker = ({
         });
       } else {
         setAttach(true);
-        // toggle();
       }
     } catch (err) {
       console.error("Error while picking document:", err);

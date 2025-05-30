@@ -5,41 +5,44 @@ import Keypad from "../../../Components/Keypad";
 import Pin from "../../../Components/Pin";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
-import { useTranslation } from "react-i18next";
 import { Ionicons } from "@expo/vector-icons";
 import { handleBiometricAuth } from "../../Constants";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useSelector } from "react-redux";
+import { RootState } from "../../../Store/Store";
 type pinProp = StackNavigationProp<StackParamList, "Setpin">;
 
 interface Props {
   navigation: pinProp;
 }
-export default function EnterPin({ navigation }: Props) {
+export default function EnterPin({ navigation }: Readonly<Props>) {
   const handleClear = () => {
     setpin(pin.slice(0, pin.length - 1));
   };
   const [pin, setpin] = useState("");
   const [opendots, setopendots] = useState(false);
   const [reset, setreset] = useState(false);
-  const user = useSelector((state) => state.Money.signup);
+  const user = useSelector((state: RootState) => state.Money.signup);
 
   async function handlenext() {
-    if (user.pin === pin && reset === false) {
+    if (user.pin === pin && !reset) {
       navigation.replace("MainScreen");
-    } else if (user.pin === pin && reset === true) {
+      return;
+    }
+
+    if (user.pin === pin && reset) {
       navigation.navigate("Setpin");
+      return;
+    }
+
+    if (pin.length !== 4) {
+      alert("Enter pin");
     } else {
-      if (pin.length !== 4) {
-        alert("Enter pin");
-      } else {
-        setpin("");
-        alert("Wrong Pin!");
-      }
+      setpin("");
+      alert("Wrong Pin!");
     }
   }
-  const { t } = useTranslation();
   useEffect(() => {
     handleBiometricAuth(navigation);
   }, []);

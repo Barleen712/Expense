@@ -26,14 +26,12 @@ import useNotificationListener from "../../../../Saga/NotificationSaga";
 import { RootState } from "../../../../Store/Store";
 import MonthPicker from "react-native-month-year-picker";
 import { Props } from "./types";
-import { ThemeContext } from "../../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { getStyles } from "./styles";
 import Expense from "../../../../assets/ExpenseHome.svg";
 import Income from "../../../../assets/IncomeHome.svg";
-import { useDispatch } from "react-redux";
 export default function Home({ navigation }: Props) {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.Money.signup);
+  const user = useSelector((state: RootState) => state.Money.signup);
   const lang = [
     { name: "Arabic", code: "AR", tc: "ar" },
     { name: "Chinese", code: "ZH", tc: "zh" },
@@ -54,14 +52,13 @@ export default function Home({ navigation }: Props) {
   }
   useEffect(() => {
     getData();
-    // retrieveOldTransactions();
   }, [navigation]);
   const index = new Date().getMonth();
   useTransactionListener();
   useBudgetListener();
   useNotificationListener();
-  const language = useSelector((state) => state.Money.preferences.language);
-  const currency = useSelector((state) => state.Money.preferences.currency);
+  const language = useSelector((state: RootState) => state.Money.preferences.language);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [photo, setPhoto] = useState("");
   const height = Dimensions.get("window").height * 0.2;
@@ -79,8 +76,8 @@ export default function Home({ navigation }: Props) {
   }
   const transaction = useSelector(selectTransactions);
   const currentDate = new Date();
-  const monthlyincome = useSelector(selectMonthlyIncomeTotals);
-  const monthlyexpense = useSelector(selectMonthlyExpenseTotals);
+  const monthlyincome: { [key: string]: number } = useSelector(selectMonthlyIncomeTotals);
+  const monthlyexpense: { [key: string]: number } = useSelector(selectMonthlyExpenseTotals);
   const selectedKey = `${selectedMonth_Year.getFullYear()}-${String(selectedMonth_Year.getMonth() + 1).padStart(
     2,
     "0"
@@ -89,21 +86,21 @@ export default function Home({ navigation }: Props) {
   const expense = monthlyexpense[selectedKey] || 0;
   const filteredAndSortedTransactions = [...transaction]
     .filter((item) => new Date(item.Date) <= currentDate)
-    .sort((a, b) => new Date(b.Date) - new Date(a.Date));
-  const { colors } = useContext(ThemeContext);
-  const badgeCount = useSelector((state) => state.Money.badgeCount);
+    .sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
+  const badgeCount = useSelector((state: RootState) => state.Money.badgeCount);
   const GraphExpenses = useMemo(() => {
     const expense = transaction.filter(
       (item) =>
         (item.moneyCategory === "Expense" || item.moneyCategory === "Transfer") && new Date(item.Date) <= new Date()
     );
-    const mapToAmountAndDate = (items) =>
+    const mapToAmountAndDate = (items: any[]) =>
       items
         .map((item) => ({
           value: item.amount,
           date: new Date(item.Date),
         }))
-        .sort((a, b) => a.date - b.date);
+        .sort((a, b) => a.date.getTime() - b.date.getTime());
 
     switch (Flat[selectedIndex ?? 0]) {
       case "Today":

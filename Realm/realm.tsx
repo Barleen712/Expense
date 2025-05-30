@@ -32,7 +32,7 @@ export const deleteRealmDatabase = async () => {
 import NetInfo from "@react-native-community/netinfo";
 import { db } from "../Screens/FirebaseConfig";
 import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
-export const markPendingDeleteOrDelete = async (realm, _id) => {
+export const markPendingDeleteOrDelete = async (realm: any, _id: string) => {
   const transaction = realm.objectForPrimaryKey("Transaction", _id);
 
   if (!transaction) {
@@ -66,9 +66,13 @@ export const markPendingDeleteOrDelete = async (realm, _id) => {
   }
 };
 
-export const saveToRealmIfNotExists = async (input) => {
+export const saveToRealmIfNotExists = async (input: any) => {
   const realm = await getRealm();
   const transactions = Array.isArray(input) ? input : [input];
+  if (!realm) {
+    console.error("Realm instance is undefined.");
+    return;
+  }
   realm.write(() => {
     transactions.forEach((txn) => {
       const exists = realm.objectForPrimaryKey("Transaction", txn._id);
@@ -90,18 +94,38 @@ export const saveToRealmIfNotExists = async (input) => {
     });
   });
 };
+interface TransType {
+  _id: string;
+  amount: number;
+  description: string;
+  category: string;
+  wallet: string;
+  moneyCategory: string;
+  url: string;
+  Frequency: string;
+  endAfter: string;
+  weekly: string;
+  repeat: string;
+  startDate: string;
+  startMonth: string;
+  startYear: number;
+  endDate: string | null;
+  synced: boolean;
+  pendingUpdate: boolean;
+}
+
 export async function updateTransactionRealmAndFirestore(
   realm: Realm,
   userID: string,
   transactionId: string,
-  updatedData: Partial<Omit<typeof TransactionSchema.properties, "_id">>,
-  isOnline: boolean
+  updatedData: Partial<Omit<TransType, "_id">>,
+  isOnline: boolean | null
 ) {
   try {
     if (isOnline) {
       let supabaseurl = null;
 
-      const isRemoteUrl = (url) => {
+      const isRemoteUrl = (url: string) => {
         return url.startsWith("http://") || url.startsWith("https://");
       };
 
@@ -168,7 +192,7 @@ export async function updateTransactionRealmAndFirestore(
 
       return { success: true, message: "Updated offline - pending sync" };
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to update transaction:", error);
     return { success: false, message: error.message };
   }

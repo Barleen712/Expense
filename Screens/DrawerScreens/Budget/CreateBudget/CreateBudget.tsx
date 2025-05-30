@@ -8,7 +8,6 @@ import {
   Keyboard,
   Alert,
   TouchableOpacity,
-  Platform,
 } from "react-native";
 import { getStyles } from "./styles";
 import { CustomButton } from "../../../../Components/CustomButton";
@@ -18,19 +17,18 @@ import StackParamList from "../../../../Navigation/StackList";
 import Header from "../../../../Components/Header";
 import CustomSlider from "../../../../Components/Slider";
 import { addBudget, updateBudget } from "../../../../Slice/IncomeSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { StringConstants } from "../../../Constants";
+import { StringConstants, currencies } from "../../../Constants";
 import { auth } from "../../../FirebaseConfig";
-import { ThemeContext } from "../../../../Context/ThemeContext";
-import { useSelector } from "react-redux";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { BudgetCategory } from "../../../../Slice/Selectors";
 import { ScrollView } from "react-native-gesture-handler";
 import { getRealm } from "../../../../Realm/realm";
 import { syncUnsyncedBudget } from "../../../../Realm/SyncBudget";
 import NetInfo from "@react-native-community/netinfo";
 import { updateTransactionRealmAndFirestoreBudget } from "../../../../Realm/Budgetrealm";
-import { currencies } from "../../../Constants";
+import { RootState } from "../../../../Store/Store";
 type CreateBudgetProp = StackNavigationProp<StackParamList, "CreateBudget">;
 
 interface Props {
@@ -42,8 +40,10 @@ interface Props {
       alert: boolean;
       edit: boolean;
       category: string;
-      index?: string;
+      index: string;
       header: string;
+      year: number;
+      month: number;
     };
   };
 }
@@ -57,7 +57,7 @@ const category = [
   { label: "Miscellaneous", value: "Miscellaneous" },
 ];
 
-export default function CreateBudget({ navigation, route }: Props) {
+export default function CreateBudget({ navigation, route }: Readonly<Props>) {
   const Budgetcat = useSelector(BudgetCategory);
   const parameters = route.params;
   const [amountError, setAmountError] = useState("");
@@ -66,7 +66,7 @@ export default function CreateBudget({ navigation, route }: Props) {
   const [sliderValue, setSliderValue] = useState(parameters.percentage);
   const [Budget, setBudget] = useState<string>(`${parameters.value}`);
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
-  const currency = useSelector((state) => state.Money.preferences.currency);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const Rates = useSelector((state: RootState) => state.Rates);
   let convertRate: number;
   if (currency === "USD") {
@@ -94,7 +94,6 @@ export default function CreateBudget({ navigation, route }: Props) {
   const user = auth.currentUser;
   async function add() {
     const numericBudget = parseFloat(Budget.replace("$", "") || "0") / convertRate;
-    console.log(numericBudget);
     if (numericBudget === 0) {
       setAmountError("Please enter a valid amount");
       return;
@@ -108,7 +107,7 @@ export default function CreateBudget({ navigation, route }: Props) {
     const findCategory = budgetDataForMonth.find((item) => item.category === selectedCategory) || null;
     if (findCategory) {
       Alert.alert("Budget Exists", `Budget already exists for ${selectedCategory} for this month`);
-      setBudget("");
+      setBudget("0");
       setSelectedCategory("");
       setExpense(false);
       setSliderValue(20);
@@ -139,16 +138,6 @@ export default function CreateBudget({ navigation, route }: Props) {
     if (isConnected) {
       syncUnsyncedBudget();
     }
-    // AddBudget({
-    //   category: selectedCategory,
-    //   amount: numericBudget,
-    //   month: parameters.month,
-    //   percentage: Math.round(sliderValue),
-    //   notification: Expense,
-    //   userId: user.uid,
-    //   notified: false,
-    //   year: parameters.year,
-    // });
     navigation.goBack();
   }
   async function editBudget() {
@@ -164,7 +153,13 @@ export default function CreateBudget({ navigation, route }: Props) {
       notified: false,
     };
     const { isConnected } = await NetInfo.fetch();
-    updateTransactionRealmAndFirestoreBudget(realm, user?.uid, parameters.index, updatedData, isConnected);
+    updateTransactionRealmAndFirestoreBudget(
+      realm,
+      user?.uid ? user.uid : "",
+      parameters.index ?? "",
+      updatedData,
+      isConnected
+    );
     dispatch(
       updateBudget({
         category: selectedCategory,
@@ -179,17 +174,13 @@ export default function CreateBudget({ navigation, route }: Props) {
     navigation.goBack();
   }
   const { t } = useTranslation();
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>
       <Header title={t(parameters.header)} press={() => navigation.goBack()} bgcolor="rgb(56, 88, 85)" color="white" />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView
-          scrollEnabled={Platform.OS === "ios" ? false : true}
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-        >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
           <View style={styles.add}>
             <View style={styles.balanceView}>
               <Text style={styles.balance}>{t("How much do you want to spend?")}</Text>
