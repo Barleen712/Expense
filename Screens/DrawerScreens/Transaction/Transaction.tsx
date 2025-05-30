@@ -46,12 +46,12 @@ type Transactionprop = StackNavigationProp<StackParamList, "MainScreen">;
 interface Props {
   navigation: Transactionprop;
 }
-export default function Transaction({ navigation }: Props) {
+export default function Transaction({ navigation }: Readonly<Props>) {
   const [modalVisible, setModalVisible] = useState(false);
   const [month, setMonth] = useState(Month[new Date().getMonth()].value);
   const [sortBy, setSortBy] = useState("");
-  const [filteritem, setFilter] = useState("");
-  const [reset, setReset] = useState(true);
+  const [filteritem, setfilteritem] = useState("");
+  const [setReset] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("");
   function toggleModal() {
     setModalVisible(!modalVisible);
@@ -178,7 +178,7 @@ export default function Transaction({ navigation }: Props) {
                     setFilterTrans(sortedTransactions);
                     setReset(true);
                     setSortBy("");
-                    setFilter("");
+                    setfilteritem("");
                     setSelectedCategory("");
                     toggleModal();
                   }}
@@ -196,8 +196,8 @@ export default function Transaction({ navigation }: Props) {
                   renderItem={({ item }) => (
                     <TouchableOpacity
                       onPress={() => {
-                        if (filteritem === item) setFilter("");
-                        else setFilter(item);
+                        if (filteritem === item) setfilteritem("");
+                        else setfilteritem(item);
                       }}
                       style={[
                         styles.filterButton,

@@ -92,7 +92,7 @@ type StackParamList = {
     alert: boolean;
   };
   DetailAccount: {
-    wallet: number;
+    wallet: string;
   };
   DisplayNotification: undefined;
   EnterPin: undefined;

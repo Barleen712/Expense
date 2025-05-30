@@ -88,9 +88,13 @@ export const ExpenseTrackerSlice = createSlice({
       state.loading = action.payload;
     },
     addTransaction: (state, action) => {
-      const existingTransaction = state.amount.find((transaction) => transaction._id === action.payload._id);
-      if (!existingTransaction) {
-        state.amount.push(action.payload);
+      try {
+        const existingTransaction = state.amount.find((transaction) => transaction._id === action.payload._id);
+        if (!existingTransaction) {
+          state.amount.push(action.payload);
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     deleteTransaction: (state, action) => {

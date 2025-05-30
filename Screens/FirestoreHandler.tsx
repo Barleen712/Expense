@@ -1,7 +1,6 @@
-import { addDoc } from "firebase/firestore";
-import { db, auth } from "./FirebaseConfig";
-import { collection, query, getDocs, where, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
-export async function AddTransaction(transactionData) {
+import { db } from "./FirebaseConfig";
+import { collection, query, getDocs, where, deleteDoc, doc, updateDoc, addDoc } from "firebase/firestore";
+export async function AddTransaction(transactionData: any) {
   console.log(transactionData);
   try {
     const docRef = await addDoc(collection(db, "Transactions"), transactionData);
@@ -13,7 +12,7 @@ export async function AddTransaction(transactionData) {
   }
 }
 
-export async function AddBudget(budgetData) {
+export async function AddBudget(budgetData: any) {
   try {
     await addDoc(collection(db, "Budgets"), budgetData);
     return true;
@@ -22,21 +21,21 @@ export async function AddBudget(budgetData) {
     return false;
   }
 }
-export async function AddNotification(notificationData) {
+export async function AddNotification(notificationData: any) {
   try {
     await addDoc(collection(db, "Notification"), notificationData);
   } catch (e) {
     console.log(e);
   }
 }
-export async function AddUser(name) {
+export async function AddUser(name: any) {
   try {
     await addDoc(collection(db, "Names"), name);
   } catch (e) {
     console.log(e);
   }
 }
-export async function AddPin(pinData) {
+export async function AddPin(pinData: any) {
   try {
     await addDoc(collection(db, "Pins"), pinData);
   } catch (e) {
@@ -46,7 +45,7 @@ export async function AddPin(pinData) {
 export const deleteDocument = async (collection: string, id: string) => {
   await deleteDoc(doc(db, collection, id));
 };
-export const deleteAllUserNotifications = async (userId) => {
+export const deleteAllUserNotifications = async (userId: string) => {
   try {
     const q = query(collection(db, "Notification"), where("userId", "==", userId));
     const querySnapshot = await getDocs(q);
@@ -58,7 +57,7 @@ export const deleteAllUserNotifications = async (userId) => {
     console.error("Error deleting notifications:", error);
   }
 };
-export const updateDocument = async (collection: string, id: string, data) => {
+export const updateDocument = async (collection: string, id: string, data: any) => {
   const userRef = doc(db, collection, id);
   await updateDoc(userRef, {
     amount: data.amount,
@@ -67,7 +66,7 @@ export const updateDocument = async (collection: string, id: string, data) => {
     wallet: data.wallet,
   });
 };
-export const updateBudgetDocument = async (collection: string, id: string, data) => {
+export const updateBudgetDocument = async (collection: string, id: string, data: any) => {
   const userRef = doc(db, collection, id);
   await updateDoc(userRef, {
     amount: data.amount,
@@ -77,7 +76,7 @@ export const updateBudgetDocument = async (collection: string, id: string, data)
     notified: data.notified,
   });
 };
-export const updateUserDoc = async (id: string, data) => {
+export const updateUserDoc = async (id: string, data: any) => {
   const q = query(collection(db, "Names"), where("userid", "==", id));
   const snapshot = await getDocs(q);
   const docRef = snapshot.docs[0].ref;

@@ -1,5 +1,5 @@
-import React, { useContext, useState, useTransition } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Platform, Image, FlatList } from "react-native";
+import React, { useContext, useState } from "react";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
 
 import { getStyles } from "./styles";
 import { Ionicons } from "@expo/vector-icons";
@@ -9,15 +9,15 @@ import Header from "../../../../../Components/Header";
 import i18n from "../../../../../i18n/i18next";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
-import { changeLanguages } from "../../../../../Slice/IncomeSlice";
-import { ThemeContext } from "../../../../../Context/ThemeContext";
-import { updatePreferences } from "../../../../../Slice/IncomeSlice";
+import { changeLanguages, updatePreferences } from "../../../../../Slice/IncomeSlice";
+import { ThemeContext, ThemeContextType } from "../../../../../Context/ThemeContext";
+import { RootState } from "../../../../../Store/Store";
 type LanguageProp = StackNavigationProp<StackParamList, "Account">;
 
 interface Props {
   navigation: LanguageProp;
 }
-export default function Language({ navigation }: Props) {
+export default function Language({ navigation }: Readonly<Props>) {
   const changeLanguage = (language) => {
     i18n.changeLanguage(language);
   };
@@ -32,10 +32,10 @@ export default function Language({ navigation }: Props) {
   ];
 
   const dispatch = useDispatch();
-  const language = useSelector((state) => state.Money.preferences.language);
+  const language = useSelector((state: RootState) => state.Money.preferences.language);
   const index = currencies.findIndex((item) => item.name == language);
   const [selectedLanguage, setSelectedLanguage] = useState(currencies[index].tc);
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>

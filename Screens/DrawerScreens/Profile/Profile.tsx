@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef, useMemo } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -16,18 +16,16 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { CustomButton } from "../../../Components/CustomButton";
 import { auth } from "../../FirebaseConfig";
-import { StringConstants } from "../../Constants";
+import { StringConstants, uploadImage, profilepics } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { clearData, updateUser } from "../../../Slice/IncomeSlice";
 import { persistor, RootState } from "../../../Store/Store";
 import { updateUserDoc } from "../../FirestoreHandler";
-import { uploadImage } from "../../Constants";
 import { getStyles } from "./styles";
 import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
 import Feather from "@expo/vector-icons/Feather";
 import ProfileModal from "../../../Components/ProfileModal";
-import { profilepics } from "../../Constants";
 import { clearUserData } from "../../../utils/userStorage";
 import { getRealm, deleteRealmDatabase } from "../../../Realm/realm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -43,9 +41,9 @@ type Profileprop = StackNavigationProp<StackParamList, "MainScreen">;
 interface Props {
   navigation: Profileprop;
 }
-export default function Profile({ navigation }: Props) {
+export default function Profile({ navigation }: Readonly<Props>) {
   const { isConnected } = useNetInfo();
-  const [username, setuser] = useState("");
+  const [username, setusername] = useState("");
   const [photo, setPhoto] = useState<string | { uri: string } | number>("");
   const [editProfile, seteditProfile] = useState(false);
   const [modalPhoto, setmodalPhoto] = useState<string | { uri: string } | number>("");
@@ -53,7 +51,7 @@ export default function Profile({ navigation }: Props) {
   const [selectedindex, setselectedindex] = useState<number | undefined>();
   const user = useSelector((state: RootState) => state.Money.signup);
   async function getData() {
-    setuser(user?.User);
+    setusername(user?.User);
     setModalUser(user?.User);
     if (typeof user?.Photo.uri === "number") {
       if (typeof user?.index === "number") {
@@ -133,7 +131,7 @@ export default function Profile({ navigation }: Props) {
   const { t } = useTranslation();
   async function saveChanges() {
     setPhoto(modalPhoto);
-    setuser(modalUser);
+    setusername(modalUser);
     seteditProfile(!editProfile);
 
     let imageurl = modalPhoto;
@@ -147,7 +145,7 @@ export default function Profile({ navigation }: Props) {
       updateUserDoc(auth.currentUser.uid, {
         User: modalUser,
         Photo: { uri: imageurl },
-        index: selectedindex || null,
+        index: selectedindex ?? null,
         pin: user.pin,
         userId: auth.currentUser.uid,
       });

@@ -8,6 +8,7 @@ import { getStyles } from "./style";
 import Header from "../../../../Components/Header";
 import { StringConstants } from "../../../Constants";
 import { ThemeContext } from "../../../../Context/ThemeContext";
+import { RootState } from "../../../../Store/Store";
 
 type SettingsProp = StackNavigationProp<StackParamList, "Settings">;
 
@@ -22,9 +23,9 @@ interface SettingItemType {
   navigateTo?: keyof StackParamList;
 }
 
-export default function Settings({ navigation }: Props) {
+export default function Settings({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
-  const preferences = useSelector((state) => state.Money.preferences);
+  const preferences = useSelector((state: RootState) => state.Money.preferences);
 
   const settingsList: SettingItemType[] = [
     {

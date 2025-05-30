@@ -13,7 +13,6 @@ import StackParamList from "./StackList";
 import Settings from "../Screens/DrawerScreens/Profile/Settings/Settings";
 import Account from "../Screens/DrawerScreens/Profile/Account/Account";
 import Export from "../Screens/DrawerScreens/Profile/Export/Export";
-import Export1 from "../Screens/DrawerScreens/Profile/Export/Export1";
 import Currency from "../Screens/DrawerScreens/Profile/Settings/Currency/Currency";
 import Theme from "../Screens/DrawerScreens/Profile/Settings/Theme/Theme";
 import Security from "../Screens/DrawerScreens/Profile/Settings/Security/Security";
@@ -85,7 +84,6 @@ export function TabScreens({ initial = "EnterPin" }: Readonly<{ initial?: keyof 
       <Stack.Screen name="Settings" component={Settings} />
       <Stack.Screen name="Account" component={Account} />
       <Stack.Screen name="Export" component={Export} />
-      <Stack.Screen name="Export1" component={Export1} />
       <Stack.Screen name="Currency" component={Currency} />
       <Stack.Screen name="Theme" component={Theme} />
       <Stack.Screen name="Security" component={Security} />

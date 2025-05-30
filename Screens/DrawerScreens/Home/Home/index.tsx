@@ -12,13 +12,12 @@ import {
   StatusBar,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Month } from "../../../Constants";
 import { Linearchart } from "../../Transaction/FinancialReport/Graph";
 import { useSelector } from "react-redux";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { selectTransactions, selectMonthlyExpenseTotals, selectMonthlyIncomeTotals } from "../../../../Slice/Selectors";
 import TransactionList from "../TransactionList/TransactionsList";
-import { StringConstants, currencies, profilepics } from "../../../Constants";
+import { StringConstants, currencies, profilepics, Month } from "../../../Constants";
 import { useTranslation } from "react-i18next";
 import useTransactionListener from "../../../../Saga/TransactionSaga";
 import useBudgetListener from "../../../../Saga/BudgetSaga";
@@ -30,7 +29,7 @@ import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext
 import { getStyles } from "./styles";
 import Expense from "../../../../assets/ExpenseHome.svg";
 import Income from "../../../../assets/IncomeHome.svg";
-export default function Home({ navigation }: Props) {
+export default function Home({ navigation }: Readonly<Props>) {
   const user = useSelector((state: RootState) => state.Money.signup);
   const lang = [
     { name: "Arabic", code: "AR", tc: "ar" },
@@ -52,8 +51,7 @@ export default function Home({ navigation }: Props) {
   }
   useEffect(() => {
     getData();
-  }, [navigation]);
-  const index = new Date().getMonth();
+  }, [navigation, user]);
   useTransactionListener();
   useBudgetListener();
   useNotificationListener();
@@ -65,7 +63,7 @@ export default function Home({ navigation }: Props) {
   const { t } = useTranslation();
   const Flat = ["Today", "Week", "Month", "Year"];
   const Rates = useSelector((state: RootState) => state.Rates);
-  const [selectedMonth_Year, setSelectionMonth_Year] = useState(new Date());
+  const [selectedMonth_Year, setselectedMonth_Year] = useState(new Date());
   const [show, setShow] = useState(false);
   const today = new Date(selectedMonth_Year);
   let convertRate;
@@ -153,11 +151,11 @@ export default function Home({ navigation }: Props) {
 
     if (isAndroid) {
       if (event === "dateSetAction" && newDate) {
-        setSelectionMonth_Year(newDate);
+        setselectedMonth_Year(newDate);
       }
       setShow(false);
     } else if (newDate) {
-      setSelectionMonth_Year(newDate);
+      setselectedMonth_Year(newDate);
     }
   };
   if (loading)
@@ -236,6 +234,7 @@ export default function Home({ navigation }: Props) {
                   startDate: new Date().getDate(),
                   startMonth: new Date().getMonth(),
                   weekly: "",
+                  type: "",
                 })
               }
               style={[styles.headButton, { backgroundColor: "rgba(0, 168, 107, 1)" }]}
@@ -271,6 +270,7 @@ export default function Home({ navigation }: Props) {
                   startDate: new Date().getDate(),
                   startMonth: new Date().getMonth(),
                   weekly: "",
+                  type: "",
                 })
               }
               style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}

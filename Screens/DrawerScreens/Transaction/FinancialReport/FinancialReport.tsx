@@ -9,7 +9,7 @@ import StackParamList from "../../../../Navigation/StackList";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import DropdownComponent from "../../../../Components/DropDown";
-import { currencies, StringConstants } from "../../../Constants";
+import { currencies, StringConstants, CATEGORY_COLORS } from "../../../Constants";
 import {
   selectExpensesAndTransfers,
   selectIncome,
@@ -19,11 +19,9 @@ import {
   selectMonthlyIncomeTotals,
   selectMonthlyExpenseTotals,
 } from "../../../../Slice/Selectors";
-import { DonutChart } from "./Graph";
-import { Linearchart } from "./Graph";
+import { DonutChart, Linearchart } from "./Graph";
 import TransactionList from "../../Home/TransactionList/TransactionsList";
 import CategoryList from "./CategoryList";
-import { CATEGORY_COLORS } from "../../../Constants";
 import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { useFocusEffect } from "@react-navigation/native";
 import { RootState } from "../../../../Store/Store";
@@ -49,9 +47,9 @@ const Month = [
   { label: "December", value: "December" },
 ];
 
-export default function FinancialReport({ navigation }: Props) {
-  const [line, showline] = useState(true);
-  const [pie, showpie] = useState(false);
+export default function FinancialReport({ navigation }: Readonly<Props>) {
+  const [line, setline] = useState(true);
+  const [pie, setpie] = useState(false);
   const [Expense, setExpense] = useState(true);
   const [Income, setIncome] = useState(false);
   const [month, setMonth] = useState(Month[new Date().getMonth()].value);
@@ -166,8 +164,8 @@ export default function FinancialReport({ navigation }: Props) {
         <TouchableOpacity style={styles.reportGraph}>
           <TouchableOpacity
             onPress={() => {
-              showline(true);
-              showpie(false);
+              setline(true);
+              setpie(false);
             }}
             style={[styles.lineGraph, { backgroundColor: line ? "rgba(42, 124, 118, 1)" : colors.backgroundColor }]}
           >
@@ -176,8 +174,8 @@ export default function FinancialReport({ navigation }: Props) {
           <TouchableOpacity
             style={[styles.lineGraph, { backgroundColor: pie ? "rgba(42, 124, 118, 1)" : colors.backgroundColor }]}
             onPress={() => {
-              showline(false);
-              showpie(true);
+              setline(false);
+              setpie(true);
             }}
           >
             <Fontisto name="pie-chart-1" size={24} color={pie ? "white" : "rgba(42, 124, 118, 1)"} />

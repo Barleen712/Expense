@@ -1,15 +1,12 @@
 import { printToFileAsync } from "expo-print";
 import * as Sharing from "expo-sharing";
-import { RootState } from "../../../../Store/Store";
-import { Platform } from "react-native";
-import * as IntentLauncher from "expo-intent-launcher";
+import { RootState, store } from "../../../../Store/Store";
 import {
   selectTransactions,
   selectMonthlyIncomeTotals,
   selectMonthlyExpenseTotals,
   BudgetCategory,
 } from "../../../../Slice/Selectors";
-import { store } from "../../../../Store/Store";
 
 const data = [
   { label: "Income", value: "0" },
@@ -28,7 +25,6 @@ const dateRanges = {
 
 export const generateReportPDF = async (exportdata: string, dateRange: string) => {
   const state: RootState = store.getState();
-  console.log("wfjg");
   const transactions = selectTransactions(state);
   const selectedKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
   const income = selectMonthlyIncomeTotals(state);

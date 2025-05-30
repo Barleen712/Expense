@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Text, FlatList } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { View, Text } from "react-native";
 import styles from "./styles";
 import Keypad from "../../../Components/Keypad";
 import Pin from "../../../Components/Pin";
@@ -13,7 +12,7 @@ type pinProp = StackNavigationProp<StackParamList, "Setpin">;
 interface Props {
   navigation: pinProp;
 }
-export default function Setpin({ navigation }: Props) {
+export default function Setpin({ navigation }: Readonly<Props>) {
   const [pin, setpin] = useState("");
   function handlenext() {
     if (pin.length === 4) navigation.navigate("Setpin1", { FirstPin: pin });

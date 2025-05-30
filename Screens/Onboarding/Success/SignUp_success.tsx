@@ -4,13 +4,14 @@ import { getStyles } from "./styles";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { useTranslation } from "react-i18next";
-import { ThemeContext } from "../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
 type AllSetProp = StackNavigationProp<StackParamList, "AllSet">;
 
 interface Props {
   navigation: AllSetProp;
+  route: any;
 }
-export default function Success({ navigation, route }: Props) {
+export default function Success({ navigation, route }: Readonly<Props>) {
   const { title } = route.params;
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -19,7 +20,7 @@ export default function Success({ navigation, route }: Props) {
     return () => clearTimeout(timer);
   }, [navigation]);
   const { t } = useTranslation();
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>

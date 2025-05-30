@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
-import { getStyles } from "./styles";
+import { getStyles } from "../Expense/styles";
 import { CustomButton } from "../../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
@@ -358,7 +358,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
                   </TouchableOpacity>
                 )}
                 {localPath.type === "image" && image && (
-                  <View style={{ width: "100%", marginLeft: 30 }}>
+                  <View style={{ width: "100%", marginLeft: 30, marginBottom: 10 }}>
                     <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
                     {close && (
                       <>
@@ -395,6 +395,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
                       height: "10%",
                       alignItems: "center",
                       justifyContent: "center",
+                      marginBottom: 10,
                       backgroundColor: "rgba(141, 163, 205, 0.21)",
                     }}
                   >
@@ -446,7 +447,6 @@ export default function Income({ navigation, route }: Readonly<Props>) {
                       setclose={setclose}
                       setDocument={setDocument}
                       modalItems={modal}
-                      setPhoto={setPhoto}
                       close={close}
                       setlocalPath={setlocalPath}
                     />

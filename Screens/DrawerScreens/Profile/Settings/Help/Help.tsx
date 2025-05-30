@@ -88,7 +88,7 @@ const HelpScreen = ({ navigation }: Props) => {
           <View style={styles.sectionText}>
             <Text style={styles.title}>FAQs</Text>
             {faqs.map((item, index) => (
-              <View key={index}>
+              <View key={item.question}>
                 <TouchableOpacity onPress={() => toggleFaq(index)} style={styles.faqItem}>
                   <Text style={styles.faqQuestion}>{item.question}</Text>
                   <Icon

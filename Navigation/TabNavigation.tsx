@@ -24,49 +24,58 @@ interface Props {
 
 export default function Tabscreens({ navigation }: Readonly<Props>) {
   const loading = useSelector((state: RootState) => state.Money.loading);
-  const [plus, setplus] = useState(true);
-  const [cross, setcross] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const { t } = useTranslation();
   const { colors } = useContext(ThemeContext) as ThemeContextType;
-  const styles = getstyles(colors);
+  const styles = getStyles(colors);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("state", () => {
-      setplus(true);
-      setcross(false);
+      setIsExpanded(false);
     });
     return unsubscribe;
   }, [navigation]);
 
-  const _renderIcon = (routeName: string, selectedTab: string): JSX.Element => {
-    let icon = "";
-    switch (routeName) {
-      case "Home":
-        icon = "home";
-        break;
-      case "Transactions":
-        icon = "cash";
-        break;
-      case "Budget":
-        icon = "wallet";
-        break;
-      case "Profile":
-        icon = "person";
-        break;
-      default:
-        icon = "add-outline";
-    }
-    return <Ionicons name={icon} size={25} color={routeName === selectedTab ? "rgb(42, 124, 118)" : "gray"} />;
+  const renderIcon = (routeName: string, selectedTab: string): JSX.Element => {
+    const icons: Record<string, keyof typeof Ionicons.glyphMap> = {
+      Home: "home",
+      Transactions: "cash",
+      Budget: "wallet",
+      Profile: "person",
+    };
+    const iconName = icons[routeName] || "add-outline";
+    const color = routeName === selectedTab ? "rgb(42, 124, 118)" : "gray";
+
+    return <Ionicons name={iconName} size={25} color={color} />;
   };
 
   const renderTabBar = ({ routeName, selectedTab, navigate }: any) => (
     <TouchableOpacity onPress={() => navigate(routeName)} style={styles.tabbarItem}>
-      {_renderIcon(routeName, selectedTab)}
+      {renderIcon(routeName, selectedTab)}
       <Text style={[styles.tabText, { color: routeName === selectedTab ? "rgb(42, 124, 118)" : "gray" }]}>
         {t(routeName)}
       </Text>
     </TouchableOpacity>
   );
+
+  const now = new Date();
+  const sharedTransactionParams = {
+    amount: 0,
+    category: "Category",
+    edit: false,
+    title: "",
+    wallet: "Wallet",
+    url: "",
+    frequency: "",
+    endDate: now.toISOString(),
+    endAfter: "",
+    repeat: false,
+    startDate: now.getDate(),
+    startMonth: now.getMonth(),
+    weekly: now.getDay().toString(),
+    type: "",
+  };
+
   return (
     <CurvedBottomBarExpo.Navigator
       id="main"
@@ -79,98 +88,51 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
       circleWidth={56}
       bgColor="transparent"
       initialRouteName="Home"
-      screenListeners={{}}
       borderTopLeftRight
       backBehavior="initialRoute"
-      borderColor={"gray"}
+      borderColor="gray"
       borderWidth={0}
       defaultScreenOptions={{ headerShown: false }}
       screenOptions={{ headerShown: false }}
       renderCircle={() => (
         <Animated.View style={styles.btnCircleUp}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              setplus(!plus);
-              setcross(!cross);
-            }}
-          >
-            {plus && <Ionicons name="add-outline" size={30} color="white" />}
-            {cross && <Ionicons name="close-outline" size={30} color="white" />}
+          <TouchableOpacity style={styles.button} onPress={() => setIsExpanded((prev) => !prev)}>
+            <Ionicons name={isExpanded ? "close-outline" : "add-outline"} size={30} color="white" />
 
-            {cross && (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("Transfer", {
-                    from: "",
-                    to: "",
-                    amount: 0,
-                    id: " ",
-                    edit: false,
-                    title: "",
-                    url: "",
-                    type: "",
-                  })
-                }
-                style={{
-                  position: "absolute",
-                  left: -15,
-                  right: 0,
-                  bottom: 125,
-                }}
-              >
-                <Transfer />
-              </TouchableOpacity>
-            )}
-            {cross && (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("Expense", {
-                    amount: 0,
-                    category: "Category",
-                    edit: false,
-                    title: "",
-                    wallet: "Wallet",
-                    url: "",
-                    frequency: "",
-                    endDate: new Date().toISOString(),
-                    endAfter: "",
-                    repeat: false,
-                    startDate: new Date().getDate(),
-                    startMonth: new Date().getMonth(),
-                    weekly: new Date().getDay().toString(),
-                    type: "",
-                  })
-                }
-                style={{ position: "absolute", left: 55, bottom: 55 }}
-              >
-                <Expense />
-              </TouchableOpacity>
-            )}
-            {cross && (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("Income", {
-                    amount: 0,
-                    category: "Category",
-                    edit: false,
-                    title: "",
-                    wallet: "Wallet",
-                    url: "",
-                    frequency: "",
-                    endDate: new Date().toISOString(),
-                    endAfter: "",
-                    repeat: false,
-                    startDate: new Date().getDate(),
-                    startMonth: new Date().getMonth(),
-                    weekly: new Date().getDay().toString(),
-                    type: "",
-                  })
-                }
-                style={{ position: "absolute", right: 55, bottom: 55 }}
-              >
-                <Income />
-              </TouchableOpacity>
+            {isExpanded && (
+              <>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("Transfer", {
+                      from: "",
+                      to: "",
+                      amount: 0,
+                      id: " ",
+                      edit: false,
+                      title: "",
+                      url: "",
+                      type: "",
+                    })
+                  }
+                  style={[styles.actionButton, { bottom: 125, left: -15 }]}
+                >
+                  <Transfer />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("Expense", sharedTransactionParams)}
+                  style={[styles.actionButton, { bottom: 55, left: 55 }]}
+                >
+                  <Expense />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("Income", sharedTransactionParams)}
+                  style={[styles.actionButton, { bottom: 55, right: 55 }]}
+                >
+                  <Income />
+                </TouchableOpacity>
+              </>
             )}
           </TouchableOpacity>
         </Animated.View>
@@ -185,7 +147,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
   );
 }
 
-function getstyles(colors: any) {
+function getStyles(colors: any) {
   return StyleSheet.create({
     shadow: {
       shadowColor: "#DDDDDD",
@@ -225,11 +187,8 @@ function getstyles(colors: any) {
       fontWeight: "500",
       marginTop: 3,
     },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: colors.backgroundColor,
+    actionButton: {
+      position: "absolute",
     },
   });
 }

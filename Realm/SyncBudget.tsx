@@ -1,7 +1,6 @@
 import { getRealm } from "./realm";
 import { auth, db } from "../Screens/FirebaseConfig";
 import { AddBudget } from "../Screens/FirestoreHandler";
-import { generateKey, encryptData } from "../Encryption/encrption";
 import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
 let isSyncing = false;
 export async function syncUnsyncedBudget() {
@@ -25,9 +24,6 @@ export async function syncUnsyncedBudget() {
       year: txn.year,
       userId: user.uid,
     };
-    // const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
-    // const encryptedData = await encryptData(JSON.stringify(budgetData), key);
-    // const data = { encryptedData, userid: user.uid };
     const success = await AddBudget(budgetData);
     if (success) {
       realm.write(() => {

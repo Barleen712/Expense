@@ -24,7 +24,8 @@ const Currency_Convert = createSlice({
       state.Rate = action.payload.rates;
     },
     fetchRatesFailure: (state, action) => {
-      (state.Loading = false), (state.error = action.payload);
+      state.Loading = false;
+      state.error = action.payload;
     },
   },
 });

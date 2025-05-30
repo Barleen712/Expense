@@ -1,8 +1,7 @@
 import React from "react";
 import { View, Button, Alert } from "react-native";
 import ReactNativeBiometrics, { FaceID } from "react-native-biometrics";
-import { changeSecurity } from "../../../../../Slice/IncomeSlice";
-import { updatePreferences } from "../../../../../Slice/IncomeSlice";
+import { changeSecurity, updatePreferences } from "../../../../../Slice/IncomeSlice";
 const rnBiometrics = new ReactNativeBiometrics();
 
 const BiometricAuth = () => {
@@ -14,13 +13,13 @@ const BiometricAuth = () => {
     if (available) {
       let typeMessage = "";
       switch (biometryType) {
-        case ReactNativeBiometrics.TouchID:
+        case "TouchID":
           typeMessage = "Touch ID is available";
           break;
-        case ReactNativeBiometrics.FaceID:
+        case "FaceID":
           typeMessage = "Face ID is available";
           break;
-        case ReactNativeBiometrics.Biometrics:
+        case "Biometrics":
           typeMessage = "Biometric authentication is available";
           break;
         default:

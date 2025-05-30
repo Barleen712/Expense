@@ -24,7 +24,6 @@ export default function EnterPin({ navigation }: Readonly<Props>) {
   const [opendots, setopendots] = useState(false);
   const [reset, setreset] = useState(false);
   const user = useSelector((state: RootState) => state.Money.signup);
-
   async function handlenext() {
     if (user.pin === pin && !reset) {
       navigation.replace("MainScreen");

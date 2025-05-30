@@ -3,7 +3,6 @@ import { auth, db } from "../Screens/FirebaseConfig";
 import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { getRealm } from "./realm";
 import { uploadImage } from "../Screens/Constants";
-import { generateKey, encryptData } from "../Encryption/encrption";
 export async function syncUnsyncedTransactions() {
   const realm = await getRealm();
   const unsynced = realm.objects("Transaction").filtered("synced == false");
@@ -13,7 +12,6 @@ export async function syncUnsyncedTransactions() {
     if (txn.url) {
       supabaseImageUrl = await uploadImage(txn.url);
     }
-    // const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
     const txnData = {
       _id: txn._id,
       amount: txn.amount,
@@ -34,8 +32,6 @@ export async function syncUnsyncedTransactions() {
       url: supabaseImageUrl,
       weekly: txn.weekly,
     };
-    // const encryptedData = await encryptData(JSON.stringify(txnData), key);
-    // console.log(encryptedData);
     const success = await AddTransaction(txnData);
     console.log(success);
     if (success) {
@@ -74,7 +70,7 @@ export async function syncPendingUpdatesToFirestore() {
     for (const tx of pendingTransactions) {
       const transactionId = tx._id;
 
-      const { _id, ...data } = tx.toJSON();
+      const { _id } = tx.toJSON();
       const q = query(collection(db, "Transactions"), where("_id", "==", transactionId));
       const querySnapshot = await getDocs(q);
 

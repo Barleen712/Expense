@@ -1,27 +1,27 @@
 import React, { useContext, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import { getStyles } from "./styles";
+import { getStyles } from "../Language/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../../Navigation/StackList";
 import Header from "../../../../../Components/Header";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
-import { changeTheme } from "../../../../../Slice/IncomeSlice";
-import { ThemeContext } from "../../../../../Context/ThemeContext";
-import { updatePreferences } from "../../../../../Slice/IncomeSlice";
+import { changeTheme, updatePreferences } from "../../../../../Slice/IncomeSlice";
+import { ThemeContext, ThemeContextType } from "../../../../../Context/ThemeContext";
+import { RootState } from "../../../../../Store/Store";
 type ThemeProp = StackNavigationProp<StackParamList, "EmailSent">;
 
 interface Props {
   navigation: ThemeProp;
 }
-export default function Theme({ navigation }: Props) {
-  const theme = useSelector((state) => state.Money.preferences.theme);
+export default function Theme({ navigation }: Readonly<Props>) {
+  const theme = useSelector((state: RootState) => state.Money.preferences.theme);
   const dispatch = useDispatch();
   const currencies = ["Light", "Dark", "Using device theme"];
   const [selectedTheme, setSelectedTheme] = useState(theme);
   const { t } = useTranslation();
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>

@@ -1,22 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Platform, Image, FlatList } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
-import { getStyles } from "./styles";
+import React, { useContext, useState } from "react";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { getStyles } from "../Language/styles";
 import { Ionicons } from "@expo/vector-icons";
 import Header from "../../../../../Components/Header";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../../Navigation/StackList";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrencycode } from "../../../../../Slice/CurrencySlice";
 import { changeCurrency, updatePreferences } from "../../../../../Slice/IncomeSlice";
-import { ThemeContext } from "../../../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../../../Context/ThemeContext";
+import { RootState } from "../../../../../Store/Store";
 
 type CurrencyProp = StackNavigationProp<StackParamList, "Currency">;
 
 interface Props {
   navigation: CurrencyProp;
 }
-export default function Currency({ navigation }: Props) {
+export default function Currency({ navigation }: Readonly<Props>) {
   const currencies = [
     { name: "Australia", code: "AUD" },
     { name: "Canada", code: "CAD" },
@@ -26,9 +25,9 @@ export default function Currency({ navigation }: Props) {
     { name: "United Stated", code: "USD" },
   ];
   const dispatch = useDispatch();
-  const currency = useSelector((state) => state.Money.preferences.currency);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const [selectedCurrency, setSelectedCurrency] = useState<string>(currency);
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <View style={styles.container}>

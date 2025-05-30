@@ -1,8 +1,6 @@
-import React, { useContext, useState } from "react";
-import { View, TouchableOpacity, Text, FlatList, Image } from "react-native";
-import Input from "../../../Components/CustomTextInput";
+import React, { useContext } from "react";
+import { View, Text, Image } from "react-native";
 import { CustomButton } from "../../../Components/CustomButton";
-import styles from "../../Stylesheet";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { StringConstants } from "../../Constants";
@@ -19,7 +17,7 @@ interface Props {
     };
   };
 }
-export default function EmailSent({ navigation, route }: Props) {
+export default function EmailSent({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
   const { email } = route.params;
   const { colors } = useContext(ThemeContext) as ThemeContextType;

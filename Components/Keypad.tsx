@@ -11,6 +11,7 @@ export default function Keypad({ change, onKeyPress, onClear }: Readonly<KeypadP
   const handlePress = (item: number | string) => {
     if (typeof item === "number") {
       onKeyPress(item);
+      console.log(item);
     } else if (item === "C" && onClear) {
       onClear();
     } else if (item === "A") {

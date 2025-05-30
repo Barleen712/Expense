@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import { ThemeContext } from "../../../../Context/ThemeContext";
+import { RootState } from "../../../../Store/Store";
 
 interface TransactionListProps {
   data: Array<{
@@ -19,9 +20,9 @@ interface TransactionListProps {
   }>;
 }
 const pageSize = 2;
-export default function TransactionList({ data }: TransactionListProps) {
-  const Rates = useSelector((state) => state.Rates);
-  const currency = useSelector((state) => state.Money.preferences.currency);
+export default function TransactionList({ data }: Readonly<TransactionListProps>) {
+  const Rates = useSelector((state: RootState) => state.Rates);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const convertRate = Rates.Rate[currency];
   const navigation = useNavigation();
   const [page, setPage] = useState(1);

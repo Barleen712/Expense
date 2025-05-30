@@ -1,4 +1,4 @@
-import { StyleSheet, Platform, StatusBar } from "react-native";
+import { StyleSheet } from "react-native";
 
 export const getStyles = (colors: any) =>
   StyleSheet.create({
@@ -37,7 +37,6 @@ export const getStyles = (colors: any) =>
     detailbox: {
       backgroundColor: colors.backgroundColor,
       borderRadius: 20,
-      //  padding: 10,
       width: "90%",
       height: "70%",
       alignItems: "center",
@@ -58,10 +57,8 @@ export const getStyles = (colors: any) =>
     },
     category: {
       textAlign: "center",
-      textAlignVertical: "center",
       fontSize: 16,
       fontWeight: "bold",
-      //padding: Platform.OS === "ios" ? 17 : 10,
     },
     budgetReport: {
       flex: 0.5,

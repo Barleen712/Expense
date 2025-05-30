@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, TouchableOpacity, Text, FlatList } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { View, Text } from "react-native";
 import Input from "../../../Components/CustomTextInput";
 import { CustomButton } from "../../../Components/CustomButton";
 import { getStyles } from "./styles";
@@ -18,7 +17,7 @@ interface Props {
   navigation: ForgotPasswordProp;
 }
 
-export default function ForgotPass({ navigation }: Props) {
+export default function ForgotPass({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const handleReset = async () => {

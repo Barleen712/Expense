@@ -7,16 +7,17 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../../Navigation/StackList";
 import { useSelector, useDispatch } from "react-redux";
 import { updateExceed, updateExpenseAlert } from "../../../../../Slice/IncomeSlice";
-import { ThemeContext } from "../../../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../../../Context/ThemeContext";
+import { RootState } from "../../../../../Store/Store";
 type NotificationProp = StackNavigationProp<StackParamList, "Account">;
 
 interface Props {
   navigation: NotificationProp;
 }
-export default function Notification({ navigation }: Props) {
+export default function Notification({ navigation }: Readonly<Props>) {
   const dispatch = useDispatch();
-  const exceed = useSelector((state) => state.Money.exceedNotification);
-  const expenseAlert = useSelector((state) => state.Money.expenseAlert);
+  const exceed = useSelector((state: RootState) => state.Money.exceedNotification);
+  const expenseAlert = useSelector((state: RootState) => state.Money.expenseAlert);
   const [Tips, setTips] = useState(false);
   const [Budget, setBudget] = useState(exceed);
   const [Expense, setExpense] = useState(expenseAlert);
@@ -28,11 +29,16 @@ export default function Notification({ navigation }: Props) {
     setExpense(!Expense);
     dispatch(updateExpenseAlert(!Expense));
   }
-  const {colors}=useContext(ThemeContext)
-  const styles=getStyles(colors)
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
-      <Header title="Notification" press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color}/>
+      <Header
+        title="Notification"
+        press={() => navigation.goBack()}
+        bgcolor={colors.backgroundColor}
+        color={colors.color}
+      />
       <View style={styles.Line}></View>
       <View style={styles.notiView}>
         <View style={styles.noti}>

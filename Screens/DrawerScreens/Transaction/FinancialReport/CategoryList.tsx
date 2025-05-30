@@ -15,7 +15,7 @@ interface CategoryListProps {
   totalExpense: number;
 }
 
-export default function CategoryList({ category, totalExpense }: CategoryListProps) {
+export default function CategoryList({ category, totalExpense }: Readonly<CategoryListProps>) {
   const { t } = useTranslation();
   return (
     <FlatList

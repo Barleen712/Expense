@@ -32,7 +32,7 @@ import { StringConstants, currencies, Weeks } from "../../../Constants";
 import { updateTransaction, addTransaction } from "../../../../Slice/IncomeSlice";
 import FrequencyModal from "../../../../Components/FrequencyModal";
 import DropdownComponent from "../../../../Components/DropDown";
-import { getStyles } from "./styles";
+import { getStyles } from "../Expense/styles";
 import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
 import { RootState } from "../../../../Store/Store";
 
@@ -55,7 +55,7 @@ const category = [
   { value: "Passive Income", label: "Passive Income" },
 ];
 const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
-export default function Income({ navigation, route }: Props) {
+export default function Income({ navigation, route }: Readonly<Props>) {
   const parameters = route.params;
   const [Switchs, setSwitchs] = useState(parameters.repeat);
   const [showAttach, setshowAttach] = useState(!parameters.url);
@@ -198,7 +198,7 @@ export default function Income({ navigation, route }: Props) {
       type: localPath.type,
       url: localPath.path,
     };
-
+    console.log(transaction);
     try {
       if (realm) {
         realm.write(() => {
@@ -214,12 +214,11 @@ export default function Income({ navigation, route }: Props) {
 
     if (isConnected) {
       console.log("user is online");
-      syncUnsyncedTransactions(); // Start syncing if online
+      syncUnsyncedTransactions();
     }
 
     navigation.goBack();
   }
-  console.log(localPath);
   async function editIncome() {
     const realm = await getRealm();
     const numericIncome = parseFloat(Income.replace("$", "") || "0") / convertRate;

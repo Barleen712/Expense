@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import Carousel from "react-native-reanimated-carousel";
-import { View, Text, Image, Dimensions, StyleSheet, Platform, TouchableOpacity, StatusBar } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { View, Text, Image, Dimensions, StatusBar } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomButton } from "../../../Components/CustomButton";
 const { width: screenWidth } = Dimensions.get("window");
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -76,8 +76,8 @@ export default function Getstarted({ navigation }: Readonly<Props>) {
           onSnapToItem={(index) => setActiveIndex(index)}
         ></Carousel>
         <View style={styles.paginationContainer}>
-          {data.map((_, index) => (
-            <View key={index} style={[styles.dot, activeIndex === index && styles.activeDot]} />
+          {data.map((item, index) => (
+            <View key={item.id} style={[styles.dot, activeIndex === index && styles.activeDot]} />
           ))}
         </View>
       </View>

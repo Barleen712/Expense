@@ -5,8 +5,9 @@ import Svg, { Circle, G } from "react-native-svg";
 import styles from "../../../Stylesheet";
 import { useSelector } from "react-redux";
 import { currencies } from "../../../Constants";
-import { ThemeContext } from "../../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { useTranslation } from "react-i18next";
+import { RootState } from "../../../../Store/Store";
 interface Donut {
   data: Array<object>;
   value: number;
@@ -21,10 +22,10 @@ export const DonutChart = ({
 }: Donut) => {
   const circumference = 2 * Math.PI * radius;
   let previousPercentage = 0;
-  const Rates = useSelector((state) => state.Rates);
-  const currency = useSelector((state) => state.Money.preferences.currency);
+  const Rates = useSelector((state: RootState) => state.Rates);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const convertRate = Rates.Rate[currency];
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   return (
     <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
       <Text style={[styles.typeText, { position: "absolute", top: "40%", color: colors.color }]}>
@@ -45,7 +46,7 @@ export const DonutChart = ({
             previousPercentage += item.percentage;
 
             return (
-              <G key={index} rotation={strokeRotation} origin={`${radius + strokeWidth}, ${radius + strokeWidth}`}>
+              <G key={item} rotation={strokeRotation} origin={`${radius + strokeWidth}, ${radius + strokeWidth}`}>
                 <Circle
                   cx={radius + strokeWidth}
                   cy={radius + strokeWidth}
@@ -65,12 +66,12 @@ export const DonutChart = ({
     </View>
   );
 };
-interface lineData {
+interface LineData {
   data: { value: number }[];
   height: number;
 }
 
-export const Linearchart = ({ data, height }: lineData) => {
+export const Linearchart = ({ data, height }: LineData) => {
   const { t } = useTranslation();
   const { colors } = useContext(ThemeContext);
   const renderPointerLabel = (items, secondaryItem, pointerIndex) => {
