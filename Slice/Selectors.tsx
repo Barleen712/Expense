@@ -1,100 +1,103 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../Store/Store";
 const selectMoney = (state: RootState) => state.Money;
-const currentDate = new Date();
+const getStartDate = (item) => {
+  let startMonthIndex;
+  if (typeof item.startMonth === "string") {
+    const date = new Date(`${item.startMonth} 1, ${item.startYear}`);
+    startMonthIndex = isNaN(date.getMonth()) ? new Date(item.Date).getMonth() : date.getMonth();
+  } else {
+    startMonthIndex = item.startMonth ?? new Date(item.Date).getMonth();
+  }
+
+  return new Date(
+    item.startYear ?? new Date(item.Date).getFullYear(),
+    startMonthIndex,
+    item.startDate ?? new Date(item.Date).getDate()
+  );
+};
+
+const setTime = (targetDate, sourceDate) => {
+  targetDate.setHours(sourceDate.getHours());
+  targetDate.setMinutes(sourceDate.getMinutes());
+  targetDate.setSeconds(sourceDate.getSeconds());
+  targetDate.setMilliseconds(sourceDate.getMilliseconds());
+};
+
+const generateRepeats = (item, addedTime, todayISO) => {
+  const repeats = [];
+  const startDate = getStartDate(item);
+  const firstOccurrence = new Date(startDate);
+  setTime(firstOccurrence, addedTime);
+
+  let repeatCount = 0;
+  let currentDate = new Date(firstOccurrence);
+  const endDate = item.endAfter === "Date" ? new Date(item.endDate) : null;
+  const maxRepeats = item.endAfter === "Never" ? 365 : 12;
+
+  while (true) {
+    if (
+      (item.endAfter === "Never" && repeatCount >= maxRepeats) ||
+      (item.endAfter === "Date" && currentDate > endDate)
+    ) {
+      break;
+    }
+
+    const iso = currentDate.toISOString();
+    if (iso !== todayISO) {
+      repeats.push({ ...item, Date: iso });
+    }
+
+    let nextDate = new Date(currentDate);
+    setTime(nextDate, addedTime);
+
+    switch (item.Frequency) {
+      case "Daily":
+        nextDate.setDate(nextDate.getDate() + 1);
+        break;
+      case "Weekly":
+        nextDate.setDate(nextDate.getDate() + 7);
+        break;
+      case "Monthly": {
+        nextDate.setMonth(nextDate.getMonth() + 1);
+        const day = nextDate.getDate();
+        const nextMonth = nextDate.getMonth() + 1;
+        const daysInNextMonth = new Date(nextDate.getFullYear(), nextMonth + 1, 0).getDate();
+        nextDate.setDate(Math.min(day, daysInNextMonth));
+        break;
+      }
+
+      case "Yearly":
+        nextDate.setFullYear(nextDate.getFullYear() + 1);
+        break;
+      default:
+        return repeats;
+    }
+
+    currentDate = nextDate;
+    repeatCount++;
+  }
+
+  return repeats;
+};
+
 export const selectTransactions = createSelector([(state) => state.Money.amount], (transactions) => {
   const extendedTransactions = [];
 
   transactions.forEach((item) => {
-    let startMonthIndex;
-    if (typeof item.startMonth === "string") {
-      const date = new Date(`${item.startMonth} 1, ${item.startYear}`);
-      startMonthIndex = isNaN(date.getMonth()) ? new Date(item.Date).getMonth() : date.getMonth();
-    } else {
-      startMonthIndex = item.startMonth ?? new Date(item.Date).getMonth();
-    }
-
-    const startDate = new Date(
-      item.startYear ?? new Date(item.Date).getFullYear(),
-      startMonthIndex,
-      item.startDate ?? new Date(item.Date).getDate()
-    );
-
     const addedDate = new Date(item.Date);
-    const addedTime = {
-      hours: addedDate.getHours(),
-      minutes: addedDate.getMinutes(),
-      seconds: addedDate.getSeconds(),
-      milliseconds: addedDate.getMilliseconds(),
-    };
+    const todayISO = addedDate.toISOString();
 
-    const endDate = item.endAfter === "Date" ? new Date(item.endDate) : null;
-    const maxRepeats = item.endAfter === "Never" ? 365 : 12;
-
-    // ✅ Always add today's transaction as it was added
-    const todayTransaction = new Date(item.Date);
-    todayTransaction.setHours(addedTime.hours);
-    todayTransaction.setMinutes(addedTime.minutes);
-    todayTransaction.setSeconds(addedTime.seconds);
-    todayTransaction.setMilliseconds(addedTime.milliseconds);
-
+    // Add the original transaction
     extendedTransactions.push({
       ...item,
-      Date: todayTransaction.toISOString(),
+      Date: todayISO,
     });
 
-    // ✅ Repeat logic starting from startDate
-    const firstOccurrence = new Date(startDate);
-    firstOccurrence.setHours(addedTime.hours);
-    firstOccurrence.setMinutes(addedTime.minutes);
-    firstOccurrence.setSeconds(addedTime.seconds);
-    firstOccurrence.setMilliseconds(addedTime.milliseconds);
-
-    let repeatCount = 0;
-    let currentDate = new Date(firstOccurrence);
-
-    while (true) {
-      if (item.endAfter === "Never" && repeatCount >= maxRepeats) break;
-      if (item.endAfter === "Date" && currentDate > endDate) break;
-
-      // Don't duplicate today's entry if startDate is today
-      if (currentDate.toISOString() !== todayTransaction.toISOString()) {
-        extendedTransactions.push({
-          ...item,
-          Date: currentDate.toISOString(),
-        });
-      }
-
-      // Calculate next repeat date
-      let nextDate = new Date(currentDate);
-      nextDate.setHours(addedTime.hours);
-      nextDate.setMinutes(addedTime.minutes);
-      nextDate.setSeconds(addedTime.seconds);
-      nextDate.setMilliseconds(addedTime.milliseconds);
-
-      switch (item.Frequency) {
-        case "Daily":
-          nextDate.setDate(nextDate.getDate() + 1);
-          break;
-        case "Weekly":
-          nextDate.setDate(nextDate.getDate() + 7);
-          break;
-        case "Monthly":
-          nextDate.setMonth(nextDate.getMonth() + 1);
-          const day = nextDate.getDate();
-          const nextMonth = nextDate.getMonth() + 1;
-          const daysInNextMonth = new Date(nextDate.getFullYear(), nextMonth + 1, 0).getDate();
-          nextDate.setDate(Math.min(day, daysInNextMonth));
-          break;
-        case "Yearly":
-          nextDate.setFullYear(nextDate.getFullYear() + 1);
-          break;
-        default:
-          return;
-      }
-
-      currentDate = nextDate;
-      repeatCount++;
+    // Add repeated transactions if needed
+    if (item.repeat && item.Frequency) {
+      const repeats = generateRepeats(item, addedDate, todayISO);
+      extendedTransactions.push(...repeats);
     }
   });
 

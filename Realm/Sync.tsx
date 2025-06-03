@@ -3,6 +3,7 @@ import { auth, db } from "../Screens/FirebaseConfig";
 import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { getRealm } from "./realm";
 import { uploadImage } from "../Screens/Constants";
+import { generateKey, encryptData } from "../Encryption/encrption";
 export async function syncUnsyncedTransactions() {
   const realm = await getRealm();
   const unsynced = realm.objects("Transaction").filtered("synced == false");
@@ -32,8 +33,14 @@ export async function syncUnsyncedTransactions() {
       url: supabaseImageUrl,
       weekly: txn.weekly,
     };
-    const success = await AddTransaction(txnData);
-    console.log(success);
+    const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
+    const encryptedData = await encryptData(JSON.stringify(txnData), key);
+    const Data = {
+      _id: txn._id,
+      userId: user.uid,
+      encryptedData,
+    };
+    const success = await AddTransaction(Data);
     if (success) {
       realm.write(() => {
         txn.synced = true;
@@ -85,15 +92,12 @@ export async function syncPendingUpdatesToFirestore() {
 
         if (tx.url && typeof tx.url === "string") {
           if (isRemoteUrl(tx.url)) {
-            // Already remote URL, no upload needed
             supabaseurl = tx.url;
           } else {
-            // Local URI, upload image
             supabaseurl = await uploadImage(tx.url);
             console.log(supabaseurl);
           }
         }
-        console.log(tx);
         const Data = {
           amount: tx.amount,
           description: tx.description,

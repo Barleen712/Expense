@@ -31,38 +31,6 @@ type StackParamList = {
     month?: number;
     year?: number;
   };
-  Expense: {
-    amount: number;
-    category: string;
-    edit: boolean;
-    title: string;
-    wallet: string;
-    url: string;
-    frequency: string;
-    endDate: string;
-    endAfter: string;
-    repeat: boolean;
-    startDate: number;
-    startMonth: number;
-    weekly: string;
-    type: string;
-  };
-  Income: {
-    amount: number;
-    category: string;
-    edit: boolean;
-    title: string;
-    wallet: string;
-    url: string;
-    frequency: string;
-    endDate: string;
-    endAfter: string;
-    repeat: boolean;
-    startDate: number;
-    startMonth: number;
-    weekly: string;
-    type: string;
-  };
   Transfer: {
     amount: number;
     to: string;
@@ -102,5 +70,25 @@ type StackParamList = {
   Help: undefined;
   Tutorial: undefined;
   ForgotPin: undefined;
+  Transaction: {
+    amount: number;
+    category: string;
+    edit: boolean;
+    title: string;
+    wallet: string;
+    url: string;
+    frequency: string;
+    endDate: string;
+    endAfter: string;
+    repeat: boolean;
+    startDate: number;
+    startMonth: number;
+    weekly: string;
+    type: string;
+    categoryData: { label: string; value: string }[];
+    modal: string[];
+    moneyCategory: string;
+    bg: string;
+  };
 };
 export default StackParamList;

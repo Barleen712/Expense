@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -10,51 +10,38 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Keyboard,
-  TextInput,
   ScrollView,
+  TextInput,
 } from "react-native";
 import * as Sharing from "expo-sharing";
+import { getRealm, updateTransactionRealmAndFirestore } from "../../../Realm/realm";
 import * as IntentLauncher from "expo-intent-launcher";
-import { CustomButton } from "../../../../Components/CustomButton";
-import { AddNotification, updateBudgetDocument } from "../../../FirestoreHandler";
+import { auth } from "../../FirebaseConfig";
+import { CustomButton } from "../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
-import StackParamList from "../../../../Navigation/StackList";
-import Header from "../../../../Components/Header";
+import StackParamList from "../../../Navigation/StackList";
+import Header from "../../../Components/Header";
 import Entypo from "@expo/vector-icons/Entypo";
-import Input from "../../../../Components/CustomTextInput";
-import SelectImageWithDocumentPicker from "../Attachment";
-import { useDispatch, useSelector } from "react-redux";
-import FrequencyModal from "../../../../Components/FrequencyModal";
+import Input from "../../../Components/CustomTextInput";
+import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
+import { useSelector, useDispatch } from "react-redux";
+import SelectImageWithDocumentPicker from "./Attachment";
+import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 import { useTranslation } from "react-i18next";
-import { StringConstants, currencies, Weeks } from "../../../Constants";
-import { updateBudget, updateTransaction, addTransaction } from "../../../../Slice/IncomeSlice";
-import { auth } from "../../../FirebaseConfig";
-import { BudgetCategory } from "../../../../Slice/Selectors";
-import { onDisplayNotification } from "../../Budget/TestNotification";
-import { ActivityIndicator } from "react-native-paper";
-import DropdownComponent from "../../../../Components/DropDown";
-import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
-import { getStyles } from "./styles";
-import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
-import NetInfo from "@react-native-community/netinfo";
-import { updateTransactionRealmAndFirestore, getRealm } from "../../../../Realm/realm";
-import { RootState } from "../../../../Store/Store";
-type IncomeProp = StackNavigationProp<StackParamList, "Income">;
+import { StringConstants, currencies, Weeks } from "../../Constants";
+import { updateTransaction, addTransaction } from "../../../Slice/IncomeSlice";
+import FrequencyModal from "../../../Components/FrequencyModal";
+import DropdownComponent from "../../../Components/DropDown";
+import { getStyles } from "./Expense/styles";
+import { syncUnsyncedTransactions } from "../../../Realm/Sync";
+import { RootState } from "../../../Store/Store";
+
+type IncomeProp = StackNavigationProp<StackParamList, "Transaction">;
 
 interface Props {
   navigation: IncomeProp;
   route: any;
 }
-const category = [
-  { label: "Shopping", value: "Shopping" },
-  { label: "Food", value: "Food" },
-  { label: "Entertainment", value: "Entertainment" },
-  { label: "Subscription", value: "Subscription" },
-  { label: "Transportation", value: "Transportation" },
-  { label: "Bills", value: "Bills" },
-  { label: "Miscellaneous", value: "Miscellaneous" },
-];
-
 const wallet = [
   { value: "PayPal", label: "PayPal" },
   { value: "Google Pay", label: "Google Pay" },
@@ -62,54 +49,56 @@ const wallet = [
   { label: "PhonePe", value: "PhonePe" },
   { label: "Apple Pay", value: "Apple Pay" },
 ];
-const modal = [
-  require("../../../../assets/CameraRed.png"),
-  require("../../../../assets/ImageRed.png"),
-  require("../../../../assets/DocumentRed.png"),
+
+const category = [
+  { value: "Salary", label: "Salary" },
+  { value: "Passive Income", label: "Passive Income" },
 ];
 const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
-export default function Expense({ navigation, route }: Readonly<Props>) {
-  const budget = useSelector(BudgetCategory);
-  const exceeded = useSelector((state) => state.Money.exceedNotification);
-  const expenseAlert = useSelector((state) => state.Money.expenseAlert);
+export default function Transaction({ navigation, route }: Readonly<Props>) {
   const parameters = route.params;
+  const [Switchs, setSwitchs] = useState(parameters.repeat);
   const [showAttach, setshowAttach] = useState(!parameters.url);
   const [image, setImage] = useState<string | null>(parameters.url);
   const [modalVisible, setModalVisible] = useState(false);
   const [close, setclose] = useState(parameters.url);
   const [document, setDocument] = useState<string | null>(parameters.url);
-  const [photo, setPhoto] = useState<string | null>(parameters.url);
-  const [Expenses, setExpenses] = useState<string>(`${parameters.amount}`);
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [Income, setIncome] = useState<string>(`${parameters.amount}`);
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
-  const [loading, setLoading] = useState(false);
   const [frequency, setFrequency] = useState(parameters.frequency);
   const [endAfter, setendAfter] = useState(parameters.endAfter);
   const [month, setMonth] = useState(parameters.startMonth);
   const [week, setWeek] = useState(parameters.weekly);
   const [startDate, setStartDate] = useState(parameters.startDate);
   const [endDate, setEndDate] = useState(new Date(parameters.endDate));
-  const [Switchs, setSwitchs] = useState(parameters.repeat);
   const [Frequencymodal, setFrequencymodal] = useState(false);
-  const [expenseError, setExpenseError] = useState("");
+  const [incomeError, setIncomeError] = useState("");
   const [categoryError, setcategoryError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [walletError, setwalletError] = useState("");
   const [localPath, setlocalPath] = useState({ type: parameters.type, path: parameters.url });
+  const { isConnected } = useNetInfo();
   const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const Rates = useSelector((state: RootState) => state.Rates);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   let convertRate: number;
   if (currency === "USD") {
     convertRate = 1;
   } else {
     convertRate = Rates.Rate[currency];
   }
+
+  const handleFocus = () => {
+    if (Income === "0") {
+      setIncome("");
+    }
+  };
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
-  const monthKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
-  const monthlyBudget = budget[monthKey] || [];
   const openDocument = async () => {
     if (!document) return;
 
@@ -122,17 +111,16 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
       });
     }
   };
-  const handleExpenseChange = (text: string) => {
+  const handleIncomeChange = (text: string) => {
     if (text.includes(",")) {
-      setExpenseError("Commas are not allowed");
+      setIncomeError("Commas are not allowed");
       return;
     }
 
     const cleaned = text.replace(/[^0-9.]/g, "");
-
     const decimalCount = (cleaned.match(/\./g) || []).length;
     if (decimalCount > 1) {
-      setExpenseError("Enter a valid number with only one decimal point");
+      setIncomeError("Only one decimal point is allowed");
       return;
     }
 
@@ -140,26 +128,23 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
     const integerPart = parts[0];
     const decimalPart = parts[1] || "";
 
-    // Limit total digits to 7 (before + after decimal)
-    if ((integerPart + decimalPart).length > 7) {
-      setExpenseError("Maximum expense allowed is $99,999.99");
-      return;
-    }
-
-    // Limit to 2 decimal digits
     if (decimalPart.length > 2) {
-      setExpenseError("Maximum expense allowed is $99,999.99");
+      setIncomeError("Maximum income allowed is $99,999.99");
       return;
     }
 
+    if ((integerPart + decimalPart).length > 7) {
+      setIncomeError("Maximum income allowed is $99,999.99");
+      return;
+    }
     const numericValue = parseFloat(cleaned);
     if (numericValue > 99999.99) {
-      setExpenseError("Maximum expense allowed is $99,999.99");
+      setIncomeError("Maximum income allowed is $99,999.99");
       return;
     }
 
-    setExpenseError("");
-    setExpenses(cleaned);
+    setIncomeError("");
+    setIncome(cleaned);
   };
 
   function handleDescriptionChange() {
@@ -167,18 +152,14 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
       setDescriptionError("");
     }
   }
-  const handleFocus = () => {
-    if (Expenses === "0") {
-      setExpenses("");
-    }
-  };
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const user = auth.currentUser;
   async function add() {
     const realm = await getRealm();
-    const numericExpense = parseFloat(Expenses.replace("$", "") || "0") / convertRate;
-    if (numericExpense === 0) {
-      setExpenseError("Add amount");
+    const numericIncome = parseFloat(Income.replace("$", "") || "0") / convertRate;
+    if (numericIncome === 0) {
+      setIncomeError("Enter Amount");
       return;
     }
     if (selectedCategory === "Category") {
@@ -195,11 +176,11 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
     }
     const transaction = {
       _id: new Date().toISOString(),
-      amount: numericExpense,
+      amount: numericIncome,
       description: Description,
       category: selectedCategory,
       wallet: selectedWallet,
-      moneyCategory: "Expense",
+      moneyCategory: parameters.moneyCategory,
       Frequency: frequency,
       endAfter: endAfter || null,
       weekly: week.toString(),
@@ -211,9 +192,8 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
       Date: new Date().toISOString(),
       synced: false,
       type: localPath.type,
-      url: localPath.path || document,
+      url: localPath.path,
     };
-    console.log(transaction);
     try {
       if (realm) {
         realm.write(() => {
@@ -221,81 +201,52 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
           dispatch(addTransaction(transaction));
         });
       } else {
-        console.log("Realm is undefined");
+        console.warn("Realm instance is undefined.");
       }
     } catch (error) {
-      console.log(error, "1234");
+      console.log(error, 12335);
     }
-    const { isConnected } = await NetInfo.fetch();
-    if (isConnected) {
-      syncUnsyncedTransactions(); // Start syncing if online
-    }
-    const Budget = monthlyBudget.some((item) => item.category === selectedCategory);
-    if (Budget) {
-      const Budget = monthlyBudget.find((item) => item.category === selectedCategory);
-      if (
-        Budget.amountSpent + numericExpense >= (Budget.alertPercent / 100) * Budget.budgetvalue &&
-        Budget.notification === true &&
-        Budget.notified === false
-      ) {
-        updateBudgetDocument("Budgets", Budget.id, {
-          amount: Budget.budgetvalue,
-          category: Budget.category,
-          notification: Budget.notification,
-          percentage: Budget.alertPercent,
-          notified: true,
-        });
-        dispatch(
-          updateBudget({
-            amount: Budget.budgetvalue,
-            category: Budget.category,
-            notification: Budget.notification,
-            percentage: Budget.alertPercent,
-            notified: true,
-            id: Budget.id,
-          })
-        );
-        onDisplayNotification({
-          title: `${selectedCategory} budget has exceeded the percentage`,
-          body: `Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`,
-        });
-        AddNotification({
-          title: `${selectedCategory} budget has exceeded the percentage`,
-          body: `Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`,
-          date: new Date().toISOString(),
-          userId: user ? user.uid : "",
-        });
-      }
 
-      if (Budget) {
-        const Budget = monthlyBudget.find((item) => item.category === selectedCategory);
-        if (Budget.amountSpent + numericExpense >= Budget.budgetvalue && exceeded === true) {
-          onDisplayNotification({
-            title: `${selectedCategory} budget has exceeded the limit`,
-            body: `Your ${selectedCategory} budget has exceeded the limit i.e 100%`,
-          });
-          AddNotification({
-            title: `${selectedCategory} budget has exceeded the limit`,
-            body: `Your ${selectedCategory} budget has exceeded the limit i.e 100%`,
-            date: new Date().toISOString(),
-            userId: user ? user.uid : "",
-          });
-        }
+    if (isConnected) {
+      syncUnsyncedTransactions();
+    }
+
+    navigation.goBack();
+  }
+  async function editIncome() {
+    const realm = await getRealm();
+    const numericIncome = parseFloat(Income.replace("$", "") || "0") / convertRate;
+    const updateData = {
+      amount: numericIncome,
+      description: Description,
+      category: selectedCategory,
+      wallet: selectedWallet,
+      id: parameters.id,
+      moneyCategory: parameters.moneyCategory,
+      type: localPath.type,
+      url: localPath.path || document,
+      Frequency: frequency,
+      endAfter: endAfter || null,
+      weekly: week.toString(),
+      endDate: new Date(endDate).toISOString() || null,
+      repeat: Switchs,
+      startDate: startDate,
+      startMonth: month,
+      startYear: new Date().getFullYear(),
+      synced: false,
+    };
+    const { isConnected } = await NetInfo.fetch();
+    dispatch(updateTransaction(updateData));
+    if (user) {
+      if (realm) {
+        updateTransactionRealmAndFirestore(realm, user.uid, parameters.id, updateData, isConnected);
+      } else {
+        console.warn("Realm instance is undefined.");
       }
+    } else {
+      console.warn("User is not authenticated.");
     }
-    if (expenseAlert) {
-      onDisplayNotification({
-        title: `Added Expense`,
-        body: `You added an expense of ${selectedCategory} of amount ${Expenses}`,
-      });
-      AddNotification({
-        title: `Added Expense`,
-        body: `You added an expense of ${selectedCategory} of amount ${Expenses}`,
-        date: new Date().toISOString(),
-        userId: user ? user.uid : "",
-      });
-    }
-    setLoading(false);
+    navigation.goBack();
     navigation.goBack();
   }
   function opensModal() {
@@ -310,87 +261,38 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
     setEndDate(new Date());
     setendAfter("");
   }
-  const { t } = useTranslation();
-  async function editExpense() {
-    const realm = await getRealm();
-    const numericExpense = parseFloat(Expenses.replace("$", "") || "0") / convertRate;
-    const updateData = {
-      amount: numericExpense,
-      description: Description,
-      category: selectedCategory,
-      wallet: selectedWallet,
-      id: parameters.id,
-      moneyCategory: "Expense",
-      type: localPath.type,
-      url: localPath.path,
-      Frequency: frequency,
-      weekly: week.toString(),
-      endDate: new Date(endDate).toISOString() || null,
-      repeat: Switchs,
-      startDate: startDate,
-      startMonth: month,
-      startYear: new Date().getFullYear(),
-      synced: false,
-      endAfter: endAfter || null,
-    };
-    const { isConnected } = await NetInfo.fetch();
-    dispatch(updateTransaction(updateData));
-    if (realm) {
-      updateTransactionRealmAndFirestore(realm, user?.uid ?? "", parameters.id, updateData, isConnected);
-    } else {
-      console.error("Realm is undefined, cannot update transaction.");
-    }
-    navigation.goBack();
-    navigation.goBack();
-  }
-  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
-  if (loading) {
-    return (
-      <View
-        style={{ flex: 1, backgroundColor: "rgba(228, 225, 225, 0.5)", alignItems: "center", justifyContent: "center" }}
-      >
-        <ActivityIndicator size="large" color="rgba(253, 60, 74, 1)" />
-      </View>
-    );
-  }
   return (
     <View style={styles.container}>
-      <Header title={t("Expense")} press={() => navigation.goBack()} bgcolor="rgba(253, 60, 74, 1)" color="white" />
+      <Header
+        title={t(parameters.moneyCategory)}
+        press={() => navigation.goBack()}
+        bgcolor={parameters.bg}
+        color="white"
+      />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-            <View style={[styles.add, { backgroundColor: "rgba(253, 60, 74, 1)" }]}>
+            <View style={[styles.add, { backgroundColor: parameters.bg }]}>
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
                 <View style={{ flexDirection: "row" }}>
                   <Text style={styles.amount}>{currencies[currency]}</Text>
                   <TouchableOpacity activeOpacity={1} style={{ width: "90%" }}>
                     <TextInput
-                      value={Expenses}
+                      value={Income}
                       keyboardType="numeric"
-                      onChangeText={handleExpenseChange}
+                      onChangeText={handleIncomeChange}
                       style={styles.amount}
                       onFocus={handleFocus}
                     ></TextInput>
                   </TouchableOpacity>
                 </View>
-                {expenseError !== "" && (
-                  <Text
-                    style={{
-                      color: "rgb(246, 246, 246)",
-                      marginTop: 4,
-                      marginLeft: 10,
-                      fontFamily: "Inter",
-                    }}
-                  >
-                    *{expenseError}
-                  </Text>
-                )}
+                {incomeError !== "" && <Text style={styles.error}>*{incomeError}</Text>}
               </View>
               <View style={[styles.selection]}>
                 <DropdownComponent
-                  data={category}
+                  data={parameters.categoryData}
                   value={selectedCategory}
                   name={t(parameters.category)}
                   styleButton={styles.textinput}
@@ -401,42 +303,17 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
                   position="bottom"
                   height={180}
                 />
-                {categoryError !== "" && (
-                  <Text
-                    style={{
-                      color: "rgb(255, 0, 17)",
-                      marginTop: 4,
-                      marginLeft: 10,
-                      fontFamily: "Inter",
-                      width: "90%",
-                    }}
-                  >
-                    *{categoryError}
-                  </Text>
-                )}
+                {categoryError !== "" && <Text style={styles.error}>*{categoryError}</Text>}
                 <Input
                   title={t(StringConstants.Description)}
-                  color="rgb(56, 88, 85)"
+                  color="black"
                   css={styles.textinput}
                   isPass={false}
                   name={Description}
                   onchange={setDescription}
                   handleFocus={handleDescriptionChange}
                 />
-                {descriptionError !== "" && (
-                  <Text
-                    style={{
-                      color: "rgb(255, 0, 17)",
-                      marginTop: 4,
-                      marginLeft: 10,
-                      fontFamily: "Inter",
-                      width: "90%",
-                    }}
-                  >
-                    *{descriptionError}
-                  </Text>
-                )}
-
+                {descriptionError !== "" && <Text style={styles.error}>*{descriptionError}</Text>}
                 <DropdownComponent
                   data={wallet}
                   value={selectedWallet}
@@ -449,27 +326,9 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
                   position="bottom"
                   height={180}
                 />
-                {walletError !== "" && (
-                  <Text
-                    style={{
-                      color: "rgb(255, 0, 17)",
-                      marginTop: 4,
-                      marginLeft: 10,
-                      fontFamily: "Inter",
-                      width: "90%",
-                    }}
-                  >
-                    *{walletError}
-                  </Text>
-                )}
+                {walletError !== "" && <Text style={styles.error}>*{walletError}</Text>}
                 {showAttach && (
-                  <TouchableOpacity
-                    onPress={toggleModal}
-                    style={[
-                      styles.textinput,
-                      { borderStyle: "dashed", alignItems: "center", flexDirection: "row", justifyContent: "center" },
-                    ]}
-                  >
+                  <TouchableOpacity onPress={toggleModal} style={styles.attachment}>
                     <Entypo name="attachment" size={24} color={colors.color} />
                     <Text style={{ color: colors.color }}>{t(StringConstants.Addattachment)}</Text>
                   </TouchableOpacity>
@@ -479,7 +338,7 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
                     <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
                     {close && (
                       <>
-                        {(!!image || !photo) && (
+                        {(!!image || !!photo) && (
                           <TouchableOpacity
                             style={{
                               position: "absolute",
@@ -495,14 +354,13 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
                               setclose(false);
                             }}
                           >
-                            <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
+                            <Image style={{ width: 15, height: 15 }} source={require("../../../assets/close.png")} />
                           </TouchableOpacity>
                         )}
                       </>
                     )}
                   </View>
                 )}
-
                 {localPath.type === "document" && document && (
                   <View
                     style={{
@@ -513,7 +371,7 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
                       height: "10%",
                       alignItems: "center",
                       justifyContent: "center",
-                      backgroundColor: "rgba(205, 153, 141, 0.13)",
+                      backgroundColor: "rgba(220, 234, 233, 0.6)",
                     }}
                   >
                     <TouchableOpacity onPress={() => openDocument()}>
@@ -536,7 +394,7 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
                               setclose(false);
                             }}
                           >
-                            <Image style={{ width: 15, height: 15 }} source={require("../../../../assets/close.png")} />
+                            <Image style={{ width: 15, height: 15 }} source={require("../../../assets/close.png")} />
                           </TouchableOpacity>
                         )}
                       </>
@@ -550,35 +408,34 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
                   </View>
                   <View style={styles.switch}>
                     <Switch
-                      trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgba(253, 60, 74, 1)" }}
+                      trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: parameters.bg }}
                       value={Switchs}
                       thumbColor={"white"}
                       onValueChange={opensModal}
                     />
                   </View>
                 </View>
-                {Switchs && (
-                  <FrequencyModal
-                    frequency={frequency}
-                    setFrequency={setFrequency}
-                    endAfter={endAfter}
-                    setendAfter={setendAfter}
-                    color="rgba(253, 60, 74, 1)"
-                    month={month}
-                    setMonth={setMonth}
-                    week={week}
-                    setWeek={setWeek}
-                    startDate={startDate}
-                    setStartDate={setStartDate}
-                    endDate={endDate}
-                    setEndDate={setEndDate}
-                    Frequencymodal={Frequencymodal}
-                    setFrequencyModal={setFrequencymodal}
-                    setswitch={setSwitchs}
-                    edit={parameters.edit}
-                  />
-                )}
-                {Switchs && (
+                <FrequencyModal
+                  frequency={frequency}
+                  setFrequency={setFrequency}
+                  endAfter={endAfter}
+                  setendAfter={setendAfter}
+                  color={parameters.bg}
+                  month={month}
+                  setMonth={setMonth}
+                  week={week}
+                  setWeek={setWeek}
+                  startDate={startDate}
+                  setStartDate={setStartDate}
+                  endDate={endDate}
+                  setEndDate={setEndDate}
+                  Frequencymodal={Frequencymodal}
+                  setFrequencyModal={setFrequencymodal}
+                  setswitch={setSwitchs}
+                  edit={parameters.edit}
+                />
+
+                {Switchs && frequency != "" && endAfter != "" && (
                   <View
                     style={{
                       width: "100%",
@@ -621,9 +478,9 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
                 )}
                 <CustomButton
                   title={t(StringConstants.Continue)}
-                  bg="rgba(253, 60, 74, 1)"
+                  bg={parameters.bg}
                   color="white"
-                  press={parameters.edit ? editExpense : add}
+                  press={parameters.edit ? editIncome : add}
                 />
               </View>
             </View>
@@ -639,7 +496,7 @@ export default function Expense({ navigation, route }: Readonly<Props>) {
                       setImage={setImage}
                       setclose={setclose}
                       setDocument={setDocument}
-                      modalItems={modal}
+                      modalItems={parameters.modal}
                       close={close}
                       setlocalPath={setlocalPath}
                     />

@@ -135,7 +135,7 @@ export default function Profile({ navigation }: Readonly<Props>) {
     seteditProfile(!editProfile);
 
     let imageurl = modalPhoto;
-    if (typeof modalPhoto === "object" && modalPhoto.uri && modalPhoto.uri.startsWith("file://")) {
+    if (modalPhoto?.uri?.startsWith("file://")) {
       const uploaded = await uploadImage(modalPhoto.uri);
       imageurl = uploaded ?? "";
     }

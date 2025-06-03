@@ -11,10 +11,7 @@ export const getStyles = (colors: any) =>
       flexDirection: "row",
       justifyContent: "center",
       alignItems: "center",
-      // backgroundColor: "rgba(252, 252, 255, 0.45)",
       padding: 10,
-
-      //marginTop: 10,
     },
     userphoto: {
       flex: 0.25,

@@ -2,6 +2,9 @@
 import Realm, { type Configuration } from "realm";
 import { BudgetSchema, TransactionSchema } from "./Schema";
 import { uploadImage } from "../Screens/Constants";
+import NetInfo from "@react-native-community/netinfo";
+import { db } from "../Screens/FirebaseConfig";
+import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
 
 let realm: Realm | null = null;
 
@@ -29,9 +32,6 @@ export const deleteRealmDatabase = async () => {
   }
 };
 
-import NetInfo from "@react-native-community/netinfo";
-import { db } from "../Screens/FirebaseConfig";
-import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
 export const markPendingDeleteOrDelete = async (realm: any, _id: string) => {
   const transaction = realm.objectForPrimaryKey("Transaction", _id);
 
@@ -112,6 +112,7 @@ interface TransType {
   endDate: string | null;
   synced: boolean;
   pendingUpdate: boolean;
+  type: SVGStringList;
 }
 
 export async function updateTransactionRealmAndFirestore(
@@ -153,7 +154,9 @@ export async function updateTransactionRealmAndFirestore(
         startYear: updatedData.startYear,
         endAfter: updatedData.endAfter,
         endDate: updatedData.endDate,
+        type: updatedData.type,
       };
+      console.log(Data);
       const q = query(collection(db, "Transactions"), where("_id", "==", transactionId));
       const querySnapshot = await getDocs(q);
       const docSnap = querySnapshot.docs[0];

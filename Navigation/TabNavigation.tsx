@@ -28,6 +28,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
+  const now = new Date();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("state", () => {
@@ -58,10 +59,21 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
     </TouchableOpacity>
   );
 
-  const now = new Date();
-  const sharedTransactionParams = {
+  const getTransactionProps = ({
+    moneyCategory,
+    categoryData,
+    modal,
+    bg,
+  }: {
+    moneyCategory: string;
+    categoryData: { label: string; value: string }[];
+    modal: any[];
+    bg: string;
+  }) => ({
     amount: 0,
     category: "Category",
+    categoryData,
+    modal,
     edit: false,
     title: "",
     wallet: "Wallet",
@@ -74,7 +86,38 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
     startMonth: now.getMonth(),
     weekly: now.getDay().toString(),
     type: "",
-  };
+    bg,
+    moneyCategory,
+  });
+
+  const expenseProps = getTransactionProps({
+    moneyCategory: "Expense",
+    categoryData: [
+      { label: "Shopping", value: "Shopping" },
+      { label: "Food", value: "Food" },
+      { label: "Entertainment", value: "Entertainment" },
+      { label: "Subscription", value: "Subscription" },
+      { label: "Transportation", value: "Transportation" },
+      { label: "Bills", value: "Bills" },
+      { label: "Miscellaneous", value: "Miscellaneous" },
+    ],
+    modal: [
+      require("../assets/CameraRed.png"),
+      require("../assets/ImageRed.png"),
+      require("../assets/DocumentRed.png"),
+    ],
+    bg: "rgb(255, 0, 17)",
+  });
+
+  const incomeProps = getTransactionProps({
+    moneyCategory: "Income",
+    categoryData: [
+      { label: "Salary", value: "Salary" },
+      { label: "Passive Income", value: "Passive Income" },
+    ],
+    modal: [require("../assets/Camera.png"), require("../assets/Image.png"), require("../assets/Document.png")],
+    bg: "rgba(0, 168, 107, 1)",
+  });
 
   return (
     <CurvedBottomBarExpo.Navigator
@@ -120,14 +163,14 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("Expense", sharedTransactionParams)}
+                  onPress={() => navigation.navigate("Transaction", expenseProps)}
                   style={[styles.actionButton, { bottom: 55, left: 55 }]}
                 >
                   <Expense />
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("Income", sharedTransactionParams)}
+                  onPress={() => navigation.navigate("Transaction", incomeProps)}
                   style={[styles.actionButton, { bottom: 55, right: 55 }]}
                 >
                   <Income />

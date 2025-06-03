@@ -1,3 +1,4 @@
+// Cleaned-up Home.tsx
 import React, { useEffect, useMemo, useState, useContext } from "react";
 import {
   View,
@@ -29,153 +30,189 @@ import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext
 import { getStyles } from "./styles";
 import Expense from "../../../../assets/ExpenseHome.svg";
 import Income from "../../../../assets/IncomeHome.svg";
+
 export default function Home({ navigation }: Readonly<Props>) {
+  const { t } = useTranslation();
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
+  const styles = getStyles(colors);
+
+  // Redux State
   const user = useSelector((state: RootState) => state.Money.signup);
-  const lang = [
-    { name: "Arabic", code: "AR", tc: "ar" },
-    { name: "Chinese", code: "ZH", tc: "zh" },
-    { name: "English", code: "EN", tc: "en" },
-    { name: "Italian", code: "IT", tc: "it" },
-    { name: "Spanish", code: "ES", tc: "es" },
-    { name: "Hindi", code: "HI", tc: "hi" },
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
+  const language = useSelector((state: RootState) => state.Money.preferences.language);
+  const transaction = useSelector(selectTransactions);
+  const monthlyincome: { [key: string]: number } = useSelector(selectMonthlyIncomeTotals);
+  const monthlyexpense: { [key: string]: number } = useSelector(selectMonthlyExpenseTotals);
+  const Rates = useSelector((state: RootState) => state.Rates);
+  const badgeCount = useSelector((state: RootState) => state.Money.badgeCount);
+  const loading = useSelector((state: RootState) => state.Money.loading);
+
+  // State
+  const [selectedMonth_Year, setselectedMonth_Year] = useState(new Date());
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [show, setShow] = useState(false);
+  const [photo, setPhoto] = useState<string | { uri: string } | number>(""); // number for require()
+
+  const today = new Date(selectedMonth_Year);
+  const langList = [
+    { name: "Arabic", tc: "ar" },
+    { name: "Chinese", tc: "zh" },
+    { name: "English", tc: "en" },
+    { name: "Italian", tc: "it" },
+    { name: "Spanish", tc: "es" },
+    { name: "Hindi", tc: "hi" },
   ];
-  async function getData() {
-    if (typeof user?.Photo.uri === "number") {
-      setPhoto(profilepics[user?.index]);
-    } else {
-      setPhoto(user?.Photo);
-    }
-    if (user?.Photo.uri === null) {
-      setPhoto(require("../../../../assets/user.png"));
-    }
-  }
+  const langindex = langList.find((item) => item.name === language);
+  const convertRate = currency === "USD" ? 1 : Rates.Rate[currency];
+  const height = Dimensions.get("window").height * 0.2;
+  const Flat = ["Today", "Week", "Month", "Year"];
+
+  // Calculate income/expense
+  const selectedKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+  const income = monthlyincome[selectedKey] || 0;
+  const expense = monthlyexpense[selectedKey] || 0;
+  const accountBalance = (94500 + income - expense) * convertRate;
+
+  // Handle profile photo
   useEffect(() => {
-    getData();
+    if (typeof user?.Photo.uri === "number") {
+      setPhoto(user.index != null ? profilepics[user.index] : require("../../../../assets/user.png"));
+    } else if (!user?.Photo?.uri) {
+      setPhoto(require("../../../../assets/user.png"));
+    } else {
+      setPhoto(user.Photo);
+    }
   }, [navigation, user]);
+
   useTransactionListener();
   useBudgetListener();
   useNotificationListener();
-  const language = useSelector((state: RootState) => state.Money.preferences.language);
-  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
-  const [photo, setPhoto] = useState("");
-  const height = Dimensions.get("window").height * 0.2;
-  const { t } = useTranslation();
-  const Flat = ["Today", "Week", "Month", "Year"];
-  const Rates = useSelector((state: RootState) => state.Rates);
-  const [selectedMonth_Year, setselectedMonth_Year] = useState(new Date());
-  const [show, setShow] = useState(false);
-  const today = new Date(selectedMonth_Year);
-  let convertRate;
-  if (currency === "USD") {
-    convertRate = 1;
-  } else {
-    convertRate = Rates.Rate[currency];
-  }
-  const transaction = useSelector(selectTransactions);
-  const currentDate = new Date();
-  const monthlyincome: { [key: string]: number } = useSelector(selectMonthlyIncomeTotals);
-  const monthlyexpense: { [key: string]: number } = useSelector(selectMonthlyExpenseTotals);
-  const selectedKey = `${selectedMonth_Year.getFullYear()}-${String(selectedMonth_Year.getMonth() + 1).padStart(
-    2,
-    "0"
-  )}`;
-  const income = monthlyincome[selectedKey] || 0;
-  const expense = monthlyexpense[selectedKey] || 0;
-  const filteredAndSortedTransactions = [...transaction]
-    .filter((item) => new Date(item.Date) <= currentDate)
-    .sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime());
-  const { colors } = useContext(ThemeContext) as ThemeContextType;
-  const badgeCount = useSelector((state: RootState) => state.Money.badgeCount);
+
+  const filteredAndSortedTransactions = useMemo(
+    () =>
+      [...transaction]
+        .filter((item) => new Date(item.Date) <= new Date())
+        .sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime()),
+    [transaction]
+  );
+
   const GraphExpenses = useMemo(() => {
-    const expense = transaction.filter(
+    const expenses = transaction.filter(
       (item) =>
         (item.moneyCategory === "Expense" || item.moneyCategory === "Transfer") && new Date(item.Date) <= new Date()
     );
+
     const mapToAmountAndDate = (items: any[]) =>
       items
-        .map((item) => ({
-          value: item.amount,
-          date: new Date(item.Date),
-        }))
+        .map((item) => ({ value: item.amount, date: new Date(item.Date) }))
         .sort((a, b) => a.date.getTime() - b.date.getTime());
 
-    switch (Flat[selectedIndex ?? 0]) {
+    const filterBy = Flat[selectedIndex];
+
+    const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
+
+    switch (filterBy) {
       case "Today":
         return mapToAmountAndDate(
-          expense.filter((item) => {
-            const itemDate = new Date(item.Date);
-            return (
-              itemDate.getDate() === new Date().getDate() &&
-              itemDate.getMonth() === today.getMonth() &&
-              itemDate.getFullYear() === today.getFullYear()
-            );
+          expenses.filter((item) => {
+            const d = new Date(item.Date);
+            return d.toDateString() === todayDate.toDateString();
           })
         );
-
       case "Week": {
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(new Date().getDate() - 6);
+        const sevenDaysAgo = new Date(todayDate);
+        sevenDaysAgo.setDate(todayDate.getDate() - 6);
         return mapToAmountAndDate(
-          expense.filter((item) => {
-            const itemDate = new Date(item.Date);
-            itemDate.setHours(0, 0, 0, 0);
-            return itemDate >= sevenDaysAgo && itemDate <= new Date() && itemDate.getMonth() === today.getMonth();
+          expenses.filter((item) => {
+            const d = new Date(item.Date);
+            return d >= sevenDaysAgo && d <= todayDate;
           })
         );
       }
 
       case "Month":
         return mapToAmountAndDate(
-          expense.filter((item) => {
-            const itemDate = new Date(item.Date);
-            return itemDate.getMonth() === today.getMonth() && itemDate.getFullYear() === today.getFullYear();
+          expenses.filter((item) => {
+            const d = new Date(item.Date);
+            return d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
           })
         );
       case "Year":
-        return mapToAmountAndDate(
-          expense.filter((item) => {
-            const itemDate = new Date(item.Date);
-            return itemDate.getFullYear() === today.getFullYear();
-          })
-        );
-
+        return mapToAmountAndDate(expenses.filter((item) => new Date(item.Date).getFullYear() === today.getFullYear()));
       default:
         return [];
     }
-  }, [filteredAndSortedTransactions, selectedIndex, selectedMonth_Year]);
-  const langindex = lang.find((item) => item.name === language);
-  const loading = useSelector((state: RootState) => state.Money.loading);
-  const onValueChange = (event: string, newDate?: Date) => {
-    const isAndroid = Platform.OS === "android";
+  }, [transaction, selectedIndex, selectedMonth_Year]);
 
-    if (isAndroid) {
-      if (event === "dateSetAction" && newDate) {
-        setselectedMonth_Year(newDate);
-      }
+  const onValueChange = (event: string, newDate?: Date) => {
+    if (Platform.OS === "android") {
+      if (event === "dateSetAction" && newDate) setselectedMonth_Year(newDate);
       setShow(false);
-    } else if (newDate) {
-      setselectedMonth_Year(newDate);
-    }
+    } else if (newDate) setselectedMonth_Year(newDate);
   };
-  if (loading)
+
+  const openTransaction = (moneyCategory: "Income" | "Expense") => {
+    const isIncome = moneyCategory === "Income";
+    navigation.navigate("Transaction", {
+      amount: 0,
+      category: "Category",
+      categoryData: isIncome
+        ? [
+            { value: "Salary", label: "Salary" },
+            { value: "Passive Income", label: "Passive Income" },
+          ]
+        : [
+            { label: "Shopping", value: "Shopping" },
+            { label: "Food", value: "Food" },
+            { label: "Entertainment", value: "Entertainment" },
+            { label: "Subscription", value: "Subscription" },
+            { label: "Transportation", value: "Transportation" },
+            { label: "Bills", value: "Bills" },
+            { label: "Miscellaneous", value: "Miscellaneous" },
+          ],
+      modal: isIncome
+        ? [
+            require("../../../../assets/Camera.png"),
+            require("../../../../assets/Image.png"),
+            require("../../../../assets/Document.png"),
+          ]
+        : [
+            require("../../../../assets/CameraRed.png"),
+            require("../../../../assets/ImageRed.png"),
+            require("../../../../assets/DocumentRed.png"),
+          ],
+      edit: false,
+      title: "",
+      wallet: "Wallet",
+      url: "",
+      frequency: "",
+      endDate: new Date().toISOString(),
+      endAfter: "",
+      repeat: false,
+      startDate: today.getDate(),
+      startMonth: today.getMonth(),
+      weekly: today.getDay().toString(),
+      type: "",
+      bg: isIncome ? "rgba(0, 168, 107, 1)" : "rgb(255, 0, 17)",
+      moneyCategory,
+    });
+  };
+
+  if (loading) {
     return (
       <View
-        style={{
-          height: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: colors.backgroundColor,
-        }}
+        style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: colors.backgroundColor }}
       >
         <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
       </View>
     );
-  const styles = getStyles(colors);
+  }
+
   return (
     <View style={{ flex: 1 }}>
-      <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
-      <SafeAreaView style={[styles.container]}>
+      <StatusBar translucent backgroundColor="black" barStyle="default" />
+      <SafeAreaView style={styles.container}>
         <LinearGradient colors={colors.LinearGradient} style={styles.homeHeadgradient}>
           {badgeCount > 0 && (
             <View style={styles.badgeCount}>
@@ -183,8 +220,8 @@ export default function Home({ navigation }: Readonly<Props>) {
             </View>
           )}
           <TouchableOpacity
-            onPress={() => navigation.navigate("DisplayNotification")}
             style={{ position: "absolute", right: "6%", top: "8%" }}
+            onPress={() => navigation.navigate("DisplayNotification")}
           >
             <Ionicons name="notifications" size={28} color={colors.textcolor} />
           </TouchableOpacity>
@@ -196,7 +233,7 @@ export default function Home({ navigation }: Readonly<Props>) {
           </TouchableOpacity>
           <TouchableOpacity style={styles.homeMonth} onPress={() => setShow(true)}>
             <Text style={styles.MonthText}>
-              {t(Month[new Date(selectedMonth_Year).getMonth()])} {new Date(selectedMonth_Year).getFullYear()}
+              {t(Month[today.getMonth()])} {today.getFullYear()}
             </Text>
             <Image style={styles.homeArrow} source={require("../../../../assets/arrowDown.png")} />
           </TouchableOpacity>
@@ -205,7 +242,7 @@ export default function Home({ navigation }: Readonly<Props>) {
               onChange={onValueChange}
               value={selectedMonth_Year}
               minimumDate={new Date(2020, 1)}
-              maximumDate={new Date(new Date().getFullYear(), new Date().getMonth(), 1)}
+              maximumDate={new Date()}
               locale={langindex?.tc}
               mode="short"
             />
@@ -214,66 +251,26 @@ export default function Home({ navigation }: Readonly<Props>) {
             <Text style={styles.username}>{t(StringConstants.AccountBalance)}</Text>
             <Text style={styles.heading}>
               {currencies[currency]}
-              {((94500 + income - expense) * convertRate).toFixed(2)}
+              {accountBalance.toFixed(2)}
             </Text>
           </View>
           <View style={styles.homeHeadView}>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("Income", {
-                  amount: 0,
-                  category: "Category",
-                  edit: false,
-                  title: "",
-                  wallet: "Wallet",
-                  url: "",
-                  frequency: "",
-                  endDate: new Date().toISOString(),
-                  endAfter: "",
-                  repeat: false,
-                  startDate: new Date().getDate(),
-                  startMonth: new Date().getMonth(),
-                  weekly: "",
-                  type: "",
-                })
-              }
               style={[styles.headButton, { backgroundColor: "rgba(0, 168, 107, 1)" }]}
+              onPress={() => openTransaction("Income")}
             >
               <Income />
               <View style={{ padding: 5 }}>
                 <Text style={styles.homeTitle}>{t(StringConstants.Income)}</Text>
-                <Text
-                  style={{
-                    fontSize: Platform.OS === "ios" ? 21 : 18,
-                    color: "white",
-                    fontWeight: "bold",
-                  }}
-                >
+                <Text style={{ fontSize: Platform.OS === "ios" ? 21 : 18, color: "white", fontWeight: "bold" }}>
                   {currencies[currency]}
                   {(income * convertRate).toFixed(2)}
                 </Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("Expense", {
-                  amount: 0,
-                  category: "Category",
-                  edit: false,
-                  title: "",
-                  wallet: "Wallet",
-                  url: "",
-                  frequency: "",
-                  endDate: new Date().toISOString(),
-                  endAfter: "",
-                  repeat: false,
-                  startDate: new Date().getDate(),
-                  startMonth: new Date().getMonth(),
-                  weekly: "",
-                  type: "",
-                })
-              }
               style={[styles.headButton, { backgroundColor: "rgba(253, 60, 74, 1)" }]}
+              onPress={() => openTransaction("Expense")}
             >
               <Expense />
               <View style={{ padding: 5 }}>
@@ -286,10 +283,12 @@ export default function Home({ navigation }: Readonly<Props>) {
             </TouchableOpacity>
           </View>
         </LinearGradient>
+
         <View style={styles.linechart}>
           <Text style={styles.notiTitle}>{t(StringConstants.SpendFrequency)}</Text>
           <Linearchart data={GraphExpenses} height={height} />
         </View>
+
         <View style={{ flex: 0.4, alignItems: "center" }}>
           <View style={{ width: "100%", height: "13%", alignItems: "center" }}>
             <FlatList
@@ -311,25 +310,18 @@ export default function Home({ navigation }: Readonly<Props>) {
                   </TouchableOpacity>
                 );
               }}
-            ></FlatList>
+            />
           </View>
+
           <View style={styles.filterRecent}>
             <Text style={styles.notiTitle}>{t(StringConstants.RecentTransaction)}</Text>
             <TouchableOpacity style={styles.reset} onPress={() => navigation.navigate("Transactions")}>
               <Text style={[styles.homeTitle, { color: "rgb(42, 124, 118)" }]}>{t(StringConstants.SeeAll)}</Text>
             </TouchableOpacity>
           </View>
-          {/* <TransactionList data={sortedTransactions.slice(0,3)}/> */}
+
           {filteredAndSortedTransactions.length === 0 ? (
-            <View
-              style={{
-                flex: 0.6,
-                justifyContent: "center",
-                alignItems: "center",
-                width: "90%",
-                // backgroundColor: "pink",
-              }}
-            >
+            <View style={{ flex: 0.6, justifyContent: "center", alignItems: "center", width: "90%" }}>
               <Text style={styles.budgetText}>
                 {t("Start tracking your finances by making your first transaction.")}
               </Text>

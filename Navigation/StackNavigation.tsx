@@ -23,8 +23,7 @@ import DetailTransaction_Expense, {
   DetailTransaction_Transfer,
 } from "../Screens/DrawerScreens/Home/DetailTransaction/DetailTransaction";
 import CreateBudget from "../Screens/DrawerScreens/Budget/CreateBudget/CreateBudget";
-import Expense from "../Screens/DrawerScreens/Home/Expense/Expense";
-import Income from "../Screens/DrawerScreens/Home/Income/Income";
+
 import Transfer from "../Screens/DrawerScreens/Home/Transfer/Transfer";
 import FinancialReportExpense, {
   FinancialReportBudget,
@@ -46,6 +45,7 @@ import AboutUs from "../Screens/DrawerScreens/Profile/Settings/About/About";
 import HelpScreen from "../Screens/DrawerScreens/Profile/Settings/Help/Help";
 import Tutorial from "../Screens/DrawerScreens/Profile/Settings/Help/Tutorial";
 import ForgotPin from "../Screens/DrawerScreens/Home/ForgotPin/ForgotPin";
+import Transaction from "../Screens/DrawerScreens/Home/Transaction";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
@@ -90,8 +90,6 @@ export function TabScreens({ initial = "EnterPin" }: Readonly<{ initial?: keyof 
       <Stack.Screen name="Language" component={Language} />
       <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="CreateBudget" component={CreateBudget} />
-      <Stack.Screen name="Expense" component={Expense} />
-      <Stack.Screen name="Income" component={Income} />
       <Stack.Screen name="Transfer" component={Transfer} />
       <Stack.Screen name="FinancialReportExpense" component={FinancialReportExpense} />
       <Stack.Screen name="FinancialReportIncome" component={FinancialReportIncome} />
@@ -108,6 +106,7 @@ export function TabScreens({ initial = "EnterPin" }: Readonly<{ initial?: keyof 
       <Stack.Screen name="Help" component={HelpScreen} />
       <Stack.Screen name="Tutorial" component={Tutorial} />
       <Stack.Screen name="ForgotPin" component={ForgotPin} />
+      <Stack.Screen name="Transaction" component={Transaction} />
     </Stack2.Navigator>
   );
 }

@@ -120,7 +120,7 @@ function DetailTransaction({
   const convertRate = Rates.Rate[currency];
   function EditTransaction() {
     if (type === "Income") {
-      navigation.navigate("Income", {
+      navigation.navigate("Transaction", {
         amount,
         title,
         category,
@@ -136,9 +136,20 @@ function DetailTransaction({
         startMonth,
         weekly,
         type: isDoument,
+        bg: "rgba(0, 168, 107, 1)",
+        moneyCategory: "Income",
+        categoryData: [
+          { value: "Salary", label: "Salary" },
+          { value: "Passive Income", label: "Passive Income" },
+        ],
+        modal: [
+          require("../../../../assets/Camera.png"),
+          require("../../../../assets/Image.png"),
+          require("../../../../assets/Document.png"),
+        ],
       });
     } else if (type === "Expense") {
-      navigation.navigate("Expense", {
+      navigation.navigate("Transaction", {
         amount,
         title,
         category,
@@ -154,6 +165,22 @@ function DetailTransaction({
         startMonth,
         weekly,
         type: isDoument,
+        bg: "rgba(253, 60, 74, 1)",
+        moneyCategory: "Expense",
+        modal: [
+          require("../../../../assets/CameraRed.png"),
+          require("../../../../assets/ImageRed.png"),
+          require("../../../../assets/DocumentRed.png"),
+        ],
+        categoryData: [
+          { label: "Shopping", value: "Shopping" },
+          { label: "Food", value: "Food" },
+          { label: "Entertainment", value: "Entertainment" },
+          { label: "Subscription", value: "Subscription" },
+          { label: "Transportation", value: "Transportation" },
+          { label: "Bills", value: "Bills" },
+          { label: "Miscellaneous", value: "Miscellaneous" },
+        ],
       });
     } else {
       navigation.navigate("Transfer", {
@@ -214,6 +241,7 @@ function DetailTransaction({
       setdocError(true);
     }
   };
+  console.log(uri, isDoument);
   return (
     <View style={styles.container}>
       <Header title={t("Detail Transaction")} press={() => navigation.goBack()} bgcolor={bg} color="white" />
@@ -353,7 +381,6 @@ export default function DetailTransaction_Expense({ navigation, route }: Readonl
 }
 export function DetailTransaction_Income({ navigation, route }: Readonly<Props>) {
   const { value } = route.params;
-  console.log(value);
   return (
     <DetailTransaction
       navigation={navigation}

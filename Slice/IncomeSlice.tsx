@@ -19,6 +19,7 @@ interface IncomeEntry {
   startYear?: string;
   url?: string;
   weekly?: string;
+  type?: string;
 }
 interface BudgetEntry {
   Date: string;
@@ -119,6 +120,7 @@ export const ExpenseTrackerSlice = createSlice({
         startMonth,
         startYear,
         endAfter,
+        type,
       } = action.payload;
 
       const index = state.amount.findIndex((item) => item._id === id);
@@ -126,6 +128,7 @@ export const ExpenseTrackerSlice = createSlice({
       if (index !== -1) {
         state.amount[index] = {
           ...state.amount[index], // Preserve other properties
+          type,
           amount,
           category,
           wallet,

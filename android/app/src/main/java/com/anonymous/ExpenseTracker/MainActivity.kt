@@ -33,7 +33,9 @@ override fun createReactActivityDelegate(): ReactActivityDelegate {
                         }
                         reactRootView.removeOnAttachStateChangeListener(this)
                     }
-                    override fun onViewDetachedFromWindow(v: android.view.View) {}
+                    override fun onViewDetachedFromWindow(v: android.view.View) {
+                      //was giving  error if was not mentioned
+                    }
                 })
 
                 return reactRootView

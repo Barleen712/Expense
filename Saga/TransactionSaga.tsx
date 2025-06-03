@@ -4,26 +4,43 @@ import { useEffect } from "react";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db, auth } from "../Screens/FirebaseConfig";
 import { saveToRealmIfNotExists } from "../Realm/realm";
+import { generateKey, decryptData } from "../Encryption/encrption";
+
+// Decryption helper
+const decryptTransaction = async (transaction, user) => {
+  const key = await generateKey(user.uid, user.providerId, 5000, 256);
+  const decrypted = await decryptData(transaction.encryptedData.cipher, key, transaction.encryptedData.iv);
+  return decrypted;
+};
+
 const useTransactionListener = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) return;
+
     dispatch(loadingTransaction(true));
+
     const q = query(collection(db, "Transactions"), where("userId", "==", user.uid));
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
       const data = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
-      // Dispatch each transaction separately
-      data.forEach((transaction) => {
-        dispatch(addTransaction(transaction));
-        saveToRealmIfNotExists(transaction);
-      });
+      for (const transaction of data) {
+        try {
+          const decrypted = await decryptTransaction(transaction, user);
+          const parsedData = JSON.parse(decrypted);
+          dispatch(addTransaction(parsedData));
+          saveToRealmIfNotExists(parsedData);
+        } catch (err) {
+          console.error("Decryption failed for transaction:", transaction.id, err);
+        }
+      }
+
       dispatch(loadingTransaction(false));
     });
 

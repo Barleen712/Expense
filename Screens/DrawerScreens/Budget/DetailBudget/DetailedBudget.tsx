@@ -14,7 +14,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { deleteBudget } from "../../../../Slice/IncomeSlice";
 import { useTranslation } from "react-i18next";
 import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
-import { getRealm } from "../../../../Realm/realm";
 import { markPendingDeleteOrDeleteBudget } from "../../../../Realm/Budgetrealm";
 import { RootState } from "../../../../Store/Store";
 type DetailedBudget = StackNavigationProp<StackParamList, "DetailBudget">;
@@ -40,8 +39,7 @@ export default function DetailedBudget({ navigation, route }: Readonly<Props>) {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   async function deleteBudgetFunction() {
-    const realm = await getRealm();
-    markPendingDeleteOrDeleteBudget(realm, index);
+    markPendingDeleteOrDeleteBudget(index);
     dispatch(deleteBudget(index));
   }
   const { t } = useTranslation();
