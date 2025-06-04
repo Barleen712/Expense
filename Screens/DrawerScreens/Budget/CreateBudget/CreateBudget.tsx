@@ -33,19 +33,7 @@ type CreateBudgetProp = StackNavigationProp<StackParamList, "CreateBudget">;
 
 interface Props {
   navigation: CreateBudgetProp;
-  route: {
-    params: {
-      value: number;
-      percentage: number;
-      alert: boolean;
-      edit: boolean;
-      category: string;
-      index: string;
-      header: string;
-      year: number;
-      month: number;
-    };
-  };
+  route: any;
 }
 const category = [
   { label: "Shopping", value: "Shopping" },
@@ -127,10 +115,14 @@ export default function CreateBudget({ navigation, route }: Readonly<Props>) {
     };
 
     try {
-      realm.write(() => {
-        realm.create("Budget", BudgetData);
-        dispatch(addBudget(BudgetData));
-      });
+      if (realm) {
+        realm.write(() => {
+          realm.create("Budget", BudgetData);
+          dispatch(addBudget(BudgetData));
+        });
+      } else {
+        console.log("Realm instance is undefined");
+      }
     } catch (error) {
       console.log(error, "1234");
     }
@@ -153,13 +145,7 @@ export default function CreateBudget({ navigation, route }: Readonly<Props>) {
       notified: false,
     };
     const { isConnected } = await NetInfo.fetch();
-    updateTransactionRealmAndFirestoreBudget(
-      realm,
-      user?.uid ? user.uid : "",
-      parameters.index ?? "",
-      updatedData,
-      isConnected
-    );
+    updateTransactionRealmAndFirestoreBudget(parameters.index ?? "", updatedData, isConnected);
     dispatch(
       updateBudget({
         category: selectedCategory,

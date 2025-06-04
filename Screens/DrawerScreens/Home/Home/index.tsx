@@ -126,7 +126,7 @@ export default function Home({ navigation }: Readonly<Props>) {
         return mapToAmountAndDate(
           expenses.filter((item) => {
             const d = new Date(item.Date);
-            return d >= sevenDaysAgo && d <= todayDate;
+            return d >= sevenDaysAgo && d <= new Date();
           })
         );
       }
@@ -208,7 +208,6 @@ export default function Home({ navigation }: Readonly<Props>) {
       </View>
     );
   }
-
   return (
     <View style={{ flex: 1 }}>
       <StatusBar translucent backgroundColor="black" barStyle="default" />

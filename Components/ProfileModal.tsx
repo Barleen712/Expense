@@ -34,6 +34,8 @@ interface ProfileModalProps {
   modalUser: string;
   setModalUser: (value: string) => void;
   saveChanges: () => void;
+  usernameError: string;
+  setusernameError: (value: string) => void;
 }
 const MemoizedImage = React.memo(({ source }: { source: ImageSourcePropType }) => {
   return (
@@ -114,6 +116,8 @@ function ProfileModal({
   modalUser,
   setModalUser,
   saveChanges,
+  usernameError,
+  setusernameError,
 }: Readonly<ProfileModalProps>) {
   const scrollRef = useRef<ScrollView>(null);
   const { colors } = useContext(ThemeContext) as ThemeContextType;
@@ -226,7 +230,10 @@ function ProfileModal({
                   value={modalUser}
                   maxLength={25}
                   onFocus={() => scrollRef.current?.scrollToEnd({ animated: true })}
-                  onChangeText={setModalUser}
+                  onChangeText={(text) => {
+                    setusernameError("");
+                    setModalUser(text);
+                  }}
                   style={{
                     fontFamily: "Inter",
                     fontWeight: "600",
@@ -237,6 +244,7 @@ function ProfileModal({
                   }}
                   placeholderTextColor="rgba(4, 73, 69, 0.38)"
                 />
+                {usernameError && <Text style={{ color: "red" }}>{usernameError}*</Text>}
               </View>
 
               <TouchableOpacity

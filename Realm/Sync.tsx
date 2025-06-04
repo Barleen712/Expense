@@ -33,14 +33,14 @@ export async function syncUnsyncedTransactions() {
       url: supabaseImageUrl,
       weekly: txn.weekly,
     };
-    const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
-    const encryptedData = await encryptData(JSON.stringify(txnData), key);
-    const Data = {
-      _id: txn._id,
-      userId: user.uid,
-      encryptedData,
-    };
-    const success = await AddTransaction(Data);
+    // const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
+    // const encryptedData = await encryptData(JSON.stringify(txnData), key);
+    // const Data = {
+    //   _id: txn._id,
+    //   userId: user.uid,
+    //   encryptedData,
+    // };
+    const success = await AddTransaction(txnData);
     if (success) {
       realm.write(() => {
         txn.synced = true;

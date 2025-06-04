@@ -32,10 +32,10 @@ const useTransactionListener = () => {
 
       for (const transaction of data) {
         try {
-          const decrypted = await decryptTransaction(transaction, user);
-          const parsedData = JSON.parse(decrypted);
-          dispatch(addTransaction(parsedData));
-          saveToRealmIfNotExists(parsedData);
+          // const decrypted = await decryptTransaction(transaction, user);
+          // const parsedData = JSON.parse(decrypted);
+          dispatch(addTransaction(transaction));
+          saveToRealmIfNotExists(transaction);
         } catch (err) {
           console.error("Decryption failed for transaction:", transaction.id, err);
         }

@@ -137,6 +137,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
       borderWidth={0}
       defaultScreenOptions={{ headerShown: false }}
       screenOptions={{ headerShown: false }}
+      screenListeners={() => ({})}
       renderCircle={() => (
         <Animated.View style={styles.btnCircleUp}>
           <TouchableOpacity style={styles.button} onPress={() => setIsExpanded((prev) => !prev)}>

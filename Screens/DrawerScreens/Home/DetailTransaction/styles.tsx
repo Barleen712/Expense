@@ -4,12 +4,13 @@ export const getStyles = (colors: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
-
+      alignItems: "center",
       backgroundColor: colors.backgroundColor,
       paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
     DetailHead: {
       flex: 0.25,
+      width: "100%",
       borderBottomLeftRadius: 30,
       borderBottomRightRadius: 30,
       alignItems: "center",
@@ -55,31 +56,28 @@ export const getStyles = (colors: any) =>
       backgroundColor: colors.backgroundColor,
       borderWidth: 0.5,
       flexDirection: "row",
-      position: "absolute",
-      top: "28%",
-      height: "9%",
-      left: "5%",
       alignItems: "center",
       justifyContent: "space-evenly",
-      paddingBottom: 10,
+      paddingBottom: "3%",
+      marginTop: "-10%",
     },
     type: {
       alignItems: "center",
-      height: "90%",
       justifyContent: "center",
+      width: "33%",
     },
     typeHead: {
       fontSize: 14,
       color: "rgba(145, 145, 159, 1)",
       padding: 5,
       fontWeight: "bold",
+      textAlignVertical: "center",
     },
     dashedline: {
       width: "100%",
       flex: 0.05,
       alignItems: "center",
       justifyContent: "center",
-      marginTop: Platform.OS === "ios" ? 38 : 30,
     },
     Description: {
       flex: 0.3,
@@ -104,10 +102,9 @@ export const getStyles = (colors: any) =>
     Trash: {
       position: "absolute",
       right: "3%",
-      top: "8%",
+      top: "5.5%",
       width: 32,
       height: 32,
-      // backgroundColor: "red",
     },
     Export1text: {
       textAlign: "center",

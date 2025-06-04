@@ -34,7 +34,7 @@ import TransferImg from "../../../../assets/transfer.svg";
 import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
 import NetInfo from "@react-native-community/netinfo";
 import { RootState } from "../../../../Store/Store";
-type IncomeProp = StackNavigationProp<StackParamList, "Income">;
+type IncomeProp = StackNavigationProp<StackParamList, "Transfer">;
 
 interface Props {
   navigation: IncomeProp;
@@ -53,7 +53,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
   const [close, setclose] = useState(url);
   const [document, setDocument] = useState<string | null>(url);
   const [photo, setPhoto] = useState<string | null>(null);
-  const [Transfer, setTransfer] = useState<string>(`${amount}`);
+  const [Transfer, setTransfer] = useState<string>(Number(amount).toFixed(2));
   const [From, setFrom] = useState(`${from}`);
   const [To, setTo] = useState(`${to}`);
   const [Description, setDescription] = useState(`${title}`);
@@ -126,7 +126,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
   };
 
   const handleFocus = () => {
-    if (Transfer === "0") {
+    if (Transfer === "0.00") {
       setTransfer("");
     }
   };
@@ -179,10 +179,14 @@ export default function Income({ navigation, route }: Readonly<Props>) {
     };
 
     try {
-      realm.write(() => {
-        realm.create("Transaction", transaction);
-        dispatch(addTransaction(transaction));
-      });
+      if (realm) {
+        realm.write(() => {
+          realm.create("Transaction", transaction);
+          dispatch(addTransaction(transaction));
+        });
+      } else {
+        console.log("Realm instance is undefined.");
+      }
     } catch (error) {
       console.log(error, "1234");
     }
@@ -218,7 +222,15 @@ export default function Income({ navigation, route }: Readonly<Props>) {
     };
     const { isConnected } = await NetInfo.fetch();
     dispatch(updateTransaction(updateData));
-    updateTransactionRealmAndFirestore(realm, user?.uid, id, updateData, isConnected);
+    if (realm) {
+      if (user?.uid) {
+        updateTransactionRealmAndFirestore(realm, user.uid, id, updateData, isConnected);
+      } else {
+        console.warn("User UID is undefined.");
+      }
+    } else {
+      console.warn("Realm instance is undefined.");
+    }
     navigation.goBack();
     navigation.goBack();
   }
@@ -288,6 +300,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
                       name={From}
                       onchange={setFrom}
                       handleFocus={handleToFromChange}
+                      limit={25}
                     />
                   </View>
                   <View style={{ width: "50%" }}>
@@ -299,6 +312,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
                       name={To}
                       onchange={setTo}
                       handleFocus={handleToFromChange}
+                      limit={25}
                     />
                   </View>
                   <TransferImg

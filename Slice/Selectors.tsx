@@ -83,18 +83,15 @@ const generateRepeats = (item, addedTime, todayISO) => {
 
 export const selectTransactions = createSelector([(state) => state.Money.amount], (transactions) => {
   const extendedTransactions = [];
-
   transactions.forEach((item) => {
     const addedDate = new Date(item.Date);
     const todayISO = addedDate.toISOString();
 
-    // Add the original transaction
     extendedTransactions.push({
       ...item,
       Date: todayISO,
     });
 
-    // Add repeated transactions if needed
     if (item.repeat && item.Frequency) {
       const repeats = generateRepeats(item, addedDate, todayISO);
       extendedTransactions.push(...repeats);

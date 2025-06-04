@@ -2,9 +2,12 @@ import React from "react";
 import { View, Button, Alert } from "react-native";
 import ReactNativeBiometrics, { FaceID } from "react-native-biometrics";
 import { changeSecurity, updatePreferences } from "../../../../../Slice/IncomeSlice";
+import { AppDispatch } from "../../../../../Store/Store";
+import { useDispatch } from "react-redux";
 const rnBiometrics = new ReactNativeBiometrics();
 
 const BiometricAuth = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const handleBiometricAuth = async () => {
     const { available, biometryType } = await rnBiometrics.isSensorAvailable();
     if (biometryType === FaceID) {

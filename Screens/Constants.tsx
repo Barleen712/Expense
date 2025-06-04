@@ -292,7 +292,7 @@ export const handleGoogleSignIn = async () => {
     };
   } catch (error: any) {
     console.error("Google Sign-In Error:", error);
-    Alert.alert("Error", error.message || "Google Sign-In failed");
+    // Alert.alert("Error", error.message || "Google Sign-In failed");
   }
 };
 const pics = {
@@ -312,7 +312,8 @@ export const FirebaseErrors: Record<string, string> = {
   done: " ✅ You have successfully registered",
   verify: "📧 Please check your inbox to verify your email.",
   fail: "⚠️ Email not verified. Please check your inbox.",
-  login: "✅ You have successfully logined",
+  login: "✅ You have successfully logged in ",
+  "no-data": "⚠️ Signup Failed",
 };
 export function raiseToast(type: string, text1: string, error: string) {
   Toast.show({

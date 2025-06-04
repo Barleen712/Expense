@@ -20,18 +20,7 @@ type DetailedBudget = StackNavigationProp<StackParamList, "DetailBudget">;
 
 interface Props {
   navigation: DetailedBudget;
-  route: {
-    params: {
-      category: string;
-      remaining: number;
-      progress: number;
-      exceeded: boolean;
-      index: string;
-      total: number;
-      percentage: number;
-      alert: boolean;
-    };
-  };
+  route: any;
 }
 const width = Dimensions.get("window").width - 60;
 export default function DetailedBudget({ navigation, route }: Readonly<Props>) {

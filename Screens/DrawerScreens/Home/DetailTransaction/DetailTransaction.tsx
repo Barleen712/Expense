@@ -185,8 +185,8 @@ function DetailTransaction({
     } else {
       navigation.navigate("Transfer", {
         amount,
-        to: category,
-        from: type,
+        to: wallet,
+        from: category,
         title: title,
         edit: true,
         id,
@@ -241,10 +241,12 @@ function DetailTransaction({
       setdocError(true);
     }
   };
-  console.log(uri, isDoument);
   return (
     <View style={styles.container}>
       <Header title={t("Detail Transaction")} press={() => navigation.goBack()} bgcolor={bg} color="white" />
+      <TouchableOpacity style={styles.Trash} onPress={toggleModal}>
+        <Image source={require("../../../../assets/trash.png")} />
+      </TouchableOpacity>
       <View style={[styles.DetailHead, { backgroundColor: bg }]}>
         <Text style={[styles.number, { fontWeight: "bold" }]}>
           {currencies[currency]}
@@ -258,11 +260,11 @@ function DetailTransaction({
           <Text style={styles.Export1text}>{t(type)}</Text>
         </View>
         <View style={styles.type}>
-          <Text style={styles.typeHead}>{t("Category")}</Text>
+          <Text style={styles.typeHead}>{type == "Transfer" ? "From" : "Category"}</Text>
           <Text style={styles.Export1text}>{t(category)}</Text>
         </View>
         <View style={styles.type}>
-          <Text style={[styles.typeHead]}>{t("Wallet")}</Text>
+          <Text style={[styles.typeHead]}>{type == "Transfer" ? "To" : "Wallet"}</Text>
           <Text style={styles.Export1text}>{t(wallet)}</Text>
         </View>
       </View>
@@ -326,9 +328,6 @@ function DetailTransaction({
       <View style={[styles.Apply, { flex: 0.12, justifyContent: "center" }]}>
         <CustomButton title={t("Edit")} bg={bg} color="white" press={EditTransaction} />
       </View>
-      <TouchableOpacity style={styles.Trash} onPress={toggleModal}>
-        <Image source={require("../../../../assets/trash.png")} />
-      </TouchableOpacity>
       <CustomModal
         visible={modalVisible}
         setVisible={() => setModalVisible(!modalVisible)}
@@ -417,9 +416,9 @@ export function DetailTransaction_Transfer({ navigation, route }: Readonly<Props
       color="rgba(115, 116, 119, 0.14)"
       amount={value.amount}
       time={value.Date}
-      type={From}
-      category={To}
-      wallet="Transfer"
+      type="Transfer"
+      category={From}
+      wallet={To}
       title={value.description}
       id={value._id}
       uri={value.url}

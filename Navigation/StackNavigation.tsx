@@ -46,10 +46,11 @@ import HelpScreen from "../Screens/DrawerScreens/Profile/Settings/Help/Help";
 import Tutorial from "../Screens/DrawerScreens/Profile/Settings/Help/Tutorial";
 import ForgotPin from "../Screens/DrawerScreens/Home/ForgotPin/ForgotPin";
 import Transaction from "../Screens/DrawerScreens/Home/Transaction";
+import { AppDispatch } from "../Store/Store";
 
 const Stack = createStackNavigator<StackParamList>();
 export default function Screens() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(loadPreferences());
   }, []);
@@ -69,7 +70,7 @@ export default function Screens() {
 }
 const Stack2 = createStackNavigator<StackParamList>();
 export function TabScreens({ initial = "EnterPin" }: Readonly<{ initial?: keyof StackParamList }>) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(fetchRates());
     dispatch(loadPreferences());

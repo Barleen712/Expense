@@ -25,11 +25,16 @@ interface Props {
 }
 export default function Setpin02({ navigation, route }: Readonly<Props>) {
   const [pin, setpin] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const dispatch = useDispatch();
   const handleClear = () => {
     setpin(pin.slice(0, pin.length - 1));
   };
   async function handlenext() {
+    if (isProcessing) return; // prevent re-entry
+
+    setIsProcessing(true);
     if (route.params.FirstPin === pin) {
       try {
         const user = await getUseNamerDocument();
@@ -58,8 +63,11 @@ export default function Setpin02({ navigation, route }: Readonly<Props>) {
       alert("PINS don't match. \nPlease Re-Enter your Pin");
       handleClear();
     }
+
     setpin("");
+    setIsProcessing(false);
   }
+
   const { t } = useTranslation();
   return (
     <View style={{ backgroundColor: "#2A7C76", flex: 1, alignItems: "center" }}>

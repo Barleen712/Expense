@@ -18,7 +18,6 @@ export default function Notification({ navigation }: Readonly<Props>) {
   const dispatch = useDispatch();
   const exceed = useSelector((state: RootState) => state.Money.exceedNotification);
   const expenseAlert = useSelector((state: RootState) => state.Money.expenseAlert);
-  const [Tips, setTips] = useState(false);
   const [Budget, setBudget] = useState(exceed);
   const [Expense, setExpense] = useState(expenseAlert);
   function exceedFunc() {
@@ -66,22 +65,6 @@ export default function Notification({ navigation }: Readonly<Props>) {
             value={Budget}
             thumbColor={"white"}
             onValueChange={exceedFunc}
-          />
-        </View>
-      </View>
-      <View style={styles.Line}></View>
-      <View style={styles.notiView}>
-        <View style={styles.noti}>
-          <Text style={styles.notiTitle}>Tips & Articles</Text>
-          <Text style={styles.notiDes}>Small & useful pieces of practical financial advice</Text>
-        </View>
-        <View>
-          <Switch
-            style={styles.switch}
-            trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgb(42, 124, 118)" }}
-            value={Tips}
-            thumbColor={"white"}
-            onValueChange={setTips}
           />
         </View>
       </View>

@@ -7,7 +7,7 @@ import StackParamList from "../../../../Navigation/StackList";
 import { getStyles } from "./style";
 import Header from "../../../../Components/Header";
 import { StringConstants } from "../../../Constants";
-import { ThemeContext } from "../../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { RootState } from "../../../../Store/Store";
 
 type SettingsProp = StackNavigationProp<StackParamList, "Settings">;
@@ -68,7 +68,7 @@ export default function Settings({ navigation }: Readonly<Props>) {
       navigateTo: "Help",
     },
   ];
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   const renderItem = ({ item }: { item: SettingItemType }) => (
     <View>

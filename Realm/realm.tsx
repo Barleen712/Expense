@@ -103,11 +103,11 @@ interface TransType {
   moneyCategory: string;
   url: string;
   Frequency: string;
-  endAfter: string;
+  endAfter: string | null;
   weekly: string;
-  repeat: string;
-  startDate: string;
-  startMonth: string;
+  repeat: boolean;
+  startDate: number;
+  startMonth: number;
   startYear: number;
   endDate: string | null;
   synced: boolean;

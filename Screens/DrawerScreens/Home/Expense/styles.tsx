@@ -26,6 +26,7 @@ export const getStyles = (colors: any) =>
       marginTop: 4,
       marginLeft: 10,
       fontFamily: "Inter",
+      width: "90%",
     },
     attachment: {
       width: "90%",

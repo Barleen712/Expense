@@ -116,7 +116,7 @@ const HelpScreen = ({ navigation }: Props) => {
           </View>
         </View>
 
-        <Text style={styles.footer}>Version 1.0.0 • Privacy Policy</Text>
+        <Text style={styles.footer}>Version 1.0.0</Text>
       </ScrollView>
     </View>
   );

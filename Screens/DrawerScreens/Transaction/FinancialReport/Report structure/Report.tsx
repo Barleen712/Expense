@@ -35,6 +35,10 @@ export default function FinancialReportExpense({ navigation }: Readonly<Props>) 
   const total = expenses[selectedKey] || 0;
   const highestAmount = Math.max(...expense.map((t) => t.amount));
   const highestExpenseTransaction = expense.find((t) => t.amount === highestAmount);
+  const category =
+    highestExpenseTransaction?.moneyCategory.toLowerCase() === "transfer"
+      ? "Transfer"
+      : highestExpenseTransaction?.category || "";
 
   interface SwipeEvent {
     nativeEvent: {
@@ -73,7 +77,7 @@ export default function FinancialReportExpense({ navigation }: Readonly<Props>) 
         progress={0.25}
         amount={total}
         detail="and your biggest spending is from"
-        category={highestExpenseTransaction.category}
+        category={category}
         amount1={highestExpenseTransaction.amount}
         bg="red"
       />

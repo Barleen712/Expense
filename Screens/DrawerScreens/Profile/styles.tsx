@@ -23,7 +23,8 @@ export const getStyles = (colors: any) =>
       fontWeight: "bold",
       fontSize: Platform.OS === "ios" ? 24 : 28,
       color: colors.color,
-      textAlign: "center",
+      // textAlign: "center",
+      width: "100%",
     },
     details: {
       flex: 0.6,

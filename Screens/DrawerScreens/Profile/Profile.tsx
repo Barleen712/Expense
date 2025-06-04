@@ -48,6 +48,7 @@ export default function Profile({ navigation }: Readonly<Props>) {
   const [editProfile, seteditProfile] = useState(false);
   const [modalPhoto, setmodalPhoto] = useState<string | { uri: string } | number>("");
   const [modalUser, setModalUser] = useState("");
+  const [usernameError, setusernameError] = useState("");
   const [selectedindex, setselectedindex] = useState<number | undefined>();
   const user = useSelector((state: RootState) => state.Money.signup);
   async function getData() {
@@ -85,10 +86,9 @@ export default function Profile({ navigation }: Readonly<Props>) {
       return;
     }
 
-    toggleModal(); // show spinner/modal immediately
+    toggleModal();
 
     try {
-      // Step 1: Sign out from Firebase first
       try {
         syncUnsyncedTransactions();
         syncPendingDeletes({ isConnected });
@@ -130,6 +130,10 @@ export default function Profile({ navigation }: Readonly<Props>) {
   const widths = Dimensions.get("window").width;
   const { t } = useTranslation();
   async function saveChanges() {
+    if (modalUser === "") {
+      setusernameError("Specify username");
+      return;
+    }
     setPhoto(modalPhoto);
     setusername(modalUser);
     seteditProfile(!editProfile);
@@ -233,6 +237,8 @@ export default function Profile({ navigation }: Readonly<Props>) {
           photo={photo}
           setPhoto={setPhoto}
           modalPhoto={modalPhoto}
+          usernameError={usernameError}
+          setusernameError={setusernameError}
           setmodalPhoto={setmodalPhoto}
           selectedindex={selectedindex}
           setselectedindex={setselectedindex}

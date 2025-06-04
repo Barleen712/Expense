@@ -10,14 +10,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { changeSecurity, updatePreferences } from "../../../../../Slice/IncomeSlice";
 import { ThemeContext, ThemeContextType } from "../../../../../Context/ThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { RootState } from "../../../../../Store/Store";
+import { RootState, AppDispatch } from "../../../../../Store/Store";
+import ReactNativeBiometrics from "react-native-biometrics";
 type SecurityProp = StackNavigationProp<StackParamList, "Account">;
 
 interface Props {
   navigation: SecurityProp;
 }
 export default function Security({ navigation }: Readonly<Props>) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const security = useSelector((state: RootState) => state.Money.preferences.security);
   const currencies = ["PIN", "Fingerprint"];
   const [selected, setSelected] = useState(security);
@@ -40,12 +41,30 @@ export default function Security({ navigation }: Readonly<Props>) {
           <View>
             <TouchableOpacity
               onPress={async () => {
-                setSelected(item);
-                dispatch(changeSecurity(item));
-                dispatch(updatePreferences("security", item));
                 if (item === "Fingerprint" || item === "Face ID") {
-                  await AsyncStorage.setItem("biometricEnabled", "true");
+                  const rnBiometrics = new ReactNativeBiometrics();
+                  const { success } = await rnBiometrics.simplePrompt({
+                    promptMessage: "Confirm your identity",
+                    cancelButtonText: "Cancel",
+                  });
+
+                  if (success) {
+                    setSelected(item);
+                    dispatch(changeSecurity(item));
+                    dispatch(updatePreferences("security", item));
+                    await AsyncStorage.setItem("biometricEnabled", "true");
+                  } else {
+                    // Cancelled or failed → fallback to PIN
+                    alert("Authentication cancelled.");
+                    setSelected("PIN");
+                    dispatch(changeSecurity("PIN"));
+                    dispatch(updatePreferences("security", "PIN"));
+                    await AsyncStorage.setItem("biometricEnabled", "false");
+                  }
                 } else if (item === "PIN") {
+                  setSelected(item);
+                  dispatch(changeSecurity(item));
+                  dispatch(updatePreferences("security", item));
                   await AsyncStorage.setItem("biometricEnabled", "false");
                 }
               }}

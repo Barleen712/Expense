@@ -64,7 +64,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
   const [close, setclose] = useState(parameters.url);
   const [document, setDocument] = useState<string | null>(parameters.url);
   const [photo, setPhoto] = useState<string | null>(null);
-  const [Income, setIncome] = useState<string>(`${parameters.amount}`);
+  const [Income, setIncome] = useState<string>(Number(parameters.amount).toFixed(2));
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const [selectedWallet, setSelectedWallet] = useState(`${parameters.wallet}`);
   const [Description, setDescription] = useState(`${parameters.title}`);
@@ -92,7 +92,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
   }
 
   const handleFocus = () => {
-    if (Income === "0") {
+    if (Income === "0.00") {
       setIncome("");
     }
   };
@@ -194,6 +194,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
       type: localPath.type,
       url: localPath.path,
     };
+    console.log(transaction);
     try {
       if (realm) {
         realm.write(() => {
@@ -288,7 +289,16 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
                     ></TextInput>
                   </TouchableOpacity>
                 </View>
-                {incomeError !== "" && <Text style={styles.error}>*{incomeError}</Text>}
+                {incomeError !== "" && (
+                  <Text
+                    style={[
+                      styles.error,
+                      { color: parameters.moneyCategory === "Expense" ? "white" : "rgb(255, 0, 17)" },
+                    ]}
+                  >
+                    *{incomeError}
+                  </Text>
+                )}
               </View>
               <View style={[styles.selection]}>
                 <DropdownComponent
@@ -446,7 +456,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
                   >
                     <View style={{ flex: 1 }}>
                       <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.color }}>{t("Frequency")}</Text>
-                      <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
+                      <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 13 }}>
                         {frequency}
                         {frequency === "Yearly" && ` - ${Month[month]} ${startDate} ` + new Date().getFullYear()}
                         {frequency === "Monthly" &&
@@ -456,7 +466,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
                     </View>
                     <View style={{ flex: 1 }}>
                       <Text style={{ fontSize: 16, fontWeight: "bold", color: colors.color }}>{t("End After")}</Text>
-                      <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 14 }}>
+                      <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 13 }}>
                         {endAfter === "Never" && endAfter}
                         {endAfter === "Date" && `${new Date(endDate).toDateString()}`}
                       </Text>
