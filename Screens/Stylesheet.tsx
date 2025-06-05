@@ -721,7 +721,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 32,
     fontWeight: "bold",
-    textAlign: "center",
   },
   amountText: {
     color: "white",

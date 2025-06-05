@@ -46,9 +46,9 @@ export default function App() {
   const [initialRoute, setInitialRoute] = useState<keyof StackParamList | undefined>(undefined);
   const [checkingAuth, setCheckingAuth] = useState(true); // 🆕
 
-  useEffect(() => {
-    if (Platform.OS === "android") SplashScreen.hide();
-  }, []);
+  // useEffect(() => {
+  //   if (Platform.OS === "android") SplashScreen.hide();
+  // }, []);
 
   useEffect(() => {
     checkApplicationPermission();
@@ -118,7 +118,11 @@ export default function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
-        <NavigationContainer>
+        <NavigationContainer
+          onReady={() => {
+            if (Platform.OS === "android") SplashScreen.hide();
+          }}
+        >
           <ThemeProvider>
             {user ? <TabScreens initial={initialRoute} /> : <Screens />}
 

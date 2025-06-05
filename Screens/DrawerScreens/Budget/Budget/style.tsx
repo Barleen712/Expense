@@ -38,9 +38,9 @@ export const getStyles = (colors: any) =>
       color: "white",
     },
     budgetView: {
-      backgroundColor: colors.backgroundColor,
-      borderTopStartRadius: "5%",
-      borderTopRightRadius: "5%",
+      backgroundColor: colors.budgetbg,
+      borderRadius: 24,
+
       // justifyContent: "center",
       alignItems: "center",
       width: "100%",

@@ -1,21 +1,22 @@
 import React, { useState, useRef, useContext } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, TextInput, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Input from "../../../Components/CustomTextInput";
 import GradientButton from "../../../Components/CustomButton";
 import { auth } from "../../FirebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { GoogleAuthProvider, signInWithCredential, signInWithEmailAndPassword } from "firebase/auth";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import Header from "../../../Components/Header";
 import { useTranslation } from "react-i18next";
-import { raiseToast, StringConstants } from "../../Constants";
+import { handleGoogleSignIn, raiseToast, StringConstants } from "../../Constants";
 import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
 import { getStyles } from "./styles";
 import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
 import { useDispatch } from "react-redux";
-import { addUser } from "../../../Slice/IncomeSlice";
+import { addGoogleUser, addUser } from "../../../Slice/IncomeSlice";
 import { ScrollView } from "react-native-gesture-handler";
+import { AddUser } from "../../FirestoreHandler";
 type LoginProp = StackNavigationProp<StackParamList, "Login">;
 
 interface Props {
@@ -86,6 +87,46 @@ export default function Login({ navigation }: Readonly<Props>) {
     setemail({ email: "", emailError: "" });
     setpassword({ password: "", error: "" });
   }
+  const googleLogin = async () => {
+    const googleResult = await handleGoogleSignIn();
+    if (!googleResult) {
+      raiseToast("error", "Google Sign In Failed", "no-data");
+      return;
+    }
+    const { id, name, photo }: { id: string; name: string | null | undefined; photo: string | null | undefined } =
+      googleResult;
+    dispatch(
+      addGoogleUser({
+        id: id,
+        google: true,
+        username: name,
+        Photo: photo,
+      })
+    );
+    setLoading(true);
+    const googleCredential = GoogleAuthProvider.credential(id);
+    const creds = await signInWithCredential(auth, googleCredential);
+    const user = creds.user;
+    const userDoc = await getUseNamerDocument();
+    if (userDoc) {
+      raiseToast("success", "Welcome Back", "login");
+      dispatch(
+        addUser({
+          User: userDoc.Name,
+          Photo: userDoc?.Photo,
+          index: userDoc?.Index,
+          pin: userDoc?.pin,
+          Google: userDoc?.Google,
+        })
+      );
+      setLoading(false);
+      return;
+    }
+
+    raiseToast("success", "Sign Up Success", "done");
+    AddUser({ User: name, Photo: { uri: photo }, userid: user.uid, index: null, pinSet: false, Google: true });
+    setLoading(false);
+  };
   const { t } = useTranslation();
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const style = getStyles(colors);
@@ -164,6 +205,11 @@ export default function Login({ navigation }: Readonly<Props>) {
         <GradientButton title={t(StringConstants.Login)} handles={handlesLogin} />
         <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
           <Text style={style.forgot}>{t(StringConstants.ForgotPassword)}</Text>
+        </TouchableOpacity>
+        <Text style={style.or}>{t(StringConstants.orwith)}</Text>
+        <TouchableOpacity style={style.GoogleView} onPress={googleLogin}>
+          <Image style={style.Google} source={require("../../../assets/Google.png")} />
+          <Text style={style.textGoogle}>Login with Google</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.replace("SignUp")}>
           <Text style={style.account}>

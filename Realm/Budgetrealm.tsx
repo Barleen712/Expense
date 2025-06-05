@@ -29,90 +29,75 @@ const getFirestoreDocByBudgetId = async (_id: string) => {
   return querySnapshot.docs[0] ?? null;
 };
 
-const withRealm = async (callback: (realm: any) => void) => {
-  const realm = await getRealm();
-  if (!realm) {
-    console.error("Realm instance is undefined");
-    return;
-  }
-  try {
-    callback(realm);
-  } finally {
-    realm.close();
-  }
-};
+// 🚫 NO REALM CLOSING — Realm stays open and reused
 export const markPendingDeleteOrDeleteBudget = async (_id: string) => {
   const isConnected = await NetInfo.fetch().then((state) => state.isConnected);
+  const realm = await getRealm();
+  const budget = realm.objectForPrimaryKey("Budget", _id);
+  if (!budget) {
+    console.warn("Budget not found");
+    return;
+  }
 
-  await withRealm(async (realm) => {
-    const budget = realm.objectForPrimaryKey("Budget", _id);
-    if (!budget) {
-      console.warn("Budget not found");
-      return;
-    }
-
-    if (isConnected) {
-      try {
-        const docSnap = await getFirestoreDocByBudgetId(_id);
-        if (docSnap) {
-          await deleteDoc(docSnap.ref);
-        }
-
-        realm.write(() => {
-          realm.delete(budget);
-        });
-      } catch (error) {
-        console.error("Delete error:", error);
+  if (isConnected) {
+    try {
+      const docSnap = await getFirestoreDocByBudgetId(_id);
+      if (docSnap) {
+        await deleteDoc(docSnap.ref);
       }
-    } else {
-      // Offline: mark for deletion
+
       realm.write(() => {
-        budget.pendingDelete = true;
+        realm.delete(budget);
       });
+    } catch (error) {
+      console.error("Delete error:", error);
     }
-  });
+  } else {
+    // Offline: mark for deletion
+    realm.write(() => {
+      budget.pendingDelete = true;
+    });
+  }
 };
 
-// --- Update Budget (with sync) ---
 export async function updateTransactionRealmAndFirestoreBudget(
   transactionId: string,
   updatedData: Partial<Omit<BudgetType, "_id">>,
   isOnline: boolean | null
 ) {
+  const realm = await getRealm();
   try {
-    await withRealm(async (realm) => {
-      const tx = realm.objectForPrimaryKey("Budget", transactionId);
+    const tx = realm.objectForPrimaryKey("Budget", transactionId);
 
-      if (isOnline) {
-        const docSnap = await getFirestoreDocByBudgetId(transactionId);
-        if (docSnap) {
-          const docRef = doc(db, "Budgets", docSnap.id);
-          await updateDoc(docRef, updatedData);
-        }
-
-        realm.write(() => {
-          if (tx) {
-            applyUpdatesToRealmObject(tx, {
-              ...updatedData,
-              synced: true,
-              pendingUpdate: false,
-            });
-          }
-        });
-      } else {
-        realm.write(() => {
-          if (tx) {
-            applyUpdatesToRealmObject(tx, { ...updatedData, pendingUpdate: true });
-          } else {
-            realm.create("Budget", {
-              _id: transactionId,
-              ...updatedData,
-              pendingUpdate: true,
-            });
-          }
-        });
+    if (isOnline) {
+      const docSnap = await getFirestoreDocByBudgetId(transactionId);
+      if (docSnap) {
+        const docRef = doc(db, "Budgets", docSnap.id);
+        await updateDoc(docRef, updatedData);
       }
-    });
+
+      realm.write(() => {
+        if (tx) {
+          applyUpdatesToRealmObject(tx, {
+            ...updatedData,
+            synced: true,
+            pendingUpdate: false,
+          });
+        }
+      });
+    } else {
+      realm.write(() => {
+        if (tx) {
+          applyUpdatesToRealmObject(tx, { ...updatedData, pendingUpdate: true });
+        } else {
+          realm.create("Budget", {
+            _id: transactionId,
+            ...updatedData,
+            pendingUpdate: true,
+          });
+        }
+      });
+    }
 
     return {
       success: true,
@@ -127,25 +112,24 @@ export async function updateTransactionRealmAndFirestoreBudget(
 
 export const saveToRealmBudgets = async (input: BudgetType | BudgetType[]) => {
   const transactions = Array.isArray(input) ? input : [input];
+  const realm = await getRealm();
 
-  await withRealm(async (realm) => {
-    realm.write(() => {
-      transactions.forEach((txn) => {
-        const exists = realm.objectForPrimaryKey("Budget", txn._id);
-        if (!exists) {
-          const safeTxn = {
-            ...txn,
-            synced: true,
-            pendingDelete: false,
-          };
+  realm.write(() => {
+    transactions.forEach((txn) => {
+      const exists = realm.objectForPrimaryKey("Budget", txn._id);
+      if (!exists) {
+        const safeTxn = {
+          ...txn,
+          synced: true,
+          pendingDelete: false,
+        };
 
-          try {
-            realm.create("Budget", safeTxn);
-          } catch (e) {
-            console.error("Failed to write budget:", txn._id, e);
-          }
+        try {
+          realm.create("Budget", safeTxn);
+        } catch (e) {
+          console.error("Failed to write budget:", txn._id, e);
         }
-      });
+      }
     });
   });
 };

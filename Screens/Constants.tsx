@@ -292,7 +292,6 @@ export const handleGoogleSignIn = async () => {
     };
   } catch (error: any) {
     console.error("Google Sign-In Error:", error);
-    // Alert.alert("Error", error.message || "Google Sign-In failed");
   }
 };
 const pics = {

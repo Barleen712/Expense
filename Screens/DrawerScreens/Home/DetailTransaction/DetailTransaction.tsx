@@ -26,6 +26,12 @@ import FileViewer from "react-native-file-viewer";
 import RNFS from "react-native-fs";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
+import CameraRed from "../../../../assets/CameraRed.svg";
+import ImageRed from "../../../../assets/ImageRed.svg";
+import DocumentRed from "../../../../assets/DocumentRed.svg";
+import CameraGreen from "../../../../assets/CameraGreen.svg";
+import ImageGreen from "../../../../assets/ImageGreen.svg";
+import DocumentGreen from "../../../../assets/DocumentGreen.svg";
 type DetailtransProp = StackNavigationProp<StackParamList, "DetailTransaction_Income">;
 
 interface Props {
@@ -142,11 +148,7 @@ function DetailTransaction({
           { value: "Salary", label: "Salary" },
           { value: "Passive Income", label: "Passive Income" },
         ],
-        modal: [
-          require("../../../../assets/Camera.png"),
-          require("../../../../assets/Image.png"),
-          require("../../../../assets/Document.png"),
-        ],
+        modal: [CameraGreen, ImageGreen, DocumentGreen],
       });
     } else if (type === "Expense") {
       navigation.navigate("Transaction", {
@@ -167,11 +169,7 @@ function DetailTransaction({
         type: isDoument,
         bg: "rgba(253, 60, 74, 1)",
         moneyCategory: "Expense",
-        modal: [
-          require("../../../../assets/CameraRed.png"),
-          require("../../../../assets/ImageRed.png"),
-          require("../../../../assets/DocumentRed.png"),
-        ],
+        modal: [CameraRed, ImageRed, DocumentRed],
         categoryData: [
           { label: "Shopping", value: "Shopping" },
           { label: "Food", value: "Food" },

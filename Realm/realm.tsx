@@ -55,8 +55,6 @@ export const markPendingDeleteOrDelete = async (realm: any, _id: string) => {
       });
     } catch (error) {
       console.error("Delete error:", error);
-    } finally {
-      realm.close();
     }
   } else {
     // ✅ Offline: mark as pendingDelete
@@ -124,7 +122,7 @@ export async function updateTransactionRealmAndFirestore(
 ) {
   try {
     if (isOnline) {
-      let supabaseurl = null;
+      let supabaseurl = "";
 
       const isRemoteUrl = (url: string) => {
         return url.startsWith("http://") || url.startsWith("https://");
@@ -156,7 +154,6 @@ export async function updateTransactionRealmAndFirestore(
         endDate: updatedData.endDate,
         type: updatedData.type,
       };
-      console.log(Data);
       const q = query(collection(db, "Transactions"), where("_id", "==", transactionId));
       const querySnapshot = await getDocs(q);
       const docSnap = querySnapshot.docs[0];

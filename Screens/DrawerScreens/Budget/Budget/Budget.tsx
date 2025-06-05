@@ -24,7 +24,7 @@ import { clearData } from "../../../../Slice/IncomeSlice";
 type YearOption = { label: string; value: string };
 let Year: YearOption[] = [];
 
-for (let i = 0; i < 31; i++) {
+for (let i = 0; i < 11; i++) {
   Year.push({ label: (2020 + i).toString(), value: (2020 + i).toString() });
 }
 
@@ -40,18 +40,6 @@ type BudgetItem = {
   notification: boolean;
 };
 export default function Budget({ navigation }: Readonly<Props>) {
-  function handleprev() {
-    setmonth(month - 1);
-    if (month == 0) {
-      setmonth(11);
-    }
-  }
-  function handlenext() {
-    setmonth(month + 1);
-    if (month == 11) {
-      setmonth(0);
-    }
-  }
   const { t } = useTranslation();
   const Rates = useSelector((state: RootState) => state.Rates);
   const currency = useSelector((state: RootState) => state.Money.preferences.currency);
@@ -62,7 +50,20 @@ export default function Budget({ navigation }: Readonly<Props>) {
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
   const budgetDataForMonth = Budgetcat[monthKey] || [];
-
+  function handleprev() {
+    setmonth(month - 1);
+    if (month == 0) {
+      setyear((prevYear) => `${parseInt(prevYear, 10) - 1}`);
+      setmonth(11);
+    }
+  }
+  function handlenext() {
+    setmonth(month + 1);
+    if (month == 11) {
+      setyear((prevYear) => `${parseInt(prevYear, 10) + 1}`);
+      setmonth(0);
+    }
+  }
   const renderBudgetItems: ListRenderItem<BudgetItem> = useCallback(
     ({ item }) => {
       let remaining = item.budgetvalue - item.amountSpent;
@@ -86,7 +87,14 @@ export default function Budget({ navigation }: Readonly<Props>) {
               alert: item.notification,
             })
           }
-          style={{ margin: 10, backgroundColor: colors.budgetView, padding: 10, borderRadius: 15 }}
+          style={{
+            margin: 10,
+            backgroundColor: colors.budgetView,
+            padding: 10,
+            borderRadius: 15,
+            marginLeft: 15,
+            marginRight: 15,
+          }}
         >
           <View
             style={{
@@ -191,12 +199,12 @@ export default function Budget({ navigation }: Readonly<Props>) {
               </Text>
             </View>
           ) : (
-            <View style={{ height: "75%" }}>
+            <View style={{ height: "75%", width: "100%", alignItems: "center" }}>
               <FlatList
                 contentContainerStyle={{
                   paddingBottom: 30,
                 }}
-                style={{ width: "90%", flex: 6 }}
+                style={{ width: "100%", flex: 6 }}
                 data={budgetDataForMonth}
                 showsVerticalScrollIndicator={false}
                 renderItem={renderBudgetItems}

@@ -103,7 +103,7 @@ export const getStyles = (colors: any) =>
     },
     modalContainer: {
       width: "100%",
-      height: Platform.OS === "ios" ? "25%" : "28%",
+      height: "25%",
       backgroundColor: "white",
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,

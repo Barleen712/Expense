@@ -32,12 +32,12 @@ export const getStyles = (colors: any) =>
     GoogleView: {
       flexDirection: "row",
       height: 56,
-      width: 343,
+      width: "90%",
       alignItems: "center",
+      justifyContent: "center",
       borderColor: "rgba(133, 126, 126, 0.89)",
       borderRadius: 16,
       borderWidth: 1,
-      paddingLeft: 60,
     },
     Google: {
       height: 40,

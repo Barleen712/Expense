@@ -216,18 +216,25 @@ export default function Profile({ navigation }: Readonly<Props>) {
         <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
           <TouchableWithoutFeedback onPress={toggleModal}>
             <View style={styles.modalOverlay}>
-              <View style={styles.modalContainer}>
-                <Text style={styles.logout}>{t("Logout")}?</Text>
-                <Text style={styles.quesLogout}>{t("Are you sure you want to logout?")}</Text>
-                <View style={styles.modalButton}>
-                  <View style={styles.modalY}>
-                    <CustomButton title={t("Yes")} bg="rgb(42, 124, 118)" color="white" press={handleLogout} />
-                  </View>
-                  <View style={styles.modalN}>
-                    <CustomButton title={t("No")} bg={colors.nobutton} color="rgb(42, 124, 118)" press={toggleModal} />
+              <TouchableWithoutFeedback>
+                <View style={styles.modalContainer}>
+                  <Text style={styles.logout}>{t("Logout")}?</Text>
+                  <Text style={styles.quesLogout}>{t("Are you sure you want to logout?")}</Text>
+                  <View style={styles.modalButton}>
+                    <View style={styles.modalY}>
+                      <CustomButton title={t("Yes")} bg="rgb(42, 124, 118)" color="white" press={handleLogout} />
+                    </View>
+                    <View style={styles.modalN}>
+                      <CustomButton
+                        title={t("No")}
+                        bg={colors.nobutton}
+                        color="rgb(42, 124, 118)"
+                        press={toggleModal}
+                      />
+                    </View>
                   </View>
                 </View>
-              </View>
+              </TouchableWithoutFeedback>
             </View>
           </TouchableWithoutFeedback>
         </Modal>

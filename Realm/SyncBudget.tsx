@@ -2,13 +2,7 @@ import { getRealm } from "./realm";
 import { auth, db } from "../Screens/FirebaseConfig";
 import { AddBudget } from "../Screens/FirestoreHandler";
 import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
-let isSyncing = false;
 export async function syncUnsyncedBudget() {
-  if (isSyncing) {
-    return;
-  }
-
-  isSyncing = true;
   const realm = await getRealm();
   const unsynced = realm.objects("Budget").filtered("synced == false");
   const user = auth.currentUser;
@@ -24,14 +18,20 @@ export async function syncUnsyncedBudget() {
       year: txn.year,
       userId: user.uid,
     };
+
     const success = await AddBudget(budgetData);
+    console.log(success);
     if (success) {
-      realm.write(() => {
-        txn.synced = true;
-      });
+      try {
+        realm.write(() => {
+          txn.synced = true;
+        });
+      } catch (error) {
+        console.log(error);
+      }
+      console.log("done");
     }
   }
-  isSyncing = false;
 }
 export const syncPendingDeletesBudget = async ({ isConnected }) => {
   if (!isConnected) return;

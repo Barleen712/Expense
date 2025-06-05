@@ -20,7 +20,6 @@ import { addBudget, updateBudget } from "../../../../Slice/IncomeSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { StringConstants, currencies } from "../../../Constants";
-import { auth } from "../../../FirebaseConfig";
 import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { BudgetCategory } from "../../../../Slice/Selectors";
 import { ScrollView } from "react-native-gesture-handler";
@@ -79,7 +78,6 @@ export default function CreateBudget({ navigation, route }: Readonly<Props>) {
     }
   };
   const dispatch = useDispatch();
-  const user = auth.currentUser;
   async function add() {
     const numericBudget = parseFloat(Budget.replace("$", "") || "0") / convertRate;
     if (numericBudget === 0) {
@@ -134,13 +132,10 @@ export default function CreateBudget({ navigation, route }: Readonly<Props>) {
   }
   async function editBudget() {
     const numericBudget = parseFloat(Budget.replace("$", "") || "0") / convertRate;
-
-    const realm = await getRealm();
     const updatedData = {
       category: selectedCategory,
       percentage: sliderValue,
       amount: numericBudget,
-      id: parameters.index,
       notification: Expense,
       notified: false,
     };

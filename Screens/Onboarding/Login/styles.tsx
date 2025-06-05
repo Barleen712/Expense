@@ -35,4 +35,26 @@ export const getStyles = (colors: any) =>
       color: "rgb(57, 112, 109)",
       textDecorationLine: "underline",
     },
+    or: {
+      color: "rgb(145, 145, 159)",
+      margin: 10,
+    },
+    GoogleView: {
+      flexDirection: "row",
+      height: 56,
+      width: "90%",
+      alignItems: "center",
+      borderColor: "rgba(133, 126, 126, 0.89)",
+      borderRadius: 16,
+      borderWidth: 1,
+      justifyContent: "center",
+    },
+    Google: {
+      height: 40,
+      width: 40,
+    },
+    textGoogle: {
+      paddingLeft: 10,
+      color: colors.color,
+    },
   });

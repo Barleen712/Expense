@@ -23,6 +23,7 @@ export type ThemeContextType = {
     selected: string;
     about: string;
     gray: string;
+    budgetbg: string;
   };
 };
 export const ThemeContext = createContext<ThemeContextType | null>(null);
@@ -37,7 +38,7 @@ export const ThemeProvider: React.FC<React.PropsWithChildren<{}>> = ({ children 
       textcolor: "rgb(56, 88, 85)",
       borderColor: "grey",
       listView: "rgba(237, 234, 234, 0.28)",
-      budgetView: "rgba(241, 241, 250, 1)",
+      budgetView: "white",
       profileView: "white",
       icon: "rgba(220, 234, 233, 0.6)",
       financialReport: "rgba(173, 210, 189, 0.6)",
@@ -49,6 +50,7 @@ export const ThemeProvider: React.FC<React.PropsWithChildren<{}>> = ({ children 
       selected: "rgba(4, 73, 69, 0.53)",
       about: "#F9FAFB",
       gray: "#666",
+      budgetbg: "#FCFCFC",
     },
     Dark: {
       backgroundColor: "#000",
@@ -57,7 +59,7 @@ export const ThemeProvider: React.FC<React.PropsWithChildren<{}>> = ({ children 
       color: "white",
       borderColor: "black",
       listView: "rgba(73, 69, 69, 0.62)",
-      budgetView: "rgba(98, 88, 88, 0.43)",
+      budgetView: "black",
       profileView: "rgb(15, 15, 15)",
       icon: "rgba(51, 56, 56, 0.6)",
       financialReport: "rgb(25, 75, 72)",
@@ -69,6 +71,7 @@ export const ThemeProvider: React.FC<React.PropsWithChildren<{}>> = ({ children 
       selected: "rgb(39, 176, 192)",
       about: "rgba(0, 0, 0, 0.83)",
       gray: "rgba(255, 255, 255, 0.9)",
+      budgetbg: "rgba(0, 0, 0, 0.69)",
     },
   };
   let selectedThemeName: "Light" | "Dark";

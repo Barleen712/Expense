@@ -30,6 +30,12 @@ import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext
 import { getStyles } from "./styles";
 import Expense from "../../../../assets/ExpenseHome.svg";
 import Income from "../../../../assets/IncomeHome.svg";
+import CameraGreen from "../../../../assets/CameraGreen.svg";
+import ImageGreen from "../../../../assets/ImageGreen.svg";
+import DocumentGreen from "../../../../assets/DocumentGreen.svg";
+import CameraRed from "../../../../assets/CameraRed.svg";
+import ImageRed from "../../../../assets/ImageRed.svg";
+import DocumentRed from "../../../../assets/DocumentRed.svg";
 
 export default function Home({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
@@ -109,24 +115,43 @@ export default function Home({ navigation }: Readonly<Props>) {
 
     const filterBy = Flat[selectedIndex];
 
-    const todayDate = new Date();
-    todayDate.setHours(0, 0, 0, 0);
-
     switch (filterBy) {
       case "Today":
         return mapToAmountAndDate(
           expenses.filter((item) => {
-            const d = new Date(item.Date);
-            return d.toDateString() === todayDate.toDateString();
+            return (
+              new Date(item.Date).getDate() === new Date().getDate() &&
+              new Date(item.Date).getMonth() === new Date(selectedMonth_Year).getMonth() &&
+              new Date(item.Date).getFullYear() === new Date(selectedMonth_Year).getFullYear()
+            );
           })
         );
       case "Week": {
-        const sevenDaysAgo = new Date(todayDate);
-        sevenDaysAgo.setDate(todayDate.getDate() - 6);
+        const selectedMonth = selectedMonth_Year.getMonth();
+        const selectedYear = selectedMonth_Year.getFullYear();
+        const todayDate = new Date().getDate();
+
+        // Construct the target end date using current time
+        let endDate = new Date(selectedYear, selectedMonth, todayDate);
+
+        // If selected month doesn't have today's date, clamp to month's end
+        const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+        if (todayDate > daysInMonth) {
+          endDate = new Date(selectedYear, selectedMonth, daysInMonth);
+        }
+
+        // Set endDate time to now
+        const now = new Date();
+        endDate.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+
+        const startDate = new Date(endDate);
+        startDate.setDate(endDate.getDate() - 6);
+        startDate.setHours(0, 0, 0, 0); // Start of first day
+
         return mapToAmountAndDate(
           expenses.filter((item) => {
             const d = new Date(item.Date);
-            return d >= sevenDaysAgo && d <= new Date();
+            return d >= startDate && d <= endDate; // Includes today's transaction even added 1 sec ago
           })
         );
       }
@@ -135,11 +160,16 @@ export default function Home({ navigation }: Readonly<Props>) {
         return mapToAmountAndDate(
           expenses.filter((item) => {
             const d = new Date(item.Date);
-            return d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
+            return (
+              d.getMonth() === new Date(selectedMonth_Year).getMonth() &&
+              d.getFullYear() === new Date(selectedMonth_Year).getFullYear()
+            );
           })
         );
       case "Year":
-        return mapToAmountAndDate(expenses.filter((item) => new Date(item.Date).getFullYear() === today.getFullYear()));
+        return mapToAmountAndDate(
+          expenses.filter((item) => new Date(item.Date).getFullYear() === new Date(selectedMonth_Year).getFullYear())
+        );
       default:
         return [];
     }
@@ -171,17 +201,7 @@ export default function Home({ navigation }: Readonly<Props>) {
             { label: "Bills", value: "Bills" },
             { label: "Miscellaneous", value: "Miscellaneous" },
           ],
-      modal: isIncome
-        ? [
-            require("../../../../assets/Camera.png"),
-            require("../../../../assets/Image.png"),
-            require("../../../../assets/Document.png"),
-          ]
-        : [
-            require("../../../../assets/CameraRed.png"),
-            require("../../../../assets/ImageRed.png"),
-            require("../../../../assets/DocumentRed.png"),
-          ],
+      modal: isIncome ? [CameraGreen, ImageGreen, DocumentGreen] : [CameraRed, ImageRed, DocumentRed],
       edit: false,
       title: "",
       wallet: "Wallet",

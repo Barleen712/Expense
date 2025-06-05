@@ -9,9 +9,9 @@ export async function syncUnsyncedTransactions() {
   const unsynced = realm.objects("Transaction").filtered("synced == false");
   const user = auth.currentUser;
   for (const txn of unsynced) {
-    let supabaseImageUrl = null;
+    let supabaseImageUrl = "";
     if (txn.url) {
-      supabaseImageUrl = await uploadImage(txn.url);
+      supabaseImageUrl = (await uploadImage(txn.url)) ?? "";
     }
     const txnData = {
       _id: txn._id,
@@ -40,6 +40,7 @@ export async function syncUnsyncedTransactions() {
     //   userId: user.uid,
     //   encryptedData,
     // };
+    console.log(txnData);
     const success = await AddTransaction(txnData);
     if (success) {
       realm.write(() => {
@@ -84,7 +85,7 @@ export async function syncPendingUpdatesToFirestore() {
       if (!querySnapshot.empty) {
         const docSnap = querySnapshot.docs[0];
         const docRef = doc(db, "Transactions", docSnap.id);
-        let supabaseurl = null;
+        let supabaseurl = "";
 
         const isRemoteUrl = (url: string) => {
           return url.startsWith("http://") || url.startsWith("https://");

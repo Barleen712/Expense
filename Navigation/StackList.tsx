@@ -1,3 +1,6 @@
+import { FC } from "react";
+import { SvgProps } from "react-native-svg";
+
 // StackNavigation.ts
 type StackParamList = {
   Home: undefined;
@@ -86,7 +89,7 @@ type StackParamList = {
     weekly: string;
     type: string;
     categoryData: { label: string; value: string }[];
-    modal: string[];
+    modal: FC<SvgProps>[];
     moneyCategory: string;
     bg: string;
   };

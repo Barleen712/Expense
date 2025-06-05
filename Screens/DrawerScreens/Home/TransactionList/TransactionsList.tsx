@@ -123,7 +123,7 @@ export default function TransactionList({ data }: Readonly<TransactionListProps>
             {item.description}
           </Text>
         </View>
-        <View style={{ alignItems: "flex-end" }}>
+        <View style={{ alignItems: "flex-end", width: "25%" }}>
           <Text style={[styles.categoryText, { color: amountColor }]}>
             {item.moneyCategory === "Income" ? "+" : "-"}
             {currencies[currency]}
@@ -145,7 +145,9 @@ export default function TransactionList({ data }: Readonly<TransactionListProps>
       renderItem={renderItem}
       renderSectionHeader={({ section }) => (
         <View>
-          <Text style={{ color: colors.color }}>{t(section.title)}</Text>
+          <Text style={{ color: colors.color, fontFamily: "Inter", fontSize: 18, fontWeight: 600 }}>
+            {t(section.title)}
+          </Text>
         </View>
       )}
     />

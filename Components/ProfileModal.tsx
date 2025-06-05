@@ -244,7 +244,7 @@ function ProfileModal({
                   }}
                   placeholderTextColor="rgba(4, 73, 69, 0.38)"
                 />
-                {usernameError && <Text style={{ color: "red" }}>{usernameError}*</Text>}
+                {!!usernameError && <Text style={{ color: "red" }}>{usernameError}*</Text>}
               </View>
 
               <TouchableOpacity

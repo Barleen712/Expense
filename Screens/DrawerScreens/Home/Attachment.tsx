@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Image } from "react-native";
+import { TouchableOpacity } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import ImagePicker from "react-native-image-crop-picker";
 import * as FileSystem from "expo-file-system";
@@ -63,7 +63,20 @@ const SelectImageWithDocumentPicker = ({
   const pickDocument = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: "*/*",
+        type: [
+          "application/pdf",
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "application/vnd.ms-excel",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "text/plain",
+          "image/jpeg",
+          "image/png",
+          "image/jpg",
+          "image/gif",
+          "image/webp",
+          "image/heic",
+        ],
         multiple: false,
         copyToCacheDirectory: true,
       });
@@ -118,6 +131,9 @@ const SelectImageWithDocumentPicker = ({
       console.error("Camera error:", error);
     }
   };
+  const Camera = modalItems[0];
+  const Image = modalItems[1];
+  const Document = modalItems[2];
   return (
     <TouchableOpacity
       style={{
@@ -128,13 +144,13 @@ const SelectImageWithDocumentPicker = ({
       }}
     >
       <TouchableOpacity onPress={openCamera}>
-        <Image source={modalItems[0]} />
+        <Camera />
       </TouchableOpacity>
       <TouchableOpacity onPress={pickImageFromGallery}>
-        <Image source={modalItems[1]} />
+        <Image />
       </TouchableOpacity>
       <TouchableOpacity onPress={pickDocument}>
-        <Image source={modalItems[2]} />
+        <Document />
       </TouchableOpacity>
     </TouchableOpacity>
   );

@@ -15,7 +15,12 @@ import { ThemeContext, ThemeContextType } from "../Context/ThemeContext";
 import Expense from "../assets/Expense.svg";
 import Income from "../assets/Income.svg";
 import Transfer from "../assets/Transaction.svg";
-
+import CameraGreen from "../assets/CameraGreen.svg";
+import ImageGreen from "../assets/ImageGreen.svg";
+import DocumentGreen from "../assets/DocumentGreen.svg";
+import CameraRed from "../assets/CameraRed.svg";
+import ImageRed from "../assets/ImageRed.svg";
+import DocumentRed from "../assets/DocumentRed.svg";
 type BottomTabprop = StackNavigationProp<StackParamList, "MainScreen">;
 
 interface Props {
@@ -101,11 +106,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
       { label: "Bills", value: "Bills" },
       { label: "Miscellaneous", value: "Miscellaneous" },
     ],
-    modal: [
-      require("../assets/CameraRed.png"),
-      require("../assets/ImageRed.png"),
-      require("../assets/DocumentRed.png"),
-    ],
+    modal: [CameraRed, ImageRed, DocumentRed],
     bg: "rgb(255, 0, 17)",
   });
 
@@ -115,7 +116,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
       { label: "Salary", value: "Salary" },
       { label: "Passive Income", value: "Passive Income" },
     ],
-    modal: [require("../assets/Camera.png"), require("../assets/Image.png"), require("../assets/Document.png")],
+    modal: [CameraGreen, ImageGreen, DocumentGreen],
     bg: "rgba(0, 168, 107, 1)",
   });
 

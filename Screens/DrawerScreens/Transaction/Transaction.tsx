@@ -51,7 +51,8 @@ export default function Transaction({ navigation }: Readonly<Props>) {
   const [month, setMonth] = useState(Month[new Date().getMonth()].value);
   const [sortBy, setSortBy] = useState("");
   const [filteritem, setfilteritem] = useState("");
-  const [setReset] = useState(true);
+  const [reset, setReset] = useState(true);
+  const [count, setcount] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
   function toggleModal() {
     setModalVisible(!modalVisible);
@@ -66,12 +67,16 @@ export default function Transaction({ navigation }: Readonly<Props>) {
   const [FilterTrans, setFilterTrans] = useState(transactions);
   useEffect(() => {
     let filteredResult = [...sortedTransactions];
-
+    let appliedCount = 0;
     if (month) {
       filteredResult = filteredResult.filter((item) => {
         const transactionMonth = new Date(item.Date).getMonth();
         return transactionMonth === Month.findIndex((item) => item.value === month);
       });
+      if (filteritem) appliedCount++;
+      if (selectedCategory) appliedCount++;
+      if (sortBy) appliedCount++;
+      setcount(appliedCount);
     }
     setFilterTrans(filteredResult);
   }, [month, transactions, filteritem, selectedCategory, sortBy]);
@@ -150,6 +155,11 @@ export default function Transaction({ navigation }: Readonly<Props>) {
             setMonth(item);
           }}
         />
+        {count > 0 && (
+          <View style={styles.badgeCount}>
+            <Text style={styles.badgeCountText}>{count}</Text>
+          </View>
+        )}
         <TouchableOpacity onPress={toggleModal} style={styles.sortButton}>
           <Ionicons name="filter" size={24} color={colors.color} />
         </TouchableOpacity>
@@ -170,104 +180,119 @@ export default function Transaction({ navigation }: Readonly<Props>) {
       <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
         <TouchableWithoutFeedback onPress={toggleModal}>
           <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <View style={styles.filter}>
-                <Text style={styles.notiTitle}>{t(StringConstants.FilterTransaction)}</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    setFilterTrans(sortedTransactions);
-                    setReset(true);
-                    setSortBy("");
-                    setfilteritem("");
-                    setSelectedCategory("");
-                    toggleModal();
-                  }}
-                  style={styles.reset}
-                >
-                  <Text style={[styles.homeTitle, { color: "rgb(42, 124, 118)" }]}>{t("Reset")}</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.FilterOptions}>
-                <Text style={styles.notiTitle}>{t(StringConstants.FilterBy)}</Text>
-                <FlatList
-                  numColumns={3}
-                  contentContainerStyle={styles.flatListContainer}
-                  data={FilterBy}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (filteritem === item) setfilteritem("");
-                        else setfilteritem(item);
-                      }}
-                      style={[
-                        styles.filterButton,
-                        { backgroundColor: item === filteritem ? "rgba(174, 225, 221, 0.6)" : "white" },
-                      ]}
-                    >
-                      <Text
+            <TouchableWithoutFeedback>
+              <View style={styles.modalContainer}>
+                <View style={styles.filter}>
+                  <Text style={styles.notiTitle}>{t(StringConstants.FilterTransaction)}</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setFilterTrans(sortedTransactions);
+                      setReset(true);
+                      setSortBy("");
+                      setfilteritem("");
+                      setSelectedCategory("");
+                      setcount(0);
+                    }}
+                    style={styles.reset}
+                  >
+                    <Text style={[styles.homeTitle, { color: "rgb(42, 124, 118)" }]}>{t("Reset")}</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.FilterOptions}>
+                  <Text style={styles.notiTitle}>{t(StringConstants.FilterBy)}</Text>
+                  <FlatList
+                    numColumns={3}
+                    contentContainerStyle={styles.flatListContainer}
+                    data={FilterBy}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (filteritem === item) setfilteritem("");
+                          else setfilteritem(item);
+                        }}
                         style={[
-                          styles.filterButtonText,
-                          { color: item === filteritem ? "rgb(42, 124, 118)" : "black" },
+                          styles.filterButton,
+                          { backgroundColor: item === filteritem ? "rgba(174, 225, 221, 0.6)" : "white" },
                         ]}
                       >
-                        {t(item)}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                />
-              </View>
-              <View style={[styles.FilterOptions, { flex: 0.35 }]}>
-                <Text style={styles.notiTitle}>{t(StringConstants.SortBy)}</Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    flex: 1,
-                    flexWrap: "wrap",
-                    paddingTop: 10,
-                  }}
-                >
-                  {SortBy.map((item, index) => (
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (sortBy === item) setSortBy("");
-                        else setSortBy(item);
-                      }}
-                      key={item}
-                      style={[
-                        styles.filterButton,
-                        {
-                          backgroundColor: item === sortBy ? "rgba(174, 225, 221, 0.6)" : "white",
-                          width: "28%",
-                          height: "35%",
-
-                          margin: 5,
-                        },
-                      ]}
-                    >
-                      <Text style={{ color: item === sortBy ? "rgb(42, 124, 118)" : "black", fontWeight: "bold" }}>
-                        {t(item)}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
+                        <Text
+                          style={[
+                            styles.filterButtonText,
+                            { color: item === filteritem ? "rgb(42, 124, 118)" : "black" },
+                          ]}
+                        >
+                          {t(item)}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  />
                 </View>
-              </View>
-              <View style={styles.FilterCategory}>
-                <Text style={styles.notiTitle}>{t(StringConstants.Category)}</Text>
+                <View style={[styles.FilterOptions, { flex: 0.3 }]}>
+                  <Text style={styles.notiTitle}>{t(StringConstants.SortBy)}</Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      flex: 1,
+                      flexWrap: "wrap",
+                      paddingTop: 10,
+                    }}
+                  >
+                    {SortBy.map((item, index) => (
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (sortBy === item) setSortBy("");
+                          else setSortBy(item);
+                        }}
+                        key={item}
+                        style={[
+                          styles.filterButton,
+                          {
+                            backgroundColor: item === sortBy ? "rgba(174, 225, 221, 0.6)" : "white",
+                            height: "28%",
+                            padding: 0,
 
-                <DropdownComponent
-                  data={category}
-                  value={selectedCategory}
-                  name={t(StringConstants.ChooseCategory)}
-                  styleButton={styles.settingsOptions}
-                  onSelectItem={(item) => {
-                    setSelectedCategory(item);
-                  }}
-                />
-                <View style={styles.Apply}>
+                            margin: 5,
+                          },
+                        ]}
+                      >
+                        <Text style={{ color: item === sortBy ? "rgb(42, 124, 118)" : "black", fontWeight: "bold" }}>
+                          {t(item)}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+                <View style={styles.FilterCategory}>
+                  <Text style={styles.notiTitle}>{t(StringConstants.Category)}</Text>
+                  <FlatList
+                    data={category}
+                    numColumns={3}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        style={[
+                          styles.category,
+                          { backgroundColor: item.label === selectedCategory ? "rgba(174, 225, 221, 0.6)" : "white" },
+                        ]}
+                        onPress={() => {
+                          if (selectedCategory === item.label) setSelectedCategory("");
+                          else setSelectedCategory(item.label);
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: item.label === selectedCategory ? "rgb(42, 124, 118)" : "black",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {item.label}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  />
                   <CustomButton title={t("Apply")} bg="rgb(42, 124, 118)" color="white" press={handleSort} />
                 </View>
               </View>
-            </View>
+            </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>
       </Modal>

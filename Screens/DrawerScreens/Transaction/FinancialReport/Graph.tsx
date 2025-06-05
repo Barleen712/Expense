@@ -44,9 +44,8 @@ export const DonutChart = ({
             const strokeDasharray = circumference;
             const strokeRotation = (previousPercentage / 100) * 360;
             previousPercentage += item.percentage;
-
             return (
-              <G key={item} rotation={strokeRotation} origin={`${radius + strokeWidth}, ${radius + strokeWidth}`}>
+              <G key={item.color} rotation={strokeRotation} origin={`${radius + strokeWidth}, ${radius + strokeWidth}`}>
                 <Circle
                   cx={radius + strokeWidth}
                   cy={radius + strokeWidth}

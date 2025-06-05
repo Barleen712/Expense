@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
-import { Modal, View, Image, Text } from "react-native";
+import { Modal, View, Image, Text, TouchableWithoutFeedback } from "react-native";
 import { getStyles } from "./styles";
 import { useTranslation } from "react-i18next";
 import { CustomButton } from "../CustomButton";
-import { ThemeContext } from "../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../Context/ThemeContext";
 export default function CustomModal({ visible, setVisible, color, bg, head, text, navigation, onsuccess, deleteT }) {
   function toggleModal() {
     setVisible();
@@ -19,25 +19,29 @@ export default function CustomModal({ visible, setVisible, color, bg, head, text
     }, 3000);
   }
   const { t } = useTranslation();
-  const { colors } = useContext(ThemeContext);
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
     <View>
       <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={toggleModal}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.logout}>{head}</Text>
-            <Text style={[styles.quesLogout, { width: "80%", textAlign: "center" }]}>{text}</Text>
-            <View style={styles.modalButton}>
-              <View style={styles.modalY}>
-                <CustomButton title={t("Yes")} bg={bg} color="white" press={toggleSuccess} />
+        <TouchableWithoutFeedback onPress={toggleModal}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback>
+              <View style={styles.modalContainer}>
+                <Text style={styles.logout}>{head}</Text>
+                <Text style={[styles.quesLogout, { width: "80%", textAlign: "center" }]}>{text}</Text>
+                <View style={styles.modalButton}>
+                  <View style={styles.modalY}>
+                    <CustomButton title={t("Yes")} bg={bg} color="white" press={toggleSuccess} />
+                  </View>
+                  <View style={styles.modalN}>
+                    <CustomButton title={t("No")} bg={color} color={bg} press={toggleModal} />
+                  </View>
+                </View>
               </View>
-              <View style={styles.modalN}>
-                <CustomButton title={t("No")} bg={color} color={bg} press={toggleModal} />
-              </View>
-            </View>
+            </TouchableWithoutFeedback>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
       <Modal animationType="slide" transparent={true} visible={success} onRequestClose={toggleSuccess}>
         <View style={styles.modalOverlay}>

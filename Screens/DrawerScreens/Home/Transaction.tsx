@@ -29,12 +29,15 @@ import SelectImageWithDocumentPicker from "./Attachment";
 import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 import { useTranslation } from "react-i18next";
 import { StringConstants, currencies, Weeks } from "../../Constants";
-import { updateTransaction, addTransaction } from "../../../Slice/IncomeSlice";
+import { updateTransaction, addTransaction, updateBudget } from "../../../Slice/IncomeSlice";
 import FrequencyModal from "../../../Components/FrequencyModal";
 import DropdownComponent from "../../../Components/DropDown";
 import { getStyles } from "./Expense/styles";
 import { syncUnsyncedTransactions } from "../../../Realm/Sync";
 import { RootState } from "../../../Store/Store";
+import { BudgetCategory } from "../../../Slice/Selectors";
+import { updateBudgetDocument, AddNotification } from "../../FirestoreHandler";
+import { onDisplayNotification } from "../Budget/TestNotification";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Transaction">;
 
@@ -49,15 +52,13 @@ const wallet = [
   { label: "PhonePe", value: "PhonePe" },
   { label: "Apple Pay", value: "Apple Pay" },
 ];
-
-const category = [
-  { value: "Salary", label: "Salary" },
-  { value: "Passive Income", label: "Passive Income" },
-];
 const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 export default function Transaction({ navigation, route }: Readonly<Props>) {
+  const budget = useSelector(BudgetCategory);
+  const exceeded = useSelector((state: RootState) => state.Money.exceedNotification);
   const parameters = route.params;
   const [Switchs, setSwitchs] = useState(parameters.repeat);
+  const expenseAlert = useSelector((state) => state.Money.expenseAlert);
   const [showAttach, setshowAttach] = useState(!parameters.url);
   const [image, setImage] = useState<string | null>(parameters.url);
   const [modalVisible, setModalVisible] = useState(false);
@@ -83,6 +84,8 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
   const { isConnected } = useNetInfo();
   const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const Rates = useSelector((state: RootState) => state.Rates);
+  const monthKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+  const monthlyBudget = budget[monthKey] || [];
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   let convertRate: number;
   if (currency === "USD") {
@@ -194,7 +197,6 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
       type: localPath.type,
       url: localPath.path,
     };
-    console.log(transaction);
     try {
       if (realm) {
         realm.write(() => {
@@ -211,7 +213,71 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
     if (isConnected) {
       syncUnsyncedTransactions();
     }
+    const Budget = monthlyBudget.some((item) => item.category === selectedCategory);
+    if (Budget && parameters.moneyCategory === "Expense") {
+      const Budget = monthlyBudget.find((item) => item.category === selectedCategory);
+      if (
+        Budget.amountSpent + numericIncome >= (Budget.alertPercent / 100) * Budget.budgetvalue &&
+        Budget.notification === true &&
+        Budget.notified === false
+      ) {
+        updateBudgetDocument("Budgets", Budget.id, {
+          amount: Budget.budgetvalue,
+          category: Budget.category,
+          notification: Budget.notification,
+          percentage: Budget.alertPercent,
+          notified: true,
+        });
+        dispatch(
+          updateBudget({
+            amount: Budget.budgetvalue,
+            category: Budget.category,
+            notification: Budget.notification,
+            percentage: Budget.alertPercent,
+            notified: true,
+            id: Budget.id,
+          })
+        );
+        onDisplayNotification({
+          title: `${selectedCategory} budget has exceeded the percentage`,
+          body: `Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`,
+        });
+        AddNotification({
+          title: `${selectedCategory} budget has exceeded the percentage`,
+          body: `Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`,
+          date: new Date().toISOString(),
+          userId: user ? user.uid : "",
+        });
+      }
 
+      if (Budget) {
+        const Budget = monthlyBudget.find((item) => item.category === selectedCategory);
+        if (Budget.amountSpent + numericIncome >= Budget.budgetvalue && exceeded === true) {
+          onDisplayNotification({
+            title: `${selectedCategory} budget has exceeded the limit`,
+            body: `Your ${selectedCategory} budget has exceeded the limit i.e 100%`,
+          });
+          AddNotification({
+            title: `${selectedCategory} budget has exceeded the limit`,
+            body: `Your ${selectedCategory} budget has exceeded the limit i.e 100%`,
+            date: new Date().toISOString(),
+            userId: user ? user.uid : "",
+          });
+        }
+      }
+    }
+    if (expenseAlert && parameters.moneyCategory === "Expense") {
+      onDisplayNotification({
+        title: `Added Expense`,
+        body: `You added an expense of ${selectedCategory} of amount ${numericIncome}`,
+      });
+      AddNotification({
+        title: `Added Expense`,
+        body: `You added an expense of ${selectedCategory} of amount ${numericIncome}`,
+        date: new Date().toISOString(),
+        userId: user ? user.uid : "",
+      });
+    }
     navigation.goBack();
   }
   async function editIncome() {
@@ -381,11 +447,11 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
                       height: "10%",
                       alignItems: "center",
                       justifyContent: "center",
-                      backgroundColor: "rgba(220, 234, 233, 0.6)",
+                      // backgroundColor: "rgba(220, 234, 233, 0.6)",
                     }}
                   >
                     <TouchableOpacity onPress={() => openDocument()}>
-                      <Text>{document.split("/").pop()}</Text>
+                      <Text style={{ color: parameters.bg }}>{document.split("/").pop()}</Text>
                     </TouchableOpacity>
                     {close && (
                       <>

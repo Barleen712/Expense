@@ -63,14 +63,16 @@ export default function ForgotPass({ navigation }: Readonly<Props>) {
           name={email}
           onchange={setEmail}
         />
-        <CustomButton
-          title={t(StringConstants.Continue)}
-          bg="rgb(42, 124, 118)"
-          color="white"
-          press={() => {
-            handleReset();
-          }}
-        />
+        <View style={styles.continue}>
+          <CustomButton
+            title={t(StringConstants.Continue)}
+            bg="rgb(42, 124, 118)"
+            color="white"
+            press={() => {
+              handleReset();
+            }}
+          />
+        </View>
       </View>
     </View>
   );

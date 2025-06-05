@@ -34,17 +34,16 @@ import TransferImg from "../../../../assets/transfer.svg";
 import { syncUnsyncedTransactions } from "../../../../Realm/Sync";
 import NetInfo from "@react-native-community/netinfo";
 import { RootState } from "../../../../Store/Store";
+import CameraBlue from "../../../../assets/CameraBlue.svg";
+import ImageBlue from "../../../../assets/ImageBlue.svg";
+import DocumentBlue from "../../../../assets/DocumentBlue.svg";
 type IncomeProp = StackNavigationProp<StackParamList, "Transfer">;
 
 interface Props {
   navigation: IncomeProp;
   route: any;
 }
-const modal = [
-  require("../../../../assets/CameraBlue.png"),
-  require("../../../../assets/ImageBlue.png"),
-  require("../../../../assets/DocumentBlue.png"),
-];
+const modal = [CameraBlue, ImageBlue, DocumentBlue];
 export default function Income({ navigation, route }: Readonly<Props>) {
   const { from, to, amount, id, edit, title, url, type } = route.params;
   const [showAttach, setshowAttach] = useState(!url);
@@ -300,7 +299,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
                       name={From}
                       onchange={setFrom}
                       handleFocus={handleToFromChange}
-                      limit={25}
+                      limit={30}
                     />
                   </View>
                   <View style={{ width: "50%" }}>
@@ -312,7 +311,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
                       name={To}
                       onchange={setTo}
                       handleFocus={handleToFromChange}
-                      limit={25}
+                      limit={30}
                     />
                   </View>
                   <TransferImg
@@ -406,15 +405,14 @@ export default function Income({ navigation, route }: Readonly<Props>) {
                       borderColor: "grey",
                       borderRadius: 5,
                       width: "90%",
-                      height: "10%",
+                      height: "12%",
                       alignItems: "center",
                       justifyContent: "center",
                       marginBottom: 10,
-                      backgroundColor: "rgba(141, 163, 205, 0.21)",
                     }}
                   >
                     <TouchableOpacity onPress={() => openDocument()}>
-                      <Text>{document.split("/").pop()}</Text>
+                      <Text style={{ color: "rgba(0, 119, 255, 1)" }}>{document.split("/").pop()}</Text>
                     </TouchableOpacity>
                     {close && (
                       <>

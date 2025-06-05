@@ -18,7 +18,6 @@ interface Report {
 }
 const width = Dimensions.get("window").width;
 export default function FaceCard({ type, amount, detail, category, amount1, bg, progress }: Readonly<Report>) {
-  console.log(type, amount, detail, category, amount1, bg, progress);
   const Rates = useSelector((state: RootState) => state.Rates);
   const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   let convertRate;

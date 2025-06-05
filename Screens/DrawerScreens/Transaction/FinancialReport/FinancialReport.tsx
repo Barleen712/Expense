@@ -194,7 +194,8 @@ export default function FinancialReport({ navigation }: Readonly<Props>) {
       {line && Income && (
         <View style={[styles.linechart, { flex: 0.4 }]}>
           <Text style={{ margin: 5, paddingLeft: 10, color: colors.color, fontSize: 32, fontWeight: "bold" }}>
-            {currencies[currency]} {(income * convertRate).toFixed(2)}
+            {currencies[currency]}
+            {(income * convertRate).toFixed(2)}
           </Text>
           <Linearchart data={GraphIncome} height={height} />
         </View>

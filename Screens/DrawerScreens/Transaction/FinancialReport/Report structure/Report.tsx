@@ -283,8 +283,8 @@ export function FinancialReportQuote({ navigation }: Readonly<Props>) {
           {
             backgroundColor: "rgb(240, 225, 16)",
             justifyContent: "space-between",
-            alignItems: "center",
-            padding: 30,
+            // padding: 30,
+            width: "100%",
             marginTop: 10,
           },
         ]}
@@ -298,16 +298,18 @@ export function FinancialReportQuote({ navigation }: Readonly<Props>) {
             margin: 10,
           }}
         />
-        <View>
+        <View style={{ width: "90%", marginLeft: 20 }}>
           <Text style={[styles.typeText, { color: "black" }]}>“{t(StringConstants.Financialfreedon)}”</Text>
           <Text style={[styles.MonthText, { color: "black" }]}>-{t(StringConstants.RobertKiyosaki)}</Text>
         </View>
-        <CustomButton
-          title={t(StringConstants.Seethefulldetail)}
-          bg="rgba(165, 168, 130, 0.5)"
-          color="black"
-          press={() => navigation.replace("FinancialReport")}
-        />
+        <View style={{ width: "100%", marginBottom: 30, alignItems: "center" }}>
+          <CustomButton
+            title={t(StringConstants.Seethefulldetail)}
+            bg="rgba(165, 168, 130, 0.5)"
+            color="black"
+            press={() => navigation.replace("FinancialReport")}
+          />
+        </View>
       </View>
     </View>
   );
