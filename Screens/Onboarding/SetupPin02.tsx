@@ -49,7 +49,7 @@ export default function Setpin02({ navigation, route }: Readonly<Props>) {
                 pin: pin,
               })
             );
-            navigation.replace("MainScreen");
+            navigation.reset({ index: 0, routes: [{ name: "MainScreen" }] });
           } else {
             alert("User data not found. Please try again.");
           }

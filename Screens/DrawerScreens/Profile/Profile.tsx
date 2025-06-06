@@ -137,13 +137,18 @@ export default function Profile({ navigation }: Readonly<Props>) {
     setPhoto(modalPhoto);
     setusername(modalUser);
     seteditProfile(!editProfile);
+    console.log("profile update");
+    let imageurl;
+    if (modalPhoto.uri) {
+      imageurl = modalPhoto.uri;
+    } else {
+      imageurl = modalPhoto;
+    }
 
-    let imageurl = modalPhoto;
     if (modalPhoto?.uri?.startsWith("file://")) {
       const uploaded = await uploadImage(modalPhoto.uri);
       imageurl = uploaded ?? "";
     }
-
     dispatch(updateUser({ Photo: imageurl, Index: selectedindex, username: modalUser }));
     if (auth.currentUser?.uid) {
       updateUserDoc(auth.currentUser.uid, {

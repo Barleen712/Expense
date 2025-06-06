@@ -18,7 +18,7 @@ import { useSelector } from "react-redux";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { selectTransactions, selectMonthlyExpenseTotals, selectMonthlyIncomeTotals } from "../../../../Slice/Selectors";
 import TransactionList from "../TransactionList/TransactionsList";
-import { StringConstants, currencies, profilepics, Month } from "../../../Constants";
+import { StringConstants, currencies, profilepics, Month, checkApplicationPermission } from "../../../Constants";
 import { useTranslation } from "react-i18next";
 import useTransactionListener from "../../../../Saga/TransactionSaga";
 import useBudgetListener from "../../../../Saga/BudgetSaga";
@@ -81,6 +81,7 @@ export default function Home({ navigation }: Readonly<Props>) {
 
   // Handle profile photo
   useEffect(() => {
+    checkApplicationPermission();
     if (typeof user?.Photo.uri === "number") {
       setPhoto(user.index != null ? profilepics[user.index] : require("../../../../assets/user.png"));
     } else if (!user?.Photo?.uri) {

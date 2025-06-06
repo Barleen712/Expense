@@ -192,6 +192,7 @@ export const ExpenseTrackerSlice = createSlice({
     },
     updateUser: (state, action) => {
       const { Photo, username, Index } = action.payload;
+
       state.signup.Photo.uri = Photo;
       state.signup.User = username;
       state.signup.index = Index;

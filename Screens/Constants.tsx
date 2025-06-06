@@ -1,4 +1,4 @@
-import { Platform, Alert } from "react-native";
+import { Platform, Alert, PermissionsAndroid } from "react-native";
 import { supabase } from "./SuperbaseConfig";
 import RNFS from "react-native-fs";
 import ReactNativeBiometrics from "react-native-biometrics";
@@ -16,7 +16,10 @@ import Bills from "../assets/bills.svg";
 import Transfer from "../assets/transfer.svg";
 import Salary from "../assets/salary.svg";
 import PassiveIncome from "../assets/passive.svg"; // if name has space
-
+import notifee, { AuthorizationStatus } from "@notifee/react-native";
+import { useDispatch } from "react-redux";
+import { changeSecurity, updatePreferences } from "../Slice/IncomeSlice";
+import { AppDispatch } from "../Store/Store";
 export const categoryMap = {
   Food,
   Shopping,
@@ -439,3 +442,26 @@ export const Privacy_Policy = [
       "If you have any questions about this Privacy Policy, please contact us at:\nEmail:support@montra.com\nAddress: Chicmic Studios ,F-273, Phase 8B, Industrial Area, Sector 74, Sahibzada Ajit Singh Nagar, Punjab 160071.",
   },
 ];
+
+export const checkApplicationPermission = async () => {
+  const settings = await notifee.requestPermission();
+
+  if (settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED) {
+    console.log("✅ Notification permission granted");
+  } else {
+    console.log("❌ Notification permission denied");
+  }
+
+  if (Platform.OS === "android") {
+    try {
+      const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("✅ POST_NOTIFICATIONS permission granted (Android)");
+      } else {
+        console.log("❌ POST_NOTIFICATIONS permission denied (Android)");
+      }
+    } catch (error) {
+      console.log("Permission error: ", error);
+    }
+  }
+};

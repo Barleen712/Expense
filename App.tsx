@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { View, PermissionsAndroid, Platform } from "react-native";
+import { View, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import Screens, { TabScreens } from "./Navigation/StackNavigation";
 import { Provider } from "react-redux";
 import { store, persistor } from "./Store/Store";
 import { PersistGate } from "redux-persist/integration/react";
 import { ThemeProvider } from "./Context/ThemeContext";
-import notifee, { AuthorizationStatus } from "@notifee/react-native";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Screens/FirebaseConfig";
 import { ActivityIndicator } from "react-native-paper";
@@ -18,41 +17,16 @@ import SplashScreen from "react-native-splash-screen";
 import { CachedUser, saveUserData, getCachedUser, clearUserData } from "./utils/userStorage";
 import { syncUnsyncedTransactions, syncPendingDeletes, syncPendingUpdatesToFirestore } from "./Realm/Sync";
 import { syncPendingDeletesBudget, syncPendingUpdatesToFirestoreBudgets, syncUnsyncedBudget } from "./Realm/SyncBudget";
-const checkApplicationPermission = async () => {
-  const settings = await notifee.requestPermission();
-
-  if (settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED) {
-    console.log("✅ Notification permission granted");
-  } else {
-    console.log("❌ Notification permission denied");
-  }
-
-  if (Platform.OS === "android") {
-    try {
-      const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("✅ POST_NOTIFICATIONS permission granted (Android)");
-      } else {
-        console.log("❌ POST_NOTIFICATIONS permission denied (Android)");
-      }
-    } catch (error) {
-      console.log("Permission error: ", error);
-    }
-  }
-};
-
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 export default function App() {
   const [user, setUser] = useState<CachedUser | null>(null);
   const [initialRoute, setInitialRoute] = useState<keyof StackParamList | undefined>(undefined);
   const [checkingAuth, setCheckingAuth] = useState(true); // 🆕
-
-  // useEffect(() => {
-  //   if (Platform.OS === "android") SplashScreen.hide();
-  // }, []);
-
+  GoogleSignin.configure({
+    webClientId: "26672937768-d1b1daba6ovl6md8bkrfaaffpiugeihh.apps.googleusercontent.com",
+    iosClientId: "26672937768-9fqv55u26fqipe8gn6kh9dh1tg71189b.apps.googleusercontent.com",
+  });
   useEffect(() => {
-    checkApplicationPermission();
-
     const initAuth = async () => {
       const cached = await getCachedUser();
 

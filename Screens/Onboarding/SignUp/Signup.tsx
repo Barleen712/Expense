@@ -42,12 +42,6 @@ interface Props {
 const height = Dimensions.get("screen").height;
 export default function SignUp({ navigation }: Readonly<Props>) {
   const dispatch = useDispatch();
-  useEffect(() => {
-    GoogleSignin.configure({
-      webClientId: "26672937768-d1b1daba6ovl6md8bkrfaaffpiugeihh.apps.googleusercontent.com",
-      iosClientId: "26672937768-9fqv55u26fqipe8gn6kh9dh1tg71189b.apps.googleusercontent.com",
-    });
-  }, []);
   const nameRef = useRef<TextInput>(null);
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
