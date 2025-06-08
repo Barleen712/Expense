@@ -4,10 +4,11 @@ import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "fi
 import { getRealm } from "./realm";
 import { uploadImage } from "../Screens/Constants";
 import { generateKey, encryptData } from "../Encryption/encrption";
+  const user = auth.currentUser;
 export async function syncUnsyncedTransactions() {
   const realm = await getRealm();
   const unsynced = realm.objects("Transaction").filtered("synced == false");
-  const user = auth.currentUser;
+
   for (const txn of unsynced) {
     let supabaseImageUrl = "";
     if (txn.url) {
@@ -33,15 +34,15 @@ export async function syncUnsyncedTransactions() {
       url: supabaseImageUrl,
       weekly: txn.weekly,
     };
-    // const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
-    // const encryptedData = await encryptData(JSON.stringify(txnData), key);
-    // const Data = {
-    //   _id: txn._id,
-    //   userId: user.uid,
-    //   encryptedData,
-    // };
+    const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
+    const encryptedData = await encryptData(JSON.stringify(txnData), key);
+    const Data = {
+      _id: txn._id,
+      userId: user.uid,
+      encryptedData,
+    };
     console.log(txnData);
-    const success = await AddTransaction(txnData);
+    const success = await AddTransaction(Data);
     if (success) {
       realm.write(() => {
         txn.synced = true;
@@ -114,8 +115,18 @@ export async function syncPendingUpdatesToFirestore() {
           startYear: tx.startYear,
           endAfter: tx.endAfter,
           endDate: tx.endDate,
+          Date:tx.Date,
+          _id:tx._id,
+          type:tx.type,
         };
-        await updateDoc(docRef, Data);
+            const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
+    const encryptedData = await encryptData(JSON.stringify(Data), key);
+    const FirestoreData = {
+      _id: tx._id,
+      userId: user.uid,
+      encryptedData,
+    };
+        await updateDoc(docRef, FirestoreData);
         realm.write(() => {
           const txToUpdate = realm.objectForPrimaryKey("Transaction", transactionId);
           if (txToUpdate) {
