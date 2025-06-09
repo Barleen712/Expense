@@ -79,6 +79,9 @@ export const getStyles = (colors: any) =>
       fontSize: Platform.OS === "ios" ? 14 : 16,
       color: "white",
     },
+    expandedBackground: {
+      backgroundColor: "rgba(187, 220, 212, 0.87)", // subtle green overlay
+    },
     linechart: {
       flex: Platform.OS === "ios" ? 0.28 : 0.3,
     },

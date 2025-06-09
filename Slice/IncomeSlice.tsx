@@ -100,7 +100,6 @@ export const ExpenseTrackerSlice = createSlice({
     },
     deleteTransaction: (state, action) => {
       const id = action.payload;
-      console.log(action.payload);
       const index = state.amount.findIndex((item) => item._id === id);
       state.amount = [...state.amount.slice(0, index), ...state.amount.slice(index + 1)];
     },
@@ -181,7 +180,6 @@ export const ExpenseTrackerSlice = createSlice({
       state.badgeCount = action.payload;
     },
     addNotification: (state, action) => {
-      console.log(action.payload, "r");
       const existingTransaction = state.notification.find((transaction) => transaction.date === action.payload.date);
       if (!existingTransaction) {
         state.notification.unshift(action.payload);

@@ -34,7 +34,6 @@ const useBudgetListener = () => {
           for (const transaction of data) {
             const decrypted = await decryptTransaction(transaction, user);
             const parsedData = JSON.parse(decrypted);
-            console.log(parsedData);
             dispatch(addBudget(parsedData));
             saveToRealmBudgets(parsedData);
           }

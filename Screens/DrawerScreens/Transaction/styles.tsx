@@ -7,6 +7,9 @@ export const getStyles = (colors: any) =>
       backgroundColor: colors.backgroundColor,
       paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
+    expandedBackground: {
+      backgroundColor: "rgba(187, 220, 212, 0.87)", // subtle green overlay
+    },
     sortImage: {
       borderWidth: 1,
       borderColor: "grey",

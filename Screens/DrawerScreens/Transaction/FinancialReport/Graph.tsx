@@ -122,7 +122,7 @@ export const Linearchart = ({ data, height }: LineData) => {
       yAxisLabelWidth={0}
       height={height}
       startFillColor="rgb(61, 122, 95)"
-      endFillColor={colors.backgroundColor}
+      endFillColor="rgba(187, 220, 212, 0.87)"
       initialSpacing={0}
       endSpacing={70}
       color="rgb(42, 124, 118)"
