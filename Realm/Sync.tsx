@@ -4,11 +4,11 @@ import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "fi
 import { getRealm } from "./realm";
 import { uploadImage } from "../Screens/Constants";
 import { generateKey, encryptData } from "../Encryption/encrption";
-  const user = auth.currentUser;
+
 export async function syncUnsyncedTransactions() {
   const realm = await getRealm();
   const unsynced = realm.objects("Transaction").filtered("synced == false");
-
+  const user = auth.currentUser;
   for (const txn of unsynced) {
     let supabaseImageUrl = "";
     if (txn.url) {
@@ -73,6 +73,7 @@ export const syncPendingDeletes = async ({ isConnected }: { isConnected: boolean
   }
 };
 export async function syncPendingUpdatesToFirestore() {
+  const user = auth.currentUser;
   const realm = await getRealm();
   try {
     const pendingTransactions = realm.objects("Transaction").filtered("pendingUpdate == true");
@@ -115,17 +116,18 @@ export async function syncPendingUpdatesToFirestore() {
           startYear: tx.startYear,
           endAfter: tx.endAfter,
           endDate: tx.endDate,
-          Date:tx.Date,
-          _id:tx._id,
-          type:tx.type,
+          Date: tx.Date,
+          _id: tx._id,
+          type: tx.type,
         };
-            const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
-    const encryptedData = await encryptData(JSON.stringify(Data), key);
-    const FirestoreData = {
-      _id: tx._id,
-      userId: user.uid,
-      encryptedData,
-    };
+        console.log(user?.uid, user?.providerId);
+        const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
+        const encryptedData = await encryptData(JSON.stringify(Data), key);
+        const FirestoreData = {
+          _id: tx._id,
+          userId: user.uid,
+          encryptedData,
+        };
         await updateDoc(docRef, FirestoreData);
         realm.write(() => {
           const txToUpdate = realm.objectForPrimaryKey("Transaction", transactionId);

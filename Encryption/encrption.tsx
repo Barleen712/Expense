@@ -7,7 +7,6 @@ export const generateKey = async (
   length: number
 ) => {
   if (!password || !salt) {
-    console.log(password,salt)
     console.error("❌ Cannot generate key. Password or salt is null/undefined.");
     return null;
   }

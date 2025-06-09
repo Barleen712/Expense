@@ -6,7 +6,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { auth, db } from "../Screens/FirebaseConfig";
 import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { encryptData, generateKey } from "../Encryption/encrption";
- const user = auth.currentUser;
+const user = auth.currentUser;
 let realm: Realm | null = null;
 
 export const getRealm = async (): Promise<Realm | undefined> => {
@@ -112,7 +112,7 @@ interface TransType {
   synced: boolean;
   pendingUpdate: boolean;
   type: SVGStringList;
-  Date:string;
+  Date: string;
 }
 
 export async function updateTransactionRealmAndFirestore(
@@ -122,6 +122,7 @@ export async function updateTransactionRealmAndFirestore(
   updatedData: Partial<Omit<TransType, "_id">>,
   isOnline: boolean | null
 ) {
+  const user = auth.currentUser;
   try {
     if (isOnline) {
       let supabaseurl = "";
@@ -155,21 +156,21 @@ export async function updateTransactionRealmAndFirestore(
         endAfter: updatedData.endAfter,
         endDate: updatedData.endDate,
         type: updatedData.type,
-        Date:updatedData.Date,
-        _id:transactionId
+        Date: updatedData.Date,
+        _id: transactionId,
       };
       const q = query(collection(db, "Transactions"), where("_id", "==", transactionId));
       const querySnapshot = await getDocs(q);
       const docSnap = querySnapshot.docs[0];
       const docRef = doc(db, "Transactions", docSnap.id);
 
-                  const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
-          const encryptedData = await encryptData(JSON.stringify(Data), key);
-          const FirestoreData = {
-            _id: transactionId,
-            userId: user.uid,
-            encryptedData,
-          };
+      const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
+      const encryptedData = await encryptData(JSON.stringify(Data), key);
+      const FirestoreData = {
+        _id: transactionId,
+        userId: user.uid,
+        encryptedData,
+      };
       await updateDoc(docRef, FirestoreData);
       const dataToUpdate = { ...updatedData, synced: true, pendingUpdate: false };
 

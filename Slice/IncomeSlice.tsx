@@ -181,7 +181,8 @@ export const ExpenseTrackerSlice = createSlice({
       state.badgeCount = action.payload;
     },
     addNotification: (state, action) => {
-      const existingTransaction = state.notification.find((transaction) => transaction.id === action.payload.id);
+      console.log(action.payload, "r");
+      const existingTransaction = state.notification.find((transaction) => transaction.date === action.payload.date);
       if (!existingTransaction) {
         state.notification.unshift(action.payload);
         state.badgeCount += 1;

@@ -138,6 +138,8 @@ export default function CreateBudget({ navigation, route }: Readonly<Props>) {
       amount: numericBudget,
       notification: Expense,
       notified: false,
+      year: parameters.year,
+      month: parameters.month,
     };
     const { isConnected } = await NetInfo.fetch();
     updateTransactionRealmAndFirestoreBudget(parameters.index ?? "", updatedData, isConnected);
@@ -149,6 +151,8 @@ export default function CreateBudget({ navigation, route }: Readonly<Props>) {
         id: parameters.index,
         notification: Expense,
         notified: false,
+        year: parameters.year,
+        month: parameters.month,
       })
     );
     navigation.goBack();

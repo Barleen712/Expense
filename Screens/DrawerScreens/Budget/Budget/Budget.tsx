@@ -38,6 +38,8 @@ type BudgetItem = {
   amountSpent: number;
   alertPercent: number;
   notification: boolean;
+  year: number;
+  Month: string;
 };
 export default function Budget({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
@@ -85,6 +87,8 @@ export default function Budget({ navigation }: Readonly<Props>) {
               total: item.budgetvalue,
               percentage: item.alertPercent,
               alert: item.notification,
+              year: item.year,
+              Month: month,
             })
           }
           style={{

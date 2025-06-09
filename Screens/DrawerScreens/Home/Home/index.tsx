@@ -41,7 +41,6 @@ export default function Home({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
-
   // Redux State
   const user = useSelector((state: RootState) => state.Money.signup);
   const currency = useSelector((state: RootState) => state.Money.preferences.currency);

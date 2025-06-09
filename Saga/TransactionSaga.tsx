@@ -34,6 +34,7 @@ const useTransactionListener = () => {
         try {
           const decrypted = await decryptTransaction(transaction, user);
           const parsedData = JSON.parse(decrypted);
+
           dispatch(addTransaction(parsedData));
           saveToRealmIfNotExists(parsedData);
         } catch (err) {

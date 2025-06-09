@@ -38,6 +38,7 @@ import { RootState } from "../../../Store/Store";
 import { BudgetCategory } from "../../../Slice/Selectors";
 import { updateBudgetDocument, AddNotification } from "../../FirestoreHandler";
 import { onDisplayNotification } from "../Budget/TestNotification";
+import { encryptData, generateKey } from "../../../Encryption/encrption";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Transaction">;
 
@@ -236,17 +237,26 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
             percentage: Budget.alertPercent,
             notified: true,
             id: Budget.id,
+            year: Budget.year,
+            month: Budget.month,
           })
         );
         onDisplayNotification({
           title: `${selectedCategory} budget has exceeded the percentage`,
           body: `Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`,
         });
-        AddNotification({
+        const NotificationData = {
           title: `${selectedCategory} budget has exceeded the percentage`,
           body: `Your ${selectedCategory} budget has exceeded the limit i.e ${Budget.alertPercent}%`,
           date: new Date().toISOString(),
           userId: user ? user.uid : "",
+        };
+        const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
+        const encryptedData = await encryptData(JSON.stringify(NotificationData), key);
+        AddNotification({
+          date: new Date().toISOString(),
+          userId: user ? user.uid : "",
+          encryptedData,
         });
       }
 
@@ -257,11 +267,18 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
             title: `${selectedCategory} budget has exceeded the limit`,
             body: `Your ${selectedCategory} budget has exceeded the limit i.e 100%`,
           });
-          AddNotification({
+          const NotificationData = {
             title: `${selectedCategory} budget has exceeded the limit`,
             body: `Your ${selectedCategory} budget has exceeded the limit i.e 100%`,
             date: new Date().toISOString(),
             userId: user ? user.uid : "",
+          };
+          const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
+          const encryptedData = await encryptData(JSON.stringify(NotificationData), key);
+          AddNotification({
+            date: new Date().toISOString(),
+            userId: user ? user.uid : "",
+            encryptedData,
           });
         }
       }
@@ -271,11 +288,18 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
         title: `Added Expense`,
         body: `You added an expense of ${selectedCategory} of amount ${numericIncome}`,
       });
-      AddNotification({
+      const NotificationData = {
         title: `Added Expense`,
         body: `You added an expense of ${selectedCategory} of amount ${numericIncome}`,
         date: new Date().toISOString(),
         userId: user ? user.uid : "",
+      };
+      const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
+      const encryptedData = await encryptData(JSON.stringify(NotificationData), key);
+      AddNotification({
+        date: new Date().toISOString(),
+        userId: user ? user.uid : "",
+        encryptedData,
       });
     }
     navigation.goBack();
@@ -301,6 +325,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
       startMonth: month,
       startYear: new Date().getFullYear(),
       synced: false,
+      Date: parameters.id,
     };
     const { isConnected } = await NetInfo.fetch();
     dispatch(updateTransaction(updateData));

@@ -1,7 +1,8 @@
 import { getRealm } from "./realm";
 import NetInfo from "@react-native-community/netinfo";
-import { db } from "../Screens/FirebaseConfig";
+import { db, auth } from "../Screens/FirebaseConfig";
 import { collection, query, getDocs, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { generateKey, encryptData } from "../Encryption/encrption";
 
 export interface BudgetType {
   _id: string;
@@ -29,7 +30,6 @@ const getFirestoreDocByBudgetId = async (_id: string) => {
   return querySnapshot.docs[0] ?? null;
 };
 
-// 🚫 NO REALM CLOSING — Realm stays open and reused
 export const markPendingDeleteOrDeleteBudget = async (_id: string) => {
   const isConnected = await NetInfo.fetch().then((state) => state.isConnected);
   const realm = await getRealm();
@@ -66,6 +66,7 @@ export async function updateTransactionRealmAndFirestoreBudget(
   isOnline: boolean | null
 ) {
   const realm = await getRealm();
+  const user = auth.currentUser;
   try {
     const tx = realm.objectForPrimaryKey("Budget", transactionId);
 
@@ -73,7 +74,15 @@ export async function updateTransactionRealmAndFirestoreBudget(
       const docSnap = await getFirestoreDocByBudgetId(transactionId);
       if (docSnap) {
         const docRef = doc(db, "Budgets", docSnap.id);
-        await updateDoc(docRef, updatedData);
+        const key = await generateKey(user.uid, user?.providerId, 5000, 256);
+        const encryptedData = await encryptData(JSON.stringify(updatedData), key);
+        const Data = {
+          _id: transactionId,
+          encryptedData,
+          userId: user.uid,
+        };
+
+        await updateDoc(docRef, Data);
       }
 
       realm.write(() => {

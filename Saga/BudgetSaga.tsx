@@ -4,49 +4,53 @@ import { useEffect } from "react";
 import { collection, query, where, onSnapshot, getDocs } from "firebase/firestore";
 import { db, auth } from "../Screens/FirebaseConfig";
 import { saveToRealmBudgets } from "../Realm/Budgetrealm";
+import { decryptData, generateKey } from "../Encryption/encrption";
+
+const decryptTransaction = async (transaction, user) => {
+  const key = await generateKey(user.uid, user.providerId, 5000, 256);
+  const decrypted = await decryptData(transaction.encryptedData.cipher, key, transaction.encryptedData.iv);
+  return decrypted;
+};
+
 const useBudgetListener = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) return;
+
     dispatch(loadingTransaction(true));
+
     const q = query(collection(db, "Budgets"), where("userId", "==", user.uid));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      data.forEach((transaction) => {
-        dispatch(addBudget(transaction));
-        saveToRealmBudgets(transaction);
-      });
-      dispatch(loadingTransaction(false));
+      const handleSnapshot = async () => {
+        try {
+          const data = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+
+          for (const transaction of data) {
+            const decrypted = await decryptTransaction(transaction, user);
+            const parsedData = JSON.parse(decrypted);
+            console.log(parsedData);
+            dispatch(addBudget(parsedData));
+            saveToRealmBudgets(parsedData);
+          }
+
+          dispatch(loadingTransaction(false));
+        } catch (error) {
+          console.error("Error decrypting transactions:", error);
+          dispatch(loadingTransaction(false));
+        }
+      };
+
+      handleSnapshot();
     });
 
     return () => unsubscribe();
   }, [dispatch]);
-};
-export const getUserDocument = async () => {
-  const user = auth.currentUser;
-  try {
-    if (!user) return;
-    const q = query(collection(db, "Pins"), where("userId", "==", user.uid));
-    const querySnapshot = await getDocs(q);
-    if (querySnapshot.empty) {
-      console.log("No PIN document exists for this user");
-      return null;
-    }
-    const pinDoc = querySnapshot.docs[0];
-    const pinData = pinDoc.data();
-    return {
-      Pin: pinData.Pin,
-    };
-  } catch (error) {
-    console.error("Error fetching PIN:", error);
-    throw error;
-  }
 };
 export const getUseNamerDocument = async () => {
   const user = auth.currentUser;

@@ -24,7 +24,7 @@ interface Props {
 }
 const width = Dimensions.get("window").width - 60;
 export default function DetailedBudget({ navigation, route }: Readonly<Props>) {
-  const { category, remaining, progress, exceeded, index, total, percentage, alert } = route.params;
+  const { category, remaining, progress, exceeded, index, total, percentage, alert, year, Month } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   async function deleteBudgetFunction() {
@@ -132,6 +132,8 @@ export default function DetailedBudget({ navigation, route }: Readonly<Props>) {
                 percentage: percentage,
                 index: index,
                 edit: true,
+                year: year,
+                month: Month,
                 header: "Edit Budget",
               })
             }
