@@ -199,7 +199,7 @@ function DetailTransaction({
   const indexDay = DisplayDate.getDay();
   const day = Weeks[indexDay];
   const month = Month[indexMnonth];
-  const getDate = DisplayDate.getDate() + 1;
+  const getDate = DisplayDate.getDate();
   const getHours = DisplayDate.getHours();
   const getMinute = DisplayDate.getMinutes();
   const DisplayTime = `${day} ${getDate} ${month} ${year} ${getHours}:${getMinute}`;

@@ -56,7 +56,7 @@ export const getStyles = (colors: any) =>
       backgroundColor: colors.backgroundColor,
       borderWidth: 0.5,
       flexDirection: "row",
-      alignItems: "center",
+      alignItems: "flex-start",
       justifyContent: "space-evenly",
       paddingBottom: "3%",
       marginTop: "-10%",

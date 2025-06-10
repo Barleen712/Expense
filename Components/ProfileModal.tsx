@@ -226,13 +226,19 @@ function ProfileModal({
               <View style={{ paddingLeft: 10, justifyContent: "space-evenly", flex: 0.1, marginTop: 10 }}>
                 <Text style={{ fontFamily: "Inter", fontSize: 16, color: colors.editColor }}>{t("Username")}</Text>
                 <TextInput
-                  placeholder={username}
                   value={modalUser}
                   maxLength={25}
                   onFocus={() => scrollRef.current?.scrollToEnd({ animated: true })}
                   onChangeText={(text) => {
-                    setusernameError("");
-                    setModalUser(text);
+                    const cleanedText = text.trimStart(); // remove leading spaces
+                    const allowed = /^[a-zA-Z ]*$/; // allow letters and spaces only
+
+                    if (allowed.test(cleanedText)) {
+                      setusernameError("");
+                      setModalUser(cleanedText);
+                    } else {
+                      setusernameError("Only letters and spaces are allowed");
+                    }
                   }}
                   style={{
                     fontFamily: "Inter",

@@ -52,7 +52,7 @@ export const GenerateCSVReport = async (exportdata: string, dateRange: string) =
   const filteredTransactions = transactions.filter((item) => {
     const itemDate = new Date(item.Date);
     const matchCategory = filterOption?.value === "4" || item.moneyCategory === filterOption?.label;
-    const matchDate = itemDate >= startDate;
+    const matchDate = itemDate >= startDate && itemDate <= now;
     return matchCategory && matchDate;
   });
 
@@ -69,7 +69,7 @@ export const GenerateCSVReport = async (exportdata: string, dateRange: string) =
       csvContent += "No transactions available for the selected filter and date range.\n";
     } else {
       filteredTransactions.forEach((t) => {
-        const formattedDate = new Date(t.Date).toLocaleDateString();
+        const formattedDate = new Date(t.Date);
         csvContent += `${formattedDate},${t.moneyCategory},${t.category},$${t.amount},${t.description},${t.wallet}\n`;
       });
     }

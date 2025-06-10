@@ -95,12 +95,12 @@ export default function Transaction({ navigation }: Readonly<Props>) {
 
       if (filteritem) {
         filteredResult = filteredResult.filter(
-          (item) => item.moneyCategory?.toLowerCase() === filteritem.toLowerCase()
+          (item) => item.moneyCategory?.toLowerCase() === filteritem.toLowerCase() && new Date(item.Date) <= new Date()
         );
       }
       if (selectedCategory) {
         filteredResult = filteredResult.filter(
-          (item) => item.category?.toLowerCase() === selectedCategory.toLowerCase()
+          (item) => item.category?.toLowerCase() === selectedCategory.toLowerCase() && new Date(item.Date) <= new Date()
         );
       }
       if (sortBy) {
@@ -192,6 +192,7 @@ export default function Transaction({ navigation }: Readonly<Props>) {
                       setfilteritem("");
                       setSelectedCategory("");
                       setcount(0);
+                      toggleModal();
                     }}
                     style={styles.reset}
                   >

@@ -30,10 +30,13 @@ export default function ForgotPin({ navigation }) {
     const credential = EmailAuthProvider.credential(user.email, password);
     try {
       await reauthenticateWithCredential(user, credential);
+
       Alert.alert("Success", "Password verified.");
       navigation.navigate("Setpin");
     } catch (error) {
-      console.log(error);
+      Alert.alert("Failed", "Please enter correct Password");
+      setPassword("");
+      setconfirmPass("");
     }
   }
   return (

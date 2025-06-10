@@ -20,6 +20,7 @@ export const getStyles = (colors: any) =>
     },
     input: {
       alignItems: "center",
+      justifyContent: "space-evenly",
       //  marginTop: Platform.OS === "ios" ? 20 : 30,
       width: "100%",
       marginTop: 10,

@@ -162,7 +162,8 @@ export default function Login({ navigation }: Readonly<Props>) {
             <Text
               style={{
                 color: "rgb(255, 0, 17)",
-                marginTop: 4,
+                marginTop: -10,
+                marginBottom: 8,
                 marginLeft: 10,
                 fontFamily: "Inter",
                 width: "90%",
@@ -192,7 +193,8 @@ export default function Login({ navigation }: Readonly<Props>) {
             <Text
               style={{
                 color: "rgb(255, 0, 17)",
-                marginTop: 4,
+                marginTop: -10,
+                marginBottom: 8,
                 marginLeft: 10,
                 fontFamily: "Inter",
                 width: "90%",

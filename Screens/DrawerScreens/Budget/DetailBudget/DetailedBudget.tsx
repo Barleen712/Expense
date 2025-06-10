@@ -115,7 +115,7 @@ export default function DetailedBudget({ navigation, route }: Readonly<Props>) {
           {exceeded && (
             <View style={styles.limitexceed}>
               <AntDesign name="exclamationcircle" size={24} color="white" />
-              <Text style={[styles.categoryText, { color: "white" }]}>{t("You've exceeded the limit")}</Text>
+              <Text style={[styles.categoryText, { color: "white" }]}> {t("You've exceeded the limit")}</Text>
             </View>
           )}
         </View>

@@ -21,6 +21,7 @@ export const getStyles = (colors: any) =>
       alignItems: "center",
       marginTop: Platform.OS === "ios" ? 30 : 80,
       width: "100%",
+      justifyContent: "space-evenly",
     },
 
     forgot: {

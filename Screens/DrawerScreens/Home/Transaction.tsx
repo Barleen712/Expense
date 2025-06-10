@@ -150,6 +150,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
     setIncomeError("");
     setIncome(cleaned);
   };
+  console.log(month);
 
   function handleDescriptionChange() {
     if (descriptionError) {
@@ -550,8 +551,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
                       <Text style={{ color: "rgba(145, 145, 159, 1)", fontSize: 13 }}>
                         {frequency}
                         {frequency === "Yearly" && ` - ${Month[month]} ${startDate} ` + new Date().getFullYear()}
-                        {frequency === "Monthly" &&
-                          " - " + Month[new Date().getMonth()] + ` ${startDate} ` + new Date().getFullYear()}
+                        {frequency === "Monthly" && " - " + Month[month] + ` ${startDate} ` + new Date().getFullYear()}
                         {frequency === "Weekly" && ` - ${Weeks[week]}`}
                       </Text>
                     </View>

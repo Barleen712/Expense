@@ -41,7 +41,6 @@ export default function Home({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
-  // Redux State
   const user = useSelector((state: RootState) => state.Money.signup);
   const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const language = useSelector((state: RootState) => state.Money.preferences.language);
@@ -51,13 +50,10 @@ export default function Home({ navigation }: Readonly<Props>) {
   const Rates = useSelector((state: RootState) => state.Rates);
   const badgeCount = useSelector((state: RootState) => state.Money.badgeCount);
   const loading = useSelector((state: RootState) => state.Money.loading);
-
-  // State
   const [selectedMonth_Year, setselectedMonth_Year] = useState(new Date());
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [show, setShow] = useState(false);
-  const [photo, setPhoto] = useState<string | { uri: string } | number>(""); // number for require()
-
+  const [photo, setPhoto] = useState<string | { uri: string } | number>("");
   const today = new Date(selectedMonth_Year);
   const langList = [
     { name: "Arabic", tc: "ar" },
@@ -71,14 +67,11 @@ export default function Home({ navigation }: Readonly<Props>) {
   const convertRate = currency === "USD" ? 1 : Rates.Rate[currency];
   const height = Dimensions.get("window").height * 0.2;
   const Flat = ["Today", "Week", "Month", "Year"];
-
-  // Calculate income/expense
   const selectedKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
   const income = monthlyincome[selectedKey] || 0;
   const expense = monthlyexpense[selectedKey] || 0;
   const accountBalance = (94500 + income - expense) * convertRate;
 
-  // Handle profile photo
   useEffect(() => {
     checkApplicationPermission();
     if (typeof user?.Photo.uri === "number") {
@@ -131,27 +124,22 @@ export default function Home({ navigation }: Readonly<Props>) {
         const selectedYear = selectedMonth_Year.getFullYear();
         const todayDate = new Date().getDate();
 
-        // Construct the target end date using current time
         let endDate = new Date(selectedYear, selectedMonth, todayDate);
-
-        // If selected month doesn't have today's date, clamp to month's end
         const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
         if (todayDate > daysInMonth) {
           endDate = new Date(selectedYear, selectedMonth, daysInMonth);
         }
 
-        // Set endDate time to now
         const now = new Date();
         endDate.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
 
         const startDate = new Date(endDate);
         startDate.setDate(endDate.getDate() - 6);
-        startDate.setHours(0, 0, 0, 0); // Start of first day
-
+        startDate.setHours(0, 0, 0, 0);
         return mapToAmountAndDate(
           expenses.filter((item) => {
             const d = new Date(item.Date);
-            return d >= startDate && d <= endDate; // Includes today's transaction even added 1 sec ago
+            return d >= startDate && d <= endDate;
           })
         );
       }
@@ -232,7 +220,7 @@ export default function Home({ navigation }: Readonly<Props>) {
     <View style={{ flex: 1 }}>
       <StatusBar translucent backgroundColor="black" barStyle="default" />
       <SafeAreaView style={styles.container}>
-        <LinearGradient colors={colors.LinearGradient} style={styles.homeHeadgradient}>
+        <LinearGradient colors={colors.LinearGradient as [string, string, ...string[]]} style={styles.homeHeadgradient}>
           {badgeCount > 0 && (
             <View style={styles.badgeCount}>
               <Text style={styles.badgeCountText}>{badgeCount}</Text>

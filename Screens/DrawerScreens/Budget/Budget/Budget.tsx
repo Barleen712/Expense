@@ -12,15 +12,14 @@ import { ProgressBar } from "react-native-paper";
 import DropdownComponent from "../../../../Components/DropDown";
 import { RootState } from "../../../../Store/Store";
 import type { ListRenderItem } from "react-native";
-
+import { useTranslation } from "react-i18next";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
+import { clearData } from "../../../../Slice/IncomeSlice";
 const width = Dimensions.get("window").width * 0.8;
 const date = new Date();
 const MonthIndex = date.getMonth();
-import { useTranslation } from "react-i18next";
-
 type Budgetprop = StackNavigationProp<StackParamList, "MainScreen">;
-import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
-import { clearData } from "../../../../Slice/IncomeSlice";
+
 type YearOption = { label: string; value: string };
 let Year: YearOption[] = [];
 

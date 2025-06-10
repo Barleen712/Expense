@@ -9,8 +9,9 @@ import Header from "../../../Components/Header";
 import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../../FirebaseConfig";
+import { auth, db } from "../../FirebaseConfig";
 import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
+import { collection, getDocs, query, where } from "firebase/firestore";
 type ForgotPasswordProp = StackNavigationProp<StackParamList, "ForgotPassword">;
 
 interface Props {
@@ -20,24 +21,48 @@ interface Props {
 export default function ForgotPass({ navigation }: Readonly<Props>) {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const handleReset = async () => {
-    if (!email) {
-      alert("Please enter your email address.");
-      return;
-    }
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (loading) return; // prevent multiple presses
+    setLoading(true);
 
-    if (!emailRegex.test(email)) {
-      alert("Please Enter Valid Email");
+    const cleanedEmail = email.trim().toLowerCase();
+
+    if (!cleanedEmail) {
+      alert("Please enter your email address.");
+      setLoading(false);
       return;
     }
-    try {
-      await sendPasswordResetEmail(auth, email);
-    } catch (error) {
-      alert(error);
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(cleanedEmail)) {
+      alert("Please enter a valid email.");
+      setLoading(false);
+      return;
     }
-    navigation.navigate("EmailSent", { email: email });
+
+    try {
+      const q = query(collection(db, "Names"), where("email", "==", cleanedEmail));
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        alert("No account found with this email.");
+      } else {
+        try {
+          await sendPasswordResetEmail(auth, cleanedEmail);
+          navigation.navigate("EmailSent", { email: cleanedEmail });
+        } catch (error) {
+          alert("Something went wrong. Try again.");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Something went wrong. Please try later.");
+    }
+
+    setLoading(false);
   };
+
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (

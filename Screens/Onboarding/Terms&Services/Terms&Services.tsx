@@ -30,23 +30,26 @@ export default function Terms_Condition({ navigation }) {
           contentContainerStyle={{ marginBottom: 50 }}
           renderItem={({ item }) => (
             <View style={styles.TermsView}>
-              <Text
-                onPress={() => {
-                  if (item.title === "3. Privacy") navigation.navigate("Privacy");
-                }}
-                style={[
-                  styles.head,
-                  {
-                    fontSize: 16,
-                    borderBottomColor: colors.line,
-                    borderBottomWidth: item.title === "3. Privacy" ? 1 : 0,
-                    flexShrink: 1,
-                    width: item.title === "3. Privacy" ? "25%" : "90%",
-                    color: item.title === "3. Privacy" ? "blue" : "rgba(42, 124, 118, 1)",
-                  },
-                ]}
-              >
-                {item.title}
+              <Text style={[styles.head, { fontSize: 16 }]}>
+                {item.count}
+                <Text
+                  style={[
+                    styles.head,
+                    {
+                      fontSize: 16,
+                      borderBottomColor: colors.line,
+                      borderBottomWidth: item.title === "Privacy" ? 1 : 0,
+                      flexShrink: 1,
+                      width: item.title === "Privacy" ? "25%" : "90%",
+                      color: item.title === "Privacy" ? "blue" : "rgba(42, 124, 118, 1)",
+                    },
+                  ]}
+                  onPress={() => {
+                    if (item.title === "Privacy") navigation.navigate("Privacy");
+                  }}
+                >
+                  {item.title}
+                </Text>
               </Text>
               <Text style={styles.description}>{item.description}</Text>
             </View>

@@ -15,7 +15,7 @@ const data = [
   { label: "Budget", value: "3" },
   { label: "All", value: "4" },
 ];
-
+const Month = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 const dateRanges = {
   "0": () => new Date(new Date().setHours(0, 0, 0, 0)), // Today
   "1": () => new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Last 7 days
@@ -38,10 +38,9 @@ export const generateReportPDF = async (exportdata: string, dateRange: string) =
 
   const filterOption = data.find((item) => item.value === exportdata);
   const matchCategory = (t) => filterOption?.value === "4" || t.moneyCategory === filterOption?.label;
-  const matchDate = (t) => new Date(t.Date) >= startDate;
+  const matchDate = (t) => new Date(t.Date) >= startDate && new Date(t.Date) <= new Date();
 
   const filteredTransactions = transactions.filter((t) => matchCategory(t) && matchDate(t));
-  console.log(filteredTransactions);
   const transactionRows = filteredTransactions
     .map((t) => {
       const date = new Date(t.Date).toLocaleDateString();
@@ -112,7 +111,7 @@ export const generateReportPDF = async (exportdata: string, dateRange: string) =
         ${
           includeBudget
             ? `
-        <h2>Budget Summary (${currentMonthKey})</h2>
+        <h2>Budget Summary (${Month[now.getMonth()]}-${now.getFullYear()})</h2>
         <table>
           <thead>
             <tr>

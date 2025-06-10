@@ -61,6 +61,8 @@ type StackParamList = {
     total: number;
     percentage: number;
     alert: boolean;
+    year: number;
+    Month: number;
   };
   DetailAccount: {
     wallet: string;

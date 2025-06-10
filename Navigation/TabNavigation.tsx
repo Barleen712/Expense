@@ -22,7 +22,6 @@ import CameraRed from "../assets/CameraRed.svg";
 import ImageRed from "../assets/ImageRed.svg";
 import DocumentRed from "../assets/DocumentRed.svg";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
-import { useDispatch } from "react-redux";
 import { LinearGradient } from "expo-linear-gradient";
 
 type BottomTabprop = StackNavigationProp<StackParamList, "MainScreen">;

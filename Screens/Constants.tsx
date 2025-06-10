@@ -330,61 +330,73 @@ export function raiseToast(type: string, text1: string, error: string) {
 }
 export const Terms_Conditions = [
   {
-    title: "1. Use of the App",
+    count: "1. ",
+    title: "Use of the App",
     description:
       "You must be at least 13 years old (or the minimum age required in your jurisdiction) to use the App. By using the App, you represent that you meet this requirement. You agree to use the App only for lawful purposes and in accordance with these Terms.",
   },
   {
-    title: "2. Account Registration",
+    count: "2. ",
+    title: "Account Registration",
     description:
       "To use certain features, you may need to create an account. You agree to provide accurate, current, and complete information and to keep it updated. You are responsible for maintaining the confidentiality of your login credentials and for all activities that occur under your account.",
   },
   {
-    title: "3. Privacy",
+    count: "3. ",
+    title: "Privacy",
     description:
       "Your privacy is important to us. Please review our Privacy Policy to understand how we collect, use, and safeguard your information.",
   },
   {
-    title: "4. Data Accuracy and Responsibility",
+    count: "4. ",
+    title: "Data Accuracy and Responsibility",
     description:
       "The App provides tools to track expenses and budgets, but you are solely responsible for the accuracy of the data you input. We do not guarantee financial outcomes or provide financial advice.",
   },
   {
-    title: "5. Intellectual Property",
+    count: "5. ",
+    title: "Intellectual Property",
     description:
       "The App and its content (excluding user-submitted data) are the property of Chicmic Studios and are protected by intellectual property laws. You may not copy, modify, or distribute any part of the App without our written consent.",
   },
   {
-    title: "6. Prohibited Conduct",
+    count: "6. ",
+    title: "Prohibited Conduct",
     description: `You agree not to:\n(a) Use the App for any unlawful purpose.\n(b) Access or attempt to access other users’ data without authorization.\n(c) Introduce viruses or malicious code into the App.`,
   },
   {
-    title: "7. Termination",
+    count: "7. ",
+    title: "Termination",
     description:
       "We may suspend or terminate your access to the App at any time, with or without notice, if we believe you’ve violated these Terms.",
   },
   {
-    title: "8. Disclaimer of Warranties",
+    count: "8. ",
+    title: "Disclaimer of Warranties",
     description:
       'The App is provided "as is" without warranties of any kind. We do not guarantee that the App will be error-free or continuously available.',
   },
   {
-    title: "9. Limitation of Liability",
+    count: "9. ",
+    title: "Limitation of Liability",
     description:
       "To the fullest extent permitted by law, Chicmic Studios shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the App.",
   },
   {
-    title: "10. Changes to Terms",
+    count: "10. ",
+    title: "Changes to Terms",
     description:
       "We may update these Terms from time to time. If we make material changes, we will notify you within the App or via email. Continued use of the App after changes means you accept the new Terms.",
   },
   {
-    title: "11. Governing Law",
+    count: "11. ",
+    title: "Governing Law",
     description:
       "These Terms are governed by and construed in accordance with the laws of India, without regard to its conflict of law principles.",
   },
   {
-    title: "12. Contact Us",
+    count: "12. ",
+    title: "Contact Us",
     description:
       "If you have any questions about these Terms, please contact us at:\nEmail:support@montra.com\nAddress: Chicmic Studios ,F-273, Phase 8B, Industrial Area, Sector 74, Sahibzada Ajit Singh Nagar, Punjab 160071",
   },

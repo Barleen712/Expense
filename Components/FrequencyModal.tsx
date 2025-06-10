@@ -172,6 +172,10 @@ export default function FrequencyModal({
                       styleButton={styles.textinput}
                       onSelectItem={(item) => {
                         setStartDate(item);
+                        if (startDate <= new Date().getDate()) {
+                          setMonth(Month[new Date().getMonth() + 1].value);
+                          console.log(month, "guyg");
+                        }
                       }}
                       position="bottom"
                       height={150}

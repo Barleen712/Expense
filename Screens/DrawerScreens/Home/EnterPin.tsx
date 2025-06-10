@@ -69,11 +69,11 @@ export default function EnterPin({ navigation }: Readonly<Props>) {
           <View
             style={{
               backgroundColor: "white",
-              width: "30%",
+              width: "35%",
               position: "absolute",
               right: "6%",
-              top: "75%",
-              height: "80%",
+              top: "76%",
+              height: "120%",
               elevation: 100,
               shadowColor: "red",
               shadowOpacity: 1,
@@ -88,15 +88,17 @@ export default function EnterPin({ navigation }: Readonly<Props>) {
                 flexDirection: "row",
                 alignItems: "center",
                 height: "50%",
-                marginLeft: 5,
+                paddingLeft: 5,
+                borderBottomWidth: 1,
+                borderBottomColor: "rgb(56, 88, 85)",
               }}
               onPress={() => {
                 setpin("");
                 navigation.navigate("ForgotPin");
               }}
             >
-              <MaterialCommunityIcons name="lock-question" size={24} color="black" />
-              <Text style={{ fontWeight: "bold" }}>Forgot Pin?</Text>
+              <MaterialCommunityIcons name="lock-question" size={24} color="rgb(56, 88, 85)" />
+              <Text style={{ fontWeight: "bold" }}> Forgot Pin?</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -111,7 +113,7 @@ export default function EnterPin({ navigation }: Readonly<Props>) {
                 setopendots(false);
               }}
             >
-              <MaterialIcons name="lock-reset" size={24} color="black" />
+              <MaterialIcons name="lock-reset" size={24} color="rgb(56, 88, 85)" />
               <Text style={{ fontWeight: "bold" }}> Reset Pin?</Text>
             </TouchableOpacity>
           </View>

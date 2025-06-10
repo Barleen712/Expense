@@ -96,6 +96,7 @@ export default function SignUp({ navigation }: Readonly<Props>) {
         await auth.signOut();
         const url = await uploadImage(photo.uri);
         AddUser({
+          email: email.email.toLocaleLowerCase(),
           User: name.name,
           userid: user.user.uid,
           pinSet: false,
@@ -202,7 +203,7 @@ export default function SignUp({ navigation }: Readonly<Props>) {
         color={colors.color}
       ></Header>
       <ScrollView style={{ width: "100%", height: height * 0.8 }}>
-        <View style={{ alignItems: "center", height: height * 0.8 }}>
+        <View style={{ alignItems: "center", height: height * 0.85 }}>
           <View style={{ height: height * 0.15, marginTop: 5, width: "100%", alignItems: "center" }}>
             <View style={{ flex: 0.8, width: "90%", alignItems: "center" }}>
               <Image style={{ width: "28%", height: "100%", borderRadius: 100 }} source={photo} />
@@ -231,7 +232,8 @@ export default function SignUp({ navigation }: Readonly<Props>) {
               <Text
                 style={{
                   color: "rgb(255, 0, 17)",
-                  marginTop: 4,
+                  marginTop: 1,
+                  marginBottom: 8,
                   marginLeft: 10,
                   fontFamily: "Inter",
                   width: "90%",
@@ -262,7 +264,8 @@ export default function SignUp({ navigation }: Readonly<Props>) {
               <Text
                 style={{
                   color: "rgb(255, 0, 17)",
-                  marginTop: 4,
+                  marginTop: 1,
+                  marginBottom: 8,
                   marginLeft: 10,
                   fontFamily: "Inter",
                   width: "90%",
@@ -293,7 +296,8 @@ export default function SignUp({ navigation }: Readonly<Props>) {
               <Text
                 style={{
                   color: "rgb(255, 0, 17)",
-                  marginTop: 4,
+                  marginTop: 1,
+                  marginBottom: 10,
                   marginLeft: 10,
                   fontFamily: "Inter",
                   width: "90%",
