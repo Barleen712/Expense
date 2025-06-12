@@ -130,11 +130,13 @@ export const getStyles = (colors: any) =>
     FilterCategory: {
       flex: 0.5,
       width: "100%",
-      marginBottom: 20,
+      marginBottom: "5%",
       marginLeft: "10%",
     },
     category: {
-      margin: 10,
+      margin: "auto",
+      marginBottom: "1%",
+      marginTop: "1%",
       borderColor: "#D1D1D1",
       padding: 11,
       paddingLeft: 15,

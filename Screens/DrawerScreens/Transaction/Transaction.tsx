@@ -249,7 +249,7 @@ export default function Transaction({ navigation }: Readonly<Props>) {
                           styles.filterButton,
                           {
                             backgroundColor: item === sortBy ? "rgba(174, 225, 221, 0.6)" : "white",
-                            height: "28%",
+                            height: "32%",
                             padding: 0,
 
                             margin: 5,
@@ -264,10 +264,13 @@ export default function Transaction({ navigation }: Readonly<Props>) {
                   </View>
                 </View>
                 <View style={styles.FilterCategory}>
-                  <Text style={styles.notiTitle}>{t(StringConstants.Category)}</Text>
+                  <Text style={[styles.notiTitle, { marginBottom: 1 }]}>{t(StringConstants.Category)}</Text>
                   <FlatList
                     data={category}
                     numColumns={3}
+                    scrollEnabled={false}
+                    showsVerticalScrollIndicator={false}
+                    style={{ width: "90%" }}
                     renderItem={({ item }) => (
                       <TouchableOpacity
                         style={[
