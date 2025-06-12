@@ -418,6 +418,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
                   name={Description}
                   onchange={setDescription}
                   handleFocus={handleDescriptionChange}
+                  limit={200}
                 />
                 {descriptionError !== "" && <Text style={styles.error}>*{descriptionError}</Text>}
                 <DropdownComponent

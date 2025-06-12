@@ -202,7 +202,10 @@ function DetailTransaction({
   const getDate = DisplayDate.getDate();
   const getHours = DisplayDate.getHours();
   const getMinute = DisplayDate.getMinutes();
-  const DisplayTime = `${day} ${getDate} ${month} ${year} ${getHours}:${getMinute}`;
+  const meridiem = getHours >= 12 ? "PM" : "AM";
+  const DisplayTime = `${day} ${getDate} ${month} ${year} ${getHours}:${getMinute
+    .toString()
+    .padStart(2, "0")} ${meridiem}`;
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   const openDocument = async (url: string, fileName: string = "document.pdf") => {

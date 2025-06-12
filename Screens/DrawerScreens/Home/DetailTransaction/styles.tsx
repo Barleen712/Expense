@@ -88,6 +88,7 @@ export const getStyles = (colors: any) =>
       flex: 0.3,
       width: "90%",
       marginLeft: "5%",
+      marginRight: "5%",
       marginTop: 10,
       marginBottom: 10,
     },
