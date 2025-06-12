@@ -87,21 +87,20 @@ export const Linearchart = ({ data, height }: LineData) => {
         style={{
           marginTop: 15,
           //marginLeft: 10,
-          marginLeft: lastitem ? -65 : 0,
+          marginLeft: lastitem ? -100 : 0,
           backgroundColor: "rgb(42, 124, 118)",
-          paddingLeft: 10,
+          paddingLeft: 2,
           // paddingRight: 10,
-
+          marginBottom: 30,
           borderRadius: 4,
-          width: 70,
+          width: 100,
         }}
         pointerEvents="auto"
       >
         <Text style={{ color: "white", fontSize: 10 }}>${value}</Text>
         <Text style={{ color: "white", fontSize: 10 }}>
-          {data_date.getDate()}/{data_date.getMonth() + 1}/{data_date.getFullYear()}
+          {data_date.getDate()}/{data_date.getMonth() + 1}/{data_date.getFullYear()} :{formattedTime}
         </Text>
-        <Text style={{ color: "white", fontSize: 10 }}>{formattedTime}</Text>
       </View>
     );
   };
