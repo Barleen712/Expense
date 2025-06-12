@@ -306,6 +306,10 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
     navigation.goBack();
   }
   async function editIncome() {
+    if (Description === "") {
+      setDescriptionError("Add Description");
+      return;
+    }
     const realm = await getRealm();
     const numericIncome = parseFloat(Income.replace("$", "") || "0") / convertRate;
     const updateData = {

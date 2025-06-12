@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import Input from "../../../Components/CustomTextInput";
 import { CustomButton } from "../../../Components/CustomButton";
 import { getStyles } from "./styles";
@@ -65,6 +65,13 @@ export default function ForgotPass({ navigation }: Readonly<Props>) {
 
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
+  if (loading) {
+    return (
+      <View style={[styles.container, { alignItems: "center", justifyContent: "center" }]}>
+        <ActivityIndicator size="large" color={"green"} />
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <Header

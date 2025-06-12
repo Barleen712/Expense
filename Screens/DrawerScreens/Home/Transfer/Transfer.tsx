@@ -197,6 +197,18 @@ export default function Income({ navigation, route }: Readonly<Props>) {
     navigation.goBack();
   }
   async function editTransfer() {
+    if (From === "") {
+      setToError("Add From");
+      return;
+    }
+    if (To === "") {
+      setToError("Add To");
+      return;
+    }
+    if (Description === "") {
+      setDescriptionError("Add description");
+      return;
+    }
     const numericExpense = parseFloat(Transfer.replace("$", "") || "0") / convertRate;
     const realm = await getRealm();
     const updateData = {
@@ -327,7 +339,8 @@ export default function Income({ navigation, route }: Readonly<Props>) {
                   <Text
                     style={{
                       color: "rgb(255, 0, 17)",
-                      marginTop: 4,
+                      marginTop: -10,
+                      marginBottom: 5,
                       marginLeft: 10,
                       fontFamily: "Inter",
                       width: "90%",
@@ -349,8 +362,9 @@ export default function Income({ navigation, route }: Readonly<Props>) {
                   <Text
                     style={{
                       color: "rgb(255, 0, 17)",
-                      marginTop: 4,
-                      marginLeft: 10,
+                      marginTop: -10,
+                      marginBottom: 10,
+                      marginLeft: 8,
                       fontFamily: "Inter",
                       width: "90%",
                     }}
