@@ -49,7 +49,6 @@ export default function FaceCard({ type, amount, detail, category, amount1, bg, 
       <View style={styles.typeView}>
         <Text style={styles.typeText}>{t(type)}</Text>
         <Text style={styles.amountText}>
-          {" "}
           {currencies[currency]} {(amount * convertRate).toFixed(2)}
         </Text>
       </View>

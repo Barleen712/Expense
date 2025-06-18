@@ -33,11 +33,14 @@ const DropdownComponent = ({ name, data, styleButton, value, position, height, o
       labelField="label"
       valueField="value"
       value={value}
+      containerStyle={{ backgroundColor: colors.backgroundColor }}
+      itemTextStyle={{ color: colors.color }}
       placeholder={name}
       dropdownPosition={position}
       autoScroll={false}
       placeholderStyle={{ color: resolvedColor }}
       selectedTextStyle={{ color: resolvedColor }}
+      activeColor={colors.line}
       onChange={(selectedItem) => {
         onSelectItem(selectedItem.value);
       }}

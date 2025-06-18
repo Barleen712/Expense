@@ -160,11 +160,6 @@ export default function Profile({ navigation }: Readonly<Props>) {
       });
     }
   }
-  function Discard() {
-    seteditProfile(!editProfile);
-    setmodalPhoto(photo);
-    setModalUser(username);
-  }
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (

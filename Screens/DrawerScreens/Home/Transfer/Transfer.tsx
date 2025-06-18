@@ -138,29 +138,35 @@ export default function Income({ navigation, route }: Readonly<Props>) {
     }
   }
   async function add() {
-    const realm = await getRealm();
+    const trimmedFrom = From.trim();
+    const trimmedTo = To.trim();
+    const trimmedDescription = Description.trim();
+
     const numericIncome = parseFloat(Transfer.replace("$", "") || "0") / convertRate;
+
     if (numericIncome === 0) {
       setTransferError("Add amount");
       return;
     }
-    if (From === "") {
+    if (trimmedFrom === "") {
       setToError("Add From");
       return;
     }
-    if (To === "") {
+    if (trimmedTo === "") {
       setToError("Add To");
       return;
     }
-    if (Description === "") {
+    if (trimmedDescription === "") {
       setDescriptionError("Add description");
       return;
     }
+
+    // Use trimmed values for saving
     const transaction = {
       _id: new Date().toISOString(),
       amount: numericIncome,
-      description: Description,
-      category: From + " -> " + To,
+      description: trimmedDescription,
+      category: trimmedFrom + " -> " + trimmedTo,
       wallet: "",
       moneyCategory: "Transfer",
       Frequency: "",
@@ -178,6 +184,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
     };
 
     try {
+      const realm = await getRealm();
       if (realm) {
         realm.write(() => {
           realm.create("Transaction", transaction);
@@ -191,30 +198,36 @@ export default function Income({ navigation, route }: Readonly<Props>) {
     }
     const { isConnected } = await NetInfo.fetch();
     if (isConnected) {
-      syncUnsyncedTransactions(); // Start syncing if online
+      syncUnsyncedTransactions();
     }
     setLoading(false);
     navigation.goBack();
   }
+
   async function editTransfer() {
-    if (From === "") {
+    const trimmedFrom = From.trim();
+    const trimmedTo = To.trim();
+    const trimmedDescription = Description.trim();
+
+    if (trimmedFrom === "") {
       setToError("Add From");
       return;
     }
-    if (To === "") {
+    if (trimmedTo === "") {
       setToError("Add To");
       return;
     }
-    if (Description === "") {
+    if (trimmedDescription === "") {
       setDescriptionError("Add description");
       return;
     }
+
     const numericExpense = parseFloat(Transfer.replace("$", "") || "0") / convertRate;
     const realm = await getRealm();
     const updateData = {
       amount: numericExpense,
-      description: Description,
-      category: From + " -> " + To,
+      description: trimmedDescription,
+      category: trimmedFrom + " -> " + trimmedTo,
       id: id,
       Frequency: "",
       endAfter: null,
@@ -231,6 +244,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
       url: localPath.path || document,
       wallet: "",
     };
+
     const { isConnected } = await NetInfo.fetch();
     dispatch(updateTransaction(updateData));
     if (realm) {
@@ -245,6 +259,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
     navigation.goBack();
     navigation.goBack();
   }
+
   if (loading) {
     return (
       <View

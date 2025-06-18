@@ -163,6 +163,9 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
   async function add() {
     const realm = await getRealm();
     const numericIncome = parseFloat(Income.replace("$", "") || "0") / convertRate;
+    const trimmedDescription = Description.trim();
+    setDescription(trimmedDescription);
+
     if (numericIncome === 0) {
       setIncomeError("Enter Amount");
       return;
@@ -171,7 +174,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
       setcategoryError("Select Category");
       return;
     }
-    if (Description === "") {
+    if (trimmedDescription === "") {
       setDescriptionError("Add Description");
       return;
     }
@@ -182,7 +185,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
     const transaction = {
       _id: new Date().toISOString(),
       amount: numericIncome,
-      description: Description,
+      description: trimmedDescription,
       category: selectedCategory,
       wallet: selectedWallet,
       moneyCategory: parameters.moneyCategory,
@@ -273,6 +276,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
             body: `Your ${selectedCategory} budget has exceeded the limit i.e 100%`,
             date: new Date().toISOString(),
             userId: user ? user.uid : "",
+            read: false,
           };
           const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
           const encryptedData = await encryptData(JSON.stringify(NotificationData), key);
@@ -294,6 +298,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
         body: `You added an expense of ${selectedCategory} of amount ${numericIncome}`,
         date: new Date().toISOString(),
         userId: user ? user.uid : "",
+        read: false,
       };
       const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
       const encryptedData = await encryptData(JSON.stringify(NotificationData), key);
@@ -306,7 +311,9 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
     navigation.goBack();
   }
   async function editIncome() {
-    if (Description === "") {
+    const trimmedDescription = Description.trim();
+    setDescription(trimmedDescription);
+    if (trimmedDescription === "") {
       setDescriptionError("Add Description");
       return;
     }
@@ -314,7 +321,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
     const numericIncome = parseFloat(Income.replace("$", "") || "0") / convertRate;
     const updateData = {
       amount: numericIncome,
-      description: Description,
+      description: trimmedDescription,
       category: selectedCategory,
       wallet: selectedWallet,
       id: parameters.id,

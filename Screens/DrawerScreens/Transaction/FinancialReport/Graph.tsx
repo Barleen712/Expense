@@ -28,7 +28,7 @@ export const DonutChart = ({
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   return (
     <View style={{ alignItems: "center", justifyContent: "center", flex: 1 }}>
-      <Text style={[styles.typeText, { position: "absolute", top: "40%", color: colors.color }]}>
+      <Text style={[styles.typeText, { position: "absolute", top: "42%", color: colors.color, fontSize: 24 }]}>
         {currencies[currency]}
         {(value * convertRate).toFixed(2)}
       </Text>

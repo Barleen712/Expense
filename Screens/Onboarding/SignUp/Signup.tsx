@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext } from "react";
 import {
   View,
   Text,
@@ -22,7 +22,6 @@ import { useTranslation } from "react-i18next";
 import { StringConstants, handleGoogleSignIn, raiseToast, uploadImage } from "../../Constants";
 import { addUser, addGoogleUser } from "../../../Slice/IncomeSlice";
 import { useDispatch } from "react-redux";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
 import {
   createUserWithEmailAndPassword,
@@ -92,8 +91,6 @@ export default function SignUp({ navigation }: Readonly<Props>) {
       const user = await createUserWithEmailAndPassword(auth, email.email, password.password);
       raiseToast("success", "Sign Up Success", "done");
       if (user) {
-        await sendEmailVerification(user.user);
-        await auth.signOut();
         const url = await uploadImage(photo.uri);
         AddUser({
           email: email.email.toLocaleLowerCase(),
@@ -105,6 +102,9 @@ export default function SignUp({ navigation }: Readonly<Props>) {
           },
           Google: false,
         });
+        await sendEmailVerification(user.user);
+        await auth.signOut();
+
         raiseToast("success", "Email Verification", "verify");
       }
     } catch (error: any) {

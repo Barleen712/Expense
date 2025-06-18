@@ -1,4 +1,5 @@
-import { db } from "./FirebaseConfig";
+import { encryptData, generateKey, decryptData } from "../Encryption/encrption";
+import { db, auth } from "./FirebaseConfig";
 import { collection, query, getDocs, where, deleteDoc, doc, updateDoc, addDoc } from "firebase/firestore";
 export async function AddTransaction(transactionData: any) {
   console.log(transactionData);
@@ -87,5 +88,41 @@ export const updateUserDoc = async (id: string, data: any) => {
     await updateDoc(docRef, updateData);
   } catch (error) {
     console.log(error);
+  }
+};
+export const updateNotification = async (userId: string) => {
+  try {
+    const q = query(collection(db, "Notification"), where("userId", "==", userId));
+    const snapshot = await getDocs(q);
+
+    const key = await generateKey(userId, auth.currentUser?.providerId, 5000, 256);
+
+    const updatePromises = snapshot.docs.map(async (docSnap) => {
+      const docData = docSnap.data();
+
+      // Decrypt encryptedData string
+      const decryptedJsonStr = await decryptData(docData.encryptedData.cipher, key, docData.encryptedData.iv);
+      const notif = JSON.parse(decryptedJsonStr);
+
+      // Update read field
+      const updatedNotif = { ...notif, read: true };
+
+      // Encrypt updated notification again
+      const encryptedData = await encryptData(JSON.stringify(updatedNotif), key);
+
+      const notifRef = doc(db, "Notification", docSnap.id);
+
+      // Update Firestore with new encryptedData
+      return updateDoc(notifRef, {
+        encryptedData,
+        userId,
+        date: updatedNotif.date,
+      });
+    });
+
+    await Promise.all(updatePromises);
+    console.log("✅ All notifications decrypted, updated and re-encrypted in Firestore.");
+  } catch (error) {
+    console.error("❌ Error updating notifications:", error);
   }
 };

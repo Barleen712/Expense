@@ -398,7 +398,7 @@ export const Terms_Conditions = [
     count: "12. ",
     title: "Contact Us",
     description:
-      "If you have any questions about these Terms, please contact us at:\nEmail:support@montra.com\nAddress: Chicmic Studios ,F-273, Phase 8B, Industrial Area, Sector 74, Sahibzada Ajit Singh Nagar, Punjab 160071",
+      "If you have any questions about these Terms, please contact us at:\nEmail:support_montra@yopmail.com.\nAddress: Chicmic Studios ,F-273, Phase 8B, Industrial Area, Sector 74, Sahibzada Ajit Singh Nagar, Punjab 160071",
   },
 ];
 
@@ -451,7 +451,7 @@ export const Privacy_Policy = [
   {
     title: "10. Contact Us",
     description:
-      "If you have any questions about this Privacy Policy, please contact us at:\nEmail:support@montra.com\nAddress: Chicmic Studios ,F-273, Phase 8B, Industrial Area, Sector 74, Sahibzada Ajit Singh Nagar, Punjab 160071.",
+      "If you have any questions about this Privacy Policy, please contact us at:\nEmail:support_montra@yopmail.com.\nAddress: Chicmic Studios ,F-273, Phase 8B, Industrial Area, Sector 74, Sahibzada Ajit Singh Nagar, Punjab 160071.",
   },
 ];
 

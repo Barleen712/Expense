@@ -158,7 +158,7 @@ export default function AboutUs({ navigation }) {
           <Text style={{ color: colors.color }}>
             Have questions, feedback, or suggestion?{"\n"}
             We'd love to hear from you!{"\n"}
-            Email us at: support@montra.com {"\n\n"}
+            Email us at: support_montra@yopmail.com. {"\n\n"}
             Let Montra be your financial companion <Text style={styles.span}>-one transaction at a time</Text>
           </Text>
         </View>

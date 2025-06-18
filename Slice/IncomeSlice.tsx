@@ -183,8 +183,12 @@ export const ExpenseTrackerSlice = createSlice({
       const existingTransaction = state.notification.find((transaction) => transaction.date === action.payload.date);
       if (!existingTransaction) {
         state.notification.unshift(action.payload);
-        state.badgeCount += 1;
+        console.log(action.payload);
+        if (!action.payload.read) {
+          state.badgeCount += 1;
+        }
       }
+      console.log("added notification");
     },
     addUser: (state, action) => {
       state.signup = action.payload;
@@ -217,6 +221,7 @@ export const ExpenseTrackerSlice = createSlice({
     },
     removeNotification: (state) => {
       state.notification = [];
+      console.log("removed");
     },
     clearData: (state) => {
       state.amount = [];

@@ -123,7 +123,7 @@ export default function TransactionList({ data }: Readonly<TransactionListProps>
             {item.description}
           </Text>
         </View>
-        <View style={{ alignItems: "flex-end", width: "25%" }}>
+        <View style={{ alignItems: "flex-end", width: "25%", paddingRight: 10 }}>
           <Text style={[styles.categoryText, { color: amountColor }]}>
             {item.moneyCategory === "Income" ? "+" : "-"}
             {currencies[currency]}

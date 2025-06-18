@@ -153,7 +153,15 @@ function ProfileModal({
     [modalPhoto, photo, modalUser, username]
   );
   return (
-    <Modal animationType="slide" transparent visible={editProfile} onRequestClose={() => seteditProfile(false)}>
+    <Modal
+      animationType="slide"
+      transparent
+      visible={editProfile}
+      onRequestClose={() => {
+        if (editProfile) Discard();
+        seteditProfile(false);
+      }}
+    >
       <View style={styles.modalOverlay}>
         <View
           style={{

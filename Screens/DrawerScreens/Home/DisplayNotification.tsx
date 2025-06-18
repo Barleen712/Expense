@@ -5,13 +5,13 @@ import styles from "../../Stylesheet";
 import { useDispatch, useSelector } from "react-redux";
 import Entypo from "@expo/vector-icons/Entypo";
 import { removeNotification, updateBadge } from "../../../Slice/IncomeSlice";
-import { deleteAllUserNotifications } from "../../FirestoreHandler";
+import { deleteAllUserNotifications, updateNotification } from "../../FirestoreHandler";
 import { auth } from "../../FirebaseConfig";
 import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
-import { RootState } from "../../../Store/Store";
+import { RootState, store } from "../../../Store/Store";
 type NotificationProp = StackNavigationProp<StackParamList, "Notification">;
 
 interface Notification {
@@ -60,16 +60,17 @@ export default function DisplayNotification({ navigation }: Readonly<Notificatio
           <TouchableOpacity
             onPress={() => {
               dispatch(updateBadge(0));
+              updateNotification(auth.currentUser?.uid);
               setShow(false);
             }}
           >
             <Text>{t("Mark all read")}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => {
+            onPress={async () => {
+              await deleteAllUserNotifications(auth.currentUser?.uid);
               dispatch(removeNotification());
               dispatch(updateBadge(0));
-              deleteAllUserNotifications(auth.currentUser?.uid);
               setShow(false);
             }}
           >

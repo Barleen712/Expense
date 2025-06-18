@@ -178,7 +178,14 @@ export default function Transaction({ navigation }: Readonly<Props>) {
       )}
 
       <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
-        <TouchableWithoutFeedback onPress={toggleModal}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setSelectedCategory("");
+            setSortBy("");
+            setfilteritem("");
+            toggleModal();
+          }}
+        >
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <View style={styles.modalContainer}>

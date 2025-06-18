@@ -30,7 +30,7 @@ export const getStyles = (colors: any) =>
     },
     amountText: {
       color: colors.backgroundColor,
-      fontSize: 64,
+      fontSize: 60,
       fontWeight: "bold",
       marginVertical: 10,
     },
