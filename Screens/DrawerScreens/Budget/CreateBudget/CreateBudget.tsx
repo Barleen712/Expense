@@ -51,7 +51,7 @@ export default function CreateBudget({ navigation, route }: Readonly<Props>) {
   const [categoryError, setCategoryError] = useState("");
   const [Expense, setExpense] = useState(parameters.alert);
   const [sliderValue, setSliderValue] = useState(parameters.percentage);
-  const [Budget, setBudget] = useState<string>(`${parameters.value}`);
+  const [Budget, setBudget] = useState<string>(Number(parameters.value).toFixed(2));
   const [selectedCategory, setSelectedCategory] = useState(`${parameters.category}`);
   const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const Rates = useSelector((state: RootState) => state.Rates);

@@ -334,7 +334,7 @@ export default function Home({ navigation }: Readonly<Props>) {
               </Text>
             </View>
           ) : (
-            <View style={{ width: "90%", flex: 1 }}>
+            <View style={{ width: "98%", flex: 1, alignItems: "center", justifyContent: "center" }}>
               <TransactionList data={filteredAndSortedTransactions.slice(0, 5)} />
             </View>
           )}

@@ -2,10 +2,8 @@ import { encryptData, generateKey, decryptData } from "../Encryption/encrption";
 import { db, auth } from "./FirebaseConfig";
 import { collection, query, getDocs, where, deleteDoc, doc, updateDoc, addDoc } from "firebase/firestore";
 export async function AddTransaction(transactionData: any) {
-  console.log(transactionData);
   try {
-    const docRef = await addDoc(collection(db, "Transactions"), transactionData);
-    console.log(docRef);
+    await addDoc(collection(db, "Transactions"), transactionData);
     return true;
   } catch (e) {
     console.log(e);
@@ -99,20 +97,17 @@ export const updateNotification = async (userId: string) => {
 
     const updatePromises = snapshot.docs.map(async (docSnap) => {
       const docData = docSnap.data();
-
-      // Decrypt encryptedData string
       const decryptedJsonStr = await decryptData(docData.encryptedData.cipher, key, docData.encryptedData.iv);
+      if (!decryptedJsonStr) {
+        throw new Error("Failed to decrypt notification data.");
+      }
       const notif = JSON.parse(decryptedJsonStr);
 
-      // Update read field
       const updatedNotif = { ...notif, read: true };
 
-      // Encrypt updated notification again
       const encryptedData = await encryptData(JSON.stringify(updatedNotif), key);
 
       const notifRef = doc(db, "Notification", docSnap.id);
-
-      // Update Firestore with new encryptedData
       return updateDoc(notifRef, {
         encryptedData,
         userId,

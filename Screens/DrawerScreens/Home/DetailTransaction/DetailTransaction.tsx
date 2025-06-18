@@ -127,7 +127,7 @@ function DetailTransaction({
   function EditTransaction() {
     if (type === "Income") {
       navigation.navigate("Transaction", {
-        amount,
+        amount: amount * convertRate,
         title,
         category,
         wallet,
@@ -152,7 +152,7 @@ function DetailTransaction({
       });
     } else if (type === "Expense") {
       navigation.navigate("Transaction", {
-        amount,
+        amount: amount * convertRate,
         title,
         category,
         wallet,
@@ -182,7 +182,7 @@ function DetailTransaction({
       });
     } else {
       navigation.navigate("Transfer", {
-        amount,
+        amount: amount * convertRate,
         to: wallet,
         from: category,
         title: title,
@@ -409,7 +409,8 @@ export function DetailTransaction_Transfer({ navigation, route }: Readonly<Props
   const { value } = route.params;
   const arrow = value.category.indexOf("->");
   const From = value.category.slice(0, arrow);
-  const To = value.category.slice(arrow + 3, value.category.length - 1);
+  const To = value.category.slice(arrow + 3, value.category.length);
+
   return (
     <DetailTransaction
       navigation={navigation}

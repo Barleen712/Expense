@@ -5,9 +5,10 @@ import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db, auth } from "../Screens/FirebaseConfig";
 import { saveToRealmIfNotExists } from "../Realm/realm";
 import { generateKey, decryptData } from "../Encryption/encrption";
+import { User } from "@firebase/auth";
 
 // Decryption helper
-const decryptTransaction = async (transaction, user) => {
+const decryptTransaction = async (transaction: { id?: string; encryptedData?: any }, user: User) => {
   const key = await generateKey(user.uid, user.providerId, 5000, 256);
   const decrypted = await decryptData(transaction.encryptedData.cipher, key, transaction.encryptedData.iv);
   return decrypted;
@@ -33,10 +34,13 @@ const useTransactionListener = () => {
       for (const transaction of data) {
         try {
           const decrypted = await decryptTransaction(transaction, user);
-          const parsedData = JSON.parse(decrypted);
-
-          dispatch(addTransaction(parsedData));
-          saveToRealmIfNotExists(parsedData);
+          if (decrypted !== null) {
+            const parsedData = JSON.parse(decrypted);
+            dispatch(addTransaction(parsedData));
+            saveToRealmIfNotExists(parsedData);
+          } else {
+            console.error("Decryption returned null for transaction:", transaction.id);
+          }
         } catch (err) {
           console.error("Decryption failed for transaction:", transaction.id, err);
         }

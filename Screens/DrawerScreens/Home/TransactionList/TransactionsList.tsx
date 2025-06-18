@@ -106,16 +106,17 @@ export default function TransactionList({ data }: Readonly<TransactionListProps>
       <TouchableOpacity
         onPress={() => navigateFunc({ item })}
         style={{
-          margin: 4,
           backgroundColor: colors.listView,
           height: 80,
+          width: "97%",
+          margin: 4,
           borderRadius: 20,
           flexDirection: "row",
           alignItems: "center",
         }}
       >
         <View style={{ margin: 10 }}>{CategoryIcon && <CategoryIcon width={60} height={60} />}</View>
-        <View style={{ width: "50%", justifyContent: "space-between", height: "70%" }}>
+        <View style={{ width: "40%", justifyContent: "space-between", height: "70%" }}>
           <Text style={styles.balance} numberOfLines={1}>
             {t(item.category)}
           </Text>
@@ -123,7 +124,7 @@ export default function TransactionList({ data }: Readonly<TransactionListProps>
             {item.description}
           </Text>
         </View>
-        <View style={{ alignItems: "flex-end", width: "25%", paddingRight: 10 }}>
+        <View style={{ alignItems: "flex-end", width: "35%", paddingRight: 10 }}>
           <Text style={[styles.categoryText, { color: amountColor }]}>
             {item.moneyCategory === "Income" ? "+" : "-"}
             {currencies[currency]}

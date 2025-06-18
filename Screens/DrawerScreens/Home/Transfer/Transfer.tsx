@@ -141,7 +141,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
     const trimmedFrom = From.trim();
     const trimmedTo = To.trim();
     const trimmedDescription = Description.trim();
-
+    console.log(trimmedTo);
     const numericIncome = parseFloat(Transfer.replace("$", "") || "0") / convertRate;
 
     if (numericIncome === 0) {

@@ -309,12 +309,13 @@ export default function Transaction({ navigation }: Readonly<Props>) {
       </Modal>
       <View
         style={{
-          width: "100%",
+          width: "98%",
           flex: 1,
           alignItems: "center",
           marginBottom: 80,
           justifyContent: "center",
           marginTop: 10,
+          marginLeft: 5,
         }}
       >
         {FilterTrans.length === 0 ? (

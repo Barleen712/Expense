@@ -126,7 +126,7 @@ export default function DetailedBudget({ navigation, route }: Readonly<Props>) {
             color="white"
             press={() =>
               navigation.navigate("CreateBudget", {
-                value: total,
+                value: total * convertRate,
                 category: category,
                 alert: alert,
                 percentage: percentage,
