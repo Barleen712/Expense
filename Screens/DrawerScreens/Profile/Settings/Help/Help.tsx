@@ -112,7 +112,7 @@ const HelpScreen = ({ navigation }: Props) => {
             <Text style={styles.description}>Can’t find what you’re looking for? Get in touch.</Text>
             <TouchableOpacity
               style={styles.buttonOutline}
-              onPress={() => Linking.openURL("mailto:support_montra@yopmail.com.")}
+              onPress={() => Linking.openURL("mailto:support_montra@yopmail.com")}
             >
               <Text style={styles.buttonOutlineText}>Email Support</Text>
             </TouchableOpacity>

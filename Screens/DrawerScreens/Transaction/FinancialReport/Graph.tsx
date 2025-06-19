@@ -73,6 +73,9 @@ interface LineData {
 export const Linearchart = ({ data, height }: LineData) => {
   const { t } = useTranslation();
   const { colors } = useContext(ThemeContext);
+  const Rates = useSelector((state: RootState) => state.Rates);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
+  const convertRate = Rates.Rate[currency];
   const renderPointerLabel = (items, secondaryItem, pointerIndex) => {
     if (!items || items.length === 0 || pointerIndex === -1) return null;
     const { value, date } = items[0];
@@ -87,19 +90,22 @@ export const Linearchart = ({ data, height }: LineData) => {
         style={{
           marginTop: 15,
           //marginLeft: 10,
-          marginLeft: lastitem ? -100 : 0,
+          marginLeft: lastitem ? -60 : 0,
           backgroundColor: "rgb(42, 124, 118)",
           paddingLeft: 2,
           // paddingRight: 10,
           marginBottom: 30,
           borderRadius: 4,
-          width: 100,
+          width: 60,
         }}
         pointerEvents="auto"
       >
-        <Text style={{ color: "white", fontSize: 10 }}>${value}</Text>
         <Text style={{ color: "white", fontSize: 10 }}>
-          {data_date.getDate()}/{data_date.getMonth() + 1}/{data_date.getFullYear()} :{formattedTime}
+          {currencies[currency]}
+          {(value * convertRate).toFixed(2)}
+        </Text>
+        <Text style={{ color: "white", fontSize: 10 }}>
+          {data_date.getDate()}/{data_date.getMonth() + 1}:{formattedTime}
         </Text>
       </View>
     );
