@@ -3,11 +3,12 @@
     "name": "ExpenseTracker",
     "slug": "ExpenseTracker",
     "version": "1.0.0",
+    "owner": "barleen",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "plugins": ["@react-native-google-signin/google-signin"],
-
+    "scheme": "expensetracker",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
@@ -16,7 +17,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.ExpenseTracker",
+      "bundleIdentifier": "com.barleen.ExpenseTracker",
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {

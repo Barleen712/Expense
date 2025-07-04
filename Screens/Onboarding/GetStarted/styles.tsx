@@ -1,4 +1,5 @@
 import { StyleSheet, StatusBar, Platform } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 export const getStyles = (colors: any) =>
   StyleSheet.create({
     container: {
@@ -19,18 +20,18 @@ export const getStyles = (colors: any) =>
     title: {
       fontFamily: "Inter",
       fontWeight: 700,
-      fontSize: 32,
+      fontSize: Platform.OS === "android" ? RFValue(32) : RFValue(30),
       textAlign: "center",
-      width: "90%",
+      width: "80%",
       color: colors.color,
       marginTop: 20,
     },
     des: {
-      width: "75%",
+      width: Platform.OS === "android" ? "75%" : "80%",
       paddingTop: 10,
       fontFamily: "Inter",
       fontWeight: 500,
-      fontSize: 16,
+      fontSize: RFValue(16),
       textAlign: "center",
       color: " rgba(145, 145, 159, 1)",
     },

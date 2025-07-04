@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import * as Sharing from "expo-sharing";
 import * as IntentLauncher from "expo-intent-launcher";
@@ -37,6 +38,8 @@ import { RootState } from "../../../../Store/Store";
 import CameraBlue from "../../../../assets/CameraBlue.svg";
 import ImageBlue from "../../../../assets/ImageBlue.svg";
 import DocumentBlue from "../../../../assets/DocumentBlue.svg";
+import { RFValue } from "react-native-responsive-fontsize";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 type IncomeProp = StackNavigationProp<StackParamList, "Transfer">;
 
 interface Props {
@@ -86,42 +89,48 @@ export default function Income({ navigation, route }: Readonly<Props>) {
     }
   };
   const handleTransferChange = (text: string) => {
+    // Reject comma
     if (text.includes(",")) {
       setTransferError("Commas are not allowed");
       return;
     }
 
-    const cleaned = text.replace(/[^0-9.]/g, "");
-
-    const decimalCount = (cleaned.match(/\./g) || []).length;
-    if (decimalCount > 1) {
-      setTransferError("Only one decimal point is allowed");
+    // Only allow digits with at most one dot
+    const validNumberRegex = /^\d*\.?\d*$/;
+    if (!validNumberRegex.test(text)) {
+      setTransferError("Please enter a valid amount");
       return;
     }
 
-    const parts = cleaned.split(".");
+    // Allow empty input while typing
+    if (text === "") {
+      setTransferError("");
+      setTransfer("");
+      return;
+    }
+
+    const parts = text.split(".");
     const integerPart = parts[0];
     const decimalPart = parts[1] || "";
 
     if (decimalPart.length > 2) {
-      setTransferError("Maximum transfer amount is $99,999.99");
+      setTransferError("Maximum two decimal places allowed");
       return;
     }
 
-    // Combined digits should not exceed 7
     if ((integerPart + decimalPart).length > 7) {
       setTransferError("Maximum transfer amount is $99,999.99");
       return;
     }
 
-    const numericValue = parseFloat(cleaned);
+    const numericValue = parseFloat(text);
     if (numericValue > 99999.99) {
       setTransferError("Maximum transfer amount is $99,999.99");
       return;
     }
 
     setTransferError("");
-    setTransfer(cleaned);
+    setTransfer(text);
   };
 
   const handleFocus = () => {
@@ -144,8 +153,10 @@ export default function Income({ navigation, route }: Readonly<Props>) {
     console.log(trimmedTo);
     const numericIncome = parseFloat(Transfer.replace("$", "") || "0") / convertRate;
 
-    if (numericIncome === 0) {
+    if (numericIncome === 0 && trimmedFrom === "" && trimmedDescription === "") {
       setTransferError("Add amount");
+      setToError("Fill both details");
+      setDescriptionError("Add description");
       return;
     }
     if (trimmedFrom === "") {
@@ -259,7 +270,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
     navigation.goBack();
     navigation.goBack();
   }
-
+  const insets = useSafeAreaInsets();
   if (loading) {
     return (
       <View
@@ -277,16 +288,21 @@ export default function Income({ navigation, route }: Readonly<Props>) {
 
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: "rgba(0, 119, 255, 1)" }]}>
       <Header
         title={t(StringConstants.Transfer)}
         press={() => navigation.goBack()}
         bgcolor="rgba(0, 119, 255, 1)"
         color="white"
       />
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+          >
             <View style={[styles.add, { backgroundColor: "rgba(0, 119, 255, 1)" }]}>
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
@@ -299,109 +315,75 @@ export default function Income({ navigation, route }: Readonly<Props>) {
                       onChangeText={handleTransferChange}
                       style={styles.amount}
                       onFocus={handleFocus}
+                      numberOfLines={1}
                     ></TextInput>
                   </TouchableOpacity>
                 </View>
-                {TransferError !== "" && (
-                  <Text
-                    style={{
-                      color: "rgb(255, 0, 17)",
-                      marginTop: 4,
-                      marginLeft: 10,
-                      fontFamily: "Inter",
-                    }}
-                  >
-                    *{TransferError}
-                  </Text>
-                )}
+                {TransferError !== "" && <Text style={styles.error}>{TransferError}</Text>}
               </View>
               <View style={[styles.selection]}>
-                <View style={{ flexDirection: "row", width: "100%" }}>
-                  <View style={{ width: "50%" }}>
-                    <Input
-                      title={t("From")}
-                      color="rgb(56, 88, 85)"
-                      css={styles.textinput}
-                      isPass={false}
-                      name={From}
-                      onchange={setFrom}
-                      handleFocus={handleToFromChange}
-                      limit={30}
+                <View style={{ width: "100%", marginBottom: 2 }}>
+                  <View style={{ flexDirection: "row", width: "100%" }}>
+                    <View style={{ width: "50%" }}>
+                      <Input
+                        title={t("From")}
+                        color="rgba(145, 145, 159, 1)"
+                        css={styles.textinput}
+                        isPass={false}
+                        name={From}
+                        onchange={setFrom}
+                        handleFocus={handleToFromChange}
+                        limit={30}
+                      />
+                    </View>
+                    <View style={{ width: "50%" }}>
+                      <Input
+                        title={t("To")}
+                        color="rgba(145, 145, 159, 1)"
+                        css={styles.textinput}
+                        isPass={false}
+                        name={To}
+                        onchange={setTo}
+                        handleFocus={handleToFromChange}
+                        limit={30}
+                      />
+                    </View>
+                    <TransferImg
+                      height={40}
+                      style={{
+                        position: "absolute",
+                        top: "25%",
+                        left: "45%",
+                      }}
                     />
                   </View>
-                  <View style={{ width: "50%" }}>
-                    <Input
-                      title={t("To")}
-                      color="rgb(56, 88, 85)"
-                      css={styles.textinput}
-                      isPass={false}
-                      name={To}
-                      onchange={setTo}
-                      handleFocus={handleToFromChange}
-                      limit={30}
-                    />
-                  </View>
-                  <TransferImg
-                    height={40}
-                    style={{
-                      position: "absolute",
-                      top: "25%",
-                      left: "45%",
-                    }}
-                  />
+                  {toError !== "" && <Text style={styles.error}>{toError}</Text>}
                 </View>
-                {toError !== "" && (
-                  <Text
-                    style={{
-                      color: "rgb(255, 0, 17)",
-                      marginTop: -10,
-                      marginBottom: 5,
-                      marginLeft: 10,
-                      fontFamily: "Inter",
-                      width: "90%",
-                    }}
-                  >
-                    *{toError}
-                  </Text>
-                )}
-                <Input
-                  title={t(StringConstants.Description)}
-                  color="rgb(56, 88, 85)"
-                  css={styles.textinput}
-                  isPass={false}
-                  name={Description}
-                  onchange={setDescription}
-                  handleFocus={handleDescriptionChange}
-                  limit={200}
-                />
-                {descriptionError !== "" && (
-                  <Text
-                    style={{
-                      color: "rgb(255, 0, 17)",
-                      marginTop: -10,
-                      marginBottom: 10,
-                      marginLeft: 8,
-                      fontFamily: "Inter",
-                      width: "90%",
-                    }}
-                  >
-                    *{descriptionError}
-                  </Text>
-                )}
+                <View style={{ width: "105%" }}>
+                  <Input
+                    title={t(StringConstants.Description)}
+                    color="rgba(145, 145, 159, 1)"
+                    css={styles.textinput}
+                    isPass={false}
+                    name={Description}
+                    onchange={setDescription}
+                    handleFocus={handleDescriptionChange}
+                    limit={200}
+                  />
+                  {descriptionError !== "" && (
+                    <Text style={[styles.error, { bottom: -7, marginLeft: 20 }]}>{descriptionError}</Text>
+                  )}
+                </View>
                 {showAttach && (
-                  <TouchableOpacity
-                    onPress={toggleModal}
-                    style={[
-                      styles.textinput,
-                      { borderStyle: "dashed", alignItems: "center", flexDirection: "row", justifyContent: "center" },
-                    ]}
-                  >
-                    <Entypo name="attachment" size={24} color={colors.color} />
-                    <Text style={{ color: colors.color }}>{t(StringConstants.Addattachment)}</Text>
+                  <TouchableOpacity onPress={toggleModal} style={styles.attachment}>
+                    <Entypo name="attachment" size={24} color={"rgb(74, 74, 77)"} />
+                    <Text style={{ color: "rgba(145, 145, 159, 1)", fontWeight: 400, fontSize: RFValue(14) }}>
+                      {t(StringConstants.Addattachment)}
+                    </Text>
                   </TouchableOpacity>
                 )}
                 {localPath.type === "image" && image && (
-                  <View style={{ width: "100%", marginLeft: 30, marginBottom: 10 }}>
+                  <View style={{ width: "100%", marginLeft: 30, marginBottom: 10, marginTop: 10 }}>
                     <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
                     {close && (
                       <>
@@ -439,6 +421,7 @@ export default function Income({ navigation, route }: Readonly<Props>) {
                       alignItems: "center",
                       justifyContent: "center",
                       marginBottom: 10,
+                      marginTop: 10,
                     }}
                   >
                     <TouchableOpacity onPress={() => openDocument()}>
@@ -499,6 +482,15 @@ export default function Income({ navigation, route }: Readonly<Props>) {
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-    </View>
+      <View
+        style={{
+          height: insets.bottom,
+          backgroundColor: colors.backgroundColor,
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+        }}
+      ></View>
+    </SafeAreaView>
   );
 }

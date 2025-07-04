@@ -1,14 +1,14 @@
 import React, { useContext } from "react";
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, SafeAreaView } from "react-native";
 import { Privacy_Policy } from "../../../Constants";
-import { ThemeContext } from "../../../../Context/ThemeContext";
+import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import getStyles from "../styles";
 import Header from "../../../../Components/Header";
-export default function Privacy({ navigation }) {
-  const { colors } = useContext(ThemeContext);
+export default function Privacy({ navigation }: any) {
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title="Privacy Policy"
         press={() => navigation.goBack()}
@@ -28,6 +28,6 @@ export default function Privacy({ navigation }) {
           )}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

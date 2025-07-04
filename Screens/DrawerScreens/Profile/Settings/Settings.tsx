@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, TouchableOpacity, Image, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, Image, FlatList, SafeAreaView } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -87,7 +87,7 @@ export default function Settings({ navigation }: Readonly<Props>) {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title={t(StringConstants.Settings)}
         press={() => navigation.goBack()}
@@ -101,6 +101,6 @@ export default function Settings({ navigation }: Readonly<Props>) {
         renderItem={renderItem}
         contentContainerStyle={{ paddingBottom: 20 }}
       />
-    </View>
+    </SafeAreaView>
   );
 }

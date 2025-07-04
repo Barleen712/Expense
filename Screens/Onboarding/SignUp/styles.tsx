@@ -1,4 +1,5 @@
 import { StyleSheet, StatusBar, Platform } from "react-native";
+import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 export const getStyles = (colors: any) =>
   StyleSheet.create({
     container: {
@@ -8,15 +9,16 @@ export const getStyles = (colors: any) =>
     },
     textinput: {
       width: "90%",
-      height: 56,
+      height: "70%",
       borderRadius: 16,
-      borderColor: "rgba(133, 126, 126, 0.89)",
+      borderColor: "rgba(241, 241, 250, 1)",
       borderWidth: 1,
       margin: 10,
       padding: 15,
       alignItems: "center",
       justifyContent: "center",
       color: colors.color,
+      fontSize: 16,
     },
     input: {
       alignItems: "center",
@@ -24,11 +26,15 @@ export const getStyles = (colors: any) =>
       //  marginTop: Platform.OS === "ios" ? 20 : 30,
       width: "100%",
       marginTop: 10,
-      height: "38%",
+      height: "33%",
+      // backgroundColor: "yellow",
     },
     or: {
       color: "rgb(145, 145, 159)",
       margin: 10,
+      fontSize: 14,
+      lineHeight: 18,
+      fontWeight: 700,
     },
     GoogleView: {
       flexDirection: "row",
@@ -36,7 +42,7 @@ export const getStyles = (colors: any) =>
       width: "90%",
       alignItems: "center",
       justifyContent: "center",
-      borderColor: "rgba(133, 126, 126, 0.89)",
+      borderColor: "rgb(233, 233, 241)",
       borderRadius: 16,
       borderWidth: 1,
     },
@@ -46,14 +52,26 @@ export const getStyles = (colors: any) =>
     },
     account: {
       margin: 15,
-      color: colors.color,
+      color: "rgba(145, 145, 159, 1)",
+      fontSize: 16,
+      fontWeight: 500,
     },
     span: {
       color: "rgb(57, 112, 109)",
       textDecorationLine: "underline",
+      fontSize: 16,
+      fontWeight: 500,
     },
     textGoogle: {
-      paddingLeft: 10,
+      // paddingLeft: 10,
       color: colors.color,
+      fontWeight: "bold",
+      height: "100%",
+      fontSize: Platform.OS === "android" ? RFValue(16) : RFValue(14),
+      verticalAlign: "middle",
+      alignItems: "center",
+      width: "50%",
+      textAlign: "center",
+      lineHeight: 50,
     },
   });

@@ -8,6 +8,10 @@ import {
   Keyboard,
   Alert,
   TouchableOpacity,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+  Permission,
 } from "react-native";
 import { getStyles } from "./styles";
 import { CustomButton } from "../../../../Components/CustomButton";
@@ -28,6 +32,7 @@ import { syncUnsyncedBudget } from "../../../../Realm/SyncBudget";
 import NetInfo from "@react-native-community/netinfo";
 import { updateTransactionRealmAndFirestoreBudget } from "../../../../Realm/Budgetrealm";
 import { RootState } from "../../../../Store/Store";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 type CreateBudgetProp = StackNavigationProp<StackParamList, "CreateBudget">;
 
 interface Props {
@@ -62,7 +67,7 @@ export default function CreateBudget({ navigation, route }: Readonly<Props>) {
     convertRate = Rates.Rate[currency];
   }
   const handleFocus = () => {
-    if (Budget === "0") {
+    if (Budget === "0.00") {
       setBudget("");
     }
   };
@@ -132,6 +137,17 @@ export default function CreateBudget({ navigation, route }: Readonly<Props>) {
   }
   async function editBudget() {
     const numericBudget = parseFloat(Budget.replace("$", "") || "0") / convertRate;
+    const selectedMonthKey = `${parameters.year}-${String(parameters.month + 1).padStart(2, "0")}`;
+    const budgetDataForMonth = Budgetcat[selectedMonthKey] || [];
+    const findCategory = budgetDataForMonth.find((item) => item.category === selectedCategory) || null;
+    if (parameters.category !== selectedCategory && findCategory) {
+      Alert.alert("Budget Exists", `Budget already exists for ${selectedCategory} for this month`);
+      // setBudget("0");
+      // setSelectedCategory(parameters.category);
+      // setExpense(false);
+      // setSliderValue(20);
+      return;
+    }
     const updatedData = {
       category: selectedCategory,
       percentage: sliderValue,
@@ -161,81 +177,87 @@ export default function CreateBudget({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
+  const insets = useSafeAreaInsets();
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header title={t(parameters.header)} press={() => navigation.goBack()} bgcolor="rgb(56, 88, 85)" color="white" />
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-          <View style={styles.add}>
-            <View style={styles.balanceView}>
-              <Text style={styles.balance}>{t("How much do you want to spend?")}</Text>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={styles.amount}>{currencies[currency]}</Text>
-                <TouchableOpacity activeOpacity={1} style={{ width: "90%" }}>
-                  <TextInput
-                    value={Budget}
-                    keyboardType="numeric"
-                    onChangeText={handleIncomeChange}
-                    style={styles.amount}
-                    onFocus={handleFocus}
-                  />
-                </TouchableOpacity>
-              </View>
-              {amountError !== "" && (
-                <Text
-                  style={{
-                    color: "rgb(255, 0, 17)",
-                    marginTop: 4,
-                    marginLeft: 10,
-                    fontFamily: "Inter",
-                  }}
-                >
-                  *{amountError}
-                </Text>
-              )}
-            </View>
-            <View style={styles.selection}>
-              <DropdownComponent
-                data={category}
-                value={selectedCategory}
-                name={t(parameters.category)}
-                styleButton={styles.textinput}
-                onSelectItem={(item) => {
-                  setSelectedCategory(item);
-                  setCategoryError("");
-                }}
-                position="bottom"
-                height={150}
-              />
-              {categoryError !== "" && (
-                <Text
-                  style={{
-                    color: "rgb(255, 0, 17)",
-                    marginTop: 4,
-                    marginLeft: 10,
-                    fontFamily: "Inter",
-                    width: "90%",
-                  }}
-                >
-                  *{categoryError}
-                </Text>
-              )}
-              <View style={styles.dropdown}>
-                <View style={styles.notiView}>
-                  <View style={styles.noti}>
-                    <Text style={styles.notiTitle}>{t(StringConstants.RecieveAlert)}</Text>
-                    <Text style={styles.notiDes}>{t(StringConstants.Receivealertwhenitreachessomepoint)}</Text>
-                  </View>
-                  <View style={styles.switch}>
-                    <Switch
-                      trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgb(42, 124, 118)" }}
-                      value={Expense}
-                      thumbColor={"white"}
-                      onValueChange={setExpense}
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+        // keyboardVerticalOffset={Platform.OS === "ios" ? 56 : 0} // Adjust based on header height
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            bounces={false}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.add}>
+              <View style={styles.balanceView}>
+                <Text style={styles.balance}>{t("How much do you want to spend?")}</Text>
+                <View style={{ flexDirection: "row" }}>
+                  <Text style={styles.amount}>{currencies[currency]}</Text>
+                  <TouchableOpacity activeOpacity={1} style={{ width: "90%" }}>
+                    <TextInput
+                      value={Budget}
+                      keyboardType="numeric"
+                      onChangeText={handleIncomeChange}
+                      style={styles.amount}
+                      onFocus={handleFocus}
                     />
-                  </View>
+                  </TouchableOpacity>
                 </View>
-                {Expense && <CustomSlider value={sliderValue} setvalue={setSliderValue} />}
+                {amountError !== "" && (
+                  <Text style={{ color: "rgb(255, 0, 17)", marginTop: 4, marginLeft: 10, fontFamily: "Inter" }}>
+                    {amountError}
+                  </Text>
+                )}
+              </View>
+              <View style={styles.selection}>
+                <DropdownComponent
+                  data={category}
+                  value={selectedCategory}
+                  name={t(parameters.category)}
+                  styleButton={styles.textinput}
+                  onSelectItem={(item) => {
+                    setSelectedCategory(item);
+                    setCategoryError("");
+                  }}
+                  position="bottom"
+                  height={150}
+                />
+                {categoryError !== "" && (
+                  <Text
+                    style={{
+                      color: "rgb(255, 0, 17)",
+                      marginTop: 4,
+                      marginLeft: 10,
+                      fontFamily: "Inter",
+                      width: "90%",
+                    }}
+                  >
+                    {categoryError}
+                  </Text>
+                )}
+                <View style={styles.dropdown}>
+                  <View style={styles.notiView}>
+                    <View style={styles.noti}>
+                      <Text style={styles.notiTitle}>{t(StringConstants.RecieveAlert)}</Text>
+                      <Text style={styles.notiDes}>{t(StringConstants.Receivealertwhenitreachessomepoint)}</Text>
+                    </View>
+                    <View style={styles.switch}>
+                      <Switch
+                        trackColor={{ false: "rgba(220, 234, 233, 0.6)", true: "rgb(42, 124, 118)" }}
+                        value={Expense}
+                        thumbColor={"white"}
+                        onValueChange={setExpense}
+                      />
+                    </View>
+                  </View>
+                  {Expense && <CustomSlider value={sliderValue} setvalue={setSliderValue} />}
+                </View>
                 <CustomButton
                   title={t(StringConstants.Continue)}
                   bg="rgb(42, 124, 118)"
@@ -244,9 +266,19 @@ export default function CreateBudget({ navigation, route }: Readonly<Props>) {
                 />
               </View>
             </View>
-          </View>
-        </ScrollView>
-      </TouchableWithoutFeedback>
-    </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+
+      <View
+        style={{
+          height: insets.bottom,
+          backgroundColor: colors.backgroundColor,
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+        }}
+      ></View>
+    </SafeAreaView>
   );
 }

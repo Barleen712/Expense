@@ -9,6 +9,8 @@ import {
   ScrollView,
   Platform,
   PermissionsAndroid,
+  SafeAreaView,
+  StatusBar,
 } from "react-native";
 import { getStyles } from "./styles";
 import Header from "../../../../Components/Header";
@@ -32,6 +34,7 @@ import DocumentRed from "../../../../assets/DocumentRed.svg";
 import CameraGreen from "../../../../assets/CameraGreen.svg";
 import ImageGreen from "../../../../assets/ImageGreen.svg";
 import DocumentGreen from "../../../../assets/DocumentGreen.svg";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 type DetailtransProp = StackNavigationProp<StackParamList, "DetailTransaction_Income">;
 
 interface Props {
@@ -242,114 +245,136 @@ function DetailTransaction({
       setdocError(true);
     }
   };
+  const insets = useSafeAreaInsets();
   return (
-    <View style={styles.container}>
-      <Header title={t("Detail Transaction")} press={() => navigation.goBack()} bgcolor={bg} color="white" />
-      <TouchableOpacity style={styles.Trash} onPress={toggleModal}>
-        <Image source={require("../../../../assets/trash.png")} />
-      </TouchableOpacity>
-      <View style={[styles.DetailHead, { backgroundColor: bg }]}>
-        <Text style={[styles.number, { fontWeight: "bold" }]}>
-          {currencies[currency]}
-          {(amount * convertRate).toFixed(2)}
-        </Text>
-        <Text style={[styles.MonthText, { fontSize: 12 }]}>{DisplayTime}</Text>
-      </View>
-      <View style={styles.TypeContainer}>
-        <View style={styles.type}>
-          <Text style={styles.typeHead}>{t("Type")}</Text>
-          <Text style={styles.Export1text}>{t(type)}</Text>
-        </View>
-        <View style={styles.type}>
-          <Text style={styles.typeHead}>{type == "Transfer" ? "From" : "Category"}</Text>
-          <Text style={styles.Export1text}>{t(category)}</Text>
-        </View>
-        <View style={styles.type}>
-          <Text style={[styles.typeHead]}>{type == "Transfer" ? "To" : "Wallet"}</Text>
-          <Text style={styles.Export1text}>{t(wallet)}</Text>
-        </View>
-      </View>
-      <View style={styles.dashedline}>
-        <Image source={require("../../../../assets/Line 3.png")} />
-      </View>
-      <View style={styles.Description}>
-        <Text style={styles.username}>{t("Description")}</Text>
-        <ScrollView>
-          <Text style={[styles.exportText, { paddingLeft: 0 }]}>{title}</Text>
-        </ScrollView>
-      </View>
-      <View style={styles.attachView}>
-        {!!uri && isDoument === "image" && (
-          <View>
-            <Text style={styles.username}>{t("Attachment")}</Text>
-
-            {imageError ? (
-              <View
-                style={{
-                  width: "100%",
-                  alignItems: "center",
-                  height: "80%",
-                  justifyContent: "center",
-                }}
-              >
-                <Text style={{ color: "gray" }}>Network Error</Text>
-                <Text style={{ color: "gray" }}>🚫 No Internet Connection .</Text>
-              </View>
-            ) : (
-              <TouchableOpacity onPress={() => setimage(true)}>
-                <FastImage style={styles.attachImg} source={{ uri }} onError={() => setimageError(true)} />
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
-        {!!uri && isDoument === "document" && (
-          <View>
-            <Text style={styles.username}>{t("Attachment")}</Text>
-
-            {docError ? (
-              <View
-                style={{
-                  width: "100%",
-                  alignItems: "center",
-                  height: "80%",
-                  justifyContent: "center",
-                }}
-              >
-                <Text style={{ color: "gray" }}>Network Error</Text>
-                <Text style={{ color: "gray" }}>🚫 No Internet Connection .</Text>
-              </View>
-            ) : (
-              <TouchableOpacity style={[styles.document, { backgroundColor: color }]} onPress={() => openDocument(uri)}>
-                <Text style={{ color: bg, fontSize: 16, fontFamily: "Inter" }}>View Document</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
-      </View>
-      <View style={[styles.Apply, { flex: 0.12, justifyContent: "center" }]}>
-        <CustomButton title={t("Edit")} bg={bg} color="white" press={EditTransaction} />
-      </View>
-      <CustomModal
-        visible={modalVisible}
-        setVisible={() => setModalVisible(!modalVisible)}
-        color={colors.nobutton}
-        bg={bg}
-        head={t(StringConstants.Removethistransaction)}
-        text={t(StringConstants.Areyousure)}
-        onsuccess={t(StringConstants.Transactionhasbeensuccessfully)}
-        navigation={navigation}
-        deleteT={deleteTransactions}
+    <SafeAreaView
+      style={{ backgroundColor: bg, flex: 1, paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 }}
+    >
+      <Header
+        title={t("Detail Transaction")}
+        press={() => navigation.goBack()}
+        bgcolor={bg}
+        color="white"
+        icon={true}
+        iconcolor="white"
+        handleicon={() => setModalVisible(true)}
       />
-      <Modal animationType="slide" transparent={true} visible={image} onRequestClose={() => setimage(false)}>
-        <TouchableWithoutFeedback onPress={() => setimage(false)}>
-          <View style={[styles.modalOverlay, { backgroundColor: "rgba(24, 13, 13, 0.89)" }]}>
-            <View style={{ height: "100%", position: "absolute", bottom: 0, width: "100%" }}>
-              <FastImage style={{ height: "100%" }} resizeMode="contain" source={{ uri }} />
-            </View>
+      <View style={styles.container}>
+        <View style={[styles.DetailHead, { backgroundColor: bg }]}>
+          <Text style={[styles.number, { fontWeight: "bold" }]}>
+            {currencies[currency]}
+            {(amount * convertRate).toFixed(2)}
+          </Text>
+          <Text style={[styles.MonthText, { fontSize: 12 }]}>{DisplayTime}</Text>
+        </View>
+        <View style={styles.TypeContainer}>
+          <View style={styles.type}>
+            <Text style={styles.typeHead}>{t("Type")}</Text>
+            <Text style={styles.Export1text}>{t(type)}</Text>
           </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-    </View>
+          <View style={styles.type}>
+            <Text style={styles.typeHead}>{type == "Transfer" ? "From" : "Category"}</Text>
+            <Text style={styles.Export1text}>{t(category)}</Text>
+          </View>
+          <View style={styles.type}>
+            <Text style={[styles.typeHead]}>{type == "Transfer" ? "To" : "Wallet"}</Text>
+            <Text style={styles.Export1text}>{t(wallet)}</Text>
+          </View>
+        </View>
+        <View style={styles.dashedline}>
+          <Image source={require("../../../../assets/Line 3.png")} />
+        </View>
+        <View style={styles.Description}>
+          <Text style={styles.username}>{t("Description")}</Text>
+          <ScrollView bounces={false}>
+            <Text style={[styles.exportText, { paddingLeft: 0 }]}>{title}</Text>
+          </ScrollView>
+        </View>
+        <View style={styles.attachView}>
+          {!!uri && isDoument === "image" && (
+            <View>
+              <Text style={styles.username}>{t("Attachment")}</Text>
+
+              {imageError ? (
+                <View
+                  style={{
+                    width: "100%",
+                    alignItems: "center",
+                    height: "80%",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ color: "gray" }}>Network Error</Text>
+                  <Text style={{ color: "gray" }}>🚫 No Internet Connection .</Text>
+                </View>
+              ) : (
+                <TouchableOpacity onPress={() => setimage(true)}>
+                  <FastImage style={styles.attachImg} source={{ uri }} onError={() => setimageError(true)} />
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+          {!!uri && isDoument === "document" && (
+            <View>
+              <Text style={styles.username}>{t("Attachment")}</Text>
+
+              {docError ? (
+                <View
+                  style={{
+                    width: "100%",
+                    alignItems: "center",
+                    height: "80%",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ color: "gray" }}>Network Error</Text>
+                  <Text style={{ color: "gray" }}>🚫 No Internet Connection .</Text>
+                </View>
+              ) : (
+                <TouchableOpacity
+                  style={[styles.document, { backgroundColor: color }]}
+                  onPress={() => openDocument(uri)}
+                >
+                  <Text style={{ color: bg, fontSize: 16, fontFamily: "Inter" }}>View Document</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+        </View>
+        <View style={[styles.Apply, { flex: 0.12, justifyContent: "center" }]}>
+          <CustomButton title={t("Edit")} bg={bg} color="white" press={EditTransaction} />
+        </View>
+        <CustomModal
+          visible={modalVisible}
+          setVisible={() => setModalVisible(!modalVisible)}
+          color={colors.nobutton}
+          bg={bg}
+          head={t(StringConstants.Removethistransaction)}
+          text={t(StringConstants.Areyousure)}
+          onsuccess={t(StringConstants.Transactionhasbeensuccessfully)}
+          navigation={navigation}
+          deleteT={deleteTransactions}
+        />
+        <Modal animationType="slide" transparent={true} visible={image} onRequestClose={() => setimage(false)}>
+          <TouchableWithoutFeedback onPress={() => setimage(false)}>
+            <View style={[styles.modalOverlay, { backgroundColor: "rgba(24, 13, 13, 0.89)" }]}>
+              <View style={{ height: "100%", position: "absolute", bottom: 0, width: "100%" }}>
+                <FastImage style={{ height: "100%" }} resizeMode="contain" source={{ uri }} />
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      </View>
+      <View
+        style={{
+          height: insets.bottom,
+          backgroundColor: colors.backgroundColor,
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+        }}
+      ></View>
+    </SafeAreaView>
   );
 }
 

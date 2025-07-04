@@ -1,4 +1,6 @@
 import { StyleSheet, StatusBar, Platform } from "react-native";
+
+import { RFValue } from "react-native-responsive-fontsize";
 export const getStyles = (colors: any) =>
   StyleSheet.create({
     container: {
@@ -40,7 +42,7 @@ export const getStyles = (colors: any) =>
       fontFamily: "Inter",
       fontWeight: 700,
       color: "rgb(67, 136, 131)",
-      fontSize: 30,
+      fontSize: RFValue(30),
       alignItems: "center",
       textAlign: "center",
       justifyContent: "center",
@@ -52,7 +54,8 @@ export const getStyles = (colors: any) =>
     },
     start: {
       color: "white",
-      fontSize: 20,
+      fontSize: RFValue(18),
+      fontWeight: 600,
     },
     gradient: {
       width: "80%",
@@ -65,6 +68,8 @@ export const getStyles = (colors: any) =>
     },
     login: {
       color: "rgb(57, 112, 109)",
+      fontSize: RFValue(12),
+      fontWeight: 400,
     },
     title: {
       flex: 0.4,

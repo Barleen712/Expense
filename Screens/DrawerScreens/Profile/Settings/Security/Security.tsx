@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, SafeAreaView, Platform } from "react-native";
 import { getStyles } from "../Language/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -20,13 +20,14 @@ interface Props {
 export default function Security({ navigation }: Readonly<Props>) {
   const dispatch = useDispatch<AppDispatch>();
   const security = useSelector((state: RootState) => state.Money.preferences.security);
-  const currencies = ["PIN", "Fingerprint"];
+  const android = ["PIN", "Fingerprint"];
+  const ios = ["PIN", "Face ID"];
   const [selected, setSelected] = useState(security);
   const { t } = useTranslation();
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title="Security"
         press={() => navigation.goBack()}
@@ -36,7 +37,8 @@ export default function Security({ navigation }: Readonly<Props>) {
       <View style={styles.Line}></View>
       <FlatList
         style={styles.settings}
-        data={currencies}
+        bounces={false}
+        data={Platform.OS === "android" ? android : ios}
         renderItem={({ item }) => (
           <View>
             <TouchableOpacity
@@ -47,7 +49,6 @@ export default function Security({ navigation }: Readonly<Props>) {
                     promptMessage: "Confirm your identity",
                     cancelButtonText: "Cancel",
                   });
-
                   if (success) {
                     setSelected(item);
                     dispatch(changeSecurity(item));
@@ -81,6 +82,6 @@ export default function Security({ navigation }: Readonly<Props>) {
           </View>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 }

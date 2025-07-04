@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, Dimensions } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions, SafeAreaView } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../../Navigation/StackList";
 import Header from "../../../../Components/Header";
@@ -43,27 +43,27 @@ export default function DetailedBudget({ navigation, route }: Readonly<Props>) {
   const Category = categoryMap[categoryKey];
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title={t(StringConstants.DetailBudget)}
         press={() => navigation.goBack()}
         bgcolor={colors.backgroundColor}
         color={colors.color}
+        icon={true}
+        handleicon={() => setModalVisible(true)}
       />
-      <TouchableOpacity style={styles.Trash} onPress={() => setModalVisible(true)}>
-        <CustomModal
-          visible={modalVisible}
-          setVisible={() => setModalVisible(!modalVisible)}
-          color={colors.nobutton}
-          bg={CATEGORY_COLORS[category]}
-          head={t("Remove this budget")}
-          text={t("Are you sure you want to remove this budget?")}
-          onsuccess={t("Budget has been successfully removed")}
-          navigation={navigation}
-          deleteT={deleteBudgetFunction}
-        />
-        <Ionicons name="trash" size={26} color={colors.color} />
-      </TouchableOpacity>
+
+      <CustomModal
+        visible={modalVisible}
+        setVisible={() => setModalVisible(!modalVisible)}
+        color={colors.nobutton}
+        bg={CATEGORY_COLORS[category]}
+        head={t("Remove this budget")}
+        text={t("Are you sure you want to remove this budget?")}
+        onsuccess={t("Budget has been successfully removed")}
+        navigation={navigation}
+        deleteT={deleteBudgetFunction}
+      />
       <View style={{ flex: 1, marginBottom: 30, alignItems: "center", justifyContent: "space-between" }}>
         <View style={{ alignItems: "center", marginTop: 10 }}>
           <View
@@ -140,6 +140,6 @@ export default function DetailedBudget({ navigation, route }: Readonly<Props>) {
           />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

@@ -1,5 +1,5 @@
-import { StyleSheet, Platform, StatusBar } from "react-native";
-
+import { StyleSheet, Platform, StatusBar, Dimensions } from "react-native";
+const height = Dimensions.get("window").height;
 export const getStyles = (colors: any) =>
   StyleSheet.create({
     container: {
@@ -44,6 +44,7 @@ export const getStyles = (colors: any) =>
     },
     reportText: {
       color: colors.reportText,
+      width: "100%",
     },
     arrows: {
       flex: 0.05,
@@ -57,7 +58,7 @@ export const getStyles = (colors: any) =>
     },
     modalContainer: {
       width: "100%",
-      height: "85%",
+      // height: height * 0.75,
       backgroundColor: colors.backgroundColor,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
@@ -73,6 +74,7 @@ export const getStyles = (colors: any) =>
       justifyContent: "space-between",
       width: "90%",
       marginTop: 20,
+      // marginBottom: 20,
     },
     notiTitle: {
       fontFamily: "Inter",
@@ -83,7 +85,7 @@ export const getStyles = (colors: any) =>
     reset: {
       backgroundColor: colors.seeall,
       width: "18%",
-      height: "60%",
+      height: "100%",
       alignItems: "center",
       justifyContent: "center",
       borderColor: "grey",
@@ -95,12 +97,14 @@ export const getStyles = (colors: any) =>
       color: "white",
     },
     FilterOptions: {
-      flex: 0.2,
-      width: "90%",
+      flex: 0.8,
+      width: "100%",
+      padding: 10,
+      // justifyContent: "space-between",
     },
     flatListContainer: {
       justifyContent: "center",
-      height: "90%",
+      marginTop: 20,
     },
     filterButton: {
       borderRadius: 20,
@@ -111,7 +115,7 @@ export const getStyles = (colors: any) =>
       justifyContent: "center",
       marginRight: 10,
       width: "28%",
-      padding: 4,
+      padding: 10,
     },
     sortButton: {
       //  backgroundColor: "red",
@@ -130,7 +134,7 @@ export const getStyles = (colors: any) =>
     FilterCategory: {
       flex: 0.5,
       width: "100%",
-      marginBottom: "5%",
+      marginBottom: Platform.OS == "android" ? "5%" : "10%",
       marginLeft: "10%",
     },
     category: {
@@ -138,7 +142,7 @@ export const getStyles = (colors: any) =>
       marginBottom: "1%",
       marginTop: "1%",
       borderColor: "#D1D1D1",
-      padding: 11,
+      padding: 10,
       paddingLeft: 15,
       paddingRight: 15,
       borderWidth: 1,
@@ -147,7 +151,6 @@ export const getStyles = (colors: any) =>
     Apply: {
       width: "100%",
       alignItems: "center",
-      backgroundColor: "pink",
     },
     badgeCount: {
       position: "absolute",

@@ -49,7 +49,7 @@ export const generateReportPDF = async (exportdata: string, dateRange: string) =
           <td>${date}</td>
           <td>${t.moneyCategory}</td>
           <td>${t.category}</td>
-          <td>$${t.amount}</td>
+          <td>$${t.amount.toFixed(2)}</td>
           <td>${t.description}</td>
           <td>${t.wallet}</td>
         </tr>`;
@@ -66,7 +66,7 @@ export const generateReportPDF = async (exportdata: string, dateRange: string) =
         <tr>
           <td>${b.category}</td>
           <td>$${b.budgetvalue}</td>
-          <td>$${b.amountSpent}</td>
+          <td>$${b.amountSpent.toFixed(2)}</td>
           <td>${b.alertPercent}%</td>
         </tr>`
     )
@@ -88,8 +88,8 @@ export const generateReportPDF = async (exportdata: string, dateRange: string) =
         ${
           filterOption?.value !== "3"
             ? `
-        <p><strong>Total Income:</strong> $${incomeTotal}</p>
-        <p><strong>Total Expenses:</strong> $${expenseTotal}</p>
+        <p><strong>Total Income:</strong> $${incomeTotal.toFixed(2)}</p>
+        <p><strong>Total Expenses:</strong> $${expenseTotal.toFixed(2)}</p>
 
         <h2>Transactions</h2>
         <table>

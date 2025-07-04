@@ -7,6 +7,7 @@ import { StringConstants } from "../../Constants";
 import { useTranslation } from "react-i18next";
 import { getStyles } from "./styles";
 import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
+import { RFValue } from "react-native-responsive-fontsize";
 type Homeprop = StackNavigationProp<StackParamList, "Home">;
 
 interface Props {
@@ -49,9 +50,9 @@ export default function Onboarding({ navigation }: Readonly<Props>) {
         </View>
         <View style={style.text}>
           <TouchableOpacity onPress={handlePress}>
-            <Text style={{ color: colors.color }}>
+            <Text style={{ color: "rgba(68, 68, 68, 1)", fontWeight: 400, fontSize: RFValue(12) }}>
               {t(StringConstants.Alreadyhaveanaccount)}
-              <Text style={style.login}> {t(StringConstants.Login)}</Text>
+              <Text style={style.login}> Log In</Text>
             </Text>
           </TouchableOpacity>
         </View>

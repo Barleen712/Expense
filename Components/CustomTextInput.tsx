@@ -21,7 +21,7 @@ const Input = forwardRef<TextInput, InputProps>(
         <TextInput
           ref={ref}
           placeholder={title}
-          placeholderTextColor={colors.color}
+          placeholderTextColor={color}
           style={css}
           secureTextEntry={Visible}
           value={name}

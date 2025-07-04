@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, SafeAreaView } from "react-native";
 import { getStyles } from "../Language/styles";
 import { Ionicons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -24,12 +24,13 @@ export default function Theme({ navigation }: Readonly<Props>) {
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header title="Theme" press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color} />
       <View style={styles.Line}></View>
       <FlatList
         style={styles.settings}
         data={currencies}
+        bounces={false}
         renderItem={({ item }) => (
           <View>
             <TouchableOpacity
@@ -51,6 +52,6 @@ export default function Theme({ navigation }: Readonly<Props>) {
           </View>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 }

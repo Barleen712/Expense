@@ -188,7 +188,6 @@ export const ExpenseTrackerSlice = createSlice({
           state.badgeCount += 1;
         }
       }
-      console.log("added notification");
     },
     addUser: (state, action) => {
       state.signup = action.payload;
@@ -222,6 +221,12 @@ export const ExpenseTrackerSlice = createSlice({
     removeNotification: (state) => {
       state.notification = [];
       console.log("removed");
+    },
+    updateNotifications: (state) => {
+      state.notification = state.notification.map((item) => ({
+        ...item,
+        read: true,
+      }));
     },
     clearData: (state) => {
       state.amount = [];
@@ -259,6 +264,7 @@ export const {
   removeNotification,
   updateBadge,
   updateUser,
+  updateNotifications,
 } = ExpenseTrackerSlice.actions;
 export default ExpenseTrackerSlice.reducer;
 export const updatePreferences =

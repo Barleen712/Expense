@@ -90,7 +90,7 @@ export default function ForgotPass({ navigation }: Readonly<Props>) {
       <View style={styles.email}>
         <Input
           title={t(StringConstants.Email)}
-          color="rgb(56, 88, 85)"
+          color="rgba(145, 145, 159, 1)"
           css={styles.textinput}
           name={email}
           onchange={setEmail}

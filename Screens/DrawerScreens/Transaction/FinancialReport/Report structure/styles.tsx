@@ -49,7 +49,7 @@ export const getStyles = (colors: any) =>
       justifyContent: "center",
     },
     detailText: {
-      width: "80%",
+      width: 200,
       fontSize: 24,
       textAlign: "center",
       fontWeight: "bold",

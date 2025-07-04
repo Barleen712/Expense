@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, Switch } from "react-native";
+import { View, Text, Switch, SafeAreaView } from "react-native";
 import { getStyles } from "./styles";
 
 import Header from "../../../../../Components/Header";
@@ -31,7 +31,7 @@ export default function Notification({ navigation }: Readonly<Props>) {
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title="Notification"
         press={() => navigation.goBack()}
@@ -69,6 +69,6 @@ export default function Notification({ navigation }: Readonly<Props>) {
         </View>
       </View>
       <View style={styles.Line}></View>
-    </View>
+    </SafeAreaView>
   );
 }

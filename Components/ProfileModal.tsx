@@ -11,6 +11,7 @@ import {
   Image,
   ImageSourcePropType,
   Pressable,
+  FlatList,
 } from "react-native";
 import styles from "../Screens/Stylesheet";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -72,12 +73,13 @@ const Thumbnail = React.memo(
       <Pressable
         style={{
           marginBottom: 5,
-          width: "31%",
-          height: "46%",
+          width: 90,
+          height: 90,
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: 45,
+          borderRadius: Platform.OS === "android" ? 45 : 55,
           backgroundColor: selectedindex === index ? colors.selected : colors.backgroundColor,
+          // backgroundColor: "blue",
         }}
         onPress={onPress}
       >
@@ -93,7 +95,7 @@ const Thumbnail = React.memo(
               ? item
               : {
                   ...(typeof item === "object" && !Array.isArray(item) ? item : { uri: String(item) }),
-                  cache: "immutable",
+                  cache: "web",
                 }
           }
           resizeMode={FastImage.resizeMode.contain}
@@ -176,6 +178,7 @@ function ProfileModal({
           <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
             {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
             <ScrollView
+              bounces={false}
               ref={scrollRef}
               contentContainerStyle={{ flexGrow: 1 }}
               keyboardShouldPersistTaps="handled"
@@ -198,7 +201,7 @@ function ProfileModal({
                     flex: 1,
                   }}
                 >
-                  {profilepics.map((item, index) => (
+                  {/* {profilepics.map((item, index) => (
                     <Thumbnail
                       key={typeof item === "string" ? item : JSON.stringify(item)}
                       item={item}
@@ -210,7 +213,35 @@ function ProfileModal({
                         setselectedindex(index);
                       }}
                     />
-                  ))}
+                  ))} */}
+                  <FlatList
+                    data={profilepics}
+                    scrollEnabled={false}
+                    keyExtractor={(item, index) => (typeof item === "string" ? item : JSON.stringify(item) + index)}
+                    numColumns={3}
+                    renderItem={({ item, index }) => (
+                      <Thumbnail
+                        item={item}
+                        index={index}
+                        colors={colors}
+                        selectedindex={selectedindex ?? ""}
+                        onPress={() => {
+                          setmodalPhoto(item);
+                          setselectedindex(index);
+                        }}
+                      />
+                    )}
+                    contentContainerStyle={{
+                      margin: "auto",
+                      flex: 1,
+                      marginTop: 10,
+                      // backgroundColor: "red",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    initialNumToRender={6}
+                    // windowSize={5}
+                  />
                 </View>
               </View>
 

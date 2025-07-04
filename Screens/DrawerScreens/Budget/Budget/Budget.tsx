@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from "react";
-import { View, Text, Image, TouchableOpacity, FlatList, Dimensions } from "react-native";
+import { View, Text, Image, TouchableOpacity, FlatList, Dimensions, SafeAreaView } from "react-native";
 import { getStyles } from "./style";
 import { CustomButton } from "../../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -15,6 +15,8 @@ import type { ListRenderItem } from "react-native";
 import { useTranslation } from "react-i18next";
 import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
 import { clearData } from "../../../../Slice/IncomeSlice";
+import ArrowLeft from "../../../../assets/arrow-left.svg";
+import ArrowRight from "../../../../assets/arrow-right.svg";
 const width = Dimensions.get("window").width * 0.8;
 const date = new Date();
 const MonthIndex = date.getMonth();
@@ -172,7 +174,7 @@ export default function Budget({ navigation }: Readonly<Props>) {
   const styles = getStyles(colors);
   clearData();
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.add}>
         <DropdownComponent
           data={Year}
@@ -186,11 +188,13 @@ export default function Budget({ navigation }: Readonly<Props>) {
         />
         <View style={styles.budgetMonth}>
           <TouchableOpacity onPress={handleprev}>
-            <Image source={require("../../../../assets/arrowLeftWhite.png")} />
+            {/* <Image source={require("../../../../assets/arrowLeftWhite.png")} /> */}
+            <ArrowLeft />
           </TouchableOpacity>
           <Text style={styles.budgetMonthtext}>{t(Month[month])}</Text>
           <TouchableOpacity onPress={handlenext}>
-            <Image source={require("../../../../assets/arrowRightWhite.png")} />
+            {/* <Image source={require("../../../../assets/arrowRightWhite.png")} /> */}
+            <ArrowRight />
           </TouchableOpacity>
         </View>
         <View style={styles.budgetView}>
@@ -238,6 +242,6 @@ export default function Budget({ navigation }: Readonly<Props>) {
           </View>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

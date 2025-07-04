@@ -1,5 +1,4 @@
 import { Platform, StyleSheet, Dimensions, StatusBar } from "react-native";
-const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   setup: {
     flex: 0.1,
@@ -12,18 +11,17 @@ const styles = StyleSheet.create({
   keypad: {
     alignItems: "center",
     justifyContent: "center",
-    flex: 0.5,
-    //  backgroundColor: "red",
+    flex: 0.56,
   },
   pin: {
     flexDirection: "row",
     flex: 0.45,
     height: "100%",
     paddingTop: "20%",
-    marginTop: 10,
+    // marginTop: 10,
     alignItems: "flex-start",
     // alignItems: "center",
-    //   backgroundColor: "blue",
+    // backgroundColor: "blue",
   },
   setuptext: {
     fontFamily: "Inter",
@@ -32,17 +30,19 @@ const styles = StyleSheet.create({
     color: "white",
     width: "80%",
     textAlign: "center",
+    marginTop: 10,
     // backgroundColor: "red",
   },
   keypad1: {
     alignItems: "center",
     justifyContent: "center",
     width: "33%",
+    marginBottom: 5,
   },
   number: {
     fontFamily: "Inter",
     fontWeight: 500,
-    fontSize: 53,
+    fontSize: Platform.OS === "android" ? 53 : 60,
     color: "white",
   },
   arrow: {
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "white",
+    padding: "auto",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   headView: {
@@ -460,18 +460,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingTop: 10,
+    justifyContent: "space-evenly",
+    backgroundColor: "pink",
   },
   iconContainer: {
     padding: 10,
   },
   headerText: {
     fontSize: Platform.OS === "ios" ? 18 : 20,
-    flex: 0.9,
-    fontWeight: Platform.OS === "ios" ? 400 : 500,
-
-    alignItems: "center",
-    justifyContent: "center",
+    // flex: 0.95,
+    fontWeight: 600,
+    height: "90%",
     textAlign: "center",
+    verticalAlign: "middle",
+    lineHeight: 60,
+    marginBottom: 10,
   },
   budgetView: {
     backgroundColor: "rgba(252, 252, 252, 1)",
@@ -568,9 +571,9 @@ const styles = StyleSheet.create({
     height: 40,
   },
   customThumb: {
-    position: "absolute",
-    top: -15,
-    left: -25,
+    // position: "absolute",
+    // top: -15,
+    // left: -25,
     width: 50,
     height: 30,
     borderRadius: 15,

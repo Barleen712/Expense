@@ -6,7 +6,7 @@ export const getStyles = (colors: any) =>
       flex: 1,
       alignItems: "center",
       backgroundColor: colors.backgroundColor,
-      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
     DetailHead: {
       flex: 0.25,
@@ -14,6 +14,7 @@ export const getStyles = (colors: any) =>
       borderBottomLeftRadius: 30,
       borderBottomRightRadius: 30,
       alignItems: "center",
+      marginTop: -2,
     },
     number: {
       fontFamily: "Inter",
@@ -103,9 +104,10 @@ export const getStyles = (colors: any) =>
     Trash: {
       position: "absolute",
       right: "3%",
-      top: "5.5%",
+      top: Platform.OS === "ios" ? "2.5%" : "6.5%",
       width: 32,
       height: 32,
+      backgroundColor: "pink",
     },
     Export1text: {
       textAlign: "center",

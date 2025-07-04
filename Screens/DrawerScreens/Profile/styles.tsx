@@ -15,6 +15,7 @@ export const getStyles = (colors: any) =>
       justifyContent: "center",
       alignItems: "center",
       padding: 10,
+      flex: Platform.OS === "ios" ? 0.1 : 0.13,
     },
     userphoto: {
       flex: 0.25,
@@ -47,19 +48,22 @@ export const getStyles = (colors: any) =>
       color: "rgba(145, 145, 159, 1)",
     },
     manageProfile: {
-      justifyContent: "center",
+      // justifyContent: "center",
       alignItems: "center",
+      flex: 0.7,
     },
     options: {
       backgroundColor: colors.profileView,
       borderRadius: "5%",
       width: "90%",
-      marginTop: Platform.OS === "ios" ? 10 : 29,
+      marginTop: Platform.OS === "ios" ? 10 : 0,
+      height: "70%",
+      justifyContent: "center",
     },
     optionView: {
       flexDirection: "row",
       alignItems: "center",
-      height: Platform.OS === "ios" ? 80 : 89,
+      height: "25%",
       paddingLeft: 20,
     },
     icons: {

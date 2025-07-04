@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, SafeAreaView } from "react-native";
 import { CustomButton } from "../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
@@ -23,7 +23,7 @@ export default function EmailSent({ navigation, route }: Readonly<Props>) {
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.emailImgView}>
         <Image style={styles.emailImg} source={require("../../../assets/mail.png")} />
       </View>
@@ -41,6 +41,6 @@ export default function EmailSent({ navigation, route }: Readonly<Props>) {
           />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

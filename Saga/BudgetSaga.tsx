@@ -62,7 +62,6 @@ export const getUseNamerDocument = async () => {
     }
     const userDoc = querySnapshot.docs[0];
     const userData = userDoc.data();
-    console.log(userData.index);
     return {
       Name: userData.User,
       Photo: userData.Photo,

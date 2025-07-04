@@ -4,12 +4,11 @@ export const getStyles = (colors: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors.backgroundColor,
+      // backgroundColor: colors.backgroundColor,
       paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
     add: {
       flex: 1,
-      backgroundColor: "rgb(56, 88, 85)",
       justifyContent: "flex-end",
     },
     balanceView: {
@@ -23,9 +22,12 @@ export const getStyles = (colors: any) =>
     },
     error: {
       color: "rgb(255, 0, 17)",
-      marginTop: 4,
+      position: "absolute",
+      bottom: -7,
+
       marginLeft: 10,
       fontFamily: "Inter",
+      fontSize: 12,
       width: "90%",
     },
     attachment: {
@@ -70,7 +72,7 @@ export const getStyles = (colors: any) =>
     amount: {
       fontFamily: "Inter",
       fontWeight: Platform.OS === "ios" ? 500 : 600,
-      fontSize: Platform.OS === "ios" ? 60 : 64,
+      fontSize: 60,
       color: "white",
     },
     selection: {
@@ -86,14 +88,15 @@ export const getStyles = (colors: any) =>
     },
     textinput: {
       width: "90%",
-      height: 56,
+      height: 60,
       color: colors.color,
       borderRadius: 16,
-      borderColor: "rgba(133, 126, 126, 0.89)",
+      borderColor: "rgba(241, 241, 250, 1)",
       borderWidth: 1,
       margin: 10,
       padding: 15,
       justifyContent: "center",
+      fontSize: 16,
     },
     modalOverlay: {
       flex: 1,

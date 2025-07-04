@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useContext, useCallback } from "react";
-import { View, Text, TouchableOpacity, Dimensions, BackHandler } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions, BackHandler, SafeAreaView } from "react-native";
 import Header from "../../../../Components/Header";
 import { getStyles } from "./styles";
 import Fontisto from "@expo/vector-icons/Fontisto";
@@ -130,7 +130,7 @@ export default function FinancialReport({ navigation }: Readonly<Props>) {
     }, [navigation])
   );
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title={t(StringConstants.FinancialReport)}
         press={() => {
@@ -254,7 +254,7 @@ export default function FinancialReport({ navigation }: Readonly<Props>) {
                   alignItems: "center",
                 }}
               >
-                <Text style={styles.budgetText}>No expense transaction occured</Text>
+                <Text style={styles.budgetText}>No expense transaction occurred.</Text>
               </View>
             )}
             <TransactionList data={sortedExpense} />
@@ -271,7 +271,7 @@ export default function FinancialReport({ navigation }: Readonly<Props>) {
                   alignItems: "center",
                 }}
               >
-                <Text style={styles.budgetText}>No income transaction occured.</Text>
+                <Text style={styles.budgetText}>No income transaction occurred.</Text>
               </View>
             )}
             <TransactionList data={sortedIncome} />
@@ -315,6 +315,6 @@ export default function FinancialReport({ navigation }: Readonly<Props>) {
           </>
         )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

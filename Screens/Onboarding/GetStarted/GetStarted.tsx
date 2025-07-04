@@ -41,7 +41,7 @@ export default function Getstarted({ navigation }: Readonly<Props>) {
       id: "2",
       image: require("../../../assets/Know.png"),
       title: "Know where your money goes",
-      des: "Track your transaction easily,with categories and financial report",
+      des: "Track your transaction easily, with categories and financial report",
     },
     {
       id: "3",

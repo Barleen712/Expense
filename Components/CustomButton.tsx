@@ -7,8 +7,11 @@ interface Gradient {
 }
 export default function GradientButton({ title, handles }: Readonly<Gradient>) {
   return (
-    <TouchableOpacity onPress={handles} style={styles.gradient}>
-      <LinearGradient colors={["#69AEA9", "#3F8782"]} style={[styles.gradient, { width: "100%" }]}>
+    <TouchableOpacity onPress={handles} style={{ width: "90%", marginTop: 10 }}>
+      <LinearGradient
+        colors={["#69AEA9", "#3F8782"]}
+        style={[styles.gradient, { width: "100%", alignItems: "center", justifyContent: "center" }]}
+      >
         <Text style={styles.text}>{title}</Text>
       </LinearGradient>
     </TouchableOpacity>
@@ -19,10 +22,12 @@ interface CustomButton {
   bg: string;
   color: string;
   press?: () => void;
+  disable?: boolean;
 }
-export function CustomButton({ title, bg, color, press }: Readonly<CustomButton>) {
+export function CustomButton({ title, bg, color, press, disable }: Readonly<CustomButton>) {
   return (
     <TouchableOpacity
+      disabled={disable}
       style={{
         width: "90%",
         height: 56,
@@ -34,22 +39,27 @@ export function CustomButton({ title, bg, color, press }: Readonly<CustomButton>
       }}
       onPress={press}
     >
-      <Text style={{ color: color, fontSize: 20 }}>{title}</Text>
+      <Text style={{ color: color, fontSize: 18, fontWeight: 600 }}>{title}</Text>
     </TouchableOpacity>
   );
 }
 const styles = StyleSheet.create({
   gradient: {
     width: "90%",
-    height: 56,
+    height: 60,
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 10,
   },
   text: {
     color: "white",
-    fontSize: 20,
+    fontSize: 18,
+    width: "100%",
+    textAlign: "center",
+    verticalAlign: "middle",
+    fontWeight: "600",
+    height: "100%",
+    lineHeight: 60,
   },
 
   signuptext: {

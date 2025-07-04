@@ -76,7 +76,7 @@ export const Linearchart = ({ data, height }: LineData) => {
   const Rates = useSelector((state: RootState) => state.Rates);
   const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const convertRate = Rates.Rate[currency];
-  const renderPointerLabel = (items, secondaryItem, pointerIndex) => {
+  const renderPointerLabel = (items, second, pointerIndex) => {
     if (!items || items.length === 0 || pointerIndex === -1) return null;
     const { value, date } = items[0];
     const data_date = new Date(date);
@@ -88,15 +88,13 @@ export const Linearchart = ({ data, height }: LineData) => {
     return (
       <View
         style={{
-          marginTop: 15,
-          //marginLeft: 10,
-          marginLeft: lastitem ? -60 : 0,
           backgroundColor: "rgb(42, 124, 118)",
-          paddingLeft: 2,
-          // paddingRight: 10,
-          marginBottom: 30,
-          borderRadius: 4,
-          width: 60,
+          padding: 5,
+          width: 70,
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: 20,
+          marginLeft: pointerIndex > 5 && pointerIndex < data.length - 1 ? -40 : lastitem ? -60 : 0,
         }}
         pointerEvents="auto"
       >
@@ -105,7 +103,7 @@ export const Linearchart = ({ data, height }: LineData) => {
           {(value * convertRate).toFixed(2)}
         </Text>
         <Text style={{ color: "white", fontSize: 10 }}>
-          {data_date.getDate()}/{data_date.getMonth() + 1}:{formattedTime}
+          {data_date.getDate()}/{data_date.getMonth() + 1}/{data_date.getFullYear()}
         </Text>
       </View>
     );
@@ -133,7 +131,7 @@ export const Linearchart = ({ data, height }: LineData) => {
       color="rgb(42, 124, 118)"
       thickness={8}
       hideDataPoints
-      animateOnDataChange={true}
+      // animateOnDataChange={true}
       renderDataPointsAfterAnimationEnds={true}
       hideRules
       showVerticalLines={false}
@@ -149,11 +147,40 @@ export const Linearchart = ({ data, height }: LineData) => {
       pointerConfig={{
         pointerColor: "rgb(42, 144, 114)",
         pointerStripUptoDataPoint: true,
-        // autoAdjustPointerLabelPosition: true,
-        // stripOverPointer: true,
+        autoAdjustPointerLabelPosition: true,
+        stripOverPointer: true,
+        // pointerLabelWidth: 80,
         radius: 8,
         pointerLabelComponent: renderPointerLabel,
       }}
+      // pointerConfig={{
+      //   pointerColor: "rgb(42, 144, 114)",
+      //   radius: 8,
+      //   pointerStripUptoDataPoint: true,
+      //   pointerLabelComponent: ({ index, value, x, y }) => {
+      //     console.log("Pointer Index:", index);
+      //     console.log("Pointer Value:", value);
+      //     console.log("X Coordinate:", x);
+      //     console.log("Y Coordinate:", y);
+
+      //     return (
+      //       <View
+      //         style={{
+      //           position: "absolute",
+      //           top: y - 40,
+      //           left: x - 25,
+      //           backgroundColor: "#fff",
+      //           padding: 4,
+      //           borderRadius: 4,
+      //           borderWidth: 1,
+      //           borderColor: "#ccc",
+      //         }}
+      //       >
+      //         <Text style={{ fontSize: 12 }}>{value}</Text>
+      //       </View>
+      //     );
+      //   },
+      // }}
     />
   );
 };

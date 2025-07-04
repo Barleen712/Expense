@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, SafeAreaView } from "react-native";
 import { getStyles } from "./styles";
 import { CustomButton } from "../../../../Components/CustomButton";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -46,7 +46,7 @@ export default function Export({ navigation }: Readonly<Props>) {
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title={t("Export Data")}
         press={() => navigation.goBack()}
@@ -101,6 +101,6 @@ export default function Export({ navigation }: Readonly<Props>) {
       <View style={styles.exportButton}>
         <CustomButton title={t("Export")} bg="rgb(42, 124, 118)" color="white" press={exporting} />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

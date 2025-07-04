@@ -4,7 +4,7 @@ export const getStyles = (colors: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "white",
+      backgroundColor: "rgb(56, 88, 85)",
       paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
     balanceView: {
@@ -30,15 +30,15 @@ export const getStyles = (colors: any) =>
       alignItems: "center",
       width: "100%",
       padding: 5,
-      paddingTop: 15,
-      paddingBottom: 10,
+      paddingTop: 20,
+      paddingBottom: 20,
     },
     textinput: {
       width: "90%",
       height: 56,
       color: "black",
       borderRadius: 16,
-      borderColor: "rgba(133, 126, 126, 0.89)",
+      borderColor: "rgba(241, 241, 250, 1)",
       borderWidth: 1,
       margin: 10,
       padding: 15,
@@ -48,6 +48,7 @@ export const getStyles = (colors: any) =>
       width: "100%",
       justifyContent: "center",
       alignItems: "center",
+      marginBottom: 20,
     },
     add: {
       flex: 1,

@@ -1,5 +1,15 @@
 import React, { useState, useContext, useRef } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Linking, StyleSheet, Platform, StatusBar } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Linking,
+  StyleSheet,
+  Platform,
+  StatusBar,
+  SafeAreaView,
+} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Collapsible from "react-native-collapsible";
 import Header from "../../../../../Components/Header";
@@ -67,10 +77,10 @@ const HelpScreen = ({ navigation }: Props) => {
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header title="Help" press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color} />
       {/* Getting Started */}
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll} bounces={false}>
         <View style={styles.section}>
           <Icon name="book-outline" size={24} color="rgba(42, 124, 118, 1)" />
           <View style={styles.sectionText}>
@@ -121,7 +131,7 @@ const HelpScreen = ({ navigation }: Props) => {
 
         <Text style={styles.footer}>Version 1.0.0</Text>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 

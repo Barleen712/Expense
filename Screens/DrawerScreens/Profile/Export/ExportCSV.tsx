@@ -59,7 +59,7 @@ export const GenerateCSVReport = async (exportdata: string, dateRange: string) =
   let csvContent = "Financial Report\n";
 
   if (filterOption?.value !== "3") {
-    csvContent += `Total Income: $${incomeTotal}\n`;
+    csvContent += `Total Income: $${incomeTotal.toFixed(2)}\n`;
     csvContent += `Total Expenses: $${expenseTotal}\n\n`;
 
     csvContent += "Transactions:\n";
@@ -70,7 +70,9 @@ export const GenerateCSVReport = async (exportdata: string, dateRange: string) =
     } else {
       filteredTransactions.forEach((t) => {
         const formattedDate = new Date(t.Date);
-        csvContent += `${formattedDate},${t.moneyCategory},${t.category},$${t.amount},${t.description},${t.wallet}\n`;
+        csvContent += `${formattedDate},${t.moneyCategory},${t.category},$${t.amount.toFixed(2)},${t.description},${
+          t.wallet
+        }\n`;
       });
     }
 
@@ -86,7 +88,7 @@ export const GenerateCSVReport = async (exportdata: string, dateRange: string) =
     if (currentMonthBudgets.length > 0) {
       csvContent += "Category,Budget,Spent,Alert %\n";
       currentMonthBudgets.forEach((b) => {
-        csvContent += `${b.category},$${b.budgetvalue},$${b.amountSpent},${b.alertPercent}%\n`;
+        csvContent += `${b.category},$${b.budgetvalue},$${b.amountSpent.toFixed(2)},${b.alertPercent}%\n`;
       });
     } else {
       csvContent += "Budgets not created\n";

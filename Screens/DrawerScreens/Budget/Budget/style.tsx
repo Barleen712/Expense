@@ -4,7 +4,7 @@ export const getStyles = (colors: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "white",
+      backgroundColor: "rgb(56, 88, 85)",
       paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
     expandedBackground: {
@@ -20,7 +20,9 @@ export const getStyles = (colors: any) =>
       flexDirection: "row",
       marginBottom: 20,
       justifyContent: "space-between",
+      alignItems: "center",
       width: "100%",
+      // backgroundColor: "red",
     },
     budgetYear: {
       width: "25%",
@@ -51,7 +53,7 @@ export const getStyles = (colors: any) =>
     },
     budgetButton: {
       position: "absolute",
-      bottom: "18%",
+      bottom: Platform.OS === "android" ? "18%" : "13%",
       width: "100%",
       alignItems: "center",
     },

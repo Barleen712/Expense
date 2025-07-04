@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Image, TouchableOpacity, Modal, FlatList, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Modal,
+  FlatList,
+  TouchableWithoutFeedback,
+  SafeAreaView,
+} from "react-native";
 import { selectTransactions } from "../../../Slice/Selectors";
 import { CustomButton } from "../../../Components/CustomButton";
 import { useSelector } from "react-redux";
@@ -57,7 +66,6 @@ export default function Transaction({ navigation }: Readonly<Props>) {
   function toggleModal() {
     setModalVisible(!modalVisible);
   }
-
   const transactions = useSelector(selectTransactions);
   const currentDate = new Date();
   const sortedTransactions = [...transactions]
@@ -133,7 +141,7 @@ export default function Transaction({ navigation }: Readonly<Props>) {
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.transactionHead}>
         <DropdownComponent
           data={Month}
@@ -165,7 +173,7 @@ export default function Transaction({ navigation }: Readonly<Props>) {
         </TouchableOpacity>
       </View>
 
-      {containIncome && containExpense && (
+      {containIncome && containExpense && month === Month[new Date().getMonth()].label && (
         <View style={styles.reportView}>
           <TouchableOpacity
             style={styles.financialReport}
@@ -207,35 +215,102 @@ export default function Transaction({ navigation }: Readonly<Props>) {
                   </TouchableOpacity>
                 </View>
                 <View style={styles.FilterOptions}>
-                  <Text style={styles.notiTitle}>{t(StringConstants.FilterBy)}</Text>
-                  <FlatList
-                    numColumns={3}
-                    contentContainerStyle={styles.flatListContainer}
-                    data={FilterBy}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (filteritem === item) setfilteritem("");
-                          else setfilteritem(item);
-                        }}
-                        style={[
-                          styles.filterButton,
-                          { backgroundColor: item === filteritem ? "rgba(174, 225, 221, 0.6)" : "white" },
-                        ]}
-                      >
-                        <Text
+                  <View style={{ margin: 10 }}>
+                    <Text style={styles.notiTitle}>{t(StringConstants.FilterBy)}</Text>
+                    <FlatList
+                      numColumns={3}
+                      contentContainerStyle={styles.flatListContainer}
+                      data={FilterBy}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (filteritem === item) setfilteritem("");
+                            else setfilteritem(item);
+                          }}
                           style={[
-                            styles.filterButtonText,
-                            { color: item === filteritem ? "rgb(42, 124, 118)" : "black" },
+                            styles.filterButton,
+                            { backgroundColor: item === filteritem ? "rgba(174, 225, 221, 0.6)" : "white" },
                           ]}
                         >
-                          {t(item)}
-                        </Text>
-                      </TouchableOpacity>
-                    )}
-                  />
+                          <Text
+                            style={[
+                              styles.filterButtonText,
+                              { color: item === filteritem ? "rgb(42, 124, 118)" : "black" },
+                            ]}
+                          >
+                            {t(item)}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    />
+                  </View>
+                  <View style={{ margin: 10 }}>
+                    <Text style={styles.notiTitle}>{t(StringConstants.SortBy)}</Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                        paddingTop: 10,
+                      }}
+                    >
+                      {SortBy.map((item, index) => (
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (sortBy === item) setSortBy("");
+                            else setSortBy(item);
+                          }}
+                          key={item}
+                          style={[
+                            styles.filterButton,
+                            {
+                              backgroundColor: item === sortBy ? "rgba(174, 225, 221, 0.6)" : "white",
+                              height: 40,
+                              padding: 0,
+
+                              margin: 5,
+                            },
+                          ]}
+                        >
+                          <Text style={{ color: item === sortBy ? "rgb(42, 124, 118)" : "black", fontWeight: "bold" }}>
+                            {t(item)}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                  <View style={{ margin: 10 }}>
+                    <Text style={[styles.notiTitle, { marginBottom: 1 }]}>{t(StringConstants.Category)}</Text>
+                    <FlatList
+                      data={category}
+                      numColumns={3}
+                      scrollEnabled={false}
+                      showsVerticalScrollIndicator={false}
+                      style={{ width: "100%", marginTop: 10 }}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          style={[
+                            styles.category,
+                            { backgroundColor: item.label === selectedCategory ? "rgba(174, 225, 221, 0.6)" : "white" },
+                          ]}
+                          onPress={() => {
+                            if (selectedCategory === item.label) setSelectedCategory("");
+                            else setSelectedCategory(item.label);
+                          }}
+                        >
+                          <Text
+                            style={{
+                              color: item.label === selectedCategory ? "rgb(42, 124, 118)" : "black",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {item.label}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    />
+                  </View>
                 </View>
-                <View style={[styles.FilterOptions, { flex: 0.3 }]}>
+                {/* <View style={[styles.FilterOptions, { flex: 0.3 }]}>
                   <Text style={styles.notiTitle}>{t(StringConstants.SortBy)}</Text>
                   <View
                     style={{
@@ -269,15 +344,15 @@ export default function Transaction({ navigation }: Readonly<Props>) {
                       </TouchableOpacity>
                     ))}
                   </View>
-                </View>
-                <View style={styles.FilterCategory}>
+                </View> */}
+                {/* <View style={styles.FilterCategory}>
                   <Text style={[styles.notiTitle, { marginBottom: 1 }]}>{t(StringConstants.Category)}</Text>
                   <FlatList
                     data={category}
                     numColumns={3}
                     scrollEnabled={false}
                     showsVerticalScrollIndicator={false}
-                    style={{ width: "90%" }}
+                    style={{ width: "90%", marginTop: 10 }}
                     renderItem={({ item }) => (
                       <TouchableOpacity
                         style={[
@@ -300,6 +375,8 @@ export default function Transaction({ navigation }: Readonly<Props>) {
                       </TouchableOpacity>
                     )}
                   />
+                </View> */}
+                <View style={{ flex: 0.1, width: "100%", alignItems: "center", marginBottom: 20 }}>
                   <CustomButton title={t("Apply")} bg="rgb(42, 124, 118)" color="white" press={handleSort} />
                 </View>
               </View>
@@ -324,6 +401,6 @@ export default function Transaction({ navigation }: Readonly<Props>) {
           <TransactionList data={FilterTrans} />
         )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

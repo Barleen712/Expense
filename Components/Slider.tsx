@@ -23,6 +23,7 @@ export default function CustomSlider({ value, setvalue }: Readonly<SliderInterfa
         trackStyle={styles.trackBackground}
         minimumTrackTintColor="#2A7C76"
         maximumTrackTintColor="#d3d3d3"
+        thumbStyle={{ width: 50, height: 30 }}
         renderThumbComponent={() => (
           <View style={styles.customThumb}>
             <Text style={styles.thumbText}>{Math.round(value)}%</Text>

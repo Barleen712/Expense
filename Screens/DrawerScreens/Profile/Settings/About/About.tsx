@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { ScrollView, View, Text, Image, Dimensions } from "react-native";
-import { ThemeContext } from "../../../../../Context/ThemeContext";
+import { ScrollView, View, Text, Image, Dimensions, SafeAreaView } from "react-native";
+import { ThemeContext, ThemeContextType } from "../../../../../Context/ThemeContext";
 import getStyles from "./styles";
 import Header from "../../../../../Components/Header";
 import Entypo from "@expo/vector-icons/Entypo";
@@ -42,12 +42,12 @@ const carousel_data = [
     des: "Manage your finances anytime, anywhere",
   },
 ];
-export default function AboutUs({ navigation }) {
-  const { colors } = useContext(ThemeContext);
+export default function AboutUs({ navigation }: any) {
+  const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
-  const render = ({ item }) => {
+  const render = ({ item }: any) => {
     return (
-      <View style={styles.carouselItem}>
+      <SafeAreaView style={styles.carouselItem}>
         <View style={{ height: "20%", justifyContent: "center", width: "90%" }}>
           <Text
             style={{
@@ -71,16 +71,17 @@ export default function AboutUs({ navigation }) {
             {item.des}
           </Text>
         </View>
-      </View>
+      </SafeAreaView>
     );
   };
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header title="About" press={() => navigation.goBack()} bgcolor={colors.backgroundColor} color={colors.color} />
       <ScrollView
         contentContainerStyle={{ paddingBottom: 30 }}
         showsVerticalScrollIndicator={false}
         style={styles.scrollView}
+        bounces={false}
       >
         <View style={styles.headView}>
           <View style={{ flexDirection: "row" }}>
@@ -163,6 +164,6 @@ export default function AboutUs({ navigation }) {
           </Text>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }

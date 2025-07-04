@@ -28,7 +28,7 @@ const EndAfter = ["Date", "Never"].map((item) => ({
 const ShortM = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 const date = Array.from({ length: 31 }, (_, i) => ({
   label: (i + 1).toString(),
-  value: i + 1,
+  value: (i + 1).toString(),
 }));
 const weekDropdownData = Weeks.map((day, index) => ({
   label: day,
@@ -219,10 +219,67 @@ export default function FrequencyModal({
                     onPress={() => setShowEndDatePicker(true)}
                     style={[styles.textinput, { flex: 1, flexDirection: "row", justifyContent: "space-between" }]}
                   >
-                    <Text style={{ color: colors.color }}>
+                    <Text style={{ color: colors.color, fontSize: 16, width: "80%" }}>
                       {endAfter ? ` ${new Date(endDate).toDateString()}` : "Select End Date :"}
                     </Text>
-                    {showEndDatePicker && (
+                    {/* {showEndDatePicker && (
+                      <DateTimePicker
+                        value={endDate}
+                        mode="date"
+                        display="default"
+                        onChange={onChange}
+                        minimumDate={new Date()}
+                      />
+                    )} */}
+                    {Platform.OS === "ios" && showEndDatePicker && (
+                      <Modal transparent animationType="slide">
+                        <TouchableOpacity
+                          style={{
+                            flex: 1,
+                            justifyContent: "flex-end",
+                            backgroundColor: "rgba(0,0,0,0.5)",
+                          }}
+                          activeOpacity={1}
+                          onPressOut={() => setShowEndDatePicker(false)}
+                        >
+                          <View
+                            style={{
+                              backgroundColor: "white",
+                              padding: 20,
+                              borderTopLeftRadius: 20,
+                              borderTopRightRadius: 20,
+                            }}
+                          >
+                            <DateTimePicker
+                              value={endDate}
+                              mode="date"
+                              display="inline"
+                              onChange={(event, selectedDate) => {
+                                if (selectedDate) setEndDate(selectedDate);
+                              }}
+                              style={{ backgroundColor: "white" }}
+                              maximumDate={new Date(new Date().getFullYear() + 10, 11, 31)}
+                              minimumDate={new Date()}
+                            />
+                            <TouchableOpacity
+                              onPress={() => setShowEndDatePicker(false)}
+                              style={{
+                                marginTop: 10,
+                                backgroundColor: color,
+                                padding: 12,
+                                borderRadius: 8,
+                                alignItems: "center",
+                              }}
+                            >
+                              <Text style={{ color: "white", fontSize: 16 }}>{t("Done")}</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </TouchableOpacity>
+                      </Modal>
+                    )}
+
+                    {/* Android Picker */}
+                    {Platform.OS === "android" && showEndDatePicker && (
                       <DateTimePicker
                         value={endDate}
                         mode="date"

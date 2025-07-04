@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, TouchableOpacity, Text, Dimensions, View, TouchableWithoutFeedback } from "react-native";
+import { StyleSheet, TouchableOpacity, Text, Dimensions, View, TouchableWithoutFeedback, Platform } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { CurvedBottomBarExpo } from "react-native-curved-bottom-bar";
 import { Ionicons } from "@expo/vector-icons";
 import Home from "../Screens/DrawerScreens/Home/Home";
@@ -184,7 +185,9 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
   });
 
   return (
-    <>
+    <SafeAreaProvider
+      style={{ paddingBottom: Platform.OS === "ios" ? 10 : 0, backgroundColor: colors.backgroundColor }}
+    >
       {isExpanded && (
         <TouchableWithoutFeedback onPress={handleTranslation}>
           <LinearGradient
@@ -207,7 +210,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
         width={Dimensions.get("window").width}
         style={[styles.bottomBar, loading && { display: "none" }]}
         shadowStyle={styles.shadow}
-        height={70}
+        height={72}
         circleWidth={56}
         bgColor="transparent"
         initialRouteName="Home"
@@ -266,7 +269,7 @@ export default function Tabscreens({ navigation }: Readonly<Props>) {
         <CurvedBottomBarExpo.Screen name="Budget" position="RIGHT" component={Budget} />
         <CurvedBottomBarExpo.Screen name="Profile" position="RIGHT" component={Profile} />
       </CurvedBottomBarExpo.Navigator>
-    </>
+    </SafeAreaProvider>
   );
 }
 

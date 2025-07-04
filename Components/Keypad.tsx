@@ -19,10 +19,11 @@ export default function Keypad({ change, onKeyPress, onClear }: Readonly<KeypadP
     }
   };
   return (
-    <View>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <FlatList
         data={keypad}
         scrollEnabled={false}
+        style={{ flex: 1 }}
         numColumns={3}
         renderItem={({ item, index }) => {
           let displayText = item;

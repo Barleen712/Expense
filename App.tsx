@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Platform } from "react-native";
+import { View, Platform, TextInput, Text, TextStyle } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import Screens, { TabScreens } from "./Navigation/StackNavigation";
 import { Provider } from "react-redux";
@@ -18,7 +18,36 @@ import { CachedUser, saveUserData, getCachedUser, clearUserData } from "./utils/
 import { syncUnsyncedTransactions, syncPendingDeletes, syncPendingUpdatesToFirestore } from "./Realm/Sync";
 import { syncPendingDeletesBudget, syncPendingUpdatesToFirestoreBudgets, syncUnsyncedBudget } from "./Realm/SyncBudget";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+
+interface ExtendedText extends Text {
+  defaultProps: {
+    allowFontScaling: boolean;
+    style?: TextStyle;
+  };
+}
+
+interface ExtendedTextInput extends TextInput {
+  defaultProps: {
+    allowFontScaling: boolean;
+    style?: TextStyle;
+  };
+}
+
 export default function App() {
+  (Text as unknown as ExtendedText).defaultProps = {
+    allowFontScaling: false,
+    style: {
+      fontFamily: "Inter-Regular", // or any font you use
+      fontWeight: 400,
+    },
+  };
+  (TextInput as unknown as ExtendedTextInput).defaultProps = {
+    allowFontScaling: false,
+    style: {
+      fontFamily: "Inter", // or any font you use
+      fontWeight: 400,
+    },
+  };
   const [user, setUser] = useState<CachedUser | null>(null);
   const [initialRoute, setInitialRoute] = useState<keyof StackParamList | undefined>(undefined);
   const [checkingAuth, setCheckingAuth] = useState(true); // 🆕
@@ -39,8 +68,10 @@ export default function App() {
         if (currentUser) {
           try {
             await currentUser.reload();
-
-            if (currentUser.emailVerified) {
+            const isSocialUser = currentUser.providerData.some((provider) =>
+              ["facebook.com", "google.com"].includes(provider.providerId)
+            );
+            if (currentUser.emailVerified || isSocialUser) {
               const userdetails = await getUseNamerDocument();
 
               const updatedUser: CachedUser = {
@@ -94,12 +125,11 @@ export default function App() {
       <PersistGate loading={<ActivityIndicator />} persistor={persistor}>
         <NavigationContainer
           onReady={() => {
-            if (Platform.OS === "android") SplashScreen.hide();
+            SplashScreen.hide();
           }}
         >
           <ThemeProvider>
             {user ? <TabScreens initial={initialRoute} /> : <Screens />}
-
             <Toast />
           </ThemeProvider>
         </NavigationContainer>

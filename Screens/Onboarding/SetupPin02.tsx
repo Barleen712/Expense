@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import styles from "../Stylesheet";
 import Keypad from "../../Components/Keypad";
 import Pin from "../../Components/Pin";
@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { addUser } from "../../Slice/IncomeSlice";
 import { getUseNamerDocument } from "../../Saga/BudgetSaga";
 import { auth } from "../FirebaseConfig";
+import { SafeAreaView } from "react-native-safe-area-context";
 type PinProp = StackNavigationProp<StackParamList, "Setpin1">;
 
 interface Props {
@@ -25,16 +26,14 @@ interface Props {
 }
 export default function Setpin02({ navigation, route }: Readonly<Props>) {
   const [pin, setpin] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const handleClear = () => {
     setpin(pin.slice(0, pin.length - 1));
   };
   async function handlenext() {
-    if (isProcessing) return; // prevent re-entry
-
-    setIsProcessing(true);
+    setLoading(true);
     if (route.params.FirstPin === pin) {
       try {
         const user = await getUseNamerDocument();
@@ -60,17 +59,25 @@ export default function Setpin02({ navigation, route }: Readonly<Props>) {
         console.log(error);
       }
     } else {
+      setLoading(false);
       alert("PINS don't match. \nPlease Re-Enter your Pin");
       handleClear();
     }
 
     setpin("");
-    setIsProcessing(false);
+    setLoading(false);
   }
 
   const { t } = useTranslation();
+  if (loading) {
+    return (
+      <View style={{ height: "100%", alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="large" color="rgb(56, 88, 85)" />
+      </View>
+    );
+  }
   return (
-    <View style={{ backgroundColor: "#2A7C76", flex: 1, alignItems: "center" }}>
+    <SafeAreaView style={{ backgroundColor: "#2A7C76", flex: 1, alignItems: "center" }}>
       <View style={styles.setup}>
         <TouchableOpacity
           style={{
@@ -97,6 +104,6 @@ export default function Setpin02({ navigation, route }: Readonly<Props>) {
           }}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

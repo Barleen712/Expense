@@ -41,7 +41,6 @@ export default function FaceCard({ type, amount, detail, category, amount1, bg, 
           style={{
             backgroundColor: "rgba(214, 224, 220, 0.24)",
             width: width - 20,
-            margin: 10,
           }}
         />
         <Text style={styles.MonthText}>{t("This Month")}</Text>
@@ -49,7 +48,8 @@ export default function FaceCard({ type, amount, detail, category, amount1, bg, 
       <View style={styles.typeView}>
         <Text style={styles.typeText}>{t(type)}</Text>
         <Text style={styles.amountText}>
-          {currencies[currency]} {(amount * convertRate).toFixed(2)}
+          {currencies[currency]}
+          {(amount * convertRate).toFixed(2)}
         </Text>
       </View>
 

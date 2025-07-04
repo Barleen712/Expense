@@ -11,5 +11,6 @@ export const getStyles = (colors: any) =>
     categoryText: {
       fontFamily: "Inter",
       fontSize: Platform.OS === "ios" ? 14 : 16,
+      fontWeight: "700",
     },
   });

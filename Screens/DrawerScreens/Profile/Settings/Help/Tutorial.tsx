@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import Carousel from "react-native-reanimated-carousel";
-import { View, Text, Platform, StatusBar, Dimensions, Image } from "react-native";
+import { View, Text, Platform, StatusBar, Dimensions, Image, SafeAreaView } from "react-native";
 import { ThemeContext, ThemeContextType } from "../../../../../Context/ThemeContext";
 import Header from "../../../../../Components/Header";
 
-export default function Tutorial({ navigation }) {
+export default function Tutorial({ navigation }: any) {
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const width = Dimensions.get("screen").width * 0.9;
   const height = Dimensions.get("screen").height * 0.7;
@@ -42,7 +42,7 @@ export default function Tutorial({ navigation }) {
     },
   ];
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: any) => (
     <View
       style={{
         width,
@@ -87,7 +87,7 @@ export default function Tutorial({ navigation }) {
   );
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         alignItems: "center",
@@ -109,6 +109,6 @@ export default function Tutorial({ navigation }) {
         autoPlay
         style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
       />
-    </View>
+    </SafeAreaView>
   );
 }

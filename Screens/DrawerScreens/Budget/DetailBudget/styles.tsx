@@ -10,7 +10,8 @@ export const getStyles = (colors: any) =>
     Trash: {
       position: "absolute",
       right: "3%",
-      top: "5.5%",
+      // top: Platform.OS === "android" ? "5.5%" : "9%",
+      top: Platform.OS === "ios" ? "10.5%" : "6.5%",
       width: 32,
       height: 32,
       // backgroundColor: "red",

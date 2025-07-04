@@ -1,5 +1,16 @@
 import React, { useContext, useState } from "react";
-import { View, Image, ScrollView, Dimensions, Text, Alert } from "react-native";
+import {
+  View,
+  Image,
+  ScrollView,
+  Dimensions,
+  Text,
+  Alert,
+  SafeAreaView,
+  Platform,
+  StatusBar,
+  ActivityIndicator,
+} from "react-native";
 import Header from "../../../../Components/Header";
 import { ThemeContext } from "../../../../Context/ThemeContext";
 import Input from "../../../../Components/CustomTextInput";
@@ -12,18 +23,23 @@ export default function ForgotPin({ navigation }) {
   const { colors } = useContext(ThemeContext);
   const [password, setPassword] = useState("");
   const [confirmPass, setconfirmPass] = useState("");
+  const [loading, setloading] = useState(false);
   async function next() {
+    setloading(true);
     if (!password || !confirmPass) {
-      Alert.alert("Error", "Please fill both fields.");
-      setPassword("");
-      setconfirmPass("");
+      setTimeout(() => {
+        Alert.alert("Error", "Please fill both fields.");
+        setloading(false);
+      }, 1000);
       return;
     }
 
     if (password !== confirmPass) {
-      Alert.alert("Error", "Passwords do not match.");
-      setPassword("");
-      setconfirmPass("");
+      setTimeout(() => {
+        Alert.alert("Error", "Passwords do not match.");
+        setloading(false);
+      }, 1000);
+
       return;
     }
     const user = auth.currentUser;
@@ -35,19 +51,31 @@ export default function ForgotPin({ navigation }) {
       navigation.navigate("Setpin");
     } catch (error) {
       Alert.alert("Failed", "Please enter correct Password");
-      setPassword("");
-      setconfirmPass("");
     }
+    setloading(false);
   }
+  // if (loading) {
+  //   return (
+  //     <View style={{ flex: 1, backgroundColor: "rgba(13, 14, 15, 0.94)", zIndex: 100 }}>
+  //       <ActivityIndicator color={"red"} />
+  //     </View>
+  //   );
+  // }
   return (
-    <View style={{ backgroundColor: colors.backgroundColor, flex: 1 }}>
+    <SafeAreaView
+      style={{
+        backgroundColor: colors.backgroundColor,
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <Header
         title={"Forgot Pin"}
         press={() => navigation.goBack()}
         bgcolor={colors.backgroundColor}
         color={colors.color}
       />
-      <ScrollView style={{ width: "100%", flex: 1 }}>
+      <ScrollView bounces={false} style={{ width: "100%", flex: 1 }}>
         {/* <View style={{ width: "100%", height: "100%", backgroundColor: "blue" }}> */}
         <View style={{ alignItems: "center", height: height * 0.4 }}>
           <Image
@@ -81,9 +109,15 @@ export default function ForgotPin({ navigation }) {
             }}
             isPass={true}
           />
-          <CustomButton title={"Next"} bg="rgb(57, 112, 109)" color="white" press={next} />
+          <CustomButton
+            title={"Next"}
+            bg={loading ? "gray" : "rgb(57, 112, 109)"}
+            color="white"
+            press={next}
+            disable={loading}
+          />
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }

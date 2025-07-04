@@ -8,9 +8,9 @@ export const getStyles = (colors: any) =>
     },
     textinput: {
       width: "90%",
-      height: 56,
+      height: 60,
       borderRadius: 16,
-      borderColor: "rgba(133, 126, 126, 0.89)",
+      borderColor: "rgba(241, 241, 250, 1)",
       borderWidth: 1,
       margin: 10,
       padding: 15,
@@ -19,13 +19,13 @@ export const getStyles = (colors: any) =>
       color: colors.color,
     },
     ForgotTitle: {
-      flex: 3,
+      flex: 2.5,
       justifyContent: "center",
       padding: 15,
       marginTop: 30,
     },
     email: {
-      flex: 7,
+      flex: 7.5,
       alignItems: "center",
     },
     ForgotDes: {

@@ -17,9 +17,8 @@ import Transfer from "../assets/transfer.svg";
 import Salary from "../assets/salary.svg";
 import PassiveIncome from "../assets/passive.svg"; // if name has space
 import notifee, { AuthorizationStatus } from "@notifee/react-native";
-import { useDispatch } from "react-redux";
-import { changeSecurity, updatePreferences } from "../Slice/IncomeSlice";
-import { AppDispatch } from "../Store/Store";
+import { check, request, openSettings, PERMISSIONS, RESULTS } from "react-native-permissions";
+import { decode as base64Decode } from "base64-arraybuffer";
 export const categoryMap = {
   Food,
   Shopping,
@@ -61,64 +60,68 @@ export const CATEGORY_COLORS: Record<string, string> = {
   Salary: "rgba(0, 168, 107, 1)",
   "Passive Income": "rgb(231, 199, 14)",
 };
+
 export const uploadImage = async (imageUri: string) => {
-  console.log("adding image");
   try {
     if (!imageUri) {
       console.warn("No image URI to upload.");
-
       return null;
     }
-    console.log("adding image");
+
     const fileName = imageUri.split("/").pop() ?? `income_${Date.now()}.jpg`;
     const filePath = `income-images/${fileName}`;
-    console.log(filePath);
     let base64Image: string | null = null;
 
-    // Convert image to Base64 (web or native)
     if (Platform.OS === "web") {
+      // Web: convert image URL to base64 using fetch
       const response = await fetch(imageUri);
       const blob = await response.blob();
       base64Image = await new Promise<string | null>((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => {
           if (typeof reader.result === "string") {
-            resolve(reader.result.split(",")[1]);
+            resolve(reader.result.split(",")[1]); // Strip data:image/...;base64,
           } else {
-            reject(new Error("Failed to read as Data URL")); // ✅ correct
+            reject(new Error("Failed to read image data"));
           }
         };
-        reader.onerror = () => reject(new Error("FileReader encountered an error")); // Optional but safer
+        reader.onerror = () => reject(new Error("FileReader failed"));
         reader.readAsDataURL(blob);
       });
     } else {
+      // Native: read file as base64
       base64Image = await RNFS.readFile(imageUri, "base64");
     }
+
     if (!base64Image) {
       throw new Error("Failed to convert image to Base64");
     }
-    const binaryString = atob(base64Image);
-    const fileArray = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      fileArray[i] = binaryString.charCodeAt(i);
-    }
+
+    const fileArray = new Uint8Array(base64Decode(base64Image));
+
     const { error: uploadError } = await supabase.storage.from("expense-tracker").upload(filePath, fileArray, {
+      contentType: "image/jpeg", // optional but recommended
       upsert: true,
     });
+
     if (uploadError) {
       console.error("Supabase upload error:", uploadError);
       return null;
     }
-    const { data: urlData } = supabase.storage.from("expense-tracker").getPublicUrl(filePath); // Use same bucket
-    if (!urlData.publicUrl) {
+
+    const { data: urlData } = supabase.storage.from("expense-tracker").getPublicUrl(filePath);
+
+    if (!urlData?.publicUrl) {
       throw new Error("Failed to retrieve public URL");
     }
+
     return urlData.publicUrl;
   } catch (e) {
     console.error("Image upload error:", e);
     return null;
   }
 };
+
 export const WalletMap: Record<string, string> = {
   PayPal: require("../assets/paypal.png"),
   Paytm: require("../assets/paytm.png"),
@@ -142,9 +145,9 @@ export const StringConstants = {
   Password: "Password",
   Bysigningupyouagreetothe: "By signing up, you agree to the ",
   TermsofServiceandPrivacyPolicy: "Terms of Service and Privacy Policy",
-  orwith: "or with",
+  orwith: "Or with",
   SignUpwithGoogle: "Sign Up with Google",
-  Alreadyhaveanaccount: "Already have an account?",
+  Alreadyhaveanaccount: "Already Have Account?",
   ForgotPassword: "Forgot Password",
   Donthaveanaccountyet: "Don’t have an account yet?",
   Income: "Income",
@@ -152,7 +155,7 @@ export const StringConstants = {
   Language: "Language",
   SpendSmarter: "Spend Smarter Save More",
   LetssetupyouPin: "Let’s setup you Pin",
-  OkRetypeyourPinagain: "Ok. Re type your Pin again",
+  OkRetypeyourPinagain: "Re type your Pin again",
   Youareset: "You are set",
   AccountBalance: "Account Balance",
   SpendFrequency: "Spend Frequency",
@@ -209,7 +212,7 @@ export const StringConstants = {
   Budgetisexceedsthelimit: "Budget is exceeds the limit",
   FinancialReport: "Financial Report",
   CreateBudget: "Create Budget",
-  RecieveAlert: "Recieve Alert",
+  RecieveAlert: "Receive Alert",
   Receivealertwhenitreachessomepoint: "Receive alert when it reaches some point",
   DetailBudget: "Detail Budget",
 };
@@ -224,7 +227,7 @@ export const currencies: Record<string, string> = {
 export const handleBiometricAuth = async (navigation: any) => {
   try {
     const { available } = await rnBiometrics.isSensorAvailable();
-
+    console.log(available);
     if (!available) {
       navigation.navigate("EnterPin");
       return;
@@ -315,7 +318,7 @@ export const FirebaseErrors: Record<string, string> = {
   verify: "📧 Please check your inbox to verify your email.",
   fail: "⚠️ Email not verified. Please check your inbox.",
   login: "✅ You have successfully logged in ",
-  "no-data": "⚠️ Signup Failed",
+  "no-data": "⚠️ Sign Up Failed",
 };
 export function raiseToast(type: string, text1: string, error: string) {
   Toast.show({
@@ -477,3 +480,43 @@ export const checkApplicationPermission = async () => {
     }
   }
 };
+
+export async function checkCameraPermission() {
+  const permission = Platform.OS === "ios" ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
+
+  const status = await check(permission);
+  console.log("Initial status:", status);
+
+  if (status === "blocked") {
+    Alert.alert(
+      "Camera Permission Revoked",
+      "You have revoked camera permission. Please allow camera access in your device settings.",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Open Settings", onPress: () => openSettings().catch(() => console.warn("Cannot open settings")) },
+      ]
+    );
+    return false;
+  }
+
+  if (status === "denied") {
+    const result = await request(permission);
+    console.log("Request result:", result);
+
+    if (result === "blocked") {
+      Alert.alert(
+        "Camera Permission Revoked",
+        "You have revoked camera permission. Please allow camera access in your device settings.",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Open Settings", onPress: () => openSettings().catch(() => console.warn("Cannot open settings")) },
+        ]
+      );
+      return false;
+    }
+
+    return result === RESULTS.GRANTED;
+  }
+
+  return status === RESULTS.GRANTED;
+}

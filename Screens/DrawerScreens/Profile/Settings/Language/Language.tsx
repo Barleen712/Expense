@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, SafeAreaView } from "react-native";
 
 import { getStyles } from "./styles";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,7 +18,7 @@ interface Props {
   navigation: LanguageProp;
 }
 export default function Language({ navigation }: Readonly<Props>) {
-  const changeLanguage = (language) => {
+  const changeLanguage = (language: string | undefined) => {
     i18n.changeLanguage(language);
   };
   const { t } = useTranslation();
@@ -38,7 +38,7 @@ export default function Language({ navigation }: Readonly<Props>) {
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title={t("Language")}
         press={() => navigation.goBack()}
@@ -47,6 +47,7 @@ export default function Language({ navigation }: Readonly<Props>) {
       />
       <View style={styles.Line}></View>
       <FlatList
+        bounces={false}
         style={styles.settings}
         data={currencies}
         scrollEnabled={false}
@@ -74,6 +75,6 @@ export default function Language({ navigation }: Readonly<Props>) {
           </View>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 }

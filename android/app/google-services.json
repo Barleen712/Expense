@@ -37,6 +37,13 @@
             {
               "client_id": "26672937768-d1b1daba6ovl6md8bkrfaaffpiugeihh.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "26672937768-9fqv55u26fqipe8gn6kh9dh1tg71189b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anonymous.BarleenExpenseTracker"
+              }
             }
           ]
         }

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useContext } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, TextInput, Image } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, TextInput, Image, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Input from "../../../Components/CustomTextInput";
 import GradientButton from "../../../Components/CustomButton";
@@ -34,8 +34,9 @@ export default function Login({ navigation }: Readonly<Props>) {
     setpassword({ ...password, error: "" });
   }
   async function handlesLogin() {
-    if (email.email === "") {
+    if (email.email === "" && password.password === "") {
       setemail({ ...email, emailError: "Email is required" });
+      setpassword({ ...password, error: "Password is required" });
       return;
     }
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -48,10 +49,6 @@ export default function Login({ navigation }: Readonly<Props>) {
       setpassword({ ...password, error: "Password is required" });
       return;
     }
-    if (password.password.length < 6) {
-      setpassword({ ...password, error: "Enter Password of length atleast 6" });
-      return;
-    }
     try {
       setLoading(true);
       const user = await signInWithEmailAndPassword(auth, email.email, password.password);
@@ -60,8 +57,8 @@ export default function Login({ navigation }: Readonly<Props>) {
         raiseToast("error", "Login Failed", "fail");
         await auth.signOut();
         setLoading(false);
-        setemail({ email: "", emailError: "" });
-        setpassword({ password: "", error: "" });
+        // setemail({ email: "", emailError: "" });
+        // setpassword({ password: "", error: "" });
         return;
       }
       const userDoc = await getUseNamerDocument();
@@ -74,7 +71,7 @@ export default function Login({ navigation }: Readonly<Props>) {
             pin: userDoc.pin,
           })
         );
-        raiseToast("success", "Welcome Back", "login");
+        raiseToast("success", "Welcome", "login");
       } else {
         raiseToast("error", "User document not found", "fail");
       }
@@ -84,8 +81,8 @@ export default function Login({ navigation }: Readonly<Props>) {
 
       setLoading(false);
     }
-    setemail({ email: "", emailError: "" });
-    setpassword({ password: "", error: "" });
+    // setemail({ email: "", emailError: "" });
+    // setpassword({ password: "", error: "" });
   }
   const googleLogin = async () => {
     const googleResult = await handleGoogleSignIn();
@@ -147,73 +144,81 @@ export default function Login({ navigation }: Readonly<Props>) {
       />
       <ScrollView contentContainerStyle={{ alignItems: "center" }} style={{ width: "100%" }}>
         <View style={style.input}>
-          <Input
-            ref={emailRef}
-            title={t(StringConstants.Email)}
-            color="rgb(56, 88, 85)"
-            css={style.textinput}
-            name={email.email}
-            onchange={(data) => {
-              setemail({ emailError: "", email: data });
-            }}
-            isPass={false}
-          />
-          {email.emailError !== "" && (
-            <Text
-              style={{
-                color: "rgb(255, 0, 17)",
-                marginTop: -10,
-                marginBottom: 8,
-                marginLeft: 10,
-                fontFamily: "Inter",
-                width: "90%",
+          <View style={{ width: "100%", height: "50%", justifyContent: "center" }}>
+            <Input
+              ref={emailRef}
+              title={t(StringConstants.Email)}
+              color="rgba(145, 145, 159, 1)"
+              css={style.textinput}
+              name={email.email}
+              onchange={(data) => {
+                setemail({ emailError: "", email: data });
               }}
-            >
-              {email.emailError}*
-            </Text>
-          )}
-          <Input
-            ref={passwordRef}
-            title={t(StringConstants.Password)}
-            color="rgb(56, 88, 85)"
-            css={style.textinput}
-            isPass={true}
-            name={password.password}
-            handleFocus={() => {
-              if (!email.email.trim()) {
-                setemail({ ...email, emailError: "Email is required" });
-                emailRef.current?.focus();
-              }
-            }}
-            onchange={(data) => {
-              setpassword({ password: data, error: "" });
-            }}
-          />
-          {password.error !== "" && (
-            <Text
-              style={{
-                color: "rgb(255, 0, 17)",
-                marginTop: -10,
-                marginBottom: 8,
-                marginLeft: 10,
-                fontFamily: "Inter",
-                width: "90%",
+              isPass={false}
+            />
+            {email.emailError !== "" && (
+              <Text
+                style={{
+                  color: "rgb(255, 0, 17)",
+                  position: "absolute",
+                  bottom: "0%",
+                  marginLeft: 20,
+                  fontFamily: "Inter",
+                  width: "90%",
+                  fontSize: 12,
+                }}
+              >
+                {email.emailError}
+              </Text>
+            )}
+          </View>
+          <View style={{ width: "100%", height: "50%", justifyContent: "center" }}>
+            <Input
+              ref={passwordRef}
+              title={t(StringConstants.Password)}
+              color="rgba(145, 145, 159, 1)"
+              css={style.textinput}
+              isPass={true}
+              name={password.password}
+              handleFocus={() => {
+                if (!email.email.trim()) {
+                  setemail({ ...email, emailError: "Email is required" });
+                  emailRef.current?.focus();
+                }
               }}
-            >
-              {password.error}*
-            </Text>
-          )}
+              onchange={(data) => {
+                setpassword({ password: data, error: "" });
+              }}
+            />
+            {password.error !== "" && (
+              <Text
+                style={{
+                  color: "rgb(255, 0, 17)",
+                  position: "absolute",
+                  bottom: "0%",
+                  // marginBottom: 10,
+                  marginLeft: 20,
+                  fontFamily: "Inter",
+                  width: "90%",
+                  fontSize: 12,
+                  // backgroundColor: "red",
+                }}
+              >
+                {password.error}
+              </Text>
+            )}
+          </View>
         </View>
         <GradientButton title={t(StringConstants.Login)} handles={handlesLogin} />
-        <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-          <Text style={style.forgot}>{t(StringConstants.ForgotPassword)}</Text>
-        </TouchableOpacity>
-        <Text style={style.or}>{t(StringConstants.orwith)}</Text>
+        <Text style={style.or}>Or</Text>
         <TouchableOpacity style={style.GoogleView} onPress={googleLogin}>
           <Image style={style.Google} source={require("../../../assets/Google.png")} />
           <Text style={style.textGoogle}>Login with Google</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.replace("SignUp")}>
+        <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+          <Text style={style.forgot}>{t(StringConstants.ForgotPassword)}?</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.replace("SignUp")} style={{ marginTop: 15 }}>
           <Text style={style.account}>
             {t(StringConstants.Donthaveanaccountyet)} <Text style={style.span}> {t(StringConstants.SignUp)}</Text>
           </Text>

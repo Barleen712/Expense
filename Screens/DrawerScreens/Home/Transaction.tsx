@@ -12,6 +12,7 @@ import {
   Keyboard,
   ScrollView,
   TextInput,
+  SafeAreaView,
 } from "react-native";
 import * as Sharing from "expo-sharing";
 import { getRealm, updateTransactionRealmAndFirestore } from "../../../Realm/realm";
@@ -39,6 +40,8 @@ import { BudgetCategory } from "../../../Slice/Selectors";
 import { updateBudgetDocument, AddNotification } from "../../FirestoreHandler";
 import { onDisplayNotification } from "../Budget/TestNotification";
 import { encryptData, generateKey } from "../../../Encryption/encrption";
+import { RFValue } from "react-native-responsive-fontsize";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type IncomeProp = StackNavigationProp<StackParamList, "Transaction">;
 
@@ -82,6 +85,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
   const [descriptionError, setDescriptionError] = useState("");
   const [walletError, setwalletError] = useState("");
   const [localPath, setlocalPath] = useState({ type: parameters.type, path: parameters.url });
+  const [edit, setedit] = useState(false);
   const { isConnected } = useNetInfo();
   const currency = useSelector((state: RootState) => state.Money.preferences.currency);
   const Rates = useSelector((state: RootState) => state.Rates);
@@ -116,41 +120,50 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
     }
   };
   const handleIncomeChange = (text: string) => {
+    // Disallow commas explicitly
     if (text.includes(",")) {
       setIncomeError("Commas are not allowed");
       return;
     }
 
-    const cleaned = text.replace(/[^0-9.]/g, "");
-    const decimalCount = (cleaned.match(/\./g) || []).length;
-    if (decimalCount > 1) {
-      setIncomeError("Only one decimal point is allowed");
+    // Validate using regex: optional digits before and after 1 decimal point
+    const validNumberRegex = /^\d*\.?\d*$/;
+    if (!validNumberRegex.test(text)) {
+      setIncomeError("Please enter a valid number");
       return;
     }
 
-    const parts = cleaned.split(".");
+    // Allow empty input while typing
+    if (text === "") {
+      setIncomeError("");
+      setIncome("");
+      return;
+    }
+
+    const parts = text.split(".");
     const integerPart = parts[0];
     const decimalPart = parts[1] || "";
 
     if (decimalPart.length > 2) {
+      setIncomeError("Maximum two decimal places allowed");
+      return;
+    }
+
+    const combinedLength = (integerPart + decimalPart).length;
+    if (combinedLength > 7) {
       setIncomeError("Maximum income allowed is $99,999.99");
       return;
     }
 
-    if ((integerPart + decimalPart).length > 7) {
-      setIncomeError("Maximum income allowed is $99,999.99");
-      return;
-    }
-    const numericValue = parseFloat(cleaned);
+    const numericValue = parseFloat(text);
     if (numericValue > 99999.99) {
       setIncomeError("Maximum income allowed is $99,999.99");
       return;
     }
 
     setIncomeError("");
-    setIncome(cleaned);
+    setIncome(text);
   };
-  console.log(month);
 
   function handleDescriptionChange() {
     if (descriptionError) {
@@ -160,14 +173,23 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const user = auth.currentUser;
+  const insets = useSafeAreaInsets();
   async function add() {
     const realm = await getRealm();
     const numericIncome = parseFloat(Income.replace("$", "") || "0") / convertRate;
     const trimmedDescription = Description.trim();
     setDescription(trimmedDescription);
 
-    if (numericIncome === 0) {
+    if (
+      numericIncome === 0 &&
+      selectedCategory === "Category" &&
+      trimmedDescription === "" &&
+      selectedWallet === "Wallet"
+    ) {
       setIncomeError("Enter Amount");
+      setcategoryError("Select Category");
+      setDescriptionError("Add Description");
+      setwalletError("Select Wallet");
       return;
     }
     if (selectedCategory === "Category") {
@@ -333,7 +355,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
       weekly: week.toString(),
       endDate: new Date(endDate).toISOString() || null,
       repeat: Switchs,
-      startDate: startDate,
+      startDate: parseInt(startDate),
       startMonth: month,
       startYear: new Date().getFullYear(),
       synced: false,
@@ -367,16 +389,21 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
   }
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: parameters.bg }]}>
       <Header
         title={t(parameters.moneyCategory)}
         press={() => navigation.goBack()}
         bgcolor={parameters.bg}
         color="white"
       />
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+          >
             <View style={[styles.add, { backgroundColor: parameters.bg }]}>
               <View style={styles.balanceView}>
                 <Text style={styles.balance}>{t(StringConstants.Howmuch)}</Text>
@@ -386,6 +413,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
                     <TextInput
                       value={Income}
                       keyboardType="numeric"
+                      numberOfLines={1}
                       onChangeText={handleIncomeChange}
                       style={styles.amount}
                       onFocus={handleFocus}
@@ -399,56 +427,64 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
                       { color: parameters.moneyCategory === "Expense" ? "white" : "rgb(255, 0, 17)" },
                     ]}
                   >
-                    *{incomeError}
+                    {incomeError}
                   </Text>
                 )}
               </View>
-              <View style={[styles.selection]}>
-                <DropdownComponent
-                  data={parameters.categoryData}
-                  value={selectedCategory}
-                  name={t(parameters.category)}
-                  styleButton={styles.textinput}
-                  onSelectItem={(item) => {
-                    setSelectedCategory(item);
-                    setcategoryError("");
-                  }}
-                  position="bottom"
-                  height={180}
-                />
-                {categoryError !== "" && <Text style={styles.error}>*{categoryError}</Text>}
-                <Input
-                  title={t(StringConstants.Description)}
-                  color="black"
-                  css={styles.textinput}
-                  isPass={false}
-                  name={Description}
-                  onchange={setDescription}
-                  handleFocus={handleDescriptionChange}
-                  limit={200}
-                />
-                {descriptionError !== "" && <Text style={styles.error}>*{descriptionError}</Text>}
-                <DropdownComponent
-                  data={wallet}
-                  value={selectedWallet}
-                  name={t(parameters.wallet)}
-                  styleButton={styles.textinput}
-                  onSelectItem={(item) => {
-                    setSelectedWallet(item);
-                    setwalletError("");
-                  }}
-                  position="bottom"
-                  height={180}
-                />
-                {walletError !== "" && <Text style={styles.error}>*{walletError}</Text>}
+              <View style={styles.selection}>
+                <View style={{ width: "100%", alignItems: "center" }}>
+                  <DropdownComponent
+                    data={parameters.categoryData}
+                    value={selectedCategory}
+                    name={t(parameters.category)}
+                    styleButton={styles.textinput}
+                    onSelectItem={(item) => {
+                      setSelectedCategory(item);
+                      setcategoryError("");
+                    }}
+                    position="bottom"
+                    height={180}
+                  />
+                  {categoryError !== "" && <Text style={styles.error}>{categoryError}</Text>}
+                </View>
+                <View style={{ width: "100%", alignItems: "center" }}>
+                  <Input
+                    title={t(StringConstants.Description)}
+                    color="rgba(145, 145, 159, 1)"
+                    css={styles.textinput}
+                    isPass={false}
+                    name={Description}
+                    onchange={setDescription}
+                    handleFocus={handleDescriptionChange}
+                    limit={200}
+                  />
+                  {descriptionError !== "" && <Text style={styles.error}>{descriptionError}</Text>}
+                </View>
+                <View style={{ width: "100%", alignItems: "center" }}>
+                  <DropdownComponent
+                    data={wallet}
+                    value={selectedWallet}
+                    name={t(parameters.wallet)}
+                    styleButton={styles.textinput}
+                    onSelectItem={(item) => {
+                      setSelectedWallet(item);
+                      setwalletError("");
+                    }}
+                    position="bottom"
+                    height={180}
+                  />
+                  {walletError !== "" && <Text style={styles.error}>{walletError}</Text>}
+                </View>
                 {showAttach && (
                   <TouchableOpacity onPress={toggleModal} style={styles.attachment}>
-                    <Entypo name="attachment" size={24} color={colors.color} />
-                    <Text style={{ color: colors.color }}>{t(StringConstants.Addattachment)}</Text>
+                    <Entypo name="attachment" size={24} color={"rgba(145, 145, 159, 1)"} />
+                    <Text style={{ color: "rgba(145, 145, 159, 1)", fontWeight: 400, fontSize: RFValue(14) }}>
+                      {t(StringConstants.Addattachment)}
+                    </Text>
                   </TouchableOpacity>
                 )}
                 {localPath.type === "image" && image && (
-                  <View style={{ width: "100%", marginLeft: 30 }}>
+                  <View style={{ width: "100%", marginLeft: 30, marginTop: 10 }}>
                     <Image source={{ uri: image }} style={{ width: 90, height: 80, borderRadius: 10 }} />
                     {close && (
                       <>
@@ -485,6 +521,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
                       height: "10%",
                       alignItems: "center",
                       justifyContent: "center",
+                      marginTop: 10,
                       // backgroundColor: "rgba(220, 234, 233, 0.6)",
                     }}
                   >
@@ -546,7 +583,7 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
                   Frequencymodal={Frequencymodal}
                   setFrequencyModal={setFrequencymodal}
                   setswitch={setSwitchs}
-                  edit={parameters.edit}
+                  edit={edit}
                 />
 
                 {Switchs && frequency != "" && endAfter != "" && (
@@ -575,7 +612,10 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
                       </Text>
                     </View>
                     <TouchableOpacity
-                      onPress={() => setFrequencymodal(!Frequencymodal)}
+                      onPress={() => {
+                        setFrequencymodal(!Frequencymodal);
+                        setedit(true);
+                      }}
                       style={{
                         backgroundColor: "rgba(56, 184, 176, 0.23)",
                         padding: 10,
@@ -620,6 +660,15 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-    </View>
+      <View
+        style={{
+          height: insets.bottom,
+          backgroundColor: colors.backgroundColor,
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+        }}
+      ></View>
+    </SafeAreaView>
   );
 }

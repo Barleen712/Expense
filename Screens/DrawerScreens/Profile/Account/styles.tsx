@@ -5,7 +5,7 @@ export const getStyles = (colors: any) =>
     container: {
       flex: 1,
       backgroundColor: colors.backgroundColor,
-      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
     accountbg: {
       flex: 0.3,
@@ -20,6 +20,7 @@ export const getStyles = (colors: any) =>
     },
     accTitle: {
       color: "rgba(145, 145, 159, 1)",
+      fontWeight: 400,
     },
     accamount: {
       fontFamily: "Inter",

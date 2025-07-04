@@ -55,7 +55,7 @@ export default function Screens() {
     dispatch(loadPreferences());
   }, []);
   return (
-    <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false, gestureEnabled: false }}>
       <Stack.Screen name="Home" component={Onboarding} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="SignUp" component={SignUp} />
@@ -76,7 +76,7 @@ export function TabScreens({ initial = "EnterPin" }: Readonly<{ initial?: keyof 
     dispatch(loadPreferences());
   }, []);
   return (
-    <Stack2.Navigator initialRouteName={initial} screenOptions={{ headerShown: false }}>
+    <Stack2.Navigator initialRouteName={initial} screenOptions={{ headerShown: false, gestureEnabled: false }}>
       <Stack.Screen name="Setpin" component={Setpin} />
       <Stack.Screen name="Setpin1" component={Setpin02} />
       <Stack.Screen name="AllSet" component={Success} />

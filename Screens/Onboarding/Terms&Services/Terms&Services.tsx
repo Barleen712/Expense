@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, ScrollView, Text, FlatList } from "react-native";
+import { View, ScrollView, Text, FlatList, SafeAreaView } from "react-native";
 import getStyles from "./styles";
 import { ThemeContext } from "../../../Context/ThemeContext";
 import Header from "../../../Components/Header";
@@ -9,7 +9,7 @@ export default function Terms_Condition({ navigation }) {
   const { colors } = useContext(ThemeContext);
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title="Terms of Service"
         press={() => navigation.goBack()}
@@ -56,6 +56,6 @@ export default function Terms_Condition({ navigation }) {
           )}
         />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }

@@ -3,7 +3,7 @@ import { TouchableOpacity } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import ImagePicker from "react-native-image-crop-picker";
 import * as FileSystem from "expo-file-system";
-
+import { checkCameraPermission } from "../../Constants";
 interface Images {
   toggle: () => void;
   setAttach: (a: boolean) => void;
@@ -104,6 +104,12 @@ const SelectImageWithDocumentPicker = ({
 
   const openCamera = async () => {
     try {
+      const hasPermission = await checkCameraPermission();
+      if (!hasPermission) {
+        console.log("Camera permission denied");
+        return;
+      }
+
       const image = await ImagePicker.openCamera({
         width: 330,
         height: 400,

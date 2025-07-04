@@ -4,7 +4,7 @@ export const getStyles = (colors: any) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: colors.backgroundColor,
+      backgroundColor: colors.LinearGradient[0],
       paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
     homeHeadgradient: {
@@ -84,13 +84,15 @@ export const getStyles = (colors: any) =>
     },
     linechart: {
       flex: Platform.OS === "ios" ? 0.28 : 0.3,
+      backgroundColor: colors.backgroundColor,
+      width: "100%",
     },
     notiTitle: {
       fontFamily: "Inter",
       fontSize: Platform.OS === "ios" ? 18 : 20,
       fontWeight: Platform.OS === "ios" ? 500 : "bold",
       color: colors.color,
-      marginLeft: 5,
+      marginLeft: 15,
       marginTop: Platform.OS === "ios" ? 10 : 15,
     },
     flatView: {
@@ -109,7 +111,7 @@ export const getStyles = (colors: any) =>
     },
     filterRecent: {
       flex: Platform.OS === "ios" ? 0.2 : 0.25,
-      width: "95%",
+      width: "100%",
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
@@ -117,11 +119,12 @@ export const getStyles = (colors: any) =>
     reset: {
       backgroundColor: colors.seeall,
       width: "18%",
-      height: "45%",
+      height: "50%",
       alignItems: "center",
       justifyContent: "center",
       borderColor: "grey",
       borderRadius: 30,
+      marginRight: 15,
     },
     budgetText: {
       fontFamily: "Inter",

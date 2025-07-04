@@ -120,7 +120,6 @@ export async function syncPendingUpdatesToFirestore() {
           _id: tx._id,
           type: tx.type,
         };
-        console.log(user?.uid, user?.providerId);
         const key = await generateKey(user?.uid, user?.providerId, 5000, 256);
         const encryptedData = await encryptData(JSON.stringify(Data), key);
         const FirestoreData = {

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, SafeAreaView } from "react-native";
 import { getStyles } from "../Language/styles";
 import { Ionicons } from "@expo/vector-icons";
 import Header from "../../../../../Components/Header";
@@ -30,7 +30,7 @@ export default function Currency({ navigation }: Readonly<Props>) {
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title="Currency"
         press={() => navigation.goBack()}
@@ -41,6 +41,7 @@ export default function Currency({ navigation }: Readonly<Props>) {
       <FlatList
         style={styles.settings}
         data={currencies}
+        bounces={false}
         renderItem={({ item }) => (
           <View>
             <TouchableOpacity
@@ -64,6 +65,6 @@ export default function Currency({ navigation }: Readonly<Props>) {
           </View>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 }

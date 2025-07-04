@@ -29,7 +29,17 @@ export async function AddNotification(notificationData: any) {
 }
 export async function AddUser(name: any) {
   try {
-    await addDoc(collection(db, "Names"), name);
+    console.log("hello");
+    console.log(name);
+    const result = addDoc(collection(db, "Names"), name)
+      .then((ans) => {
+        console.log(ans);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    console.log(result);
+    console.log("added to fireswtore");
   } catch (e) {
     console.log(e);
   }

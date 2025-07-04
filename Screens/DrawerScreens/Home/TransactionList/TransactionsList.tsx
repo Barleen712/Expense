@@ -116,7 +116,7 @@ export default function TransactionList({ data }: Readonly<TransactionListProps>
         }}
       >
         <View style={{ margin: 10 }}>{CategoryIcon && <CategoryIcon width={60} height={60} />}</View>
-        <View style={{ width: "40%", justifyContent: "space-between", height: "70%" }}>
+        <View style={{ width: "40%", justifyContent: "space-between", height: "60%" }}>
           <Text style={styles.balance} numberOfLines={1}>
             {t(item.category)}
           </Text>
@@ -124,13 +124,21 @@ export default function TransactionList({ data }: Readonly<TransactionListProps>
             {item.description}
           </Text>
         </View>
-        <View style={{ alignItems: "flex-end", width: "35%", paddingRight: 10 }}>
+        <View
+          style={{
+            alignItems: "flex-end",
+            width: "35%",
+            paddingRight: 10,
+            height: "60%",
+            justifyContent: "space-between",
+          }}
+        >
           <Text style={[styles.categoryText, { color: amountColor }]}>
             {item.moneyCategory === "Income" ? "+" : "-"}
             {currencies[currency]}
             {(item.amount * convertRate).toFixed(2)}
           </Text>
-          <Text style={{ color: "rgba(145, 145, 159, 1)" }}>{formattedTime}</Text>
+          <Text style={{ color: "rgba(145, 145, 159, 1)", fontWeight: "700" }}>{formattedTime}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -144,6 +152,7 @@ export default function TransactionList({ data }: Readonly<TransactionListProps>
       onEndReached={handleEndReached}
       onEndReachedThreshold={1}
       renderItem={renderItem}
+      bounces={false}
       renderSectionHeader={({ section }) => (
         <View>
           <Text style={{ color: colors.color, fontFamily: "Inter", fontSize: 18, fontWeight: 600 }}>

@@ -1,5 +1,5 @@
 import React, { useContext, useCallback } from "react";
-import { View, Text, Dimensions, BackHandler } from "react-native";
+import { View, Text, Dimensions, BackHandler, SafeAreaView, Platform } from "react-native";
 import styles from "../../../../Stylesheet";
 import FaceCard from "./StructureReport";
 import { CustomButton } from "../../../../../Components/CustomButton";
@@ -71,7 +71,11 @@ export default function FinancialReportExpense({ navigation }: Readonly<Props>) 
   );
 
   return (
-    <View onStartShouldSetResponder={() => true} onResponderRelease={handleSwipe} style={{ flex: 1 }}>
+    <SafeAreaView
+      onStartShouldSetResponder={() => true}
+      onResponderRelease={handleSwipe}
+      style={{ flex: 1, backgroundColor: "red" }}
+    >
       <FaceCard
         type="You Spend 💸"
         progress={0.25}
@@ -81,7 +85,7 @@ export default function FinancialReportExpense({ navigation }: Readonly<Props>) 
         amount1={highestExpenseTransaction.amount}
         bg="red"
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -125,7 +129,11 @@ export function FinancialReportIncome({ navigation }: Readonly<Props>) {
   );
 
   return (
-    <View onStartShouldSetResponder={() => true} onResponderRelease={handleSwipe} style={{ flex: 1 }}>
+    <SafeAreaView
+      onStartShouldSetResponder={() => true}
+      onResponderRelease={handleSwipe}
+      style={{ flex: 1, backgroundColor: "rgba(0, 168, 107, 1)" }}
+    >
       <FaceCard
         type="You Earned 💰"
         progress={0.5}
@@ -135,7 +143,7 @@ export function FinancialReportIncome({ navigation }: Readonly<Props>) {
         amount1={highestIncomeTransaction.amount}
         bg="rgba(0, 168, 107, 1)"
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -181,8 +189,12 @@ export function FinancialReportBudget({ navigation }: Readonly<Props>) {
   );
 
   return (
-    <View onStartShouldSetResponder={() => true} onResponderRelease={handleSwipe} style={{ flex: 1 }}>
-      <View style={[styles.card, { backgroundColor: "rgba(0, 119, 255, 1)", marginTop: 10 }]}>
+    <SafeAreaView
+      onStartShouldSetResponder={() => true}
+      onResponderRelease={handleSwipe}
+      style={{ flex: 1, backgroundColor: "rgba(0, 119, 255, 1)" }}
+    >
+      <View style={[styles.card, { backgroundColor: "rgba(0, 119, 255, 1)", marginTop: 8 }]}>
         <View style={styles.cardMonth}>
           <ProgressBar
             progress={0.75}
@@ -193,10 +205,10 @@ export function FinancialReportBudget({ navigation }: Readonly<Props>) {
               margin: 10,
             }}
           />
-          <Text style={styles.MonthText}>{t("This Month")}</Text>
+          <Text style={[styles.MonthText]}>{t("This Month")}</Text>
         </View>
         <View style={styles.budgetReport}>
-          <Text style={[styles.detailText, { fontSize: 32, color: colors.backgroundColor }]}>
+          <Text style={[styles.detailText, { fontSize: 32, color: colors.backgroundColor, width: "70%" }]}>
             {exceedBudgets} of {totalBudgets} {t(StringConstants.Budgetisexceedsthelimit)}
           </Text>
           <FlatList
@@ -240,7 +252,7 @@ export function FinancialReportBudget({ navigation }: Readonly<Props>) {
           />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -276,16 +288,46 @@ export function FinancialReportQuote({ navigation }: Readonly<Props>) {
   );
 
   return (
-    <View onStartShouldSetResponder={() => true} onResponderRelease={handleSwipe} style={{ flex: 1 }}>
-      <View
+    <SafeAreaView
+      onStartShouldSetResponder={() => true}
+      onResponderRelease={handleSwipe}
+      style={{ flex: 1, backgroundColor: "rgb(240, 225, 16)", alignItems: "center" }}
+    >
+      <View style={[styles.cardMonth, { marginTop: 5 }]}>
+        <ProgressBar
+          progress={1}
+          color={colors.backgroundColor}
+          style={{
+            backgroundColor: "rgba(214, 224, 220, 0.24)",
+            width: width - 20,
+            margin: 10,
+            // marginTop: 12,
+          }}
+        />
+        <Text> </Text>
+      </View>
+      <View style={[styles.budgetReport, { alignItems: "flex-start", width: "90%" }]}>
+        <Text style={[styles.typeText, { color: "black" }]}>“{t(StringConstants.Financialfreedon)}”</Text>
+        <Text style={[styles.MonthText, { color: "black" }]}>-{t(StringConstants.RobertKiyosaki)}</Text>
+      </View>
+      <View style={{ flex: 0.3, width: "100%", alignItems: "center", justifyContent: "flex-end", marginBottom: 20 }}>
+        <CustomButton
+          title={t(StringConstants.Seethefulldetail)}
+          bg="rgba(165, 168, 130, 0.5)"
+          color="black"
+          press={() => navigation.replace("FinancialReport")}
+        />
+      </View>
+      {/* <View
         style={[
           styles.container,
           {
-            backgroundColor: "rgb(240, 225, 16)",
-            justifyContent: "space-between",
-            // padding: 30,
             width: "100%",
-            marginTop: 10,
+            // marginTop: 33,
+            marginTop: Platform.OS === "ios" ? 33 : 0,
+            alignItems: "center",
+            backgroundColor: "red",
+            flex: 0.2,
           },
         ]}
       >
@@ -298,19 +340,22 @@ export function FinancialReportQuote({ navigation }: Readonly<Props>) {
             margin: 10,
           }}
         />
-        <View style={{ width: "90%", marginLeft: 20 }}>
-          <Text style={[styles.typeText, { color: "black" }]}>“{t(StringConstants.Financialfreedon)}”</Text>
-          <Text style={[styles.MonthText, { color: "black" }]}>-{t(StringConstants.RobertKiyosaki)}</Text>
-        </View>
-        <View style={{ width: "100%", marginBottom: 30, alignItems: "center" }}>
-          <CustomButton
-            title={t(StringConstants.Seethefulldetail)}
-            bg="rgba(165, 168, 130, 0.5)"
-            color="black"
-            press={() => navigation.replace("FinancialReport")}
-          />
-        </View>
-      </View>
-    </View>
+      </View> */}
+      {/* <View
+        style={{
+          width: "90%",
+          marginLeft: 20,
+          height: "75%",
+          // alignItems: "center",
+          justifyContent: "center",
+          // marginTop: 200,
+        }}
+      >
+        
+      </View> */}
+      {/* <View style={{ width: "100%", marginBottom: 30, alignItems: "center" }}>
+     
+      </View> */}
+    </SafeAreaView>
   );
 }

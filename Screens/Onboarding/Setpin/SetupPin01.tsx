@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, SafeAreaView } from "react-native";
 import styles from "./styles";
 import Keypad from "../../../Components/Keypad";
 import Pin from "../../../Components/Pin";
@@ -22,7 +22,7 @@ export default function Setpin({ navigation }: Readonly<Props>) {
     setpin(pin.slice(0, pin.length - 1));
   };
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.setup}>
         <Text style={styles.setuptext}>{t(StringConstants.LetssetupyouPin)}</Text>
       </View>
@@ -38,6 +38,6 @@ export default function Setpin({ navigation }: Readonly<Props>) {
           }}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
-import { View, FlatList, Text, TouchableOpacity } from "react-native";
+import { View, FlatList, Text, TouchableOpacity, SafeAreaView, Platform, TouchableWithoutFeedback } from "react-native";
 import Header from "../../../Components/Header";
 import styles from "../../Stylesheet";
 import { useDispatch, useSelector } from "react-redux";
 import Entypo from "@expo/vector-icons/Entypo";
-import { removeNotification, updateBadge } from "../../../Slice/IncomeSlice";
+import { removeNotification, updateBadge, updateNotifications } from "../../../Slice/IncomeSlice";
 import { deleteAllUserNotifications, updateNotification } from "../../FirestoreHandler";
 import { auth } from "../../FirebaseConfig";
 import { ThemeContext, ThemeContextType } from "../../../Context/ThemeContext";
@@ -27,14 +27,32 @@ export default function DisplayNotification({ navigation }: Readonly<Notificatio
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const { t } = useTranslation();
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title={t("Notification")}
         press={() => navigation.goBack()}
         bgcolor={colors.backgroundColor}
         color={colors.color}
       />
-      <TouchableOpacity onPress={() => setShow(!show)} style={{ position: "absolute", right: "5%", top: "7%" }}>
+      {show && (
+        <TouchableWithoutFeedback onPress={() => setShow(false)}>
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0)",
+              zIndex: 99,
+            }}
+          />
+        </TouchableWithoutFeedback>
+      )}
+      <TouchableOpacity
+        onPress={() => setShow(!show)}
+        style={{ position: "absolute", right: "5%", top: Platform.OS === "android" ? "6%" : "10%" }}
+      >
         <Entypo name="dots-three-horizontal" size={24} color={colors.color} />
       </TouchableOpacity>
 
@@ -53,7 +71,7 @@ export default function DisplayNotification({ navigation }: Readonly<Notificatio
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.2,
             shadowRadius: 4,
-            zIndex: 10,
+            zIndex: 100,
             paddingLeft: 20,
           }}
         >
@@ -61,6 +79,7 @@ export default function DisplayNotification({ navigation }: Readonly<Notificatio
             onPress={() => {
               dispatch(updateBadge(0));
               updateNotification(auth.currentUser?.uid);
+              dispatch(updateNotifications());
               setShow(false);
             }}
           >
@@ -104,19 +123,45 @@ export default function DisplayNotification({ navigation }: Readonly<Notificatio
                   <View
                     style={{
                       width: "90%",
-                      backgroundColor: "rgba(237, 234, 234, 0.28)",
+                      backgroundColor: item.read ? "rgba(237, 234, 234, 0.28)" : " rgba(42, 124, 118, 0.33)",
                       height: 100,
                       borderRadius: 20,
                       flexDirection: "row",
                     }}
                   >
+                    {!item.read && (
+                      <View
+                        style={{
+                          width: 10,
+                          height: 10,
+                          backgroundColor: " rgb(42, 124, 118)",
+                          position: "absolute",
+                          borderRadius: 10,
+                          left: "-4%",
+                          top: "45%",
+                        }}
+                      >
+                        <View />
+                      </View>
+                    )}
                     <View style={{ width: "78%", justifyContent: "center", paddingLeft: 10 }}>
                       <Text style={{ fontWeight: "bold", color: colors.color }}>{item.title}</Text>
                       <Text style={{ color: "grey" }}>{item.body}</Text>
                     </View>
-                    <View style={{ justifyContent: "center", alignItems: "center", paddingLeft: 5, width: "22%" }}>
-                      <Text style={{ fontSize: 12, color: colors.color }}>{DisplayDate}</Text>
-                      <Text style={{ color: "grey", fontSize: 12 }}>{formattedTime}</Text>
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        paddingLeft: 5,
+                        width: "22%",
+                      }}
+                    >
+                      <Text style={{ fontSize: 12, color: colors.color, width: "100%", textAlign: "center" }}>
+                        {DisplayDate}
+                      </Text>
+                      <Text style={{ color: "grey", fontSize: 12, width: "100%", textAlign: "center" }}>
+                        {formattedTime}
+                      </Text>
                     </View>
                   </View>
                 </View>
@@ -125,6 +170,6 @@ export default function DisplayNotification({ navigation }: Readonly<Notificatio
           />
         )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

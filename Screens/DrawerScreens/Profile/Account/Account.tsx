@@ -8,6 +8,7 @@ import StackParamList from "../../../../Navigation/StackList";
 import { WalletMap, StringConstants } from "../../../Constants";
 import { useTranslation } from "react-i18next";
 import { ThemeContext, ThemeContextType } from "../../../../Context/ThemeContext";
+import { SafeAreaView } from "react-native-safe-area-context";
 type AccountProp = StackNavigationProp<StackParamList, "Account">;
 
 interface Props {
@@ -19,7 +20,7 @@ export default function Account({ navigation }: Readonly<Props>) {
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const styles = getStyles(colors);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title={t(StringConstants.Account)}
         press={() => navigation.goBack()}
@@ -74,6 +75,6 @@ export default function Account({ navigation }: Readonly<Props>) {
           )}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
