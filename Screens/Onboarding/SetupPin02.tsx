@@ -58,6 +58,8 @@ export default function Setpin02({ navigation, route }: Readonly<Props>) {
       } catch (error: any) {
         console.log(error);
       }
+    } else if (pin.length === 0) {
+      alert("Enter pin to confirm");
     } else {
       setLoading(false);
       alert("PINS don't match. \nPlease Re-Enter your Pin");

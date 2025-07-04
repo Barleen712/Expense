@@ -40,6 +40,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { getUseNamerDocument } from "../../../Saga/BudgetSaga";
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import { makeRedirectUri, useAuthRequest, ResponseType } from "expo-auth-session";
+import PhotoModal from "../../../Components/PhotoModal";
 import * as WebBrowser from "expo-web-browser";
 import { setLogLevel } from "realm";
 import { on } from "stream";
@@ -59,6 +60,7 @@ export default function SignUp({ navigation }: Readonly<Props>) {
   const [checked, setChecked] = useState({ state: false, error: "" });
   const [photo, setPhoto] = useState(require("../../../assets/user.png"));
   const [loading, setloading] = useState(false);
+  const [showModal, setshowModal] = useState(false);
   const error = "Password is required";
   function handleChange() {
     setname({ ...name, nameError: "" });
@@ -117,9 +119,8 @@ export default function SignUp({ navigation }: Readonly<Props>) {
           Google: false,
         });
         await sendEmailVerification(user.user);
-        await auth.signOut();
-
         raiseToast("success", "Email Verification", "verify");
+        await auth.signOut();
         setloading(false);
       }
     } catch (error: any) {
@@ -129,12 +130,12 @@ export default function SignUp({ navigation }: Readonly<Props>) {
       return;
     }
     setloading(false);
-    navigation.navigate("Login");
-    setname({ name: "", nameError: "" });
-    setemail({ email: "", emailError: "" });
-    setpassword({ password: "", error: "" });
-    setChecked({ state: false, error: "" });
-    setPhoto(require("../../../assets/user.png"));
+    // navigation.navigate("Login");
+    // setname({ name: "", nameError: "" });
+    // setemail({ email: "", emailError: "" });
+    // setpassword({ password: "", error: "" });
+    // setChecked({ state: false, error: "" });
+    // setPhoto(require("../../../assets/user.png"));
   }
   const { t } = useTranslation();
   const pickImageFromGallery = async () => {
@@ -146,6 +147,7 @@ export default function SignUp({ navigation }: Readonly<Props>) {
       });
 
       if (!result.canceled) {
+        setshowModal(false);
         console.log("Image selected:", result.assets[0].uri);
         setPhoto({ uri: result.assets[0].uri });
       } else {
@@ -349,7 +351,11 @@ export default function SignUp({ navigation }: Readonly<Props>) {
         bgcolor={colors.backgroundColor}
         color={colors.color}
       ></Header>
-      <ScrollView showsVerticalScrollIndicator={false} style={{ width: "100%", height: height * 0.8 }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ width: "100%", height: height * 0.8 }}
+        keyboardShouldPersistTaps={"handled"}
+      >
         <View style={{ alignItems: "center", height: height }}>
           <View style={{ height: height * 0.16, marginTop: 5, width: "100%", alignItems: "center" }}>
             <TouchableOpacity style={{ flex: 0.8, width: "90%", alignItems: "center" }} onPress={pickImageFromGallery}>
@@ -357,7 +363,7 @@ export default function SignUp({ navigation }: Readonly<Props>) {
             </TouchableOpacity>
             <TouchableOpacity
               style={{ flex: 0.2, justifyContent: "center", marginTop: 10 }}
-              onPress={() => pickImageFromGallery()}
+              onPress={() => setshowModal(true)}
             >
               <Text
                 style={{
@@ -370,9 +376,27 @@ export default function SignUp({ navigation }: Readonly<Props>) {
                   alignItems: "center",
                 }}
               >
-                Add Profile Picture
+                Edit 🖋️
               </Text>
             </TouchableOpacity>
+            <PhotoModal
+              showModal={showModal}
+              setshowModal={setshowModal}
+              onEdit={() => {
+                try {
+                  console.log("press1");
+                  pickImageFromGallery();
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+              onDelete={() => {
+                setPhoto(require("../../../assets/user.png"));
+                setshowModal(false);
+                // setselectedindex("");
+              }}
+              disable={typeof photo.uri === "string" ? false : true}
+            />
           </View>
           <View style={style.input}>
             <View style={{ width: "100%", height: "33%" }}>

@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { StackNavigationProp } from "@react-navigation/stack";
 import StackParamList from "../../../Navigation/StackList";
 import { RootState, store } from "../../../Store/Store";
+import { currencies } from "../../Constants";
 type NotificationProp = StackNavigationProp<StackParamList, "Notification">;
 
 interface Notification {
@@ -26,6 +27,11 @@ export default function DisplayNotification({ navigation }: Readonly<Notificatio
   const dispatch = useDispatch();
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const { t } = useTranslation();
+  const Rates = useSelector((state: RootState) => state.Rates);
+  const currency = useSelector((state: RootState) => state.Money.preferences.currency);
+  const convertRate = Rates.Rate[currency];
+
+  console.log(NotificationData);
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -116,8 +122,22 @@ export default function DisplayNotification({ navigation }: Readonly<Notificatio
               const minutes = date.getMinutes().toString().padStart(2, "0");
               const meridiem = hours >= 12 ? "PM" : "AM";
               hours = hours % 12 || 12;
-              const formattedTime = `${hours}:${minutes} ${meridiem}`;
-              const DisplayDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+              let formattedTime = `${hours}:${minutes} ${meridiem}`;
+              let DisplayDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+              if (
+                new Date(item.date).getDate() === new Date().getDate() &&
+                new Date(item.date).getMonth() === new Date().getMonth() &&
+                new Date(item.date).getFullYear() === new Date().getFullYear()
+              ) {
+                DisplayDate = "Today";
+              }
+              if (
+                new Date(item.date).getDate() === new Date().getDate() - 1 &&
+                new Date(item.date).getMonth() === new Date().getMonth() &&
+                new Date(item.date).getFullYear() === new Date().getFullYear()
+              ) {
+                DisplayDate = "Yesterday";
+              }
               return (
                 <View style={{ width: "100%", alignItems: "center", marginBottom: 15, marginTop: 5 }}>
                   <View
@@ -146,7 +166,9 @@ export default function DisplayNotification({ navigation }: Readonly<Notificatio
                     )}
                     <View style={{ width: "78%", justifyContent: "center", paddingLeft: 10 }}>
                       <Text style={{ fontWeight: "bold", color: colors.color }}>{item.title}</Text>
-                      <Text style={{ color: "grey" }}>{item.body}</Text>
+                      <Text style={{ color: "grey" }}>
+                        {item.body} {item.amount && `${currencies[currency]} ${(item.amount * convertRate).toFixed(2)}`}
+                      </Text>
                     </View>
                     <View
                       style={{
@@ -156,7 +178,15 @@ export default function DisplayNotification({ navigation }: Readonly<Notificatio
                         width: "22%",
                       }}
                     >
-                      <Text style={{ fontSize: 12, color: colors.color, width: "100%", textAlign: "center" }}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: colors.color,
+                          width: "100%",
+                          textAlign: "center",
+                          fontWeight: 500,
+                        }}
+                      >
                         {DisplayDate}
                       </Text>
                       <Text style={{ color: "grey", fontSize: 12, width: "100%", textAlign: "center" }}>

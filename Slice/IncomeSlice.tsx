@@ -35,6 +35,7 @@ interface NotificationEntry {
   body: string;
   date: string;
   id: string;
+  amount: number;
 }
 interface Signup {
   Photo: { uri: string };
@@ -174,6 +175,8 @@ export const ExpenseTrackerSlice = createSlice({
           notification,
           notified,
         };
+      } else {
+        console.warn("Budget update failed: no budget found with id", id);
       }
     },
     updateBadge: (state, action) => {
@@ -183,7 +186,7 @@ export const ExpenseTrackerSlice = createSlice({
       const existingTransaction = state.notification.find((transaction) => transaction.date === action.payload.date);
       if (!existingTransaction) {
         state.notification.unshift(action.payload);
-        console.log(action.payload);
+        console.log(existingTransaction);
         if (!action.payload.read) {
           state.badgeCount += 1;
         }
@@ -220,7 +223,6 @@ export const ExpenseTrackerSlice = createSlice({
     },
     removeNotification: (state) => {
       state.notification = [];
-      console.log("removed");
     },
     updateNotifications: (state) => {
       state.notification = state.notification.map((item) => ({

@@ -1,5 +1,13 @@
 import React, { useState, forwardRef, useContext } from "react";
-import { TextInput, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  TextInput,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Keyboard,
+  Pressable,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemeContext, ThemeContextType } from "../Context/ThemeContext";
 interface InputProps {
@@ -30,7 +38,13 @@ const Input = forwardRef<TextInput, InputProps>(
           maxLength={limit}
         />
         {isPass && (
-          <TouchableOpacity style={styles.icon} onPress={() => setVisible(!Visible)}>
+          <TouchableOpacity
+            style={styles.icon}
+            activeOpacity={1}
+            onPress={() => {
+              setVisible(!Visible);
+            }}
+          >
             <Ionicons name={Visible ? "eye-off" : "eye"} size={25} color="gray" />
           </TouchableOpacity>
         )}
@@ -45,5 +59,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: "10%",
     top: "35%",
+    zIndex: 1,
   },
 });

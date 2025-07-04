@@ -254,6 +254,7 @@ export default function Profile({ navigation }: Readonly<Props>) {
           modalUser={modalUser}
           setModalUser={setModalUser}
           saveChanges={saveChanges}
+          index={user.index}
         />
       </ImageBackground>
     </SafeAreaView>

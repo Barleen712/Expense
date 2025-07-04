@@ -128,6 +128,8 @@ export default function Budget({ navigation }: Readonly<Props>) {
               style={{
                 paddingLeft: 5,
                 flexShrink: 1,
+                fontWeight: 500,
+                fontSize: 14,
               }}
             >
               {t(item.category)}

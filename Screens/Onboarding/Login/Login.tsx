@@ -142,7 +142,11 @@ export default function Login({ navigation }: Readonly<Props>) {
         bgcolor={colors.backgroundColor}
         color={colors.color}
       />
-      <ScrollView contentContainerStyle={{ alignItems: "center" }} style={{ width: "100%" }}>
+      <ScrollView
+        contentContainerStyle={{ alignItems: "center" }}
+        style={{ width: "100%" }}
+        keyboardShouldPersistTaps={"handled"}
+      >
         <View style={style.input}>
           <View style={{ width: "100%", height: "50%", justifyContent: "center" }}>
             <Input

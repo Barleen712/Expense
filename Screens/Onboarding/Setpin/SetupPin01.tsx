@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, SafeAreaView } from "react-native";
+import { View, Text, SafeAreaView, StatusBar } from "react-native";
 import styles from "./styles";
 import Keypad from "../../../Components/Keypad";
 import Pin from "../../../Components/Pin";
@@ -23,6 +23,7 @@ export default function Setpin({ navigation }: Readonly<Props>) {
   };
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar translucent={true} backgroundColor="black" barStyle="default" />
       <View style={styles.setup}>
         <Text style={styles.setuptext}>{t(StringConstants.LetssetupyouPin)}</Text>
       </View>

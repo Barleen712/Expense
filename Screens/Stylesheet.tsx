@@ -30,7 +30,9 @@ const styles = StyleSheet.create({
     color: "white",
     width: "80%",
     textAlign: "center",
-    marginTop: 10,
+    // marginTop: 10,
+    height: "100%",
+    verticalAlign: "middle",
     // backgroundColor: "red",
   },
   keypad1: {

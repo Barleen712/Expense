@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useMemo, useCallback } from "react";
+import React, { useContext, useRef, useMemo, useCallback, useState } from "react";
 import {
   Modal,
   TouchableOpacity,
@@ -19,6 +19,7 @@ import { ThemeContext, ThemeContextType } from "../Context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import FastImage from "react-native-fast-image";
 import * as DocumentPicker from "expo-document-picker";
+import PhotoModal from "./PhotoModal";
 type ProfilePhotoSource = string | number | { uri: string };
 
 interface ProfileModalProps {
@@ -37,6 +38,7 @@ interface ProfileModalProps {
   saveChanges: () => void;
   usernameError: string;
   setusernameError: (value: string) => void;
+  index: null | number | string;
 }
 const MemoizedImage = React.memo(({ source }: { source: ImageSourcePropType }) => {
   return (
@@ -120,11 +122,11 @@ function ProfileModal({
   saveChanges,
   usernameError,
   setusernameError,
+  index,
 }: Readonly<ProfileModalProps>) {
   const scrollRef = useRef<ScrollView>(null);
   const { colors } = useContext(ThemeContext) as ThemeContextType;
   const { t } = useTranslation();
-
   // Discard changes
   const Discard = useCallback(() => {
     seteditProfile(false);
@@ -145,6 +147,7 @@ function ProfileModal({
         setmodalPhoto({ uri: result.assets[0].uri });
         setselectedindex("");
       }
+      setshowModal(false);
     } catch (err) {
       console.error("Error while picking image:", err);
     }
@@ -154,6 +157,8 @@ function ProfileModal({
     () => modalPhoto === photo && modalUser === username,
     [modalPhoto, photo, modalUser, username]
   );
+  const [showmodal, setshowModal] = useState(false);
+
   return (
     <Modal
       animationType="slide"
@@ -180,7 +185,7 @@ function ProfileModal({
             <ScrollView
               bounces={false}
               ref={scrollRef}
-              contentContainerStyle={{ flexGrow: 1 }}
+              contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
             >
@@ -251,26 +256,43 @@ function ProfileModal({
                   alignItems: "center",
                   justifyContent: "center",
                   flex: 0.1,
+                  width: "60%",
                   backgroundColor: colors.seeall,
                   padding: 5,
                   borderRadius: 20,
                 }}
-                onPress={pickImageFromGallery}
+                onPress={() => setshowModal(true)}
+                // onPress={pickImageFromGallery}
               >
+                <PhotoModal
+                  showModal={showmodal}
+                  setshowModal={setshowModal}
+                  onEdit={() => {
+                    setTimeout(() => {
+                      pickImageFromGallery();
+                    }, 200);
+                  }}
+                  onDelete={() => {
+                    setmodalPhoto(require("../assets/user.png"));
+                    setshowModal(false);
+                    setselectedindex("");
+                  }}
+                  disable={typeof photo === "object" ? false : typeof index === "number" ? false : true}
+                />
                 <Text style={{ color: colors.editColor, fontWeight: "bold", fontSize: 18 }}>
-                  {t("Add Your Custom Profile Picture")}
+                  {t("Edit Profile Picture")}
                 </Text>
               </TouchableOpacity>
 
-              <View style={{ paddingLeft: 10, justifyContent: "space-evenly", flex: 0.1, marginTop: 10 }}>
+              <View style={{ paddingLeft: 10, justifyContent: "space-evenly", flex: 0.1, marginTop: 10, width: "90%" }}>
                 <Text style={{ fontFamily: "Inter", fontSize: 16, color: colors.editColor }}>{t("Username")}</Text>
                 <TextInput
                   value={modalUser}
                   maxLength={25}
                   onFocus={() => scrollRef.current?.scrollToEnd({ animated: true })}
                   onChangeText={(text) => {
-                    const cleanedText = text.trimStart(); // remove leading spaces
-                    const allowed = /^[a-zA-Z ]*$/; // allow letters and spaces only
+                    const cleanedText = text.trimStart();
+                    const allowed = /^[a-zA-Z ]*$/;
 
                     if (allowed.test(cleanedText)) {
                       setusernameError("");

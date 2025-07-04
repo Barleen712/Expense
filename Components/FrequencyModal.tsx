@@ -84,7 +84,8 @@ export default function FrequencyModal({
     if (Platform.OS === "android") setShowEndDatePicker(false);
     if (selectedDate) setEndDate(selectedDate);
   };
-  const { colors } = useContext(ThemeContext) as ThemeContextType;
+  const { colors, theme } = useContext(ThemeContext) as ThemeContextType;
+  const Theme: "light" | "dark" = theme.toLowerCase() as "light" | "dark";
   function Save() {
     if (frequency === "") {
       setFrequencyError("Select Frequency");
@@ -244,7 +245,7 @@ export default function FrequencyModal({
                         >
                           <View
                             style={{
-                              backgroundColor: "white",
+                              backgroundColor: colors.backgroundColor,
                               padding: 20,
                               borderTopLeftRadius: 20,
                               borderTopRightRadius: 20,
@@ -254,10 +255,11 @@ export default function FrequencyModal({
                               value={endDate}
                               mode="date"
                               display="inline"
+                              themeVariant={Theme}
                               onChange={(event, selectedDate) => {
                                 if (selectedDate) setEndDate(selectedDate);
                               }}
-                              style={{ backgroundColor: "white" }}
+                              // style={{ backgroundColor: "black" }}
                               maximumDate={new Date(new Date().getFullYear() + 10, 11, 31)}
                               minimumDate={new Date()}
                             />

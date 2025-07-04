@@ -1,4 +1,4 @@
-import { StyleSheet, Platform } from "react-native";
+import { StyleSheet, Platform, Dimensions } from "react-native";
 
 export const getStyles = (colors: any) =>
   StyleSheet.create({
@@ -58,8 +58,51 @@ export const getStyles = (colors: any) =>
       position: "absolute",
       top: "40%",
     },
+    photoContainer: {
+      width: Dimensions.get("window").width,
+      height: Dimensions.get("window").height * 0.2,
+      backgroundColor: "rgb(41, 64, 62)",
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      justifyContent: "space-evenly",
+      alignItems: "center",
+      position: "absolute",
+      bottom: 0,
+      borderWidth: 1,
+      borderBottomWidth: 0,
+      borderColor: "white",
+    },
     deleteTrans: {
       width: 64,
       height: 60,
+    },
+    profilePhotoText: {
+      fontFamily: "Inter",
+      fontSize: 24,
+      fontWeight: "bold",
+      color: "white",
+    },
+    photobuttons: {
+      width: "100%",
+      flexDirection: "row",
+      justifyContent: "space-evenly",
+    },
+    button: {
+      alignItems: "center",
+      justifyContent: "space-evenly",
+      padding: 10,
+      borderRadius: 20,
+      backgroundColor: "rgba(255, 255, 255, 0.71)",
+      width: "30%",
+      borderWidth: 2,
+      borderColor: "white",
+    },
+    buttonText: {
+      fontFamily: "Inter",
+      fontSize: 14,
+      fontWeight: "bold",
+      color: "rgb(56, 88, 85)",
+      width: "100%",
+      textAlign: "center",
     },
   });

@@ -41,7 +41,6 @@ export default function DetailedBudget({ navigation, route }: Readonly<Props>) {
   type CategoryKey = keyof typeof categoryMap;
   const categoryKey = (category === "Transfer" ? "Transfer" : category) as CategoryKey;
   const Category = categoryMap[categoryKey];
-
   return (
     <SafeAreaView style={styles.container}>
       <Header

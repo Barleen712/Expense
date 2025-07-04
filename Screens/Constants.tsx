@@ -329,6 +329,9 @@ export function raiseToast(type: string, text1: string, error: string) {
     topOffset: 100,
     text1Style: { fontSize: 16 },
     text2Style: { fontSize: 12, fontWeight: "bold" },
+    autoHide: true,
+    visibilityTime: 5000,
+    swipeable: true,
   });
 }
 export const Terms_Conditions = [

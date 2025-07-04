@@ -313,11 +313,12 @@ export default function Transaction({ navigation, route }: Readonly<Props>) {
     if (expenseAlert && parameters.moneyCategory === "Expense") {
       onDisplayNotification({
         title: `Added Expense`,
-        body: `You added an expense of ${selectedCategory} of amount ${numericIncome}`,
+        body: `You added an expense of ${selectedCategory} of `,
       });
       const NotificationData = {
         title: `Added Expense`,
-        body: `You added an expense of ${selectedCategory} of amount ${numericIncome}`,
+        body: `You added an expense of ${selectedCategory} of amount`,
+        amount: numericIncome,
         date: new Date().toISOString(),
         userId: user ? user.uid : "",
         read: false,

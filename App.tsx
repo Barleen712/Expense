@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Platform, TextInput, Text, TextStyle } from "react-native";
+import { View, TextInput, Text, TextStyle } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import Screens, { TabScreens } from "./Navigation/StackNavigation";
 import { Provider } from "react-redux";
@@ -18,6 +18,7 @@ import { CachedUser, saveUserData, getCachedUser, clearUserData } from "./utils/
 import { syncUnsyncedTransactions, syncPendingDeletes, syncPendingUpdatesToFirestore } from "./Realm/Sync";
 import { syncPendingDeletesBudget, syncPendingUpdatesToFirestoreBudgets, syncUnsyncedBudget } from "./Realm/SyncBudget";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import PhotoModal from "./Components/PhotoModal";
 
 interface ExtendedText extends Text {
   defaultProps: {
