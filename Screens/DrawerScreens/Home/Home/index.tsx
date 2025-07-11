@@ -75,7 +75,13 @@ export default function Home({ navigation }: Readonly<Props>) {
   const accountBalance = (94500 + income - expense) * convertRate;
   useEffect(() => {
     if (typeof user?.Photo.uri === "number") {
-      setPhoto(user.index != null ? profilepics[user.index] : require("../../../../assets/user.png"));
+      const result =
+        user.index != null
+          ? user.index == ""
+            ? require("../../../../assets/user.png")
+            : profilepics[user.index]
+          : profilepics[user.index];
+      setPhoto(result);
     } else if (!user?.Photo?.uri) {
       setPhoto(require("../../../../assets/user.png"));
     } else {
@@ -97,7 +103,6 @@ export default function Home({ navigation }: Readonly<Props>) {
         .sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime()),
     [transaction]
   );
-
   const GraphExpenses = useMemo(() => {
     const expenses = transaction.filter(
       (item) =>
@@ -219,6 +224,7 @@ export default function Home({ navigation }: Readonly<Props>) {
       </View>
     );
   }
+  console.log(user.Photo);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar translucent backgroundColor="black" barStyle="default" />

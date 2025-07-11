@@ -130,12 +130,12 @@ export default function SignUp({ navigation }: Readonly<Props>) {
       return;
     }
     setloading(false);
-    // navigation.navigate("Login");
-    // setname({ name: "", nameError: "" });
-    // setemail({ email: "", emailError: "" });
-    // setpassword({ password: "", error: "" });
-    // setChecked({ state: false, error: "" });
-    // setPhoto(require("../../../assets/user.png"));
+    navigation.navigate("Login");
+    setname({ name: "", nameError: "" });
+    setemail({ email: "", emailError: "" });
+    setpassword({ password: "", error: "" });
+    setChecked({ state: false, error: "" });
+    setPhoto(require("../../../assets/user.png"));
   }
   const { t } = useTranslation();
   const pickImageFromGallery = async () => {
@@ -358,7 +358,10 @@ export default function SignUp({ navigation }: Readonly<Props>) {
       >
         <View style={{ alignItems: "center", height: height }}>
           <View style={{ height: height * 0.16, marginTop: 5, width: "100%", alignItems: "center" }}>
-            <TouchableOpacity style={{ flex: 0.8, width: "90%", alignItems: "center" }} onPress={pickImageFromGallery}>
+            <TouchableOpacity
+              style={{ flex: 0.8, width: "90%", alignItems: "center" }}
+              onPress={() => setshowModal(true)}
+            >
               <Image style={{ width: "28%", height: "100%", borderRadius: 100 }} source={photo} />
             </TouchableOpacity>
             <TouchableOpacity
@@ -376,7 +379,7 @@ export default function SignUp({ navigation }: Readonly<Props>) {
                   alignItems: "center",
                 }}
               >
-                Edit 🖋️
+                {typeof photo.uri === "string" ? "Edit🖋️" : "Add Profile Photo"}
               </Text>
             </TouchableOpacity>
             <PhotoModal
@@ -564,31 +567,6 @@ export default function SignUp({ navigation }: Readonly<Props>) {
                 {t(StringConstants.SignUpwithGoogle)}
               </Text>
             </TouchableOpacity>
-            <View
-              style={{
-                marginTop: 20,
-                width: "90%",
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-              }}
-            >
-              {socialmedialogin.map((item, index) => (
-                <Pressable
-                  key={index}
-                  onPress={onFacebookButtonPress}
-                  style={({ pressed }) => [
-                    {
-                      borderRadius: 30,
-                      padding: 8,
-                      transform: [{ scale: pressed ? 0.95 : 1 }],
-                      backgroundColor: pressed ? "rgba(31, 62, 61, 0.34)" : "transparent", // highlight effect
-                    },
-                  ]}
-                >
-                  <Image style={style.Google} source={item} />
-                </Pressable>
-              ))}
-            </View>
             <TouchableOpacity onPress={() => navigation.replace("Login")}>
               <Text style={style.account}>
                 {t(StringConstants.Alreadyhaveanaccount)} <Text style={style.span}>{t(StringConstants.Login)}</Text>

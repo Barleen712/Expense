@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator, SafeAreaView } from "react-native";
 import Input from "../../../Components/CustomTextInput";
 import { CustomButton } from "../../../Components/CustomButton";
 import { getStyles } from "./styles";
@@ -67,13 +67,13 @@ export default function ForgotPass({ navigation }: Readonly<Props>) {
   const styles = getStyles(colors);
   if (loading) {
     return (
-      <View style={[styles.container, { alignItems: "center", justifyContent: "center" }]}>
+      <View style={[styles.container, { alignItems: "center", justifyContent: "center", paddingTop: 0 }]}>
         <ActivityIndicator size="large" color={"green"} />
       </View>
     );
   }
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         title={t(StringConstants.ForgotPassword)}
         press={() => navigation.goBack()}
@@ -106,6 +106,6 @@ export default function ForgotPass({ navigation }: Readonly<Props>) {
           />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
